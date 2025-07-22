@@ -1,0 +1,19 @@
+{
+  "name": "pokedex",
+  "version": "0.0.1",
+  "description": "A full stack pokedex including GraphQL API and nextjs frontend.",
+  "workspaces": [
+    "api",
+    "frontend"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdaconceicao/pokedex.git"
+  },
+  "author": "Stephen da Conceicao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdaconceicao/pokedex/issues"
+  },
+  "homepage": "https://github.com/sdaconceicao/pokedex#readme"
+}
