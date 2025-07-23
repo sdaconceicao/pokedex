@@ -26,7 +26,6 @@ export type Ability = {
 
 export type Pokemon = {
   __typename?: 'Pokemon';
-  abilities: Array<Ability>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
@@ -156,7 +155,6 @@ export type AbilityResolvers<ContextType = DataSourceContext, ParentType extends
 };
 
 export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
-  abilities?: Resolver<Array<ResolversTypes['Ability']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
