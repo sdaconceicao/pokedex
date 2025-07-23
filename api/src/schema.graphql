@@ -6,7 +6,7 @@ type Query {
 type Pokemon {
   id: ID!
   name: String!
-  type: String!
+  type: [Type!]!
   image: String!
   stats: Stat!
 }
@@ -24,4 +24,26 @@ type Ability {
   id: ID!
   name: String!
   description: String!
+}
+
+enum Type {
+  NORMAL
+  FIRE
+  WATER
+  ELECTRIC
+  GRASS
+  ICE
+  FIGHTING
+  POISON
+  GROUND
+  FLYING
+  PSYCHIC
+  BUG
+  ROCK
+  GHOST
+  DRAGON
+  DARK
+  STEEL
+  FAIRY
+  STELLAR
 }

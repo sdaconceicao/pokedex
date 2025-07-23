@@ -30,7 +30,7 @@ export type Pokemon = {
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
   stats: Stat;
-  type: Scalars['String']['output'];
+  type: Array<Type>;
 };
 
 export type Query = {
@@ -53,6 +53,28 @@ export type Stat = {
   specialDefense: Scalars['Int']['output'];
   speed: Scalars['Int']['output'];
 };
+
+export enum Type {
+  Bug = 'BUG',
+  Dark = 'DARK',
+  Dragon = 'DRAGON',
+  Electric = 'ELECTRIC',
+  Fairy = 'FAIRY',
+  Fighting = 'FIGHTING',
+  Fire = 'FIRE',
+  Flying = 'FLYING',
+  Ghost = 'GHOST',
+  Grass = 'GRASS',
+  Ground = 'GROUND',
+  Ice = 'ICE',
+  Normal = 'NORMAL',
+  Poison = 'POISON',
+  Psychic = 'PSYCHIC',
+  Rock = 'ROCK',
+  Steel = 'STEEL',
+  Stellar = 'STELLAR',
+  Water = 'WATER'
+}
 
 
 
@@ -133,6 +155,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Stat: ResolverTypeWrapper<Stat>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Type: Type;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -159,7 +182,7 @@ export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stats?: Resolver<ResolversTypes['Stat'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

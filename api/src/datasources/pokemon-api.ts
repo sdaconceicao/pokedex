@@ -41,7 +41,7 @@ export class PokemonAPI extends RESTDataSource {
       return {
         id: data.id,
         name: data.name,
-        type: data.types[0].type.name,
+        type: data.types.map((t: any) => t.type.name.toUpperCase()),
         image: data.sprites.front_default,
         stats: statsObj,
       };
