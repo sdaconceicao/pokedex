@@ -4,6 +4,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { gql } from "graphql-tag";
 
+import { PokemonAPI } from "./datasources/pokemon-api";
 import { resolvers } from "./resolvers";
 
 const typeDefs = gql(
@@ -19,7 +20,9 @@ async function startApolloServer() {
       const { cache } = server;
 
       return {
-        dataSources: {},
+        dataSources: {
+          pokemonAPI: new PokemonAPI({ cache }),
+        },
       };
     },
   });

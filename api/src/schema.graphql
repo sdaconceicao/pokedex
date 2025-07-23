@@ -1,6 +1,28 @@
 type Query {
-
+  pokemon(id: ID!): Pokemon
+  abilities: [Ability!]!
 }
-type Mutation {
 
+type Pokemon {
+  id: ID!
+  name: String!
+  type: String!
+  image: String!
+  abilities: [Ability!]!
+  stats: Stat!
+}
+
+type Stat {
+  hp: Int!
+  attack: Int!
+  defense: Int!
+  specialAttack: Int!
+  specialDefense: Int!
+  speed: Int!
+}
+
+type Ability {
+  id: ID!
+  name: String!
+  description: String!
 }

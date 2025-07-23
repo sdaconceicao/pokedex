@@ -1,5 +1,5 @@
 export const resolvers = {
   Query: {},
 
-  Mutation: {},
+  Pokemon: {},
 };
