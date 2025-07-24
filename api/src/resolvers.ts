@@ -7,5 +7,9 @@ export const resolvers: Resolvers = {
     },
   },
 
-  Pokemon: {},
+  Pokemon: {
+    abilities: ({ abilitiesLite }, _, { dataSources }) => {
+      return dataSources.pokemonAPI.getAbilities(abilitiesLite);
+    },
+  },
 };

@@ -1,5 +1,5 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
-import { Pokemon, Stat } from "../types";
+import { Ability, AbilityLite, Pokemon, Stat } from "../types";
 
 export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
@@ -44,7 +44,31 @@ export class PokemonAPI extends RESTDataSource {
         type: data.types.map((t: any) => t.type.name.toUpperCase()),
         image: data.sprites.front_default,
         stats: statsObj,
+        abilitiesLite: data.abilities.map(
+          (ability: {
+            ability: { name: string; url: string };
+            is_hidden: boolean;
+            slot: number;
+          }) => ({
+            name: ability.ability.name,
+            url: ability.ability.url,
+            isHidden: ability.is_hidden,
+            slot: ability.slot,
+          })
+        ),
       };
     });
+  }
+  getAbilities(abilitiesLite: AbilityLite[]): Promise<Ability[]> {
+    return Promise.all(
+      abilitiesLite.map((abilityLite) =>
+        this.get<any>(abilityLite.url).then((data) => ({
+          id: data.id,
+          name: data.name,
+          description: data.flavor_text_entries[0]?.flavor_text || "",
+          slot: abilityLite.slot,
+        }))
+      )
+    );
   }
 }

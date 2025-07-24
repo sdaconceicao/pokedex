@@ -22,10 +22,22 @@ export type Ability = {
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  slot: Scalars['Int']['output'];
+};
+
+export type AbilityLite = {
+  __typename?: 'AbilityLite';
+  id: Scalars['ID']['output'];
+  isHidden: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  slot: Scalars['Int']['output'];
+  url: Scalars['String']['output'];
 };
 
 export type Pokemon = {
   __typename?: 'Pokemon';
+  abilities?: Maybe<Array<Ability>>;
+  abilitiesLite: Array<AbilityLite>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
@@ -148,6 +160,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Ability: ResolverTypeWrapper<Ability>;
+  AbilityLite: ResolverTypeWrapper<AbilityLite>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -161,6 +174,7 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Ability: Ability;
+  AbilityLite: AbilityLite;
   Boolean: Scalars['Boolean']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -174,10 +188,22 @@ export type AbilityResolvers<ContextType = DataSourceContext, ParentType extends
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AbilityLiteResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['AbilityLite'] = ResolversParentTypes['AbilityLite']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isHidden?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
+  abilities?: Resolver<Maybe<Array<ResolversTypes['Ability']>>, ParentType, ContextType>;
+  abilitiesLite?: Resolver<Array<ResolversTypes['AbilityLite']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -203,6 +229,7 @@ export type StatResolvers<ContextType = DataSourceContext, ParentType extends Re
 
 export type Resolvers<ContextType = DataSourceContext> = {
   Ability?: AbilityResolvers<ContextType>;
+  AbilityLite?: AbilityLiteResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;

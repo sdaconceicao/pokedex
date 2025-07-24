@@ -9,6 +9,8 @@ type Pokemon {
   type: [Type!]!
   image: String!
   stats: Stat!
+  abilitiesLite: [AbilityLite!]!
+  abilities: [Ability!]
 }
 
 type Stat {
@@ -20,10 +22,18 @@ type Stat {
   speed: Int!
 }
 
+type AbilityLite {
+  id: ID!
+  name: String!
+  url: String!
+  slot: Int!
+  isHidden: Boolean!
+}
 type Ability {
   id: ID!
   name: String!
   description: String!
+  slot: Int!
 }
 
 enum Type {
