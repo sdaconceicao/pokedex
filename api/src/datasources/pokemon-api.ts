@@ -65,7 +65,10 @@ export class PokemonAPI extends RESTDataSource {
         this.get<any>(abilityLite.url).then((data) => ({
           id: data.id,
           name: data.name,
-          description: data.flavor_text_entries[0]?.flavor_text || "",
+          description:
+            data.flavor_text_entries.find(
+              (entry: any) => entry.language.name === "en"
+            )?.flavor_text || "",
           slot: abilityLite.slot,
         }))
       )
