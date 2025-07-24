@@ -69,6 +69,11 @@ export class PokemonAPI extends RESTDataSource {
             data.flavor_text_entries.find(
               (entry: any) => entry.language.name === "en"
             )?.flavor_text || "",
+          effect:
+            data.effect_entries.find(
+              (entry: any) => entry.language.name === "en"
+            )?.effect || "",
+          generation: data.generation.name,
           slot: abilityLite.slot,
         }))
       )

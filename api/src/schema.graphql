@@ -33,6 +33,8 @@ type Ability {
   id: ID!
   name: String!
   description: String!
+  effect: String!
+  generation: String!
   slot: Int!
 }
 
