@@ -1,6 +1,7 @@
 type Query {
   pokemon(id: ID!): Pokemon
   abilities: [Ability!]!
+  searchPokemon(query: String!, limit: Int): [Pokemon!]!
 }
 
 type Pokemon {
@@ -8,12 +9,12 @@ type Pokemon {
   name: String!
   type: [Type!]!
   image: String!
-  stats: Stat!
+  stats: Stats!
   abilitiesLite: [AbilityLite!]!
   abilities: [Ability!]
 }
 
-type Stat {
+type Stats {
   hp: Int!
   attack: Int!
   defense: Int!
@@ -29,6 +30,7 @@ type AbilityLite {
   slot: Int!
   isHidden: Boolean!
 }
+
 type Ability {
   id: ID!
   name: String!

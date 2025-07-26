@@ -1,118 +1,111 @@
-import { GraphQLResolveInfo } from "graphql";
-import { DataSourceContext } from "./context";
+import { GraphQLResolveInfo } from 'graphql';
+import { DataSourceContext } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
-export type MakeEmpty<
-  T extends { [key: string]: unknown },
-  K extends keyof T
-> = { [_ in K]?: never };
-export type Incremental<T> =
-  | T
-  | {
-      [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
-    };
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
-  [P in K]-?: NonNullable<T[P]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
 };
 
 export type Ability = {
-  __typename?: "Ability";
-  description: Scalars["String"]["output"];
-  effect: Scalars["String"]["output"];
-  generation: Scalars["String"]["output"];
-  id: Scalars["ID"]["output"];
-  name: Scalars["String"]["output"];
-  slot: Scalars["Int"]["output"];
+  __typename?: 'Ability';
+  description: Scalars['String']['output'];
+  effect: Scalars['String']['output'];
+  generation: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  slot: Scalars['Int']['output'];
 };
 
 export type AbilityLite = {
-  generation: any;
-  __typename?: "AbilityLite";
-  id: Scalars["ID"]["output"];
-  isHidden: Scalars["Boolean"]["output"];
-  name: Scalars["String"]["output"];
-  slot: Scalars["Int"]["output"];
-  url: Scalars["String"]["output"];
+  __typename?: 'AbilityLite';
+  id: Scalars['ID']['output'];
+  isHidden: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  slot: Scalars['Int']['output'];
+  url: Scalars['String']['output'];
 };
 
 export type Pokemon = {
-  __typename?: "Pokemon";
+  __typename?: 'Pokemon';
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
-  id: Scalars["ID"]["output"];
-  image: Scalars["String"]["output"];
-  name: Scalars["String"]["output"];
-  stats: Stat;
+  id: Scalars['ID']['output'];
+  image: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  stats: Stats;
   type: Array<Type>;
 };
 
 export type Query = {
-  __typename?: "Query";
+  __typename?: 'Query';
   abilities: Array<Ability>;
   pokemon?: Maybe<Pokemon>;
+  searchPokemon: Array<Pokemon>;
 };
+
 
 export type QueryPokemonArgs = {
-  id: Scalars["ID"]["input"];
+  id: Scalars['ID']['input'];
 };
 
-export type Stat = {
-  __typename?: "Stat";
-  attack: Scalars["Int"]["output"];
-  defense: Scalars["Int"]["output"];
-  hp: Scalars["Int"]["output"];
-  specialAttack: Scalars["Int"]["output"];
-  specialDefense: Scalars["Int"]["output"];
-  speed: Scalars["Int"]["output"];
+
+export type QuerySearchPokemonArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  query: Scalars['String']['input'];
+};
+
+export type Stats = {
+  __typename?: 'Stats';
+  attack: Scalars['Int']['output'];
+  defense: Scalars['Int']['output'];
+  hp: Scalars['Int']['output'];
+  specialAttack: Scalars['Int']['output'];
+  specialDefense: Scalars['Int']['output'];
+  speed: Scalars['Int']['output'];
 };
 
 export enum Type {
-  Bug = "BUG",
-  Dark = "DARK",
-  Dragon = "DRAGON",
-  Electric = "ELECTRIC",
-  Fairy = "FAIRY",
-  Fighting = "FIGHTING",
-  Fire = "FIRE",
-  Flying = "FLYING",
-  Ghost = "GHOST",
-  Grass = "GRASS",
-  Ground = "GROUND",
-  Ice = "ICE",
-  Normal = "NORMAL",
-  Poison = "POISON",
-  Psychic = "PSYCHIC",
-  Rock = "ROCK",
-  Steel = "STEEL",
-  Stellar = "STELLAR",
-  Water = "WATER",
+  Bug = 'BUG',
+  Dark = 'DARK',
+  Dragon = 'DRAGON',
+  Electric = 'ELECTRIC',
+  Fairy = 'FAIRY',
+  Fighting = 'FIGHTING',
+  Fire = 'FIRE',
+  Flying = 'FLYING',
+  Ghost = 'GHOST',
+  Grass = 'GRASS',
+  Ground = 'GROUND',
+  Ice = 'ICE',
+  Normal = 'NORMAL',
+  Poison = 'POISON',
+  Psychic = 'PSYCHIC',
+  Rock = 'ROCK',
+  Steel = 'STEEL',
+  Stellar = 'STELLAR',
+  Water = 'WATER'
 }
 
+
+
 export type ResolverTypeWrapper<T> = Promise<T> | T;
+
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
-  | ResolverFn<TResult, TParent, TContext, TArgs>
-  | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
+export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> = ResolverFn<TResult, TParent, TContext, TArgs> | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
 
 export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
@@ -135,25 +128,9 @@ export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
-export interface SubscriptionSubscriberObject<
-  TResult,
-  TKey extends string,
-  TParent,
-  TContext,
-  TArgs
-> {
-  subscribe: SubscriptionSubscribeFn<
-    { [key in TKey]: TResult },
-    TParent,
-    TContext,
-    TArgs
-  >;
-  resolve?: SubscriptionResolveFn<
-    TResult,
-    { [key in TKey]: TResult },
-    TContext,
-    TArgs
-  >;
+export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
+  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
+  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -161,26 +138,12 @@ export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
   resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
 }
 
-export type SubscriptionObject<
-  TResult,
-  TKey extends string,
-  TParent,
-  TContext,
-  TArgs
-> =
+export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
   | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
   | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
-export type SubscriptionResolver<
-  TResult,
-  TKey extends string,
-  TParent = {},
-  TContext = {},
-  TArgs = {}
-> =
-  | ((
-      ...args: any[]
-    ) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
+  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
@@ -189,20 +152,11 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
-  obj: T,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
-export type DirectiveResolverFn<
-  TResult = {},
-  TParent = {},
-  TContext = {},
-  TArgs = {}
-> = (
+export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
   next: NextResolverFn<TResult>,
   parent: TParent,
   args: TArgs,
@@ -210,17 +164,19 @@ export type DirectiveResolverFn<
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
+
+
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Ability: ResolverTypeWrapper<Ability>;
   AbilityLite: ResolverTypeWrapper<AbilityLite>;
-  Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
-  ID: ResolverTypeWrapper<Scalars["ID"]["output"]>;
-  Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
   Query: ResolverTypeWrapper<{}>;
-  Stat: ResolverTypeWrapper<Stat>;
-  String: ResolverTypeWrapper<Scalars["String"]["output"]>;
+  Stats: ResolverTypeWrapper<Stats>;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
   Type: Type;
 };
 
@@ -228,89 +184,58 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Ability: Ability;
   AbilityLite: AbilityLite;
-  Boolean: Scalars["Boolean"]["output"];
-  ID: Scalars["ID"]["output"];
-  Int: Scalars["Int"]["output"];
+  Boolean: Scalars['Boolean']['output'];
+  ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   Pokemon: Pokemon;
   Query: {};
-  Stat: Stat;
-  String: Scalars["String"]["output"];
+  Stats: Stats;
+  String: Scalars['String']['output'];
 };
 
-export type AbilityResolvers<
-  ContextType = DataSourceContext,
-  ParentType extends ResolversParentTypes["Ability"] = ResolversParentTypes["Ability"]
-> = {
-  description?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  effect?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  generation?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  slot?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+export type AbilityResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Ability'] = ResolversParentTypes['Ability']> = {
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  effect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  generation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type AbilityLiteResolvers<
-  ContextType = DataSourceContext,
-  ParentType extends ResolversParentTypes["AbilityLite"] = ResolversParentTypes["AbilityLite"]
-> = {
-  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
-  isHidden?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  slot?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  url?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+export type AbilityLiteResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['AbilityLite'] = ResolversParentTypes['AbilityLite']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isHidden?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type PokemonResolvers<
-  ContextType = DataSourceContext,
-  ParentType extends ResolversParentTypes["Pokemon"] = ResolversParentTypes["Pokemon"]
-> = {
-  abilities?: Resolver<
-    Maybe<Array<ResolversTypes["Ability"]>>,
-    ParentType,
-    ContextType
-  >;
-  abilitiesLite?: Resolver<
-    Array<ResolversTypes["AbilityLite"]>,
-    ParentType,
-    ContextType
-  >;
-  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
-  image?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  stats?: Resolver<ResolversTypes["Stat"], ParentType, ContextType>;
-  type?: Resolver<Array<ResolversTypes["Type"]>, ParentType, ContextType>;
+export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
+  abilities?: Resolver<Maybe<Array<ResolversTypes['Ability']>>, ParentType, ContextType>;
+  abilitiesLite?: Resolver<Array<ResolversTypes['AbilityLite']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  stats?: Resolver<ResolversTypes['Stats'], ParentType, ContextType>;
+  type?: Resolver<Array<ResolversTypes['Type']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type QueryResolvers<
-  ContextType = DataSourceContext,
-  ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
-> = {
-  abilities?: Resolver<
-    Array<ResolversTypes["Ability"]>,
-    ParentType,
-    ContextType
-  >;
-  pokemon?: Resolver<
-    Maybe<ResolversTypes["Pokemon"]>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryPokemonArgs, "id">
-  >;
+export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  abilities?: Resolver<Array<ResolversTypes['Ability']>, ParentType, ContextType>;
+  pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
+  searchPokemon?: Resolver<Array<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QuerySearchPokemonArgs, 'query'>>;
 };
 
-export type StatResolvers<
-  ContextType = DataSourceContext,
-  ParentType extends ResolversParentTypes["Stat"] = ResolversParentTypes["Stat"]
-> = {
-  attack?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  defense?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  hp?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  specialAttack?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  specialDefense?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  speed?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+export type StatsResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Stats'] = ResolversParentTypes['Stats']> = {
+  attack?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  defense?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  hp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  specialAttack?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  specialDefense?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  speed?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -319,5 +244,6 @@ export type Resolvers<ContextType = DataSourceContext> = {
   AbilityLite?: AbilityLiteResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  Stat?: StatResolvers<ContextType>;
+  Stats?: StatsResolvers<ContextType>;
 };
+

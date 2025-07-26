@@ -5,3 +5,16 @@ export type DataSourceContext = {
     pokemonAPI: PokemonAPI;
   };
 };
+
+export async function createContext(): Promise<DataSourceContext> {
+  const pokemonAPI = new PokemonAPI();
+
+  // Load the Pokémon index on startup for fast searching
+  await pokemonAPI.loadPokemonIndex();
+
+  return {
+    dataSources: {
+      pokemonAPI,
+    },
+  };
+}

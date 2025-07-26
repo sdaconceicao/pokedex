@@ -4,8 +4,8 @@ import { readFileSync } from "fs";
 import path from "path";
 import { gql } from "graphql-tag";
 
-import { PokemonAPI } from "./datasources/pokemon-api";
 import { resolvers } from "./resolvers";
+import { PokemonAPI } from "./datasources/pokemon-api";
 
 const typeDefs = gql(
   readFileSync(path.resolve(__dirname, "./schema.graphql"), {
@@ -15,6 +15,11 @@ const typeDefs = gql(
 
 async function startApolloServer() {
   const server = new ApolloServer({ typeDefs, resolvers });
+
+  // Pre-load the Pokémon index on startup
+  const pokemonAPI = new PokemonAPI();
+  await pokemonAPI.loadPokemonIndex();
+
   const { url } = await startStandaloneServer(server, {
     context: async () => {
       const { cache } = server;
@@ -26,6 +31,7 @@ async function startApolloServer() {
       };
     },
   });
+
   console.log(`
     🚀  Server is running!
     📭  Query at ${url}
