@@ -17,7 +17,7 @@ export class PokemonAPI extends RESTDataSource {
     if (PokemonAPI.isIndexLoaded) return;
 
     try {
-      const response = await this.get<any>("pokemon?limit=1100");
+      const response = await this.get<any>("pokemon?limit=1500");
       const entries = response.results;
 
       PokemonAPI.pokemonIndex = entries
