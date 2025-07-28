@@ -1,5 +1,12 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
-import { Ability, AbilityLite, Pokemon, Stats } from "../types";
+import { Ability, AbilityLite, Pokemon, Stats, Type } from "../types";
+import {
+  NamedAPIResource,
+  PokemonListResponse,
+  PokemonAbility,
+  PokemonEntity,
+  PokemonStat,
+} from "./pokemon-api.types";
 
 interface PokemonIndex {
   id: string;
@@ -17,11 +24,13 @@ export class PokemonAPI extends RESTDataSource {
     if (PokemonAPI.isIndexLoaded) return;
 
     try {
-      const response = await this.get<any>("pokemon?limit=1500");
+      const response = await this.get<PokemonListResponse>(
+        "pokemon?limit=1500"
+      );
       const entries = response.results;
 
       PokemonAPI.pokemonIndex = entries
-        .map((entry: any) => {
+        .map((entry: NamedAPIResource) => {
           const urlParts = entry.url.replace(/\/+$/, "").split("/");
           const number = parseInt(urlParts[urlParts.length - 1], 10);
           return {
@@ -70,7 +79,7 @@ export class PokemonAPI extends RESTDataSource {
   }
 
   getPokemon(id: string): Promise<Pokemon> {
-    return this.get<any>(`pokemon/${id}`).then((data) => {
+    return this.get<PokemonEntity>(`pokemon/${id}`).then((data) => {
       const statsObj: Stats = {
         hp: 0,
         attack: 0,
@@ -80,7 +89,7 @@ export class PokemonAPI extends RESTDataSource {
         speed: 0,
       };
 
-      data.stats.forEach((stat: any) => {
+      data.stats.forEach((stat: PokemonStat) => {
         switch (stat.stat.name) {
           case "hp":
             statsObj.hp = stat.base_stat;
@@ -104,40 +113,34 @@ export class PokemonAPI extends RESTDataSource {
       });
 
       return {
-        id: data.id,
+        id: data.id.toString(),
         name: data.name,
-        type: data.types.map((t: any) => t.type.name.toUpperCase()),
+        type: data.types.map((t) => t.type.name.toUpperCase() as Type),
         image: data.sprites.front_default,
         stats: statsObj,
-        abilitiesLite: data.abilities.map(
-          (ability: {
-            ability: { name: string; url: string };
-            is_hidden: boolean;
-            slot: number;
-          }) => ({
-            name: ability.ability.name,
-            url: ability.ability.url,
-            isHidden: ability.is_hidden,
-            slot: ability.slot,
-          })
-        ),
+        abilitiesLite: data.abilities.map((ability) => ({
+          id: ability.ability.url.split("/").filter(Boolean).pop(),
+          name: ability.ability.name,
+          url: ability.ability.url,
+          isHidden: ability.is_hidden,
+          slot: ability.slot,
+        })),
       };
     });
   }
   getAbilities(abilitiesLite: AbilityLite[]): Promise<Ability[]> {
     return Promise.all(
       abilitiesLite.map((abilityLite) =>
-        this.get<any>(abilityLite.url).then((data) => ({
-          id: data.id,
+        this.get<PokemonAbility>(abilityLite.url).then((data) => ({
+          id: data.id.toString(),
           name: data.name,
           description:
             data.flavor_text_entries.find(
-              (entry: any) => entry.language.name === "en"
+              (entry) => entry.language.name === "en"
             )?.flavor_text || "",
           effect:
-            data.effect_entries.find(
-              (entry: any) => entry.language.name === "en"
-            )?.effect || "",
+            data.effect_entries.find((entry) => entry.language.name === "en")
+              ?.effect || "",
           generation: data.generation.name,
           slot: abilityLite.slot,
         }))
