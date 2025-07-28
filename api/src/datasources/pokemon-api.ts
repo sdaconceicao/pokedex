@@ -3,21 +3,25 @@ import { Ability, AbilityLite, Pokemon, Stats, Type } from "../types";
 import {
   NamedAPIResource,
   PokemonListResponse,
+  PokemonIndex,
   PokemonAbility,
   PokemonEntity,
   PokemonStat,
+  TypeResponse,
+  TypePokemon,
 } from "./pokemon-api.types";
-
-interface PokemonIndex {
-  id: string;
-  name: string;
-  number: number;
-}
 
 export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
   private static pokemonIndex: PokemonIndex[] = [];
   private static isIndexLoaded = false;
+
+  // Retrieve id from NamedAPIResource url value
+  getIndexFromUrl = (entry: NamedAPIResource) => {
+    const urlParts = entry.url.replace(/\/+$/, "").split("/");
+    const number = parseInt(urlParts[urlParts.length - 1], 10);
+    return number;
+  };
 
   // Request name/ids of all pokemon for search
   async loadPokemonIndex(): Promise<void> {
@@ -31,8 +35,7 @@ export class PokemonAPI extends RESTDataSource {
 
       PokemonAPI.pokemonIndex = entries
         .map((entry: NamedAPIResource) => {
-          const urlParts = entry.url.replace(/\/+$/, "").split("/");
-          const number = parseInt(urlParts[urlParts.length - 1], 10);
+          const number = this.getIndexFromUrl(entry);
           return {
             id: number.toString(),
             name: entry.name,
@@ -76,6 +79,19 @@ export class PokemonAPI extends RESTDataSource {
     }
 
     return results;
+  }
+
+  getPokemonByType(type: Type): Promise<PokemonIndex[]> {
+    return this.get<TypeResponse>(`type/${type}`).then((data) => {
+      return data.pokemon.map((result) => {
+        const number = this.getIndexFromUrl(result.pokemon);
+        return {
+          name: result.pokemon.name,
+          id: number.toString(),
+          number: number,
+        };
+      });
+    });
   }
 
   getPokemon(id: string): Promise<Pokemon> {

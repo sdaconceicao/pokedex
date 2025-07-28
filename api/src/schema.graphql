@@ -1,7 +1,8 @@
 type Query {
   pokemon(id: ID!): Pokemon
+  pokemonSearch(query: String!, limit: Int): [Pokemon!]!
+  pokemonByType(type: Type, limit: Int, offset: Int): [Pokemon!]!
   abilities: [Ability!]!
-  searchPokemon(query: String!, limit: Int): [Pokemon!]!
 }
 
 type Pokemon {
