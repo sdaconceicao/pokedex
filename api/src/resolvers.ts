@@ -17,7 +17,9 @@ export const resolvers: Resolvers = {
       { dataSources }
     ) => {
       const results = await dataSources.pokemonAPI.getPokemonByType(type);
-      const limitedResults = limit ? results.slice(offset, limit) : results;
+      const limitedResults = limit
+        ? results.slice(offset, offset + limit)
+        : results;
       return Promise.all(
         limitedResults.map(({ id }) => dataSources.pokemonAPI.getPokemon(id))
       );
