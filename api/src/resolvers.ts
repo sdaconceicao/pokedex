@@ -24,6 +24,9 @@ export const resolvers: Resolvers = {
         limitedResults.map(({ id }) => dataSources.pokemonAPI.getPokemon(id))
       );
     },
+    ability: async (_, { id }, { dataSources }) => {
+      return await dataSources.pokemonAPI.getAbility(id);
+    },
     types: async (_, __, { dataSources }) => {
       return await dataSources.pokemonAPI.getTypes();
     },
@@ -31,7 +34,7 @@ export const resolvers: Resolvers = {
 
   Pokemon: {
     abilities: ({ abilitiesLite }, _, { dataSources }) => {
-      return dataSources.pokemonAPI.getAbilities(abilitiesLite);
+      return dataSources.pokemonAPI.getAbilitiesForPokemon(abilitiesLite);
     },
   },
 };

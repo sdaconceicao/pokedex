@@ -144,7 +144,7 @@ export class PokemonAPI extends RESTDataSource {
       };
     });
   }
-  getAbilities(abilitiesLite: AbilityLite[]): Promise<Ability[]> {
+  getAbilitiesForPokemon(abilitiesLite: AbilityLite[]): Promise<Ability[]> {
     return Promise.all(
       abilitiesLite.map((abilityLite) =>
         this.get<PokemonAbility>(abilityLite.url).then((data) => ({
@@ -162,6 +162,9 @@ export class PokemonAPI extends RESTDataSource {
         }))
       )
     );
+  }
+  getAbility(id: string): Promise<Ability> {
+    return this.get<Ability>(`ability/${id}`);
   }
   getTypes(): Promise<string[]> {
     return this.get<PokemonListResponse>("type?limit=50").then((data) =>
