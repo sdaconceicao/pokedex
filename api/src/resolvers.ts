@@ -24,6 +24,9 @@ export const resolvers: Resolvers = {
         limitedResults.map(({ id }) => dataSources.pokemonAPI.getPokemon(id))
       );
     },
+    types: async (_, __, { dataSources }) => {
+      return await dataSources.pokemonAPI.getTypes();
+    },
   },
 
   Pokemon: {

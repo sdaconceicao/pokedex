@@ -1,14 +1,15 @@
 type Query {
   pokemon(id: ID!): Pokemon
   pokemonSearch(query: String!, limit: Int): [Pokemon!]!
-  pokemonByType(type: Type, limit: Int, offset: Int): [Pokemon!]!
+  pokemonByType(type: String, limit: Int, offset: Int): [Pokemon!]!
   abilities: [Ability!]!
+  types: [String!]!
 }
 
 type Pokemon {
   id: ID!
   name: String!
-  type: [Type!]!
+  type: [String!]!
   image: String!
   stats: Stats!
   abilitiesLite: [AbilityLite!]!
@@ -39,26 +40,4 @@ type Ability {
   effect: String!
   generation: String!
   slot: Int!
-}
-
-enum Type {
-  NORMAL
-  FIRE
-  WATER
-  ELECTRIC
-  GRASS
-  ICE
-  FIGHTING
-  POISON
-  GROUND
-  FLYING
-  PSYCHIC
-  BUG
-  ROCK
-  GHOST
-  DRAGON
-  DARK
-  STEEL
-  FAIRY
-  STELLAR
 }

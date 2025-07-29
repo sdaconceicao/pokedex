@@ -1,5 +1,5 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
-import { Ability, AbilityLite, Pokemon, Stats, Type } from "../types";
+import { Ability, AbilityLite, Pokemon, Stats } from "../types";
 import {
   NamedAPIResource,
   PokemonListResponse,
@@ -81,7 +81,7 @@ export class PokemonAPI extends RESTDataSource {
     return results;
   }
 
-  getPokemonByType(type: Type): Promise<PokemonIndex[]> {
+  getPokemonByType(type: String): Promise<PokemonIndex[]> {
     return this.get<TypeResponse>(`type/${type}`).then((data) => {
       return data.pokemon.map((result) => {
         const number = this.getIndexFromUrl(result.pokemon);
@@ -131,7 +131,7 @@ export class PokemonAPI extends RESTDataSource {
       return {
         id: data.id.toString(),
         name: data.name,
-        type: data.types.map((t) => t.type.name.toUpperCase() as Type),
+        type: data.types.map((t) => t.type.name),
         image: data.sprites.front_default,
         stats: statsObj,
         abilitiesLite: data.abilities.map((ability) => ({
@@ -161,6 +161,11 @@ export class PokemonAPI extends RESTDataSource {
           slot: abilityLite.slot,
         }))
       )
+    );
+  }
+  getTypes(): Promise<string[]> {
+    return this.get<PokemonListResponse>("type?limit=50").then((data) =>
+      data.results.map((entry: NamedAPIResource) => entry.name).sort()
     );
   }
 }
