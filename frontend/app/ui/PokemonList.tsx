@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import { GET_POKEMON_BY_TYPE } from "../lib/queries";
 import { Pokemon, PokemonByTypeData } from "../lib/types";
 import styles from "./PokemonList.module.css";
+import Image from "next/image";
 
 interface PokemonListProps {
   selectedType?: string;
@@ -53,9 +54,11 @@ export default function PokemonList({ selectedType }: PokemonListProps) {
       <div className={styles.grid}>
         {pokemon.map((pokemon: Pokemon) => (
           <div key={pokemon.id} className={styles.card}>
-            <img
+            <Image
               src={pokemon.image}
               alt={pokemon.name}
+              width={239}
+              height={128}
               className={styles.pokemonImage}
             />
             <h3 className={styles.pokemonName}>
