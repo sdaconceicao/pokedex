@@ -1,5 +1,5 @@
-import TypesSidebar from "../components/TypesSidebar";
-import PokemonList from "../components/PokemonList";
+import TypesSidebar from "./ui/TypesSidebar";
+import PokemonList from "./ui/PokemonList";
 import styles from "./page.module.css";
 
 export default async function Home({
