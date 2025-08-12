@@ -72,19 +72,21 @@ export class PokemonAPI extends RESTDataSource {
     }
 
     const lowerQuery = query.toLowerCase();
-    const results: PokemonIndex[] = [];
+    const allMatches: PokemonIndex[] = [];
     let totalMatches = 0;
 
     for (const pokemon of PokemonAPI.pokemonIndex) {
       if (pokemon.name.toLowerCase().includes(lowerQuery)) {
+        allMatches.push(pokemon);
         totalMatches++;
-        if (results.length < limit) {
-          results.push(pokemon);
-        }
       }
     }
 
-    return { pokemon: results, total: totalMatches };
+    const startIndex = offset;
+    const endIndex = offset + limit;
+    const paginatedResults = allMatches.slice(startIndex, endIndex);
+
+    return { pokemon: paginatedResults, total: totalMatches };
   }
 
   getPokemonByType(type: String): Promise<PokemonIndex[]> {

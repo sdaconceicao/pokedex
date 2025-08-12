@@ -28,3 +28,26 @@ export const GET_POKEMON_BY_TYPE = gql`
     }
   }
 `;
+
+export const SEARCH_POKEMON = gql`
+  query SearchPokemon($query: String!, $limit: Int, $offset: Int) {
+    pokemonSearch(query: $query, limit: $limit, offset: $offset) {
+      total
+      offset
+      pokemon {
+        id
+        name
+        type
+        image
+        stats {
+          hp
+          attack
+          defense
+          specialAttack
+          specialDefense
+          speed
+        }
+      }
+    }
+  }
+`;

@@ -3,13 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "@untitled-ui/icons-react";
 import styles from "./Navbar.module.css";
-import NavbarItem from "./NavbarItem";
-
-export interface NavItem {
-  label: string;
-  href: string;
-  activeWhenQueryParamEquals?: { key: string; value: string };
-}
+import NavbarItem, { NavItem } from "./NavbarItem";
 
 interface NavbarSectionProps {
   title: string;
@@ -43,7 +37,9 @@ export default function NavbarSection({
       {open && (
         <ul id={`section-${title}`} className={styles.list}>
           {items.map((item) => (
-            <NavbarItem key={item.href} {...item} />
+            <li key={item.href} className={styles.listItem}>
+              <NavbarItem item={item} />
+            </li>
           ))}
         </ul>
       )}

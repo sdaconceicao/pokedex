@@ -1,7 +1,8 @@
 import { GET_TYPES } from "../../lib/queries";
 import { client } from "../../lib/apollo-client";
 import type { TypesData } from "../../lib/types";
-import NavbarSection, { NavItem } from "./NavbarSection";
+import NavbarSection from "./NavbarSection";
+import { NavItem } from "./NavbarItem";
 import styles from "./Navbar.module.css";
 
 async function getTypes(): Promise<string[]> {

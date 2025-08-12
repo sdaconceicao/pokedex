@@ -25,6 +25,10 @@ export interface PokemonByTypeData {
   pokemonByType: PokemonList;
 }
 
+export interface PokemonSearchData {
+  pokemonSearch: PokemonList;
+}
+
 export interface TypesData {
   types: string[];
 }

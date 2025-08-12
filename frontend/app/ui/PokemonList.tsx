@@ -1,46 +1,32 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_POKEMON_BY_TYPE } from "../lib/queries";
-import { Pokemon, PokemonByTypeData } from "../lib/types";
+import React from "react";
+import { Pokemon } from "../lib/types";
 import styles from "./PokemonList.module.css";
 import Image from "next/image";
 import Pagination from "./Pagination";
 
 interface PokemonListProps {
-  selectedType?: string;
+  pokemon: Pokemon[];
+  total: number;
+  title: string;
+  loading?: boolean;
+  error?: string | null;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  itemsPerPage: number;
 }
 
-export default function PokemonList({ selectedType }: PokemonListProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
-
-  const { loading, error, data } = useQuery<PokemonByTypeData>(
-    GET_POKEMON_BY_TYPE,
-    {
-      variables: {
-        type: selectedType,
-        limit: itemsPerPage,
-        offset: (currentPage - 1) * itemsPerPage,
-      },
-      skip: !selectedType,
-    }
-  );
-
-  // Reset to first page when type changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedType]);
-
-  if (!selectedType) {
-    return (
-      <div className={styles.centerText}>
-        <p>Select a Pokemon type from the sidebar to view Pokemon</p>
-      </div>
-    );
-  }
-
+export default function PokemonList({
+  pokemon,
+  total,
+  title,
+  loading = false,
+  error = null,
+  currentPage,
+  onPageChange,
+  itemsPerPage,
+}: PokemonListProps) {
   if (loading) {
     return (
       <div className={styles.centerText}>
@@ -52,26 +38,24 @@ export default function PokemonList({ selectedType }: PokemonListProps) {
   if (error) {
     return (
       <div className={styles.error}>
-        <p>Error loading Pokemon: {error.message}</p>
+        <p>Error loading Pokemon: {error}</p>
       </div>
     );
   }
 
-  const pokemon = data?.pokemonByType?.pokemon || [];
-  const total = data?.pokemonByType?.total || 0;
-  const totalPages = Math.ceil(total / itemsPerPage);
+  if (pokemon.length === 0) {
+    return (
+      <div className={styles.centerText}>
+        <p>No Pokemon found</p>
+      </div>
+    );
+  }
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const totalPages = Math.ceil(total / itemsPerPage);
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>
-        Pokemon of type:{" "}
-        {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}
-      </h2>
+      <h2 className={styles.heading}>{title}</h2>
       <div className={styles.grid}>
         {pokemon.map((pokemon: Pokemon) => (
           <div key={pokemon.id} className={styles.card}>
@@ -81,14 +65,6 @@ export default function PokemonList({ selectedType }: PokemonListProps) {
               width={239}
               height={128}
               className={styles.pokemonImage}
-              onError={(e) => {
-                console.error(
-                  `Failed to load image for Pokemon ${pokemon.name}:`,
-                  pokemon.image
-                );
-                // You could set a fallback image here if needed
-                // e.target.src = '/fallback-pokemon-image.png';
-              }}
             />
             <h3 className={styles.pokemonName}>
               {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
@@ -109,17 +85,11 @@ export default function PokemonList({ selectedType }: PokemonListProps) {
         ))}
       </div>
 
-      {pokemon.length === 0 && (
-        <div className={styles.centerText}>
-          <p>No Pokemon found for this type</p>
-        </div>
-      )}
-
-      {pokemon.length > 0 && (
+      {total > itemsPerPage && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={handlePageChange}
+          onPageChange={onPageChange}
           totalItems={total}
           itemsPerPage={itemsPerPage}
         />
