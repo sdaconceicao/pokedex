@@ -1,4 +1,4 @@
-import TypesSidebar from "./ui/TypesSidebar";
+import Navbar from "./ui/Navbar/Navbar";
 import PokemonList from "./ui/PokemonList";
 import styles from "./page.module.css";
 
@@ -11,7 +11,7 @@ export default async function Home({
 
   return (
     <div className={styles.container}>
-      <TypesSidebar />
+      <Navbar />
       <main className={styles.main}>
         <h1 className={styles.heading}>Pokédex</h1>
         <PokemonList selectedType={params.type} />
