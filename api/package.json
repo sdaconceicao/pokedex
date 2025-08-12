@@ -14,7 +14,8 @@
     "dev": "concurrently \"ts-node-dev --respawn --watch ./**/*.graphql ./src/index.ts\" \"npm run generate\"",
     "generate": "graphql-codegen --watch \"src/schema.graphql\"",
     "start": "npm run compile && nodemon ./dist/index.js",
-    "test": "jest"
+    "test": "jest",
+    "debug": "node debug-pokemon.js"
   },
   "dependencies": {
     "@apollo/datasource-rest": "^6.4.1",

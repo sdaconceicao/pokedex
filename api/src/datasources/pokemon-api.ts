@@ -82,16 +82,25 @@ export class PokemonAPI extends RESTDataSource {
   }
 
   getPokemonByType(type: String): Promise<PokemonIndex[]> {
-    return this.get<TypeResponse>(`type/${type}`).then((data) => {
-      return data.pokemon.map((result) => {
-        const number = this.getIndexFromUrl(result.pokemon);
-        return {
-          name: result.pokemon.name,
-          id: number.toString(),
-          number: number,
-        };
+    console.log(`Fetching Pokemon of type: ${type}`);
+    return this.get<TypeResponse>(`type/${type}`)
+      .then((data) => {
+        console.log(`Found ${data.pokemon.length} Pokemon of type ${type}`);
+        const results = data.pokemon.map((result) => {
+          const number = this.getIndexFromUrl(result.pokemon);
+          return {
+            name: result.pokemon.name,
+            id: number.toString(),
+            number: number,
+          };
+        });
+        console.log(`Processed ${results.length} Pokemon for type ${type}`);
+        return results;
+      })
+      .catch((error) => {
+        console.error(`Error fetching Pokemon of type ${type}:`, error);
+        throw error;
       });
-    });
   }
 
   getPokemon(id: string): Promise<Pokemon> {
@@ -128,11 +137,49 @@ export class PokemonAPI extends RESTDataSource {
         }
       });
 
+      // Handle missing sprites with comprehensive fallback logic
+      let imageUrl = data.sprites.front_default;
+
+      if (!imageUrl) {
+        // Try alternative sprites in order of preference
+        const fallbackSprites = [
+          data.sprites.front_shiny,
+          data.sprites.back_default,
+          data.sprites.back_shiny,
+          data.sprites.other?.["official-artwork"]?.front_default,
+          data.sprites.other?.["official-artwork"]?.front_shiny,
+          data.sprites.other?.home?.front_default,
+          data.sprites.other?.home?.front_shiny,
+          data.sprites.other?.dream_world?.front_default,
+          data.sprites.other?.showdown?.front_default,
+        ];
+
+        imageUrl = fallbackSprites.find(
+          (sprite) => sprite !== null && sprite !== undefined
+        );
+
+        if (imageUrl) {
+          console.log(
+            `Using fallback sprite for Pokemon ${data.id} (${data.name}): ${imageUrl}`
+          );
+        }
+      }
+
+      // If still no image, use a placeholder or throw an error
+      if (!imageUrl) {
+        imageUrl = `https://dummyimage.com/96x96/f0f0f0/666666.png&text=${encodeURIComponent(
+          data.name
+        )}`;
+        console.log(
+          `Using placeholder image for Pokemon ${data.id} (${data.name}): ${imageUrl}`
+        );
+      }
+
       return {
         id: data.id.toString(),
         name: data.name,
         type: data.types.map((t) => t.type.name),
-        image: data.sprites.front_default,
+        image: imageUrl,
         stats: statsObj,
         abilitiesLite: data.abilities.map((ability) => ({
           id: ability.ability.url.split("/").filter(Boolean).pop(),

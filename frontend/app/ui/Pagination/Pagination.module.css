@@ -1,0 +1,98 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.info {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.previousNext {
+  min-width: 5rem;
+}
+
+.pageNumbers {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pageButton {
+  min-width: 2.5rem;
+}
+
+.pageButton.active {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+.pageButton.active:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.ellipsis {
+  cursor: default;
+  border: none;
+  background: transparent;
+  min-width: 2rem;
+}
+
+.ellipsis:hover {
+  background: transparent;
+}
+
+@media (max-width: 640px) {
+  .controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pageNumbers {
+    order: 2;
+  }
+
+  .previousNext {
+    order: 1;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
