@@ -60,7 +60,11 @@ export class PokemonAPI extends RESTDataSource {
   }
 
   // Fast partial string search on name
-  searchPokemon(query: string, limit: number = 20): PokemonIndex[] {
+  searchPokemon(
+    query: string,
+    offset: number = 0,
+    limit: number = 20
+  ): { pokemon: PokemonIndex[]; total: number } {
     if (!PokemonAPI.isIndexLoaded) {
       throw new Error(
         "Pokemon index not loaded. Call loadPokemonIndex() first."
@@ -69,23 +73,24 @@ export class PokemonAPI extends RESTDataSource {
 
     const lowerQuery = query.toLowerCase();
     const results: PokemonIndex[] = [];
+    let totalMatches = 0;
 
     for (const pokemon of PokemonAPI.pokemonIndex) {
-      if (results.length >= limit) break;
       if (pokemon.name.toLowerCase().includes(lowerQuery)) {
-        results.push(pokemon);
-        continue;
+        totalMatches++;
+        if (results.length < limit) {
+          results.push(pokemon);
+        }
       }
     }
 
-    return results;
+    return { pokemon: results, total: totalMatches };
   }
 
   getPokemonByType(type: String): Promise<PokemonIndex[]> {
     console.log(`Fetching Pokemon of type: ${type}`);
     return this.get<TypeResponse>(`type/${type}`)
       .then((data) => {
-        console.log(`Found ${data.pokemon.length} Pokemon of type ${type}`);
         const results = data.pokemon.map((result) => {
           const number = this.getIndexFromUrl(result.pokemon);
           return {
@@ -94,7 +99,6 @@ export class PokemonAPI extends RESTDataSource {
             number: number,
           };
         });
-        console.log(`Processed ${results.length} Pokemon for type ${type}`);
         return results;
       })
       .catch((error) => {

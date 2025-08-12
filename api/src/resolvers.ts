@@ -16,17 +16,29 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
-    pokemonSearch: async (_, { query, limit = 20 }, { dataSources }) => {
+    pokemonSearch: async (
+      _,
+      { query, limit = 20, offset = 0 },
+      { dataSources }
+    ) => {
       console.log(
         `Resolving pokemonSearch query: "${query}" with limit: ${limit}`
       );
       try {
-        const results = dataSources.pokemonAPI.searchPokemon(query, limit);
+        const results = dataSources.pokemonAPI.searchPokemon(
+          query,
+          offset,
+          limit
+        );
         const pokemon = await Promise.all(
-          results.map(({ id }) => dataSources.pokemonAPI.getPokemon(id))
+          results.pokemon.map(({ id }) => dataSources.pokemonAPI.getPokemon(id))
         );
         console.log(`pokemonSearch resolved ${pokemon.length} Pokemon`);
-        return pokemon;
+        return {
+          pokemon,
+          total: results.total,
+          offset,
+        };
       } catch (error) {
         console.error(`Error resolving pokemonSearch "${query}":`, error);
         throw error;

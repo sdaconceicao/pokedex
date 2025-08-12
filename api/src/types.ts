@@ -59,7 +59,7 @@ export type Query = {
   ability?: Maybe<Ability>;
   pokemon?: Maybe<Pokemon>;
   pokemonByType?: Maybe<PokemonList>;
-  pokemonSearch: Array<Pokemon>;
+  pokemonSearch?: Maybe<PokemonList>;
   types: Array<Scalars['String']['output']>;
 };
 
@@ -83,6 +83,7 @@ export type QueryPokemonByTypeArgs = {
 
 export type QueryPokemonSearchArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   query: Scalars['String']['input'];
 };
 
@@ -234,7 +235,7 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   ability?: Resolver<Maybe<ResolversTypes['Ability']>, ParentType, ContextType, RequireFields<QueryAbilityArgs, 'id'>>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
   pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByTypeArgs>>;
-  pokemonSearch?: Resolver<Array<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query'>>;
+  pokemonSearch?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query'>>;
   types?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
