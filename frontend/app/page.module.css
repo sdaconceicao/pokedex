@@ -30,17 +30,22 @@
 .container {
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
 .main {
   flex: 1;
   padding: 1.5rem;
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .heading {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
+  margin-top: 0;
 }
 
 .main ol {
