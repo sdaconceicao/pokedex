@@ -16,13 +16,25 @@ export const resolvers: Resolvers = {
       { type, limit = 20, offset = 0 },
       { dataSources }
     ) => {
+      if (!type) {
+        return { total: 0, offset, pokemon: [] };
+      }
+
       const results = await dataSources.pokemonAPI.getPokemonByType(type);
+      const total = results.length;
       const limitedResults = limit
         ? results.slice(offset, offset + limit)
-        : results;
-      return Promise.all(
+        : results.slice(offset);
+
+      const pokemon = await Promise.all(
         limitedResults.map(({ id }) => dataSources.pokemonAPI.getPokemon(id))
       );
+
+      return {
+        total,
+        offset,
+        pokemon,
+      };
     },
     ability: async (_, { id }, { dataSources }) => {
       return await dataSources.pokemonAPI.getAbility(id);

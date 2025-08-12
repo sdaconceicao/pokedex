@@ -1,5 +1,5 @@
-import Navbar from "./ui/Navbar/Navbar";
-import PokemonList from "./ui/PokemonList";
+import Navbar from "@/ui/Navbar/Navbar";
+import PokemonList from "@/ui/PokemonList";
 import styles from "./page.module.css";
 
 export default async function Home({

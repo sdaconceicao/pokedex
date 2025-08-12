@@ -15,8 +15,14 @@ export interface Pokemon {
   stats: PokemonStats;
 }
 
+export interface PokemonList {
+  total: number;
+  offset: number;
+  pokemon: Pokemon[];
+}
+
 export interface PokemonByTypeData {
-  pokemonByType: Pokemon[];
+  pokemonByType: PokemonList;
 }
 
 export interface TypesData {

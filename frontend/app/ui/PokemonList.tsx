@@ -43,7 +43,7 @@ export default function PokemonList({ selectedType }: PokemonListProps) {
     );
   }
 
-  const pokemon = data?.pokemonByType || [];
+  const pokemon = data?.pokemonByType?.pokemon || [];
 
   return (
     <div className={styles.container}>
