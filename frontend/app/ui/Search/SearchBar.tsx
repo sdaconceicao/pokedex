@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { SearchSm, XCircle } from "@untitled-ui/icons-react";
 import styles from "./SearchBar.module.css";
 
 export default function SearchBar() {
@@ -44,7 +45,7 @@ export default function SearchBar() {
           className={styles.searchInput}
         />
         <button type="submit" className={styles.searchButton}>
-          Search
+          <SearchSm aria-label="Search" />
         </button>
         {searchQuery && (
           <button
@@ -52,7 +53,7 @@ export default function SearchBar() {
             onClick={handleClear}
             className={styles.clearButton}
           >
-            Clear
+            <XCircle aria-label="Clear search" />
           </button>
         )}
       </form>

@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { Pokemon } from "../lib/types";
 import styles from "./PokemonList.module.css";
-import Image from "next/image";
+import PokemonCard from "./PokemonCard/PokemonCard";
+import PokemonCardSkeleton from "./PokemonCard/PokemonCardSkeleton";
+import PokemonListSkeleton from "./PokemonListSkeleton";
 import Pagination from "./Pagination";
 
 interface PokemonListProps {
@@ -28,11 +30,7 @@ export default function PokemonList({
   itemsPerPage,
 }: PokemonListProps) {
   if (loading) {
-    return (
-      <div className={styles.centerText}>
-        <p>Loading Pokemon...</p>
-      </div>
-    );
+    return <PokemonListSkeleton count={itemsPerPage} />;
   }
 
   if (error) {
@@ -58,30 +56,9 @@ export default function PokemonList({
       <h2 className={styles.heading}>{title}</h2>
       <div className={styles.grid}>
         {pokemon.map((pokemon: Pokemon) => (
-          <div key={pokemon.id} className={styles.card}>
-            <Image
-              src={pokemon.image}
-              alt={pokemon.name}
-              width={239}
-              height={128}
-              className={styles.pokemonImage}
-            />
-            <h3 className={styles.pokemonName}>
-              {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
-            </h3>
-            <div className={styles.typeList}>
-              {pokemon.type.map((type: string) => (
-                <span key={type} className={styles.type}>
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </span>
-              ))}
-            </div>
-            <div className={styles.stats}>
-              <p>HP: {pokemon.stats.hp}</p>
-              <p>Attack: {pokemon.stats.attack}</p>
-              <p>Defense: {pokemon.stats.defense}</p>
-            </div>
-          </div>
+          <Suspense key={pokemon.id} fallback={<PokemonCardSkeleton />}>
+            <PokemonCard pokemon={pokemon} />
+          </Suspense>
         ))}
       </div>
 
