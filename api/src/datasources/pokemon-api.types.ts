@@ -255,3 +255,10 @@ export type PokedexListResponse = {
   previous: string | null;
   results: NamedAPIResource[];
 };
+
+export type RegionListResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResource[];
+};

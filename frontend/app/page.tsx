@@ -6,7 +6,12 @@ import styles from "./page.module.css";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string; pokedex?: string; q?: string }>;
+  searchParams: Promise<{
+    type?: string;
+    pokedex?: string;
+    region?: string;
+    q?: string;
+  }>;
 }) {
   const params = await searchParams;
 
@@ -20,6 +25,7 @@ export default async function Home({
           searchQuery={params.q}
           selectedType={params.type}
           selectedPokedex={params.pokedex}
+          selectedRegion={params.region}
         />
       </main>
     </div>

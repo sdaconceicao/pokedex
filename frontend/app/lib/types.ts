@@ -40,3 +40,11 @@ export interface PokedexesData {
 export interface PokemonByPokedexData {
   pokemonByPokedex: PokemonList;
 }
+
+export interface RegionsData {
+  regions: string[];
+}
+
+export interface PokemonByRegionData {
+  pokemonByRegion: PokemonList;
+}

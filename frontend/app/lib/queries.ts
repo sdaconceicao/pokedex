@@ -80,3 +80,32 @@ export const GET_POKEMON_BY_POKEDEX = gql`
     }
   }
 `;
+
+export const GET_REGIONS = gql`
+  query GetRegions {
+    regions
+  }
+`;
+
+export const GET_POKEMON_BY_REGION = gql`
+  query GetPokemonByRegion($region: String!, $limit: Int, $offset: Int) {
+    pokemonByRegion(region: $region, limit: $limit, offset: $offset) {
+      total
+      offset
+      pokemon {
+        id
+        name
+        type
+        image
+        stats {
+          hp
+          attack
+          defense
+          specialAttack
+          specialDefense
+          speed
+        }
+      }
+    }
+  }
+`;

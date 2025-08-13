@@ -1,6 +1,6 @@
-import { GET_TYPES, GET_POKEDEXES } from "../../lib/queries";
+import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "../../lib/queries";
 import { client } from "../../lib/apollo-client";
-import type { TypesData, PokedexesData } from "../../lib/types";
+import type { TypesData, PokedexesData, RegionsData } from "../../lib/types";
 import NavbarSection from "./NavbarSection";
 import { NavItem } from "./NavbarItem";
 import styles from "./Navbar.module.css";
@@ -27,8 +27,22 @@ async function getPokedexes(): Promise<string[]> {
   }
 }
 
+async function getRegions(): Promise<string[]> {
+  try {
+    const { data } = await client.query<RegionsData>({ query: GET_REGIONS });
+    return data.regions || [];
+  } catch (error) {
+    console.error("Error fetching regions:", error);
+    return [];
+  }
+}
+
 export default async function Navbar() {
-  const [types, pokedexes] = await Promise.all([getTypes(), getPokedexes()]);
+  const [types, pokedexes, regions] = await Promise.all([
+    getTypes(),
+    getPokedexes(),
+    getRegions(),
+  ]);
 
   const typeItems: NavItem[] = types.map((type) => ({
     label: type.charAt(0).toUpperCase() + type.slice(1),
@@ -43,9 +57,16 @@ export default async function Navbar() {
     activeWhenQueryParamEquals: { key: "pokedex", value: pokedex },
   }));
 
+  const regionItems: NavItem[] = regions.map((region) => ({
+    label: region.charAt(0).toUpperCase() + region.slice(1),
+    href: `/?region=${encodeURIComponent(region)}`,
+    activeWhenQueryParamEquals: { key: "region", value: region },
+  }));
+
   return (
     <nav className={styles.navbar}>
       <NavbarSection title="Types" items={typeItems} />
+      <NavbarSection title="Regions" items={regionItems} />
       <NavbarSection title="Pokedexes" items={pokedexItems} />
     </nav>
   );
