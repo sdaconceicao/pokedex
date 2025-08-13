@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import ApolloWrapper from "./ui/ApolloWrapper";
+import { SearchBar } from "@/ui/Search";
+import Navbar from "./ui/Navbar/Navbar";
+import styles from "./layout.module.css";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +29,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ApolloWrapper>{children}</ApolloWrapper>
+        <ApolloWrapper>
+          <div className={styles.container}>
+            <Navbar />
+            <main className={styles.main}>
+              <h1 className={styles.heading}>Pokédex</h1>
+              <SearchBar />
+              {children}
+            </main>
+          </div>
+        </ApolloWrapper>
       </body>
     </html>
   );

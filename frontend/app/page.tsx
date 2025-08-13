@@ -1,7 +1,4 @@
-import Navbar from "@/ui/Navbar/Navbar";
 import PokemonDataFetcher from "@/ui/PokemonList/PokemonDataFetcher";
-import { SearchBar } from "@/ui/Search";
-import styles from "./page.module.css";
 
 export default async function Home({
   searchParams,
@@ -16,18 +13,11 @@ export default async function Home({
   const params = await searchParams;
 
   return (
-    <div className={styles.container}>
-      <Navbar />
-      <main className={styles.main}>
-        <h1 className={styles.heading}>Pokédex</h1>
-        <SearchBar />
-        <PokemonDataFetcher
-          searchQuery={params.q}
-          selectedType={params.type}
-          selectedPokedex={params.pokedex}
-          selectedRegion={params.region}
-        />
-      </main>
-    </div>
+    <PokemonDataFetcher
+      searchQuery={params.q}
+      selectedType={params.type}
+      selectedPokedex={params.pokedex}
+      selectedRegion={params.region}
+    />
   );
 }

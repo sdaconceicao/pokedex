@@ -1,8 +1,9 @@
 "use client";
 
-import { Pokemon } from "../../lib/types";
-import styles from "./PokemonCard.module.css";
+import Link from "next/link";
 import Image from "next/image";
+import { Pokemon } from "@/lib/types";
+import styles from "./PokemonCard.module.css";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -22,7 +23,9 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
       />
       <h3 className={styles.pokemonName}>
-        {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+        <Link href={`pokemon/${pokemon.id}`}>
+          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+        </Link>
       </h3>
       <div className={styles.typeList}>
         {pokemon.type.map((type: string) => (
