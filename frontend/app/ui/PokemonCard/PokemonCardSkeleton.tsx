@@ -1,5 +1,4 @@
-import React from "react";
-import styles from "../PokemonList.module.css";
+import styles from "./PokemonCard.module.css";
 
 export default function PokemonCardSkeleton() {
   return (

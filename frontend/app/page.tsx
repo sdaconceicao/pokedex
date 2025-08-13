@@ -1,5 +1,5 @@
 import Navbar from "@/ui/Navbar/Navbar";
-import PokemonDataFetcher from "@/ui/PokemonDataFetcher";
+import PokemonDataFetcher from "@/ui/PokemonList/PokemonDataFetcher";
 import { SearchBar } from "@/ui/Search";
 import styles from "./page.module.css";
 

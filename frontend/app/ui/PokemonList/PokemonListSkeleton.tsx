@@ -1,6 +1,6 @@
-import React from "react";
+import PokemonCardSkeleton from "../PokemonCard/PokemonCardSkeleton";
+
 import styles from "./PokemonList.module.css";
-import PokemonCardSkeleton from "./PokemonCard/PokemonCardSkeleton";
 
 interface PokemonListSkeletonProps {
   count?: number;

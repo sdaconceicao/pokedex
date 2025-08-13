@@ -54,3 +54,42 @@
   color: #ef4444;
   margin-top: 2rem;
 }
+
+.skeletonImage {
+  background-color: #f3f4f6 !important;
+  border-radius: 0.25rem !important;
+}
+
+.skeletonName {
+  background-color: #f3f4f6 !important;
+  height: 1.5rem !important;
+  width: 80% !important;
+  border-radius: 0.25rem !important;
+}
+
+.skeletonType {
+  background-color: #dbeafe !important;
+  height: 1.5rem !important;
+  border-radius: 0.25rem !important;
+}
+
+.skeletonType1 {
+  width: 60px !important;
+}
+
+.skeletonType2 {
+  width: 50px !important;
+}
+
+.skeletonStat {
+  background-color: #f3f4f6 !important;
+  height: 1rem !important;
+  margin-bottom: 0.25rem !important;
+  border-radius: 0.25rem !important;
+}
+
+.skeletonStatLast {
+  background-color: #f3f4f6 !important;
+  height: 1rem !important;
+  border-radius: 0.25rem !important;
+}

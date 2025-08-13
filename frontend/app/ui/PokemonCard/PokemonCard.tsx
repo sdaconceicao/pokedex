@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Pokemon } from "../../lib/types";
 import styles from "./PokemonCard.module.css";
 import Image from "next/image";
