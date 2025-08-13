@@ -1,8 +1,9 @@
-import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "../../lib/queries";
-import { client } from "../../lib/apollo-client";
-import type { TypesData, PokedexesData, RegionsData } from "../../lib/types";
+import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "@/lib/queries";
+import { client } from "@/lib/apollo-client";
+import type { TypesData, PokedexesData, RegionsData } from "@/lib/types";
 import NavbarSection from "./NavbarSection";
 import { NavItem } from "./NavbarItem";
+
 import styles from "./Navbar.module.css";
 
 async function getTypes(): Promise<string[]> {

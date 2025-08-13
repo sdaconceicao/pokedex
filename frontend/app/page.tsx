@@ -1,4 +1,4 @@
-import PokemonDataFetcher from "@/ui/PokemonList/PokemonDataFetcher";
+import { PokemonDataFetcher } from "@/ui/PokemonList";
 
 export default async function Home({
   searchParams,

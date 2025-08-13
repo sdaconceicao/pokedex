@@ -5,6 +5,7 @@ import {
   getPageNumbers,
   getTotalPages,
 } from "./Pagination.util";
+
 import styles from "./Pagination.module.css";
 
 interface PaginationProps {

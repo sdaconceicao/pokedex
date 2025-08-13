@@ -7,14 +7,14 @@ import {
   GET_POKEMON_BY_POKEDEX,
   GET_POKEMON_BY_REGION,
   SEARCH_POKEMON,
-} from "../../lib/queries";
+} from "@/lib/queries";
 import {
   Pokemon,
   PokemonByTypeData,
   PokemonByPokedexData,
   PokemonByRegionData,
   PokemonSearchData,
-} from "../../lib/types";
+} from "@/lib/types";
 import PokemonList from "./PokemonList";
 
 interface PokemonDataFetcherProps {

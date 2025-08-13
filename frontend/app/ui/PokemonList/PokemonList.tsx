@@ -1,12 +1,12 @@
 "use client";
 
 import React, { Suspense, useMemo } from "react";
-import { Pokemon } from "../../lib/types";
-import styles from "./PokemonList.module.css";
-import PokemonCard from "../PokemonCard/PokemonCard";
-import PokemonCardSkeleton from "../PokemonCard/PokemonCardSkeleton";
+import { Pokemon } from "@/lib/types";
+import PokemonCard, { PokemonCardSkeleton } from "@/ui/PokemonCard";
+import Pagination from "@/ui/Pagination";
 import PokemonListSkeleton from "./PokemonListSkeleton";
-import Pagination from "../Pagination";
+
+import styles from "./PokemonList.module.css";
 
 interface PokemonListProps {
   pokemon: Pokemon[];
