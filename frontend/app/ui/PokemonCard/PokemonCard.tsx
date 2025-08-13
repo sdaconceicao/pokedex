@@ -10,8 +10,14 @@ interface PokemonCardProps {
 }
 
 export default function PokemonCard({ pokemon }: PokemonCardProps) {
+  const firstType = pokemon.type[0]?.toLowerCase();
+
   return (
-    <div className={styles.card}>
+    <div
+      className={`${styles.card} ${
+        firstType ? styles[`type-${firstType}` as keyof typeof styles] : ""
+      }`}
+    >
       <Image
         src={pokemon.image}
         alt={pokemon.name}
@@ -29,7 +35,12 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
       </h3>
       <div className={styles.typeList}>
         {pokemon.type.map((type: string) => (
-          <span key={type} className={styles.type}>
+          <span
+            key={type}
+            className={`${styles.type} ${
+              styles[type.toLowerCase() as keyof typeof styles]
+            }`}
+          >
             {type.charAt(0).toUpperCase() + type.slice(1)}
           </span>
         ))}

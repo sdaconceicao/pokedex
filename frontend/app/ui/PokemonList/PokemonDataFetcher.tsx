@@ -34,6 +34,7 @@ export default function PokemonDataFetcher({
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [total, setTotal] = useState(0);
   const [title, setTitle] = useState("");
+  const [currentQueryContext, setCurrentQueryContext] = useState<string>("");
   const itemsPerPage = 20;
 
   // Query for Pokemon by type with pagination
@@ -97,8 +98,31 @@ export default function PokemonDataFetcher({
 
   // Reset to first page when search, type, pokedex, or region changes
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedType, selectedPokedex, selectedRegion]);
+    // Determine the new query context
+    let newQueryContext = "";
+    if (searchQuery) {
+      newQueryContext = `search:${searchQuery}`;
+    } else if (selectedType) {
+      newQueryContext = `type:${selectedType}`;
+    } else if (selectedPokedex) {
+      newQueryContext = `pokedex:${selectedPokedex}`;
+    } else if (selectedRegion) {
+      newQueryContext = `region:${selectedRegion}`;
+    }
+
+    // If query context changed, reset pagination and page
+    if (newQueryContext !== currentQueryContext) {
+      setCurrentQueryContext(newQueryContext);
+      setCurrentPage(1); // Reset to first page for new query
+      setTotal(0); // This will hide pagination until new data loads
+    }
+  }, [
+    searchQuery,
+    selectedType,
+    selectedPokedex,
+    selectedRegion,
+    currentQueryContext,
+  ]);
 
   useEffect(() => {
     if (searchQuery) {
@@ -146,6 +170,7 @@ export default function PokemonDataFetcher({
       setPokemon([]);
       setTotal(0);
       setTitle("");
+      setCurrentQueryContext(""); // Clear query context when no query is active
     }
   }, [
     searchQuery,
@@ -172,6 +197,9 @@ export default function PokemonDataFetcher({
     : selectedPokedex
     ? pokedexError?.message
     : regionError?.message;
+
+  // Only show pagination when we have a query context and data has loaded
+  const shouldShowPagination = !!currentQueryContext && total > 0;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -203,6 +231,7 @@ export default function PokemonDataFetcher({
       currentPage={currentPage}
       onPageChange={handlePageChange}
       itemsPerPage={itemsPerPage}
+      hasQueryContext={shouldShowPagination}
     />
   );
 }

@@ -1,5 +1,6 @@
 .container {
   width: 100%;
+  padding-bottom: 120px; /* Add space for floating pagination */
 }
 
 .heading {
@@ -35,4 +36,15 @@
   height: 2rem !important;
   width: 60% !important;
   border-radius: 0.25rem !important;
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #dc2626;
+}
+
+.centerText {
+  text-align: center;
+  padding: 2rem;
 }

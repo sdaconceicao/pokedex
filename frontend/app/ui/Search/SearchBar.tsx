@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchSm, XCircle } from "@untitled-ui/icons-react";
 import styles from "./SearchBar.module.css";
@@ -16,23 +16,26 @@ export default function SearchBar() {
     setSearchQuery(query);
   }, [searchParams]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
 
-    const params = new URLSearchParams();
+      const params = new URLSearchParams();
 
-    if (searchQuery.trim()) {
-      params.set("q", searchQuery.trim());
-    }
+      if (searchQuery.trim()) {
+        params.set("q", searchQuery.trim());
+      }
 
-    const newUrl = params.toString() ? `/?${params.toString()}` : "/";
-    router.push(newUrl);
-  };
+      const newUrl = params.toString() ? `/?${params.toString()}` : "/";
+      router.push(newUrl);
+    },
+    [router, searchQuery]
+  );
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setSearchQuery("");
     router.push("/");
-  };
+  }, [setSearchQuery, router]);
 
   return (
     <div className={styles.searchContainer}>
