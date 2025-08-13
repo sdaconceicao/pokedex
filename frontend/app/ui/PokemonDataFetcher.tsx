@@ -2,18 +2,29 @@
 
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_POKEMON_BY_TYPE, SEARCH_POKEMON } from "../lib/queries";
-import { Pokemon, PokemonByTypeData, PokemonSearchData } from "../lib/types";
+import {
+  GET_POKEMON_BY_TYPE,
+  GET_POKEMON_BY_POKEDEX,
+  SEARCH_POKEMON,
+} from "../lib/queries";
+import {
+  Pokemon,
+  PokemonByTypeData,
+  PokemonByPokedexData,
+  PokemonSearchData,
+} from "../lib/types";
 import PokemonList from "./PokemonList";
 
 interface PokemonDataFetcherProps {
   searchQuery?: string;
   selectedType?: string;
+  selectedPokedex?: string;
 }
 
 export default function PokemonDataFetcher({
   searchQuery,
   selectedType,
+  selectedPokedex,
 }: PokemonDataFetcherProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
@@ -32,7 +43,21 @@ export default function PokemonDataFetcher({
       limit: itemsPerPage,
       offset: (currentPage - 1) * itemsPerPage,
     },
-    skip: !selectedType || !!searchQuery, // Skip if we have a search query
+    skip: !selectedType || !!searchQuery || !!selectedPokedex, // Skip if we have a search query or pokedex
+  });
+
+  // Query for Pokemon by pokedex with pagination
+  const {
+    loading: pokedexLoading,
+    error: pokedexError,
+    data: pokedexData,
+  } = useQuery<PokemonByPokedexData>(GET_POKEMON_BY_POKEDEX, {
+    variables: {
+      pokedex: selectedPokedex,
+      limit: itemsPerPage,
+      offset: (currentPage - 1) * itemsPerPage,
+    },
+    skip: !selectedPokedex || !!searchQuery || !!selectedType, // Skip if we have a search query or type
   });
 
   // Query for Pokemon search with pagination
@@ -49,10 +74,10 @@ export default function PokemonDataFetcher({
     skip: !searchQuery,
   });
 
-  // Reset to first page when search or type changes
+  // Reset to first page when search, type, or pokedex changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedType]);
+  }, [searchQuery, selectedType, selectedPokedex]);
 
   useEffect(() => {
     if (searchQuery) {
@@ -73,30 +98,58 @@ export default function PokemonDataFetcher({
           }`
         );
       }
+    } else if (selectedPokedex) {
+      // If no search query but pokedex selected, use pokedex results only
+      if (pokedexData?.pokemonByPokedex) {
+        setPokemon(pokedexData.pokemonByPokedex.pokemon);
+        setTotal(pokedexData.pokemonByPokedex.total);
+        setTitle(
+          `Pokemon from pokedex: ${
+            selectedPokedex.charAt(0).toUpperCase() +
+            selectedPokedex.slice(1).replace(/-/g, " ")
+          }`
+        );
+      }
     } else {
       setPokemon([]);
       setTotal(0);
       setTitle("");
     }
-  }, [searchQuery, selectedType, searchData, typeData]);
+  }, [
+    searchQuery,
+    selectedType,
+    selectedPokedex,
+    searchData,
+    typeData,
+    pokedexData,
+  ]);
 
-  const loading = searchQuery ? searchLoading : typeLoading;
-  const error = searchQuery ? searchError?.message : typeError?.message;
+  const loading = searchQuery
+    ? searchLoading
+    : selectedType
+    ? typeLoading
+    : pokedexLoading;
+  const error = searchQuery
+    ? searchError?.message
+    : selectedType
+    ? typeError?.message
+    : pokedexError?.message;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  if (!searchQuery && !selectedType) {
+  if (!searchQuery && !selectedType && !selectedPokedex) {
     return (
       <div style={{ textAlign: "center", padding: "2rem" }}>
         <p>
-          Select a Pokemon type from the sidebar or search for Pokemon to get
-          started
+          Select a Pokemon type or pokedex from the sidebar or search for
+          Pokemon to get started
         </p>
         <p style={{ fontSize: "0.9rem", color: "#666", marginTop: "0.5rem" }}>
-          Note: Search and type selection are separate - use one or the other
+          Note: Search, type selection, and pokedex selection are separate - use
+          one at a time
         </p>
       </div>
     );

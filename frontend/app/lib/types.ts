@@ -32,3 +32,11 @@ export interface PokemonSearchData {
 export interface TypesData {
   types: string[];
 }
+
+export interface PokedexesData {
+  pokedexes: string[];
+}
+
+export interface PokemonByPokedexData {
+  pokemonByPokedex: PokemonList;
+}

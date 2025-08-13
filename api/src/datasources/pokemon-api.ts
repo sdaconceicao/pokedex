@@ -9,6 +9,8 @@ import {
   PokemonStat,
   TypeResponse,
   TypePokemon,
+  Pokedex,
+  PokedexListResponse,
 } from "./pokemon-api.types";
 
 export class PokemonAPI extends RESTDataSource {
@@ -223,5 +225,31 @@ export class PokemonAPI extends RESTDataSource {
     return this.get<PokemonListResponse>("type?limit=50").then((data) =>
       data.results.map((entry: NamedAPIResource) => entry.name).sort()
     );
+  }
+
+  getPokedexes(): Promise<string[]> {
+    return this.get<PokedexListResponse>("pokedex?limit=50").then((data) =>
+      data.results.map((entry: NamedAPIResource) => entry.name).sort()
+    );
+  }
+
+  getPokemonByPokedex(pokedex: string): Promise<PokemonIndex[]> {
+    console.log(`Fetching Pokemon from pokedex: ${pokedex}`);
+    return this.get<Pokedex>(`pokedex/${pokedex}`)
+      .then((data) => {
+        const results = data.pokemon_entries.map((entry) => {
+          const number = this.getIndexFromUrl(entry.pokemon_species);
+          return {
+            name: entry.pokemon_species.name,
+            id: number.toString(),
+            number: number,
+          };
+        });
+        return results;
+      })
+      .catch((error) => {
+        console.error(`Error fetching Pokemon from pokedex ${pokedex}:`, error);
+        throw error;
+      });
   }
 }

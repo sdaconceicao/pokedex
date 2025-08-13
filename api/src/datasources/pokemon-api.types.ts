@@ -231,3 +231,27 @@ export type LocationArea = {
     }[];
   }[];
 };
+
+// Pokedex-related types
+export type Pokedex = {
+  id: number;
+  name: string;
+  descriptions: {
+    description: string;
+    language: NamedAPIResource;
+  }[];
+  names: NameEntry[];
+  pokemon_entries: {
+    entry_number: number;
+    pokemon_species: NamedAPIResource;
+  }[];
+  region: NamedAPIResource | null;
+  version_groups: NamedAPIResource[];
+};
+
+export type PokedexListResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResource[];
+};

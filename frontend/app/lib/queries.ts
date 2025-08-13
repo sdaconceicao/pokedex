@@ -51,3 +51,32 @@ export const SEARCH_POKEMON = gql`
     }
   }
 `;
+
+export const GET_POKEDEXES = gql`
+  query GetPokedexes {
+    pokedexes
+  }
+`;
+
+export const GET_POKEMON_BY_POKEDEX = gql`
+  query GetPokemonByPokedex($pokedex: String!, $limit: Int, $offset: Int) {
+    pokemonByPokedex(pokedex: $pokedex, limit: $limit, offset: $offset) {
+      total
+      offset
+      pokemon {
+        id
+        name
+        type
+        image
+        stats {
+          hp
+          attack
+          defense
+          specialAttack
+          specialDefense
+          speed
+        }
+      }
+    }
+  }
+`;

@@ -120,6 +120,76 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    pokedexes: async (_, __, { dataSources }) => {
+      console.log("Resolving pokedexes query");
+      try {
+        const result = await dataSources.pokemonAPI.getPokedexes();
+        console.log(
+          `Pokedexes resolved successfully: ${result.length} pokedexes found`
+        );
+        return result;
+      } catch (error) {
+        console.error("Error resolving pokedexes:", error);
+        throw error;
+      }
+    },
+    pokemonByPokedex: async (
+      _,
+      { pokedex, limit = 20, offset = 0 },
+      { dataSources }
+    ) => {
+      console.log(
+        `Resolving pokemonByPokedex query: pokedex=${pokedex}, limit=${limit}, offset=${offset}`
+      );
+      if (!pokedex) {
+        console.log("No pokedex specified, returning empty result");
+        return { total: 0, offset, pokemon: [] };
+      }
+
+      try {
+        const results = await dataSources.pokemonAPI.getPokemonByPokedex(
+          pokedex
+        );
+        const total = results.length;
+        const limitedResults = limit
+          ? results.slice(offset, offset + limit)
+          : results.slice(offset);
+
+        console.log(
+          `Fetching ${limitedResults.length} Pokemon details for pokedex ${pokedex}`
+        );
+
+        const pokemon = await Promise.all(
+          limitedResults.map(async ({ id }) => {
+            try {
+              const pokemonData = await dataSources.pokemonAPI.getPokemon(id);
+              console.log(
+                `Pokemon ${id} (${pokemonData.name}) image: ${pokemonData.image}`
+              );
+              return pokemonData;
+            } catch (error) {
+              console.error(`Error fetching Pokemon ${id}:`, error);
+              throw error;
+            }
+          })
+        );
+
+        console.log(
+          `pokemonByPokedex resolved ${pokemon.length} Pokemon for pokedex ${pokedex}`
+        );
+        return {
+          total,
+          offset,
+          pokemon,
+        };
+      } catch (error) {
+        console.error(
+          `Error resolving pokemonByPokedex for pokedex ${pokedex}:`,
+          error
+        );
+        throw error;
+      }
+    },
   },
 
   Pokemon: {

@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string; q?: string }>;
+  searchParams: Promise<{ type?: string; pokedex?: string; q?: string }>;
 }) {
   const params = await searchParams;
 
@@ -16,7 +16,11 @@ export default async function Home({
       <main className={styles.main}>
         <h1 className={styles.heading}>Pokédex</h1>
         <SearchBar />
-        <PokemonDataFetcher searchQuery={params.q} selectedType={params.type} />
+        <PokemonDataFetcher
+          searchQuery={params.q}
+          selectedType={params.type}
+          selectedPokedex={params.pokedex}
+        />
       </main>
     </div>
   );
