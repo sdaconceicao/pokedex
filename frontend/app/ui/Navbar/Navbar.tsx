@@ -63,9 +63,23 @@ export default async function Navbar() {
     activeWhenQueryParamEquals: { key: "region", value: region },
   }));
 
+  const specialItems: NavItem[] = [
+    {
+      label: "Gigantamax",
+      href: "/?q=gmax",
+      activeWhenQueryParamEquals: { key: "query", value: "gmax" },
+    },
+    {
+      label: "Mega Evolve",
+      href: "/?q=-mega",
+      activeWhenQueryParamEquals: { key: "query", value: "mega" },
+    },
+  ];
+
   return (
     <nav className={styles.navbar}>
       <NavbarSection title="Types" items={typeItems} />
+      <NavbarSection title="Special" items={specialItems} />
       <NavbarSection title="Regions" items={regionItems} />
       <NavbarSection title="Pokedexes" items={pokedexItems} />
     </nav>
