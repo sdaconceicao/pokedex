@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense, useCallback, useMemo, useRef } from "react";
 import { Pokemon } from "@/lib/types";
 import PokemonCard, { PokemonCardSkeleton } from "@/ui/PokemonCard";
 import Pagination from "@/ui/Pagination";
@@ -31,9 +31,19 @@ export default function PokemonList({
   itemsPerPage,
   hasQueryContext = false,
 }: PokemonListProps) {
+  const headerRef = useRef<HTMLHeadingElement>(null);
   const shouldShowPagination = useMemo(
     () => hasQueryContext && total > itemsPerPage,
     [hasQueryContext, total, itemsPerPage]
+  );
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      headerRef.current?.scrollIntoView({ behavior: "smooth" });
+
+      onPageChange(page);
+    },
+    [onPageChange]
   );
 
   if (loading) {
@@ -70,7 +80,9 @@ export default function PokemonList({
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>{title}</h2>
+      <h2 className={styles.heading} ref={headerRef}>
+        {title}
+      </h2>
       <div className={styles.grid}>
         {pokemon.map((pokemon: Pokemon) => (
           <Suspense key={pokemon.id} fallback={<PokemonCardSkeleton />}>
@@ -81,7 +93,7 @@ export default function PokemonList({
       {shouldShowPagination && (
         <Pagination
           currentPage={currentPage}
-          onPageChange={onPageChange}
+          onPageChange={handlePageChange}
           totalItems={total}
           itemsPerPage={itemsPerPage}
         />

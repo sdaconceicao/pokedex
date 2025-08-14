@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
   GET_POKEMON_BY_TYPE,
@@ -199,14 +199,17 @@ export default function PokemonDataFetcher({
     : regionError?.message;
 
   // Only show pagination when we have a query context and data has loaded
-  const shouldShowPagination = !!currentQueryContext && total > 0;
+  const shouldShowPagination = useMemo(
+    () => !!currentQueryContext && total > 0,
+    [currentQueryContext, total]
+  );
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const shouldShowInstructions = useMemo(
+    () => !searchQuery && !selectedType && !selectedPokedex && !selectedRegion,
+    [searchQuery, selectedType, selectedPokedex, selectedRegion]
+  );
 
-  if (!searchQuery && !selectedType && !selectedPokedex && !selectedRegion) {
+  if (shouldShowInstructions) {
     return (
       <div style={{ textAlign: "center", padding: "2rem" }}>
         <p>
@@ -229,7 +232,7 @@ export default function PokemonDataFetcher({
       loading={loading}
       error={error}
       currentPage={currentPage}
-      onPageChange={handlePageChange}
+      onPageChange={setCurrentPage}
       itemsPerPage={itemsPerPage}
       hasQueryContext={shouldShowPagination}
     />

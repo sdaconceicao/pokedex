@@ -3,6 +3,7 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchSm, XCircle } from "@untitled-ui/icons-react";
+
 import styles from "./SearchBar.module.css";
 
 export default function SearchBar() {
