@@ -36,6 +36,7 @@
 .main {
   flex: 1;
   padding: 1.5rem;
+  padding-bottom: 8rem; /* Add space for floating pagination */
   height: 100vh;
   overflow-y: auto;
   box-sizing: border-box;

@@ -1,12 +1,12 @@
 "use client";
 
-import React, { Suspense } from "react";
-import { Pokemon } from "../../lib/types";
-import styles from "./PokemonList.module.css";
-import PokemonCard from "../PokemonCard/PokemonCard";
-import PokemonCardSkeleton from "../PokemonCard/PokemonCardSkeleton";
+import React, { Suspense, useCallback, useMemo, useRef } from "react";
+import { Pokemon } from "@/lib/types";
+import PokemonCard, { PokemonCardSkeleton } from "@/ui/PokemonCard";
+import Pagination from "@/ui/Pagination";
 import PokemonListSkeleton from "./PokemonListSkeleton";
-import Pagination from "../Pagination";
+
+import styles from "./PokemonList.module.css";
 
 interface PokemonListProps {
   pokemon: Pokemon[];
@@ -17,6 +17,7 @@ interface PokemonListProps {
   currentPage: number;
   onPageChange: (page: number) => void;
   itemsPerPage: number;
+  hasQueryContext?: boolean; // New prop to determine if we should show pagination
 }
 
 export default function PokemonList({
@@ -28,9 +29,37 @@ export default function PokemonList({
   currentPage,
   onPageChange,
   itemsPerPage,
+  hasQueryContext = false,
 }: PokemonListProps) {
+  const headerRef = useRef<HTMLHeadingElement>(null);
+  const shouldShowPagination = useMemo(
+    () => hasQueryContext && total > itemsPerPage,
+    [hasQueryContext, total, itemsPerPage]
+  );
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      headerRef.current?.scrollIntoView({ behavior: "smooth" });
+
+      onPageChange(page);
+    },
+    [onPageChange]
+  );
+
   if (loading) {
-    return <PokemonListSkeleton count={itemsPerPage} />;
+    return (
+      <>
+        <PokemonListSkeleton count={itemsPerPage} />
+        {shouldShowPagination && (
+          <Pagination
+            currentPage={currentPage}
+            onPageChange={onPageChange}
+            totalItems={total}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
+      </>
+    );
   }
 
   if (error) {
@@ -49,11 +78,11 @@ export default function PokemonList({
     );
   }
 
-  const totalPages = Math.ceil(total / itemsPerPage);
-
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>{title}</h2>
+      <h2 className={styles.heading} ref={headerRef}>
+        {title}
+      </h2>
       <div className={styles.grid}>
         {pokemon.map((pokemon: Pokemon) => (
           <Suspense key={pokemon.id} fallback={<PokemonCardSkeleton />}>
@@ -61,12 +90,10 @@ export default function PokemonList({
           </Suspense>
         ))}
       </div>
-
-      {total > itemsPerPage && (
+      {shouldShowPagination && (
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
+          onPageChange={handlePageChange}
           totalItems={total}
           itemsPerPage={itemsPerPage}
         />

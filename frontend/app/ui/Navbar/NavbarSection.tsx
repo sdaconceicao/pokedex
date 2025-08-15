@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { ChevronDown } from "@untitled-ui/icons-react";
-import styles from "./Navbar.module.css";
 import NavbarItem, { NavItem } from "./NavbarItem";
 
+import styles from "./Navbar.module.css";
 interface NavbarSectionProps {
   title: string;
   items: NavItem[];

@@ -24,6 +24,13 @@ export const GET_POKEMON_BY_TYPE = gql`
           specialDefense
           speed
         }
+        abilitiesLite {
+          id
+          name
+          url
+          slot
+          isHidden
+        }
       }
     }
   }
@@ -46,6 +53,13 @@ export const SEARCH_POKEMON = gql`
           specialAttack
           specialDefense
           speed
+        }
+        abilitiesLite {
+          id
+          name
+          url
+          slot
+          isHidden
         }
       }
     }
@@ -76,6 +90,13 @@ export const GET_POKEMON_BY_POKEDEX = gql`
           specialDefense
           speed
         }
+        abilitiesLite {
+          id
+          name
+          url
+          slot
+          isHidden
+        }
       }
     }
   }
@@ -105,6 +126,47 @@ export const GET_POKEMON_BY_REGION = gql`
           specialDefense
           speed
         }
+        abilitiesLite {
+          id
+          name
+          url
+          slot
+          isHidden
+        }
+      }
+    }
+  }
+`;
+
+export const GET_POKEMON_BY_ID = gql`
+  query GetPokemonById($id: ID!) {
+    pokemon(id: $id) {
+      id
+      name
+      type
+      image
+      stats {
+        hp
+        attack
+        defense
+        specialAttack
+        specialDefense
+        speed
+      }
+      abilitiesLite {
+        id
+        name
+        url
+        slot
+        isHidden
+      }
+      abilities {
+        id
+        name
+        description
+        effect
+        generation
+        slot
       }
     }
   }

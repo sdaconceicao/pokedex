@@ -1,11 +1,19 @@
 .container {
+  position: fixed;
+  bottom: 0;
+  left: 16rem; /* Start after the navbar width */
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
   padding: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
 .info {
@@ -80,7 +88,21 @@
   background: transparent;
 }
 
+@media (max-width: 1024px) {
+  .container {
+    left: 0; /* On tablets and smaller, span full width */
+    right: 0;
+  }
+}
+
 @media (max-width: 640px) {
+  .container {
+    left: 0; /* On mobile, span full width */
+    right: 0;
+    padding: 0.75rem;
+    padding-bottom: 1rem; /* Extra padding on mobile for safe area */
+  }
+
   .controls {
     flex-direction: column;
     gap: 1rem;

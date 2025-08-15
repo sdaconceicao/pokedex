@@ -1,13 +1,15 @@
-import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "../../lib/queries";
-import { client } from "../../lib/apollo-client";
-import type { TypesData, PokedexesData, RegionsData } from "../../lib/types";
+import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "@/lib/queries";
+import { client } from "@/lib/apollo-client";
 import NavbarSection from "./NavbarSection";
 import { NavItem } from "./NavbarItem";
+
 import styles from "./Navbar.module.css";
 
 async function getTypes(): Promise<string[]> {
   try {
-    const { data } = await client.query<TypesData>({ query: GET_TYPES });
+    const { data } = await client.query<{ types: string[] }>({
+      query: GET_TYPES,
+    });
     return data.types || [];
   } catch (error) {
     console.error("Error fetching types:", error);
@@ -17,7 +19,7 @@ async function getTypes(): Promise<string[]> {
 
 async function getPokedexes(): Promise<string[]> {
   try {
-    const { data } = await client.query<PokedexesData>({
+    const { data } = await client.query<{ pokedexes: string[] }>({
       query: GET_POKEDEXES,
     });
     return data.pokedexes || [];
@@ -29,7 +31,9 @@ async function getPokedexes(): Promise<string[]> {
 
 async function getRegions(): Promise<string[]> {
   try {
-    const { data } = await client.query<RegionsData>({ query: GET_REGIONS });
+    const { data } = await client.query<{ regions: string[] }>({
+      query: GET_REGIONS,
+    });
     return data.regions || [];
   } catch (error) {
     console.error("Error fetching regions:", error);
