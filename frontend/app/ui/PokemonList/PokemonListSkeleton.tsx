@@ -1,4 +1,4 @@
-import PokemonCardSkeleton from "../PokemonCard/PokemonCardSkeleton";
+import { PokemonCardSkeleton } from "@/ui/PokemonCard";
 
 import styles from "./PokemonList.module.css";
 

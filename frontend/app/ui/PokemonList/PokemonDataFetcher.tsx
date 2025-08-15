@@ -1,20 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
   GET_POKEMON_BY_TYPE,
   GET_POKEMON_BY_POKEDEX,
   GET_POKEMON_BY_REGION,
   SEARCH_POKEMON,
-} from "../../lib/queries";
-import {
-  Pokemon,
-  PokemonByTypeData,
-  PokemonByPokedexData,
-  PokemonByRegionData,
-  PokemonSearchData,
-} from "../../lib/types";
+} from "@/lib/queries";
+import { Pokemon } from "@/lib/types";
 import PokemonList from "./PokemonList";
 
 interface PokemonDataFetcherProps {
@@ -34,6 +28,7 @@ export default function PokemonDataFetcher({
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [total, setTotal] = useState(0);
   const [title, setTitle] = useState("");
+  const [currentQueryContext, setCurrentQueryContext] = useState<string>("");
   const itemsPerPage = 20;
 
   // Query for Pokemon by type with pagination
@@ -41,64 +36,99 @@ export default function PokemonDataFetcher({
     loading: typeLoading,
     error: typeError,
     data: typeData,
-  } = useQuery<PokemonByTypeData>(GET_POKEMON_BY_TYPE, {
-    variables: {
-      type: selectedType,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip:
-      !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion, // Skip if we have other queries
-  });
+  } = useQuery<{ pokemonByType: { pokemon: Pokemon[]; total: number } }>(
+    GET_POKEMON_BY_TYPE,
+    {
+      variables: {
+        type: selectedType,
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip:
+        !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion, // Skip if we have other queries
+    }
+  );
 
   // Query for Pokemon by pokedex with pagination
   const {
     loading: pokedexLoading,
     error: pokedexError,
     data: pokedexData,
-  } = useQuery<PokemonByPokedexData>(GET_POKEMON_BY_POKEDEX, {
-    variables: {
-      pokedex: selectedPokedex,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip:
-      !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion, // Skip if we have other queries
-  });
+  } = useQuery<{ pokemonByPokedex: { pokemon: Pokemon[]; total: number } }>(
+    GET_POKEMON_BY_POKEDEX,
+    {
+      variables: {
+        pokedex: selectedPokedex,
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip:
+        !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion, // Skip if we have other queries
+    }
+  );
 
   // Query for Pokemon by region with pagination
   const {
     loading: regionLoading,
     error: regionError,
     data: regionData,
-  } = useQuery<PokemonByRegionData>(GET_POKEMON_BY_REGION, {
-    variables: {
-      region: selectedRegion,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip:
-      !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex, // Skip if we have other queries
-  });
+  } = useQuery<{ pokemonByRegion: { pokemon: Pokemon[]; total: number } }>(
+    GET_POKEMON_BY_REGION,
+    {
+      variables: {
+        region: selectedRegion,
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip:
+        !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex, // Skip if we have other queries
+    }
+  );
 
   // Query for Pokemon search with pagination
   const {
     loading: searchLoading,
     error: searchError,
     data: searchData,
-  } = useQuery<PokemonSearchData>(SEARCH_POKEMON, {
-    variables: {
-      query: searchQuery || "",
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip: !searchQuery,
-  });
+  } = useQuery<{ pokemonSearch: { pokemon: Pokemon[]; total: number } }>(
+    SEARCH_POKEMON,
+    {
+      variables: {
+        query: searchQuery || "",
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip: !searchQuery,
+    }
+  );
 
   // Reset to first page when search, type, pokedex, or region changes
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedType, selectedPokedex, selectedRegion]);
+    // Determine the new query context
+    let newQueryContext = "";
+    if (searchQuery) {
+      newQueryContext = `search:${searchQuery}`;
+    } else if (selectedType) {
+      newQueryContext = `type:${selectedType}`;
+    } else if (selectedPokedex) {
+      newQueryContext = `pokedex:${selectedPokedex}`;
+    } else if (selectedRegion) {
+      newQueryContext = `region:${selectedRegion}`;
+    }
+
+    // If query context changed, reset pagination and page
+    if (newQueryContext !== currentQueryContext) {
+      setCurrentQueryContext(newQueryContext);
+      setCurrentPage(1); // Reset to first page for new query
+      setTotal(0); // This will hide pagination until new data loads
+    }
+  }, [
+    searchQuery,
+    selectedType,
+    selectedPokedex,
+    selectedRegion,
+    currentQueryContext,
+  ]);
 
   useEffect(() => {
     if (searchQuery) {
@@ -146,6 +176,7 @@ export default function PokemonDataFetcher({
       setPokemon([]);
       setTotal(0);
       setTitle("");
+      setCurrentQueryContext(""); // Clear query context when no query is active
     }
   }, [
     searchQuery,
@@ -173,12 +204,18 @@ export default function PokemonDataFetcher({
     ? pokedexError?.message
     : regionError?.message;
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  // Only show pagination when we have a query context and data has loaded
+  const shouldShowPagination = useMemo(
+    () => !!currentQueryContext && total > 0,
+    [currentQueryContext, total]
+  );
 
-  if (!searchQuery && !selectedType && !selectedPokedex && !selectedRegion) {
+  const shouldShowInstructions = useMemo(
+    () => !searchQuery && !selectedType && !selectedPokedex && !selectedRegion,
+    [searchQuery, selectedType, selectedPokedex, selectedRegion]
+  );
+
+  if (shouldShowInstructions) {
     return (
       <div style={{ textAlign: "center", padding: "2rem" }}>
         <p>
@@ -201,8 +238,9 @@ export default function PokemonDataFetcher({
       loading={loading}
       error={error}
       currentPage={currentPage}
-      onPageChange={handlePageChange}
+      onPageChange={setCurrentPage}
       itemsPerPage={itemsPerPage}
+      hasQueryContext={shouldShowPagination}
     />
   );
 }

@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+
 import styles from "./NavbarItem.module.css";
 
 export interface NavItem {
