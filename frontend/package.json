@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "codegen": "graphql-codegen",
-    "codegen:watch": "graphql-codegen --watch"
+    "codegen:watch": "graphql-codegen --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
@@ -28,6 +31,9 @@
     "@graphql-codegen/typescript": "^4.1.6",
     "@graphql-codegen/typescript-operations": "^4.6.1",
     "@graphql-codegen/typescript-react-apollo": "^4.3.3",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -35,6 +41,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.4.2",
     "husky": "^9.1.7",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
     "typescript": "^5"
   }
 }
