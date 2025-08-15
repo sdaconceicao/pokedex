@@ -8,13 +8,7 @@ import {
   GET_POKEMON_BY_REGION,
   SEARCH_POKEMON,
 } from "@/lib/queries";
-import {
-  Pokemon,
-  PokemonByTypeData,
-  PokemonByPokedexData,
-  PokemonByRegionData,
-  PokemonSearchData,
-} from "@/lib/types";
+import { Pokemon } from "@/lib/types";
 import PokemonList from "./PokemonList";
 
 interface PokemonDataFetcherProps {
@@ -42,59 +36,71 @@ export default function PokemonDataFetcher({
     loading: typeLoading,
     error: typeError,
     data: typeData,
-  } = useQuery<PokemonByTypeData>(GET_POKEMON_BY_TYPE, {
-    variables: {
-      type: selectedType,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip:
-      !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion, // Skip if we have other queries
-  });
+  } = useQuery<{ pokemonByType: { pokemon: Pokemon[]; total: number } }>(
+    GET_POKEMON_BY_TYPE,
+    {
+      variables: {
+        type: selectedType,
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip:
+        !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion, // Skip if we have other queries
+    }
+  );
 
   // Query for Pokemon by pokedex with pagination
   const {
     loading: pokedexLoading,
     error: pokedexError,
     data: pokedexData,
-  } = useQuery<PokemonByPokedexData>(GET_POKEMON_BY_POKEDEX, {
-    variables: {
-      pokedex: selectedPokedex,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip:
-      !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion, // Skip if we have other queries
-  });
+  } = useQuery<{ pokemonByPokedex: { pokemon: Pokemon[]; total: number } }>(
+    GET_POKEMON_BY_POKEDEX,
+    {
+      variables: {
+        pokedex: selectedPokedex,
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip:
+        !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion, // Skip if we have other queries
+    }
+  );
 
   // Query for Pokemon by region with pagination
   const {
     loading: regionLoading,
     error: regionError,
     data: regionData,
-  } = useQuery<PokemonByRegionData>(GET_POKEMON_BY_REGION, {
-    variables: {
-      region: selectedRegion,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip:
-      !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex, // Skip if we have other queries
-  });
+  } = useQuery<{ pokemonByRegion: { pokemon: Pokemon[]; total: number } }>(
+    GET_POKEMON_BY_REGION,
+    {
+      variables: {
+        region: selectedRegion,
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip:
+        !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex, // Skip if we have other queries
+    }
+  );
 
   // Query for Pokemon search with pagination
   const {
     loading: searchLoading,
     error: searchError,
     data: searchData,
-  } = useQuery<PokemonSearchData>(SEARCH_POKEMON, {
-    variables: {
-      query: searchQuery || "",
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-    },
-    skip: !searchQuery,
-  });
+  } = useQuery<{ pokemonSearch: { pokemon: Pokemon[]; total: number } }>(
+    SEARCH_POKEMON,
+    {
+      variables: {
+        query: searchQuery || "",
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      },
+      skip: !searchQuery,
+    }
+  );
 
   // Reset to first page when search, type, pokedex, or region changes
   useEffect(() => {

@@ -1,19 +1,19 @@
+import { Suspense } from "react";
 import { getPokemonById } from "@/lib/server-queries";
+import PokemonDetail from "@/pokemon/[id]/ui/PokemonDetail";
+import PokemonDetailSkeleton from "@/pokemon/[id]/ui/PokemonDetail/PokemonDetailSkeleton";
+
+async function PokemonDetailContent({ id }: { id: string }) {
+  const pokemon = await getPokemonById(id);
+  return <PokemonDetail pokemon={pokemon} />;
+}
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
 
-  try {
-    const pokemon = await getPokemonById(params.id);
-
-    return (
-      <div>
-        <h2>{pokemon.name}</h2>
-        <div>{pokemon.stats.hp}</div>
-      </div>
-    );
-  } catch (error) {
-    console.log("error", error);
-    return <div>Error loading Pokemon</div>;
-  }
+  return (
+    <Suspense fallback={<PokemonDetailSkeleton />}>
+      <PokemonDetailContent id={params.id} />
+    </Suspense>
+  );
 }

@@ -11,12 +11,10 @@ interface PokemonCardProps {
 }
 
 export default function PokemonCard({ pokemon }: PokemonCardProps) {
-  const firstType = pokemon.type[0]?.toLowerCase();
-
   return (
     <div
       className={`${styles.card} ${
-        firstType ? styles[`type-${firstType}` as keyof typeof styles] : ""
+        styles[`type-${pokemon.type[0].toLowerCase()}` as keyof typeof styles]
       }`}
     >
       <Image
