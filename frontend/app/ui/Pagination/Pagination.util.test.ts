@@ -3,7 +3,7 @@ import {
   getStartItem,
   getEndItem,
   getPageNumbers,
-} from "../Pagination.util";
+} from "./Pagination.util";
 
 describe("Pagination Utilities", () => {
   describe("getTotalPages", () => {
