@@ -7,6 +7,7 @@ import { logger } from "./logger";
 
 import { resolvers } from "./resolvers";
 import { PokemonAPI } from "./datasources/pokemon-api";
+import { MockPokemonAPI } from "./datasources/pokemon-api.mock";
 
 const typeDefs = gql(
   readFileSync(path.resolve(process.cwd(), "src/schema.graphql"), {
@@ -14,11 +15,15 @@ const typeDefs = gql(
   })
 );
 
-async function startApolloServer() {
+async function startApolloServer(useMockAPI: boolean = false) {
   const server = new ApolloServer({ typeDefs, resolvers });
 
+  // Choose the appropriate API implementation
+  const APIClass = useMockAPI ? MockPokemonAPI : PokemonAPI;
+  const apiName = useMockAPI ? "Mock" : "Real";
+
   // Pre-load the Pokémon index on startup
-  const pokemonAPI = new PokemonAPI();
+  const pokemonAPI = new APIClass();
   await pokemonAPI.loadPokemonIndex();
 
   const { url } = await startStandaloneServer(server, {
@@ -27,16 +32,20 @@ async function startApolloServer() {
 
       return {
         dataSources: {
-          pokemonAPI: new PokemonAPI({ cache }),
+          pokemonAPI: new APIClass({ cache }),
         },
       };
     },
   });
 
   logger.info(`
-    🚀  Server is running!
+    🚀  ${apiName} Server is running!
     📭  Query at ${url}
   `);
 }
 
-startApolloServer();
+// Check if we should use the mock API
+const useMockAPI =
+  process.env.USE_MOCK_API === "true" || process.argv.includes("--mock");
+
+startApolloServer(useMockAPI);

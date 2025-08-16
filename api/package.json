@@ -13,6 +13,7 @@
   "scripts": {
     "compile": "tsc",
     "dev": "concurrently \"tsx watch ./src/index.ts\" \"npm run generate\"",
+    "dev:mock": "USE_MOCK_API=true tsx watch ./src/index.ts",
     "generate": "graphql-codegen --watch \"src/schema.graphql\"",
     "start": "npm run compile && nodemon ./dist/index.js",
     "test": "jest",
