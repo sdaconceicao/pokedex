@@ -1,4 +1,5 @@
 import { Resolvers } from "./types";
+import { getPaginatedResults } from "./utils/pagination";
 
 export const resolvers: Resolvers = {
   Query: {
@@ -110,9 +111,7 @@ export const resolvers: Resolvers = {
       try {
         const results = await dataSources.pokemonAPI.getPokemonByType(type);
         const total = results.length;
-        const limitedResults = limit
-          ? results.slice(offset, offset + limit)
-          : results.slice(offset);
+        const limitedResults = getPaginatedResults(results, limit, offset);
 
         console.log(
           `Fetching ${limitedResults.length} Pokemon details for type ${type}`
@@ -164,9 +163,7 @@ export const resolvers: Resolvers = {
           pokedex
         );
         const total = results.length;
-        const limitedResults = limit
-          ? results.slice(offset, offset + limit)
-          : results.slice(offset);
+        const limitedResults = getPaginatedResults(results, limit, offset);
 
         console.log(
           `Fetching ${limitedResults.length} Pokemon details for pokedex ${pokedex}`
@@ -220,9 +217,7 @@ export const resolvers: Resolvers = {
       try {
         const results = await dataSources.pokemonAPI.getPokemonByRegion(region);
         const total = results.length;
-        const limitedResults = limit
-          ? results.slice(offset, offset + limit)
-          : results.slice(offset);
+        const limitedResults = getPaginatedResults(results, limit, offset);
 
         console.log(
           `Fetching ${limitedResults.length} Pokemon details for region ${region}`

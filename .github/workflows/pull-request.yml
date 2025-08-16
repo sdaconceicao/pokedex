@@ -1,0 +1,62 @@
+name: Pull Request Status Checks
+
+on:
+  pull_request:
+    branches: [development, main]
+
+jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.value }}
+
+    steps:
+      - name: Checkout code\
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: "npm"
+
+      - name: Setup Cache
+        uses: actions/cache@v4
+        id: restore-build
+        with:
+          path: ./*
+          key: cache-${{ runner.os }}-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: node_modules
+        with:
+          path: |
+            node_modules
+            **/node_modules
+          key: pokedex-deps-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            pokedex-deps-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+        if: steps.node_modules.outputs.cache-hit != 'true'
+
+      - name: Set cache key
+        id: cache-key
+        run: echo "value=cache-${{ runner.os }}-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}" >> $GITHUB_OUTPUT
+
+  lint-and-test-frontend:
+    name: Lint and Test - Frontend
+    needs: setup
+    uses: ./.github/workflows/frontend-checks.yml
+    with:
+      cached-build-id: ${{ needs.setup.outputs.cache-key }}
+
+  lint-and-test-backend:
+    name: Lint and Test - Backend
+    needs: setup
+    uses: ./.github/workflows/backend-checks.yml
+    with:
+      cached-build-id: ${{ needs.setup.outputs.cache-key }}
