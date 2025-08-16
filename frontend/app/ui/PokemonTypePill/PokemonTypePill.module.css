@@ -1,0 +1,103 @@
+.typePill {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 55px;
+  text-align: center;
+}
+
+/* Type-specific colors - matching Pokemon card styles */
+.typePill.normal {
+  background: #a8a878;
+  color: #fff;
+}
+
+.typePill.fire {
+  background: #f08030;
+  color: #fff;
+}
+
+.typePill.water {
+  background: #6890f0;
+  color: #fff;
+}
+
+.typePill.electric {
+  background: #f8d030;
+  color: #000;
+}
+
+.typePill.grass {
+  background: #78c850;
+  color: #fff;
+}
+
+.typePill.ice {
+  background: #98d8d8;
+  color: #000;
+}
+
+.typePill.fighting {
+  background: #c03028;
+  color: #fff;
+}
+
+.typePill.poison {
+  background: #a040a0;
+  color: #fff;
+}
+
+.typePill.ground {
+  background: #e0c068;
+  color: #000;
+}
+
+.typePill.flying {
+  background: #a890f0;
+  color: #fff;
+}
+
+.typePill.psychic {
+  background: #f85888;
+  color: #fff;
+}
+
+.typePill.bug {
+  background: #a8b820;
+  color: #fff;
+}
+
+.typePill.rock {
+  background: #b8a038;
+  color: #fff;
+}
+
+.typePill.ghost {
+  background: #705898;
+  color: #fff;
+}
+
+.typePill.dragon {
+  background: #7038f8;
+  color: #fff;
+}
+
+.typePill.dark {
+  background: #705848;
+  color: #fff;
+}
+
+.typePill.steel {
+  background: #b8b8d0;
+  color: #000;
+}
+
+.typePill.fairy {
+  background: #ee99ac;
+  color: #fff;
+}

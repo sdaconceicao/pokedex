@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Pokemon } from "@/lib/types";
+import PokemonTypePill from "@/ui/PokemonTypePill";
 
 import styles from "./PokemonCard.module.css";
 
@@ -34,14 +35,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
       </h3>
       <div className={styles.typeList}>
         {pokemon.type.map((type: string) => (
-          <span
-            key={type}
-            className={`${styles.type} ${
-              styles[type.toLowerCase() as keyof typeof styles]
-            }`}
-          >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
-          </span>
+          <PokemonTypePill key={type} type={type} />
         ))}
       </div>
       <div className={styles.stats}>
