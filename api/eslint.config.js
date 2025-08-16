@@ -5,8 +5,18 @@ import typescriptParser from "@typescript-eslint/parser";
 export default [
   js.configs.recommended,
   {
-    env: {
-      node: true,
+    languageOptions: {
+      globals: {
+        // Node.js globals
+        process: "readonly",
+        Buffer: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+        global: "readonly",
+        module: "readonly",
+        require: "readonly",
+        exports: "readonly",
+      },
     },
   },
   {
