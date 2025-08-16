@@ -51,11 +51,11 @@ export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
               <PokemonStat name="Attack" value={pokemon.stats.attack} />
               <PokemonStat name="Defense" value={pokemon.stats.defense} />
               <PokemonStat
-                name="Special Attack"
+                name="SP Attack"
                 value={pokemon.stats.specialAttack}
               />
               <PokemonStat
-                name="Special Defense"
+                name="SP Defense"
                 value={pokemon.stats.specialDefense}
               />
               <PokemonStat name="Speed" value={pokemon.stats.speed} />
