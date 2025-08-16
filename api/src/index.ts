@@ -9,7 +9,7 @@ import { resolvers } from "./resolvers";
 import { PokemonAPI } from "./datasources/pokemon-api";
 
 const typeDefs = gql(
-  readFileSync(path.resolve(__dirname, "./schema.graphql"), {
+  readFileSync(path.resolve(process.cwd(), "src/schema.graphql"), {
     encoding: "utf-8",
   })
 );
