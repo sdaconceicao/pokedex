@@ -1,5 +1,9 @@
-import { PokemonEntity, PokemonStat } from "../datasources/pokemon-api.types";
-import { Pokemon, Stats } from "../types";
+import {
+  PokemonAbility,
+  PokemonEntity,
+  PokemonStat,
+} from "../datasources/pokemon-api.types";
+import { AbilityLite, Pokemon, Stats } from "../types";
 
 export const getPokemonAbilitiesLite = (pokemon: PokemonEntity) => {
   return pokemon.abilities.map((ability) => ({
@@ -88,6 +92,24 @@ export const getPokemonStats = (pokemon: PokemonEntity) => {
     }
   });
   return statsObj;
+};
+
+export const convertAbilityLiteToAbility = (
+  data: PokemonAbility,
+  abilityLite: AbilityLite
+) => {
+  return {
+    id: data.id.toString(),
+    name: data.name,
+    description:
+      data.flavor_text_entries.find((entry) => entry.language.name === "en")
+        ?.flavor_text || "",
+    effect:
+      data.effect_entries.find((entry) => entry.language.name === "en")
+        ?.effect || "",
+    generation: data.generation.name,
+    slot: abilityLite.slot,
+  };
 };
 
 export const convertPokemonEntityToPokemon = (

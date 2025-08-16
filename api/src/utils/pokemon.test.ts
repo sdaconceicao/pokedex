@@ -1,10 +1,15 @@
-import { PokemonEntity } from "../datasources/pokemon-api.types";
+import {
+  PokemonEntity,
+  PokemonAbility,
+} from "../datasources/pokemon-api.types";
+import { AbilityLite } from "../types";
 import {
   getPokemonAbilitiesLite,
   getPokemonDefaultImageUrl,
   getPokemonTypes,
   getPokemonStats,
   convertPokemonEntityToPokemon,
+  convertAbilityLiteToAbility,
 } from "./pokemon";
 
 describe("getPokemonAbilitiesLite", () => {
@@ -811,5 +816,398 @@ describe("convertPokemonEntityToPokemon", () => {
 
     expect(result.id).toBe("25");
     expect(typeof result.id).toBe("string");
+  });
+});
+
+describe("convertAbilityLiteToAbility", () => {
+  it("should convert PokemonAbility and AbilityLite to Ability correctly", () => {
+    const mockPokemonAbility: PokemonAbility = {
+      id: 65,
+      name: "overgrow",
+      effect_entries: [
+        {
+          effect:
+            "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
+          short_effect:
+            "Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.",
+          language: {
+            name: "en",
+            url: "https://pokeapi.co/api/v2/language/9/",
+          },
+        },
+        {
+          effect:
+            "Quando questo Pokémon ha 1/3 o meno dei suoi PS massimi, le sue mosse d'attacco infliggono 1,5× più danni normali.",
+          short_effect:
+            "Potenzia le mosse erba per infliggere 1,5× danni a 1/3 PS max o meno.",
+          language: {
+            name: "it",
+            url: "https://pokeapi.co/api/v2/language/8/",
+          },
+        },
+      ],
+      flavor_text_entries: [
+        {
+          flavor_text:
+            "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
+          language: {
+            name: "en",
+            url: "https://pokeapi.co/api/v2/language/9/",
+          },
+          version_group: {
+            name: "sword-shield",
+            url: "https://pokeapi.co/api/v2/version-group/20/",
+          },
+        },
+        {
+          flavor_text:
+            "Quando questo Pokémon ha 1/3 o meno dei suoi PS massimi, le sue mosse d'attacco infliggono 1,5× più danni normali.",
+          language: {
+            name: "it",
+            url: "https://pokeapi.co/api/v2/language/8/",
+          },
+          version_group: {
+            name: "sword-shield",
+            url: "https://pokeapi.co/api/v2/language/20/",
+          },
+        },
+      ],
+      generation: {
+        name: "generation-iii",
+        url: "https://pokeapi.co/api/v2/generation/3/",
+      },
+      is_main_series: true,
+      pokemon: [],
+    } as PokemonAbility;
+
+    const mockAbilityLite: AbilityLite = {
+      id: "65",
+      name: "overgrow",
+      url: "https://pokeapi.co/api/v2/ability/65/",
+      isHidden: false,
+      slot: 1,
+    };
+
+    const result = convertAbilityLiteToAbility(
+      mockPokemonAbility,
+      mockAbilityLite
+    );
+
+    expect(result).toEqual({
+      id: "65",
+      name: "overgrow",
+      description:
+        "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
+      effect:
+        "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
+      generation: "generation-iii",
+      slot: 1,
+    });
+  });
+
+  it("should handle missing English effect entries", () => {
+    const mockPokemonAbility: PokemonAbility = {
+      id: 66,
+      name: "chlorophyll",
+      effect_entries: [
+        {
+          effect: "This Pokémon's Speed is doubled during strong sunlight.",
+          short_effect: "Doubles Speed during strong sunlight.",
+          language: {
+            name: "fr",
+            url: "https://pokeapi.co/api/v2/language/5/",
+          },
+        },
+      ],
+      flavor_text_entries: [
+        {
+          flavor_text:
+            "This Pokémon's Speed is doubled during strong sunlight.",
+          language: {
+            name: "en",
+            url: "https://pokeapi.co/api/v2/language/9/",
+          },
+          version_group: {
+            name: "sword-shield",
+            url: "https://pokeapi.co/api/v2/version-group/20/",
+          },
+        },
+      ],
+      generation: {
+        name: "generation-iii",
+        url: "https://pokeapi.co/api/v2/generation/3/",
+      },
+      is_main_series: true,
+      pokemon: [],
+    } as PokemonAbility;
+
+    const mockAbilityLite: AbilityLite = {
+      id: "66",
+      name: "chlorophyll",
+      url: "https://pokeapi.co/api/v2/ability/66/",
+      isHidden: true,
+      slot: 3,
+    };
+
+    const result = convertAbilityLiteToAbility(
+      mockPokemonAbility,
+      mockAbilityLite
+    );
+
+    expect(result).toEqual({
+      id: "66",
+      name: "chlorophyll",
+      description: "This Pokémon's Speed is doubled during strong sunlight.",
+      effect: "",
+      generation: "generation-iii",
+      slot: 3,
+    });
+  });
+
+  it("should handle missing English flavor text entries", () => {
+    const mockPokemonAbility: PokemonAbility = {
+      id: 67,
+      name: "blaze",
+      effect_entries: [
+        {
+          effect:
+            "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
+          short_effect:
+            "Strengthens fire moves to inflict 1.5× damage at 1/3 max HP or less.",
+          language: {
+            name: "en",
+            url: "https://pokeapi.co/api/v2/language/9/",
+          },
+        },
+      ],
+      flavor_text_entries: [
+        {
+          flavor_text:
+            "Quando questo Pokémon ha 1/3 o meno dei suoi PS massimi, le sue mosse d'attacco infliggono 1,5× più danni normali.",
+          language: {
+            name: "it",
+            url: "https://pokeapi.co/api/v2/language/8/",
+          },
+          version_group: {
+            name: "sword-shield",
+            url: "https://pokeapi.co/api/v2/version-group/20/",
+          },
+        },
+      ],
+      generation: {
+        name: "generation-iii",
+        url: "https://pokeapi.co/api/v2/generation/3/",
+      },
+      is_main_series: true,
+      pokemon: [],
+    } as PokemonAbility;
+
+    const mockAbilityLite: AbilityLite = {
+      id: "67",
+      name: "blaze",
+      url: "https://pokeapi.co/api/v2/ability/67/",
+      isHidden: false,
+      slot: 1,
+    };
+
+    const result = convertAbilityLiteToAbility(
+      mockPokemonAbility,
+      mockAbilityLite
+    );
+
+    expect(result).toEqual({
+      id: "67",
+      name: "blaze",
+      description: "",
+      effect:
+        "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
+      generation: "generation-iii",
+      slot: 1,
+    });
+  });
+
+  it("should handle empty effect and flavor text arrays", () => {
+    const mockPokemonAbility: PokemonAbility = {
+      id: 68,
+      name: "torrent",
+      effect_entries: [],
+      flavor_text_entries: [],
+      generation: {
+        name: "generation-iii",
+        url: "https://pokeapi.co/api/v2/generation/3/",
+      },
+      is_main_series: true,
+      pokemon: [],
+    } as PokemonAbility;
+
+    const mockAbilityLite: AbilityLite = {
+      id: "68",
+      name: "torrent",
+      url: "https://pokeapi.co/api/v2/ability/68/",
+      isHidden: false,
+      slot: 1,
+    };
+
+    const result = convertAbilityLiteToAbility(
+      mockPokemonAbility,
+      mockAbilityLite
+    );
+
+    expect(result).toEqual({
+      id: "68",
+      name: "torrent",
+      description: "",
+      effect: "",
+      generation: "generation-iii",
+      slot: 1,
+    });
+  });
+
+  it("should handle ability with multiple language entries", () => {
+    const mockPokemonAbility: PokemonAbility = {
+      id: 69,
+      name: "swift-swim",
+      effect_entries: [
+        {
+          effect: "This Pokémon's Speed is doubled during rain.",
+          short_effect: "Doubles Speed during rain.",
+          language: {
+            name: "en",
+            url: "https://pokeapi.co/api/v2/language/9/",
+          },
+        },
+        {
+          effect: "La Velocità di questo Pokémon raddoppia durante la pioggia.",
+          short_effect: "Raddoppia la Velocità durante la pioggia.",
+          language: {
+            name: "it",
+            url: "https://pokeapi.co/api/v2/language/8/",
+          },
+        },
+        {
+          effect: "La vitesse de ce Pokémon est doublée pendant la pluie.",
+          short_effect: "Double la vitesse pendant la pluie.",
+          language: {
+            name: "fr",
+            url: "https://pokeapi.co/api/v2/language/5/",
+          },
+        },
+      ],
+      flavor_text_entries: [
+        {
+          flavor_text: "This Pokémon's Speed is doubled during rain.",
+          language: {
+            name: "en",
+            url: "https://pokeapi.co/api/v2/language/9/",
+          },
+          version_group: {
+            name: "sword-shield",
+            url: "https://pokeapi.co/api/v2/version-group/20/",
+          },
+        },
+        {
+          flavor_text:
+            "La Velocità di questo Pokémon raddoppia durante la pioggia.",
+          language: {
+            name: "it",
+            url: "https://pokeapi.co/api/v2/language/8/",
+          },
+          version_group: {
+            name: "sword-shield",
+            url: "https://pokeapi.co/api/v2/version-group/20/",
+          },
+        },
+      ],
+      generation: {
+        name: "generation-iii",
+        url: "https://pokeapi.co/api/v2/generation/3/",
+      },
+      is_main_series: true,
+      pokemon: [],
+    } as PokemonAbility;
+
+    const mockAbilityLite: AbilityLite = {
+      id: "69",
+      name: "swift-swim",
+      url: "https://pokeapi.co/api/v2/ability/69/",
+      isHidden: false,
+      slot: 2,
+    };
+
+    const result = convertAbilityLiteToAbility(
+      mockPokemonAbility,
+      mockAbilityLite
+    );
+
+    expect(result).toEqual({
+      id: "69",
+      name: "swift-swim",
+      description: "This Pokémon's Speed is doubled during rain.",
+      effect: "This Pokémon's Speed is doubled during rain.",
+      generation: "generation-iii",
+      slot: 2,
+    });
+  });
+
+  it("should convert ID to string correctly", () => {
+    const mockPokemonAbility: PokemonAbility = {
+      id: 999,
+      name: "test-ability",
+      effect_entries: [],
+      flavor_text_entries: [],
+      generation: {
+        name: "generation-viii",
+        url: "https://pokeapi.co/api/v2/generation/8/",
+      },
+      is_main_series: true,
+      pokemon: [],
+    } as PokemonAbility;
+
+    const mockAbilityLite: AbilityLite = {
+      id: "999",
+      name: "test-ability",
+      url: "https://pokeapi.co/api/v2/ability/999/",
+      isHidden: false,
+      slot: 1,
+    };
+
+    const result = convertAbilityLiteToAbility(
+      mockPokemonAbility,
+      mockAbilityLite
+    );
+
+    expect(result.id).toBe("999");
+    expect(typeof result.id).toBe("string");
+  });
+
+  it("should preserve slot value from AbilityLite", () => {
+    const mockPokemonAbility: PokemonAbility = {
+      id: 70,
+      name: "water-absorb",
+      effect_entries: [],
+      flavor_text_entries: [],
+      generation: {
+        name: "generation-iii",
+        url: "https://pokeapi.co/api/v2/generation/3/",
+      },
+      is_main_series: true,
+      pokemon: [],
+    } as PokemonAbility;
+
+    const mockAbilityLite: AbilityLite = {
+      id: "70",
+      name: "water-absorb",
+      url: "https://pokeapi.co/api/v2/ability/70/",
+      isHidden: true,
+      slot: 5,
+    };
+
+    const result = convertAbilityLiteToAbility(
+      mockPokemonAbility,
+      mockAbilityLite
+    );
+
+    expect(result.slot).toBe(5);
+    expect(typeof result.slot).toBe("number");
   });
 });

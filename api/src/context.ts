@@ -9,7 +9,7 @@ export type DataSourceContext = {
 export async function createContext(): Promise<DataSourceContext> {
   const pokemonAPI = new PokemonAPI();
 
-  // Load the Pokémon index on startup for fast searching
+  // Load the Pokémon index on startup for searching
   await pokemonAPI.loadPokemonIndex();
 
   return {

@@ -12,7 +12,10 @@ import {
   Region,
   RegionListResponse,
 } from "./pokemon-api.types";
-import { convertPokemonEntityToPokemon } from "../utils/pokemon";
+import {
+  convertAbilityLiteToAbility,
+  convertPokemonEntityToPokemon,
+} from "../utils/pokemon";
 
 export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
@@ -69,19 +72,9 @@ export class PokemonAPI extends RESTDataSource {
   getAbilitiesForPokemon(abilitiesLite: AbilityLite[]): Promise<Ability[]> {
     return Promise.all(
       abilitiesLite.map((abilityLite) =>
-        this.get<PokemonAbility>(abilityLite.url).then((data) => ({
-          id: data.id.toString(),
-          name: data.name,
-          description:
-            data.flavor_text_entries.find(
-              (entry) => entry.language.name === "en"
-            )?.flavor_text || "",
-          effect:
-            data.effect_entries.find((entry) => entry.language.name === "en")
-              ?.effect || "",
-          generation: data.generation.name,
-          slot: abilityLite.slot,
-        }))
+        this.get<PokemonAbility>(abilityLite.url).then((data) =>
+          convertAbilityLiteToAbility(data, abilityLite)
+        )
       )
     );
   }
@@ -150,7 +143,7 @@ export class PokemonAPI extends RESTDataSource {
 
       const pokedexNames = pokedexUrls.map((url) => {
         const urlParts = url.split("/");
-        return urlParts[urlParts.length - 2]; // Get the pokedex name from URL
+        return urlParts[urlParts.length - 2];
       });
 
       console.log(
