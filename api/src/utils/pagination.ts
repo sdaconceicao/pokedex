@@ -1,5 +1,5 @@
 export const getPaginatedResults = (
-  results: any[],
+  results: unknown[],
   limit: number,
   offset: number
 ) => {
