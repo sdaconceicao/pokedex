@@ -3,12 +3,13 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { readFileSync } from "fs";
 import path from "path";
 import { gql } from "graphql-tag";
+import { logger } from "./logger";
 
 import { resolvers } from "./resolvers";
 import { PokemonAPI } from "./datasources/pokemon-api";
 
 const typeDefs = gql(
-  readFileSync(path.resolve(__dirname, "./schema.graphql"), {
+  readFileSync(path.resolve(process.cwd(), "src/schema.graphql"), {
     encoding: "utf-8",
   })
 );
@@ -32,7 +33,7 @@ async function startApolloServer() {
     },
   });
 
-  console.log(`
+  logger.info(`
     🚀  Server is running!
     📭  Query at ${url}
   `);

@@ -35,12 +35,6 @@ export const getPokemonDefaultImageUrl = (pokemon: PokemonEntity) => {
     imageUrl = fallbackSprites.find(
       (sprite) => sprite !== null && sprite !== undefined
     );
-
-    if (imageUrl) {
-      console.log(
-        `Using fallback sprite for Pokemon ${pokemon.id} (${pokemon.name}): ${imageUrl}`
-      );
-    }
   }
 
   // If still no image, use a placeholder or throw an error
@@ -48,9 +42,6 @@ export const getPokemonDefaultImageUrl = (pokemon: PokemonEntity) => {
     imageUrl = `https://dummyimage.com/96x96/f0f0f0/666666.png&text=${encodeURIComponent(
       pokemon.name
     )}`;
-    console.log(
-      `Using placeholder image for Pokemon ${pokemon.id} (${pokemon.name}): ${imageUrl}`
-    );
   }
   return imageUrl;
 };
