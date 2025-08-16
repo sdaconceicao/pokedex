@@ -1,19 +1,18 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
-import { Ability, AbilityLite, Pokemon, Stats } from "../types";
+import { Ability, AbilityLite, Pokemon } from "../types";
 import {
   NamedAPIResource,
   PokemonListResponse,
   PokemonIndex,
   PokemonAbility,
   PokemonEntity,
-  PokemonStat,
   TypeResponse,
-  TypePokemon,
   Pokedex,
   PokedexListResponse,
   Region,
   RegionListResponse,
 } from "./pokemon-api.types";
+import { convertPokemonEntityToPokemon } from "../utils/pokemon";
 
 export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
@@ -89,90 +88,7 @@ export class PokemonAPI extends RESTDataSource {
 
   getPokemon(id: string): Promise<Pokemon> {
     return this.get<PokemonEntity>(`pokemon/${id}`).then((data) => {
-      const statsObj: Stats = {
-        hp: 0,
-        attack: 0,
-        defense: 0,
-        specialAttack: 0,
-        specialDefense: 0,
-        speed: 0,
-      };
-
-      data.stats.forEach((stat: PokemonStat) => {
-        switch (stat.stat.name) {
-          case "hp":
-            statsObj.hp = stat.base_stat;
-            break;
-          case "attack":
-            statsObj.attack = stat.base_stat;
-            break;
-          case "defense":
-            statsObj.defense = stat.base_stat;
-            break;
-          case "special-attack":
-            statsObj.specialAttack = stat.base_stat;
-            break;
-          case "special-defense":
-            statsObj.specialDefense = stat.base_stat;
-            break;
-          case "speed":
-            statsObj.speed = stat.base_stat;
-            break;
-        }
-      });
-
-      // Handle missing sprites with comprehensive fallback logic
-      let imageUrl = data.sprites.front_default;
-
-      if (!imageUrl) {
-        // Try alternative sprites in order of preference
-        const fallbackSprites = [
-          data.sprites.front_shiny,
-          data.sprites.back_default,
-          data.sprites.back_shiny,
-          data.sprites.other?.["official-artwork"]?.front_default,
-          data.sprites.other?.["official-artwork"]?.front_shiny,
-          data.sprites.other?.home?.front_default,
-          data.sprites.other?.home?.front_shiny,
-          data.sprites.other?.dream_world?.front_default,
-          data.sprites.other?.showdown?.front_default,
-        ];
-
-        imageUrl = fallbackSprites.find(
-          (sprite) => sprite !== null && sprite !== undefined
-        );
-
-        if (imageUrl) {
-          console.log(
-            `Using fallback sprite for Pokemon ${data.id} (${data.name}): ${imageUrl}`
-          );
-        }
-      }
-
-      // If still no image, use a placeholder or throw an error
-      if (!imageUrl) {
-        imageUrl = `https://dummyimage.com/96x96/f0f0f0/666666.png&text=${encodeURIComponent(
-          data.name
-        )}`;
-        console.log(
-          `Using placeholder image for Pokemon ${data.id} (${data.name}): ${imageUrl}`
-        );
-      }
-
-      return {
-        id: data.id.toString(),
-        name: data.name,
-        type: data.types.map((t) => t.type.name),
-        image: imageUrl,
-        stats: statsObj,
-        abilitiesLite: data.abilities.map((ability) => ({
-          id: ability.ability.url.split("/").filter(Boolean).pop(),
-          name: ability.ability.name,
-          url: ability.ability.url,
-          isHidden: ability.is_hidden,
-          slot: ability.slot,
-        })),
-      };
+      return convertPokemonEntityToPokemon(data);
     });
   }
 
@@ -215,7 +131,7 @@ export class PokemonAPI extends RESTDataSource {
           return {
             name: entry.pokemon_species.name,
             id: number.toString(),
-            number: number,
+            number,
           };
         });
         return results;
@@ -281,7 +197,7 @@ export class PokemonAPI extends RESTDataSource {
           return {
             name: result.pokemon.name,
             id: number.toString(),
-            number: number,
+            number,
           };
         });
         return results;
