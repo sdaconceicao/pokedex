@@ -1,0 +1,39 @@
+.statsGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.statItem {
+  display: grid;
+  grid-template-columns: 80px 1fr 50px;
+  align-items: center;
+  gap: 15px;
+}
+
+.statLabel {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.875rem;
+}
+
+.statBar {
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.statFill {
+  height: 100%;
+  background: #0d6efd;
+  border-radius: 6px;
+  transition: width 0.8s ease;
+}
+
+.statValue {
+  font-weight: 700;
+  color: #212529;
+  text-align: right;
+  font-size: 0.875rem;
+}
