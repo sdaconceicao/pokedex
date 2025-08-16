@@ -1,8 +1,3 @@
-.statsGrid {
-  display: grid;
-  gap: 1rem;
-}
-
 .statItem {
   display: grid;
   grid-template-columns: 80px 1fr 50px;
@@ -36,4 +31,27 @@
   color: #212529;
   text-align: right;
   font-size: 0.875rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .statItem {
+    grid-template-columns: 70px 1fr 40px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statItem {
+    grid-template-columns: 60px 1fr 35px;
+    gap: 8px;
+  }
+
+  .statLabel {
+    font-size: 12px;
+  }
+
+  .statValue {
+    font-size: 12px;
+  }
 }
