@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getPokemonById } from "@/lib/server-queries";
-import PokemonDetail from "@/pokemon/[id]/ui/PokemonDetail";
-import PokemonDetailSkeleton from "@/pokemon/[id]/ui/PokemonDetail/PokemonDetailSkeleton";
+import PokemonDetail from "@/pokemon/[id]/components/PokemonDetail";
+import PokemonDetailSkeleton from "@/pokemon/[id]/components/PokemonDetail/PokemonDetailSkeleton";
 
 async function PokemonDetailContent({ id }: { id: string }) {
   const pokemon = await getPokemonById(id);

@@ -1,0 +1,63 @@
+.abilityCard {
+  background: var(--card-bg, #fff);
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.abilityCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.abilityHeader {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.abilityName {
+  margin: 0;
+  color: #212529;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.abilitySlot {
+  background: #6c757d;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.abilityDetails {
+  border-top: 1px solid #dee2e6;
+  padding-top: 15px;
+}
+
+.abilityDescription {
+  margin: 0 0 10px 0;
+  color: #495057;
+  line-height: 1.6;
+  font-size: 0.875rem;
+}
+
+.abilityEffect,
+.abilityGeneration {
+  margin: 5px 0;
+  color: #6c757d;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.abilityEffect strong,
+.abilityGeneration strong {
+  color: #495057;
+}
