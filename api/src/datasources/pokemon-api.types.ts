@@ -107,7 +107,7 @@ export type OtherSprites = {
 };
 
 export type VersionSprites = {
-  [version: string]: SpriteSet | any;
+  [version: string]: SpriteSet;
 };
 
 export type GenerationSprites = {
