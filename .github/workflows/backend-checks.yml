@@ -23,15 +23,15 @@ jobs:
 
       - name: Run linting - backend
         run: |
-          cd api
+          cd backend/pokedex-graphql
           npm run lint
 
       - name: Run type checking - backend
         run: |
-          cd api
+          cd backend/pokedex-graphql
           npx tsc --noEmit
 
       - name: Run tests with coverage - backend
         run: |
-          cd api
+          cd backend/pokedex-graphql
           npm run test:coverage

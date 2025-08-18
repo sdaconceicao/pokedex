@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A full stack pokedex including GraphQL API and nextjs frontend.",
   "workspaces": [
-    "api",
+    "backend",
     "frontend"
   ],
   "scripts": {

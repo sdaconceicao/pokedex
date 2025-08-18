@@ -1,5 +1,5 @@
 {
-  "name": "pokedex-api",
+  "name": "pokedex-graphql",
   "private": true,
   "description": "The API for the Pokedex project",
   "version": "0.0.1",
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@apollo/datasource-rest": "^6.4.1",
-    "@apollo/server": "^4.12.1",
+    "@apollo/server": "^5.0.0",
     "@parcel/watcher": "^2.4.0",
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
