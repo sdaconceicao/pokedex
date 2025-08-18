@@ -30,11 +30,11 @@ test.describe("Grass Type Navigation", () => {
     ).toBeVisible();
 
     // Look for Bulbasaur in the results - it should be a link to the detail page
-    const bulbasaurLink = page.locator('a[href*="pokemon/3331"]').first();
+    const bulbasaurLink = page.locator('a[href*="pokemon/1"]').first();
     await expect(bulbasaurLink).toBeVisible();
-
+    //pokemon/1
     // Click on Bulbasaur
-    await bulbasaurLink.click();
+    link: await bulbasaurLink.click();
 
     // Wait for the Pokemon detail page to load
     await page.waitForLoadState("networkidle");
