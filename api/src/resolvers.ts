@@ -1,69 +1,70 @@
 import { Resolvers } from "./types";
 import { getPaginatedResults } from "./utils/pagination";
+import { logger } from "./logger";
 
 export const resolvers: Resolvers = {
   Query: {
     ability: async (_, { id }, { dataSources }) => {
-      console.log(`Resolving ability query for ID: ${id}`);
+      logger.info(`Resolving ability query for ID: ${id}`);
       try {
         const result = await dataSources.pokemonAPI.getAbility(id);
-        console.log(`Ability ${id} resolved successfully`);
+        logger.info(`Ability ${id} resolved successfully`);
         return result;
       } catch (error) {
-        console.error(`Error resolving ability ${id}:`, error);
+        logger.error(`Error resolving ability ${id}:`, error);
         throw error;
       }
     },
     regions: async (_, __, { dataSources }) => {
-      console.log("Resolving regions query");
+      logger.info("Resolving regions query");
       try {
         const result = await dataSources.pokemonAPI.getRegions();
-        console.log(
+        logger.info(
           `Regions resolved successfully: ${result.length} regions found`
         );
         return result;
       } catch (error) {
-        console.error("Error resolving regions:", error);
+        logger.error("Error resolving regions:", error);
         throw error;
       }
     },
     types: async (_, __, { dataSources }) => {
-      console.log("Resolving types query");
+      logger.info("Resolving types query");
       try {
         const result = await dataSources.pokemonAPI.getTypes();
-        console.log(
+        logger.info(
           `Types resolved successfully: ${result.length} types found`
         );
         return result;
       } catch (error) {
-        console.error("Error resolving types:", error);
+        logger.error("Error resolving types:", error);
         throw error;
       }
     },
     pokedexes: async (_, __, { dataSources }) => {
-      console.log("Resolving pokedexes query");
+      logger.info("Resolving pokedexes query");
       try {
         const result = await dataSources.pokemonAPI.getPokedexes();
-        console.log(
+        logger.info(
           `Pokedexes resolved successfully: ${result.length} pokedexes found`
         );
         return result;
       } catch (error) {
-        console.error("Error resolving pokedexes:", error);
+        logger.error("Error resolving pokedexes:", error);
         throw error;
       }
     },
     pokemon: async (_, { id }, { dataSources }) => {
-      console.log(`Resolving pokemon query for ID: ${id}`);
+      logger.info(`Resolving pokemon query for ID: ${id}`);
       try {
         const result = await dataSources.pokemonAPI.getPokemon(id);
-        console.log(`Pokemon ${id} resolved successfully:`, {
+        logger.info(`Pokemon ${id} resolved successfully:`, {
           name: result.name,
           image: result.image,
         });
         return result;
       } catch (error) {
-        console.error(`Error resolving pokemon ${id}:`, error);
+        logger.error(`Error resolving pokemon ${id}:`, error);
         throw error;
       }
     },
@@ -72,7 +73,7 @@ export const resolvers: Resolvers = {
       { query, limit = 20, offset = 0 },
       { dataSources }
     ) => {
-      console.log(
+      logger.info(
         `Resolving pokemonSearch query: "${query}" with limit: ${limit}`
       );
       try {
@@ -84,14 +85,14 @@ export const resolvers: Resolvers = {
         const pokemon = await Promise.all(
           results.pokemon.map(({ id }) => dataSources.pokemonAPI.getPokemon(id))
         );
-        console.log(`pokemonSearch resolved ${pokemon.length} Pokemon`);
+        logger.info(`pokemonSearch resolved ${pokemon.length} Pokemon`);
         return {
           pokemon,
           total: results.total,
           offset,
         };
       } catch (error) {
-        console.error(`Error resolving pokemonSearch "${query}":`, error);
+        logger.error(`Error resolving pokemonSearch "${query}":`, error);
         throw error;
       }
     },
@@ -100,11 +101,11 @@ export const resolvers: Resolvers = {
       { type, limit = 20, offset = 0 },
       { dataSources }
     ) => {
-      console.log(
+      logger.info(
         `Resolving pokemonByType query: type=${type}, limit=${limit}, offset=${offset}`
       );
       if (!type) {
-        console.log("No type specified, returning empty result");
+        logger.info("No type specified, returning empty result");
         return { total: 0, offset, pokemon: [] };
       }
 
@@ -113,7 +114,7 @@ export const resolvers: Resolvers = {
         const total = results.length;
         const limitedResults = getPaginatedResults(results, limit, offset);
 
-        console.log(
+        logger.info(
           `Fetching ${limitedResults.length} Pokemon details for type ${type}`
         );
 
@@ -121,18 +122,18 @@ export const resolvers: Resolvers = {
           limitedResults.map(async ({ id }) => {
             try {
               const pokemonData = await dataSources.pokemonAPI.getPokemon(id);
-              console.log(
+              logger.info(
                 `Pokemon ${id} (${pokemonData.name}) image: ${pokemonData.image}`
               );
               return pokemonData;
             } catch (error) {
-              console.error(`Error fetching Pokemon ${id}:`, error);
+              logger.error(`Error fetching Pokemon ${id}:`, error);
               throw error;
             }
           })
         );
 
-        console.log(
+        logger.info(
           `pokemonByType resolved ${pokemon.length} Pokemon for type ${type}`
         );
         return {
@@ -141,7 +142,7 @@ export const resolvers: Resolvers = {
           pokemon,
         };
       } catch (error) {
-        console.error(`Error resolving pokemonByType for type ${type}:`, error);
+        logger.error(`Error resolving pokemonByType for type ${type}:`, error);
         throw error;
       }
     },
@@ -150,11 +151,11 @@ export const resolvers: Resolvers = {
       { pokedex, limit = 20, offset = 0 },
       { dataSources }
     ) => {
-      console.log(
+      logger.info(
         `Resolving pokemonByPokedex query: pokedex=${pokedex}, limit=${limit}, offset=${offset}`
       );
       if (!pokedex) {
-        console.log("No pokedex specified, returning empty result");
+        logger.info("No pokedex specified, returning empty result");
         return { total: 0, offset, pokemon: [] };
       }
 
@@ -165,7 +166,7 @@ export const resolvers: Resolvers = {
         const total = results.length;
         const limitedResults = getPaginatedResults(results, limit, offset);
 
-        console.log(
+        logger.info(
           `Fetching ${limitedResults.length} Pokemon details for pokedex ${pokedex}`
         );
 
@@ -173,18 +174,18 @@ export const resolvers: Resolvers = {
           limitedResults.map(async ({ id }) => {
             try {
               const pokemonData = await dataSources.pokemonAPI.getPokemon(id);
-              console.log(
+              logger.info(
                 `Pokemon ${id} (${pokemonData.name}) image: ${pokemonData.image}`
               );
               return pokemonData;
             } catch (error) {
-              console.error(`Error fetching Pokemon ${id}:`, error);
+              logger.error(`Error fetching Pokemon ${id}:`, error);
               throw error;
             }
           })
         );
 
-        console.log(
+        logger.info(
           `pokemonByPokedex resolved ${pokemon.length} Pokemon for pokedex ${pokedex}`
         );
         return {
@@ -193,7 +194,7 @@ export const resolvers: Resolvers = {
           pokemon,
         };
       } catch (error) {
-        console.error(
+        logger.error(
           `Error resolving pokemonByPokedex for pokedex ${pokedex}:`,
           error
         );
@@ -206,11 +207,11 @@ export const resolvers: Resolvers = {
       { region, limit = 20, offset = 0 },
       { dataSources }
     ) => {
-      console.log(
+      logger.info(
         `Resolving pokemonByRegion query: region=${region}, limit=${limit}, offset=${offset}`
       );
       if (!region) {
-        console.log("No region specified, returning empty result");
+        logger.info("No region specified, returning empty result");
         return { total: 0, offset, pokemon: [] };
       }
 
@@ -219,7 +220,7 @@ export const resolvers: Resolvers = {
         const total = results.length;
         const limitedResults = getPaginatedResults(results, limit, offset);
 
-        console.log(
+        logger.info(
           `Fetching ${limitedResults.length} Pokemon details for region ${region}`
         );
 
@@ -227,18 +228,18 @@ export const resolvers: Resolvers = {
           limitedResults.map(async ({ id }) => {
             try {
               const pokemonData = await dataSources.pokemonAPI.getPokemon(id);
-              console.log(
+              logger.info(
                 `Pokemon ${id} (${pokemonData.name}) image: ${pokemonData.image}`
               );
               return pokemonData;
             } catch (error) {
-              console.error(`Error fetching Pokemon ${id}:`, error);
+              logger.error(`Error fetching Pokemon ${id}:`, error);
               throw error;
             }
           })
         );
 
-        console.log(
+        logger.info(
           `pokemonByRegion resolved ${pokemon.length} Pokemon for region ${region}`
         );
         return {
@@ -247,7 +248,7 @@ export const resolvers: Resolvers = {
           pokemon,
         };
       } catch (error) {
-        console.error(
+        logger.error(
           `Error resolving pokemonByRegion for region ${region}:`,
           error
         );
@@ -258,16 +259,16 @@ export const resolvers: Resolvers = {
 
   Pokemon: {
     abilities: ({ abilitiesLite }, _, { dataSources }) => {
-      console.log(
+      logger.info(
         `Resolving abilities for Pokemon with ${abilitiesLite.length} abilities`
       );
       try {
         const result =
           dataSources.pokemonAPI.getAbilitiesForPokemon(abilitiesLite);
-        console.log("Abilities resolved successfully");
+        logger.info("Abilities resolved successfully");
         return result;
       } catch (error) {
-        console.error("Error resolving abilities:", error);
+        logger.error("Error resolving abilities:", error);
         throw error;
       }
     },

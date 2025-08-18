@@ -67,14 +67,14 @@
 }
 
 .pageButton.active {
-  background: #3b82f6;
-  color: #ffffff;
-  border-color: #3b82f6;
+  background: var(--layout-primary-background);
+  color: var(--layout-primary-foreground);
+  border-color: var(--layout-primary-background);
 }
 
 .pageButton.active:hover {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: var(--layout-primary-background-hover);
+  border-color: var(--layout-primary-background-hover);
 }
 
 .ellipsis {
