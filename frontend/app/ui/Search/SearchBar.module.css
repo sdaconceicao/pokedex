@@ -1,8 +1,5 @@
 .searchContainer {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  flex: 1;
 }
 
 .searchForm {
@@ -15,7 +12,7 @@
 .searchInput {
   flex: 1;
   padding: 0.5rem 2.5rem 0.5rem 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid black;
   border-right: none;
   border-radius: 4px 0 0 4px;
   font-size: 1rem;

@@ -1,9 +1,8 @@
 .navItem {
   display: block;
   padding: 0.25rem 1rem;
-  color: var(--layout-primary-foreground);
+  color: var(--layout-tertiary-foreground);
   text-decoration: none;
-  border-radius: 4px;
   font-size: 0.8rem;
   transition: all 0.2s;
 }

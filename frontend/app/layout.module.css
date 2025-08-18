@@ -29,7 +29,24 @@
 
 .container {
   display: flex;
+  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  background: var(--layout-tertiary-background);
+  color: var(--layout-tertiary-foreground);
+  padding: 1.5rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.content {
+  display: flex;
+  flex: 1;
   overflow: hidden;
 }
 
@@ -37,7 +54,7 @@
   flex: 1;
   padding: 1.5rem;
   padding-bottom: 8rem; /* Add space for floating pagination */
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -45,8 +62,8 @@
 .heading {
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 1.5rem;
-  margin-top: 0;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .main ol {
@@ -143,8 +160,31 @@ a.secondary {
     padding-bottom: 80px;
   }
 
+  .header {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .heading {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+
+  .navbar {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+  }
+
   .main {
     align-items: center;
+    padding: 1rem;
   }
 
   .main ol {

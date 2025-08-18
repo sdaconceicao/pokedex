@@ -31,12 +31,14 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ApolloWrapper>
           <div className={styles.container}>
-            <Navbar />
-            <main className={styles.main}>
+            <header className={styles.header}>
               <h1 className={styles.heading}>Pokédex</h1>
               <SearchBar />
-              {children}
-            </main>
+            </header>
+            <div className={styles.content}>
+              <Navbar />
+              <main className={styles.main}>{children}</main>
+            </div>
           </div>
         </ApolloWrapper>
       </body>
