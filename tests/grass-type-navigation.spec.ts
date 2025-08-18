@@ -30,7 +30,7 @@ test.describe("Grass Type Navigation", () => {
     ).toBeVisible();
 
     // Look for Bulbasaur in the results - it should be a link to the detail page
-    const bulbasaurLink = page.locator('a[href*="pokemon/1"]').first();
+    const bulbasaurLink = page.locator('a[href*="pokemon/3331"]').first();
     await expect(bulbasaurLink).toBeVisible();
 
     // Click on Bulbasaur

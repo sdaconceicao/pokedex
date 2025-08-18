@@ -1,12 +1,17 @@
 :root {
-  --background: #939393;
-  --foreground: #171717;
+  --layout-primary-background: #d32b2b;
+  --layout-primary-foreground: white;
+  --layout-primary-background-hover: #9a1c1c;
+  --layout-secondary-background: #fcdddc;
+  --layout-secondary-foreground: #333;
+  --layout-tertiary-background: #e0e0e0;
+  --layout-tertiary-foreground: #666;
+  --layout-quaternary-background: #d0d0d0;
+  --layout-quaternary-foreground: #888;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #939393;
   }
 }
 
