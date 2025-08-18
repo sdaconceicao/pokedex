@@ -37,6 +37,7 @@
 .header {
   background: var(--layout-tertiary-background);
   color: var(--layout-tertiary-foreground);
+  border-bottom: 1px solid var(--layout-tertiary-foreground);
   padding: 1.5rem;
   flex-shrink: 0;
   display: flex;
