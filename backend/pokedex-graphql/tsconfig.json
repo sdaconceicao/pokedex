@@ -16,8 +16,9 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
     "lib": ["ES2020", "DOM"],
-    "types": ["node", "jest"],
+
     "baseUrl": ".",
     "paths": {
       "*": ["types/*"]
@@ -26,5 +27,5 @@
   },
   "files": ["src/graphql.d.ts"],
   "include": ["src/**/*", "**/*.test.ts"],
-  "exclude": ["codegen.ts", "dist"]
+  "exclude": ["codegen.ts", "dist", "**/*.test.ts", "**/jest.setup.ts"]
 }

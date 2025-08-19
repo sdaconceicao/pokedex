@@ -22,16 +22,10 @@ jobs:
           key: ${{ inputs.cached-build-id }}
 
       - name: Run linting - backend
-        run: |
-          cd api
-          npm run lint
+        run: npm run lint --workspace=backend/**
 
       - name: Run type checking - backend
-        run: |
-          cd api
-          npx tsc --noEmit
+        run: npm run tsc --workspace=backend/**
 
       - name: Run tests with coverage - backend
-        run: |
-          cd api
-          npm run test:coverage
+        run: npm run test:coverage --workspace=backend/**

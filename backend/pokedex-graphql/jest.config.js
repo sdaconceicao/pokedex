@@ -1,8 +1,8 @@
 export default {
   preset: "ts-jest",
-  testEnvironment: "node",
+  testEnvironment: "jest-environment-node",
   roots: ["<rootDir>/src"],
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/jest.setup.ts"],
   transform: {
     "^.+\\.ts$": [
       "ts-jest",
