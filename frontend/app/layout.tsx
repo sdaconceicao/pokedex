@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ApolloWrapper from "@/ui/ApolloWrapper";
 import { SearchBar } from "@/ui/Search";
+import AuthButtons from "@/ui/AuthButtons";
 import Navbar from "@/ui/Navbar";
 import styles from "./layout.module.css";
 import "./globals.css";
@@ -34,6 +35,7 @@ export default function RootLayout({
             <header className={styles.header}>
               <h1 className={styles.heading}>Pokédex</h1>
               <SearchBar />
+              <AuthButtons />
             </header>
             <div className={styles.content}>
               <Navbar />

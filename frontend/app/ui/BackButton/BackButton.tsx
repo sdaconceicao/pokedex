@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import styles from "./BackButton.module.css";
+import Button from "@/ui/Button";
 
 interface BackButtonProps {
   href?: string;
@@ -14,15 +13,15 @@ export default function BackButton({ href, children }: BackButtonProps) {
 
   if (href) {
     return (
-      <Link href={href} className={styles.backLink}>
+      <Button as="link" href={href} variant="primary">
         {children}
-      </Link>
+      </Button>
     );
   }
 
   return (
-    <button className={styles.backLink} onClick={() => router.back()}>
+    <Button variant="primary" onClick={() => router.back()}>
       {children}
-    </button>
+    </Button>
   );
 }
