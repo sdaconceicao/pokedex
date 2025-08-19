@@ -1,33 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './users.entity';
+import { UserEntity } from './users.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async create(userData: Partial<User>): Promise<User> {
+  async create(userData: Partial<UserEntity>): Promise<UserEntity> {
     const user = this.usersRepository.create(userData);
     return this.usersRepository.save(user);
   }
 
-  async findOneByUsername(username: string): Promise<User | null> {
+  async findOneByUsername(username: string): Promise<UserEntity | null> {
     return this.usersRepository.findOne({ where: { username } });
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
+  async findOneByEmail(email: string): Promise<UserEntity | null> {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  async findOneById(id: string): Promise<User | null> {
+  async findOneById(id: string): Promise<UserEntity | null> {
     return this.usersRepository.findOne({ where: { id } });
   }
 
-  async update(id: string, userData: Partial<User>): Promise<User | null> {
+  async update(
+    id: string,
+    userData: Partial<UserEntity>,
+  ): Promise<UserEntity | null> {
     await this.usersRepository.update(id, userData);
     return this.findOneById(id);
   }

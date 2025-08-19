@@ -11,11 +11,11 @@ import { AuthGuard } from '@nestjs/passport';
 import type { RegisterRequestDto } from './dtos/register-request.dto';
 import type { LoginResponseDTO } from './dtos/login-response.dto';
 import type { RegisterResponseDTO } from './dtos/register-response.dto';
-import { Request as ExpressRequest } from 'express';
-import { User } from '../users/users.entity';
+import { FastifyRequest } from 'fastify';
+import { UserEntity } from '../users/users.entity';
 
-interface AuthenticatedRequest extends ExpressRequest {
-  user: User;
+interface AuthenticatedRequest extends FastifyRequest {
+  user: UserEntity;
 }
 
 @Controller('auth')

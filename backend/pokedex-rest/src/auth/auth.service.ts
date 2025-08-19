@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from '../users/users.entity';
+import { UserEntity } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
 import { AccessToken } from './types/AccessToken';
 import { RegisterRequestDto } from './dtos/register-request.dto';
@@ -12,8 +12,9 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
-  async validateUser(email: string, password: string): Promise<User> {
-    const user: User | null = await this.usersService.findOneByEmail(email);
+  async validateUser(email: string, password: string): Promise<UserEntity> {
+    const user: UserEntity | null =
+      await this.usersService.findOneByEmail(email);
     if (!user) {
       throw new BadRequestException('User not found');
     }
@@ -23,7 +24,7 @@ export class AuthService {
     }
     return user;
   }
-  async login(user: User): Promise<AccessToken> {
+  async login(user: UserEntity): Promise<AccessToken> {
     const payload = { email: user.email, id: user.id };
     return { access_token: await this.jwtService.signAsync(payload) };
   }
