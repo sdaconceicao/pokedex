@@ -13,11 +13,12 @@ import type { LoginResponseDTO } from './dtos/login-response.dto';
 import type { RegisterResponseDTO } from './dtos/register-response.dto';
 import { FastifyRequest } from 'fastify';
 import { UserEntity } from '../users/users.entity';
+import { Public } from './decorators/public.decorator';
 
 interface AuthenticatedRequest extends FastifyRequest {
   user: UserEntity;
 }
-
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
