@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: pokedex-postgres
+    environment:
+      POSTGRES_DB: pokedex
+      POSTGRES_USER: pokedex_user
+      POSTGRES_PASSWORD: pokedex_password
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
