@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "pokedex-rest",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
