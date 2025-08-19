@@ -18,9 +18,10 @@
     "start": "npm run compile && nodemon ./dist/index.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "lint:check": "eslint src/**/*.ts --max-warnings 0"
+    "lint": "eslint src/**/*.ts --ignore-pattern '**/*.test.ts' --ignore-pattern '**/jest.setup.ts' --no-warn-ignored",
+    "lint:fix": "eslint src/**/*.ts --fix --ignore-pattern '**/*.test.ts' --ignore-pattern '**/jest.setup.ts' --no-warn-ignored",
+    "lint:check": "eslint src/**/*.ts --max-warnings 0 --ignore-pattern '**/*.test.ts' --ignore-pattern '**/jest.setup.ts' --no-warn-ignored",
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@apollo/datasource-rest": "^6.4.1",
