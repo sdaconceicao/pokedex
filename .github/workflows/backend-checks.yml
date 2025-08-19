@@ -22,10 +22,10 @@ jobs:
           key: ${{ inputs.cached-build-id }}
 
       - name: Run linting - backend
-        run: npm run lint --workspace=backend/pokedex-graphql --workspace=backend/pokedex-rest
+        run: npm run lint --workspace=backend/**
 
       - name: Run type checking - backend
-        run: npm run tsc --workspace=backend/pokedex-graphql --workspace=backend/pokedex-rest
+        run: npm run tsc --workspace=backend/**
 
       - name: Run tests with coverage - backend
-        run: npm run test:coverage --workspace=backend/pokedex-graphql --workspace=backend/pokedex-rest
+        run: npm run test:coverage --workspace=backend/**
