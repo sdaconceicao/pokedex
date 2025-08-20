@@ -1,0 +1,154 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--layout-quaternary-background);
+  border-radius: 0.375rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--layout-primary-background);
+  box-shadow: 0 0 0 3px rgba(211, 43, 43, 0.1);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--layout-primary-background);
+  outline-offset: 2px;
+}
+
+/* Size variants */
+.sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  height: 32px;
+}
+
+.md {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  height: 38px;
+}
+
+.lg {
+  padding: 0.75rem 1rem;
+  font-size: 1.125rem;
+  height: 44px;
+}
+
+/* States */
+.input:disabled {
+  background: var(--layout-quaternary-background);
+  color: var(--layout-quaternary-foreground);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input:read-only {
+  background: var(--layout-quaternary-background);
+  color: var(--layout-quaternary-foreground);
+  cursor: default;
+}
+
+/* Error state */
+.input.error {
+  border-color: #dc2626;
+}
+
+.input.error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.errorMessage {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* Placeholder styling */
+.input::placeholder {
+  color: var(--layout-quaternary-foreground);
+  opacity: 0.7;
+}
+
+/* Password input specific styling */
+.input[type="password"] {
+  font-family: monospace;
+  letter-spacing: 0.125em;
+}
+
+/* Number input specific styling */
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Search input specific styling */
+.input[type="search"]::-webkit-search-decoration,
+.input[type="search"]::-webkit-search-cancel-button,
+.input[type="search"]::-webkit-search-results-button,
+.input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    height: 28px;
+  }
+
+  .md {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+    height: 34px;
+  }
+
+  .lg {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    height: 38px;
+  }
+
+  .errorMessage {
+    font-size: 0.7rem;
+    margin-top: 0.125rem;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .input {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .input:disabled {
+    background: var(--layout-quaternary-background);
+    color: var(--layout-quaternary-foreground);
+  }
+
+  .input:read-only {
+    background: var(--layout-quaternary-background);
+    color: var(--layout-quaternary-foreground);
+  }
+}

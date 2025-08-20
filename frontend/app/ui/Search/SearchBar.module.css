@@ -11,19 +11,8 @@
 
 .searchInput {
   flex: 1;
-  padding: 0.5rem 2.5rem 0.5rem 0.5rem;
-  border: 1px solid var(--layout-tertiary-foreground);
   border-right: none;
   border-radius: 4px 0 0 4px;
-  font-size: 1rem;
-  height: 38px;
-  box-sizing: border-box;
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--layout-primary-background);
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .searchButton {

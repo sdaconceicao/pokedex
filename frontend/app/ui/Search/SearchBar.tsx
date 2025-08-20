@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { SearchSm, XCircle } from "@untitled-ui/icons-react";
 
 import Button from "@/ui/Button";
+import Input from "@/ui/Input";
 import styles from "./SearchBar.module.css";
 
 export default function SearchBar() {
@@ -42,7 +43,7 @@ export default function SearchBar() {
   return (
     <div className={styles.searchContainer}>
       <form onSubmit={handleSearch} className={styles.searchForm}>
-        <input
+        <Input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
