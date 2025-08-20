@@ -7,24 +7,31 @@ import Button from "@/ui/Button";
 import styles from "./AuthButtons.module.css";
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => void;
+  onSubmit: (email: string, password: string) => void | Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  error?: string;
 }
 
 export default function LoginForm({
   onSubmit,
   onCancel,
   isLoading = false,
+  error: propError,
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
+  const [submitError, setSubmitError] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Clear previous errors
+    setErrors({});
+    setSubmitError("");
 
     // Basic validation
     const newErrors: { email?: string; password?: string } = {};
@@ -44,7 +51,12 @@ export default function LoginForm({
       return;
     }
 
-    onSubmit(email, password);
+    try {
+      await onSubmit(email, password);
+    } catch (error) {
+      console.error("Login failed:", error);
+      setSubmitError("Invalid credentials. Please try again.");
+    }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +74,19 @@ export default function LoginForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.loginForm}>
+    <form
+      onSubmit={handleSubmit}
+      className={styles.loginForm}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          e.stopPropagation();
+          // Manually trigger form submission logic
+          const mockEvent = { preventDefault: () => {} } as React.FormEvent;
+          handleSubmit(mockEvent);
+        }
+      }}
+    >
       <div className={styles.formGroup}>
         <Label htmlFor="email" required>
           Email
@@ -96,6 +120,11 @@ export default function LoginForm({
           disabled={isLoading}
         />
       </div>
+
+      {/* Display submit error if any */}
+      {(submitError || propError) && (
+        <div className={styles.submitError}>{submitError || propError}</div>
+      )}
 
       <div className={styles.formActions}>
         <Button
