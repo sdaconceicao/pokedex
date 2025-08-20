@@ -34,17 +34,14 @@ interface User {
   firstName: string;
   lastName: string;
   username: string;
-  // Add other user properties from your backend
 }
 
 interface LoginResponse {
   access_token: string;
-  user: User;
 }
 
 interface RegisterResponse {
   access_token: string;
-  user: User;
 }
 
 // Authentication API functions
@@ -109,11 +106,10 @@ export function useAuth() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["auth", "user"],
+    queryKey: ["auth", "token"],
     queryFn: authApi.getCurrentUser,
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!getStoredToken(),
   });
 
   // Login mutation
@@ -121,8 +117,8 @@ export function useAuth() {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       setStoredToken(data.access_token);
-      queryClient.setQueryData(["auth", "user"], data.user);
-      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      queryClient.setQueryData(["auth", "token"], data.access_token);
+      queryClient.invalidateQueries({ queryKey: ["auth", "token"] });
     },
   });
 
@@ -131,8 +127,8 @@ export function useAuth() {
     mutationFn: authApi.register,
     onSuccess: (data) => {
       setStoredToken(data.access_token);
-      queryClient.setQueryData(["auth", "user"], data.user);
-      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      queryClient.setQueryData(["auth", "token"], data.access_token);
+      queryClient.invalidateQueries({ queryKey: ["auth", "token"] });
     },
   });
 
@@ -140,7 +136,7 @@ export function useAuth() {
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
-      queryClient.setQueryData(["auth", "user"], null);
+      queryClient.setQueryData(["auth", "token"], null);
       queryClient.clear(); // Clear all cached data
     },
   });
