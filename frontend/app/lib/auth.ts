@@ -1,14 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type {
+  LoginCredentials,
+  RegisterCredentials,
+  User,
+  LoginResponse,
+  RegisterResponse,
+} from "./types/auth";
 
 const API_BASE_URL = process.env.AUTH_API_URL || "http://localhost:3004";
 
 // Helper function to safely access localStorage
-const getStoredToken = (): string | null => {
+export const getStoredToken = (): string | null => {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("access_token");
 };
 
-const setStoredToken = (token: string): void => {
+export const setStoredToken = (token: string): void => {
   if (typeof window === "undefined") return;
   localStorage.setItem("access_token", token);
 };
@@ -18,34 +24,8 @@ const removeStoredToken = (): void => {
   localStorage.removeItem("access_token");
 };
 
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-interface RegisterCredentials {
-  email: string;
-  password: string;
-}
-
-interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-}
-
-interface LoginResponse {
-  access_token: string;
-}
-
-interface RegisterResponse {
-  access_token: string;
-}
-
 // Authentication API functions
-const authApi = {
+export const authApi = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -76,9 +56,8 @@ const authApi = {
     return response.json();
   },
 
-  async getCurrentUser(): Promise<User> {
-    const token = getStoredToken();
-    if (!token) throw new Error("No token found");
+  async getCurrentUser(token: string): Promise<User> {
+    if (!token) throw new Error("No token provided");
 
     const response = await fetch(`${API_BASE_URL}/users`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -95,71 +74,3 @@ const authApi = {
     removeStoredToken();
   },
 };
-
-// Custom hooks for authentication
-export function useAuth() {
-  const queryClient = useQueryClient();
-
-  // Query for current user
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["auth", "token"],
-    queryFn: authApi.getCurrentUser,
-    retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  // Login mutation
-  const loginMutation = useMutation({
-    mutationFn: authApi.login,
-    onSuccess: (data) => {
-      setStoredToken(data.access_token);
-      queryClient.setQueryData(["auth", "token"], data.access_token);
-      queryClient.invalidateQueries({ queryKey: ["auth", "token"] });
-    },
-  });
-
-  // Register mutation
-  const registerMutation = useMutation({
-    mutationFn: authApi.register,
-    onSuccess: (data) => {
-      setStoredToken(data.access_token);
-      queryClient.setQueryData(["auth", "token"], data.access_token);
-      queryClient.invalidateQueries({ queryKey: ["auth", "token"] });
-    },
-  });
-
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: authApi.logout,
-    onSuccess: () => {
-      queryClient.setQueryData(["auth", "token"], null);
-      queryClient.clear(); // Clear all cached data
-    },
-  });
-
-  return {
-    user,
-    isLoading,
-    error,
-    login: loginMutation.mutate,
-    loginAsync: loginMutation.mutateAsync,
-    loginError: loginMutation.error,
-    register: registerMutation.mutate,
-    registerAsync: registerMutation.mutateAsync,
-    registerError: registerMutation.error,
-    logout: logoutMutation.mutate,
-    isLoginLoading: loginMutation.isPending,
-    isRegisterLoading: registerMutation.isPending,
-    isLogoutLoading: logoutMutation.isPending,
-  };
-}
-
-// Hook for checking if user is authenticated
-export function useIsAuthenticated() {
-  const { user, isLoading } = useAuth();
-  return { isAuthenticated: !!user, isLoading };
-}
