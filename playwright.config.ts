@@ -7,18 +7,34 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
-  globalSetup: require.resolve("./global-setup"),
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
   projects: [
     {
+      name: "setup db",
+      testMatch: /global\.setup\.ts/,
+      teardown: "teardown db",
+    },
+    {
+      name: "teardown db",
+      testMatch: /global\.teardown\.ts/,
+    },
+    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup db"],
     },
   ],
   webServer: [
+    {
+      name: "api",
+      command: "cd backend/pokedex-graphql && npm run dev:mock",
+      url: "http://localhost:4000",
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+    },
     {
       name: "pokedex-rest",
       command: "cd backend/pokedex-rest && npm run start:test",
@@ -26,19 +42,15 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
       env: {
-        NODE_ENV: "test",
-        DATABASE_URL:
-          "postgresql://postgres:postgres@0.0.0.0:5434/pokedex_test",
+        DB_HOST: "localhost",
+        DB_PORT: "5434",
+        DB_USERNAME: "pokedex_user",
+        DB_PASSWORD: "pokedex_password",
+        DB_DATABASE: "pokedex_test",
+        DB_SCHEMA: "users",
         JWT_SECRET: "test-secret-key-for-e2e-tests",
         PORT: "3005",
       },
-    },
-    {
-      name: "api",
-      command: "cd backend/pokedex-graphql && npm run dev:mock",
-      url: "http://localhost:4000",
-      reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
     },
     {
       name: "frontend",
