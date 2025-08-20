@@ -37,6 +37,9 @@ export class AuthService {
 
     const newUser = {
       ...user,
+      firstName: '', // Default empty value
+      lastName: '', // Default empty value
+      username: '', // Default empty value
       password: hashedPassword,
     };
 

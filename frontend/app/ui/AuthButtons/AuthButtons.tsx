@@ -12,12 +12,8 @@ import styles from "./AuthButtons.module.css";
 export default function AuthButtons() {
   const {
     user,
-    login,
     loginAsync,
-    loginError,
     register,
-    registerAsync,
-    registerError,
     logout,
     isLoginLoading,
     isRegisterLoading,
@@ -39,8 +35,6 @@ export default function AuthButtons() {
       try {
         // Use loginAsync to get a promise we can await
         const result = await loginAsync({ email, password });
-        // The modal will be closed automatically when login succeeds
-        // because the user state will change and the component will re-render
       } catch (error) {
         console.error("Login failed:", error);
         // Don't close the modal on error - let the form handle it
@@ -51,19 +45,12 @@ export default function AuthButtons() {
   );
 
   const handleRegisterSubmit = useCallback(
-    async (data: {
-      firstName: string;
-      lastName: string;
-      username: string;
-      email: string;
-      password: string;
-    }) => {
+    async (data: { email: string; password: string }) => {
       try {
         register(data);
         setIsRegisterModalOpen(false);
       } catch (error) {
         console.error("Registration failed:", error);
-        // Error handling is now managed by TanStack Query
       }
     },
     [register]
