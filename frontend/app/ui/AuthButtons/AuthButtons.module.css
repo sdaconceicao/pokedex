@@ -5,7 +5,8 @@
   flex-shrink: 0;
 }
 
-.loginForm {
+.loginForm,
+.registerForm {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -18,9 +19,26 @@
   gap: 0.5rem;
 }
 
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 .formActions {
   display: flex;
   gap: 0.75rem;
   justify-content: flex-end;
   margin-top: 0.5rem;
+}
+
+.passwordContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.togglePassword {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
 }

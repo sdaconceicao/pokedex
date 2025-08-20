@@ -4,17 +4,26 @@ import { useCallback, useState } from "react";
 import Button from "@/ui/Button";
 import Modal from "@/ui/Modal";
 import LoginForm from "./LoginForm";
+import RegisterForm from "./RegisterForm";
 import { useAuth } from "@/lib/auth";
 
 import styles from "./AuthButtons.module.css";
 
 export default function AuthButtons() {
-  const { user, login, logout, isLoginLoading, isLogoutLoading } = useAuth();
+  const {
+    user,
+    login,
+    register,
+    logout,
+    isLoginLoading,
+    isRegisterLoading,
+    isLogoutLoading,
+  } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
   const handleSignUp = useCallback(() => {
-    // TODO: Implement sign up functionality
-    console.log("Sign up clicked");
+    setIsRegisterModalOpen(true);
   }, []);
 
   const handleLogin = useCallback(() => {
@@ -34,8 +43,31 @@ export default function AuthButtons() {
     [login]
   );
 
+  const handleRegisterSubmit = useCallback(
+    async (data: {
+      firstName: string;
+      lastName: string;
+      username: string;
+      email: string;
+      password: string;
+    }) => {
+      try {
+        register(data);
+        setIsRegisterModalOpen(false);
+      } catch (error) {
+        console.error("Registration failed:", error);
+        // Error handling is now managed by TanStack Query
+      }
+    },
+    [register]
+  );
+
   const handleLoginCancel = useCallback(() => {
     setIsLoginModalOpen(false);
+  }, []);
+
+  const handleRegisterCancel = useCallback(() => {
+    setIsRegisterModalOpen(false);
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -78,6 +110,19 @@ export default function AuthButtons() {
           onSubmit={handleLoginSubmit}
           onCancel={handleLoginCancel}
           isLoading={isLoginLoading}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={isRegisterModalOpen}
+        onClose={handleRegisterCancel}
+        title="Create Account"
+        size="lg"
+      >
+        <RegisterForm
+          onSubmit={handleRegisterSubmit}
+          onCancel={handleRegisterCancel}
+          isLoading={isRegisterLoading}
         />
       </Modal>
     </>

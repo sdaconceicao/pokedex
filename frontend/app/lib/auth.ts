@@ -2,7 +2,33 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const API_BASE_URL = process.env.AUTH_API_URL || "http://localhost:3004";
 
+// Helper function to safely access localStorage
+const getStoredToken = (): string | null => {
+  console.log("getStoredToken window", window);
+  if (typeof window === "undefined") return null;
+  console.log("getStoredToken", localStorage.getItem("access_token"));
+  return localStorage.getItem("access_token");
+};
+
+const setStoredToken = (token: string): void => {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("access_token", token);
+};
+
+const removeStoredToken = (): void => {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("access_token");
+};
+
 interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface RegisterCredentials {
+  firstName: string;
+  lastName: string;
+  username: string;
   email: string;
   password: string;
 }
@@ -10,10 +36,18 @@ interface LoginCredentials {
 interface User {
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
   // Add other user properties from your backend
 }
 
 interface LoginResponse {
+  access_token: string;
+  user: User;
+}
+
+interface RegisterResponse {
   access_token: string;
   user: User;
 }
@@ -28,14 +62,30 @@ const authApi = {
     });
 
     if (!response.ok) {
-      throw new Error("Login failed");
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Login failed");
+    }
+
+    return response.json();
+  },
+
+  async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Registration failed");
     }
 
     return response.json();
   },
 
   async getCurrentUser(): Promise<User> {
-    const token = localStorage.getItem("access_token");
+    const token = getStoredToken();
     if (!token) throw new Error("No token found");
 
     const response = await fetch(`${API_BASE_URL}/users`, {
@@ -50,7 +100,7 @@ const authApi = {
   },
 
   async logout(): Promise<void> {
-    localStorage.removeItem("access_token");
+    removeStoredToken();
   },
 };
 
@@ -68,14 +118,24 @@ export function useAuth() {
     queryFn: authApi.getCurrentUser,
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!localStorage.getItem("access_token"),
+    enabled: !!getStoredToken(),
   });
 
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
-      localStorage.setItem("access_token", data.access_token);
+      setStoredToken(data.access_token);
+      queryClient.setQueryData(["auth", "user"], data.user);
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
+  });
+
+  // Register mutation
+  const registerMutation = useMutation({
+    mutationFn: authApi.register,
+    onSuccess: (data) => {
+      setStoredToken(data.access_token);
       queryClient.setQueryData(["auth", "user"], data.user);
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
@@ -95,8 +155,10 @@ export function useAuth() {
     isLoading,
     error,
     login: loginMutation.mutate,
+    register: registerMutation.mutate,
     logout: logoutMutation.mutate,
     isLoginLoading: loginMutation.isPending,
+    isRegisterLoading: registerMutation.isPending,
     isLogoutLoading: logoutMutation.isPending,
   };
 }
