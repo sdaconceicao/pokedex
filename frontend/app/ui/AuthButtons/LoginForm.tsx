@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "@/ui/Input";
 import Label from "@/ui/Label";
 import Button from "@/ui/Button";
@@ -17,7 +17,6 @@ export default function LoginForm({
   onSubmit,
   onCancel,
   isLoading = false,
-  error: propError,
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -87,6 +86,9 @@ export default function LoginForm({
         }
       }}
     >
+      {/* Display submit error if any */}
+      {submitError && <div className={styles.submitError}>{submitError}</div>}
+
       <div className={styles.formGroup}>
         <Label htmlFor="email" required>
           Email
@@ -120,11 +122,6 @@ export default function LoginForm({
           disabled={isLoading}
         />
       </div>
-
-      {/* Display submit error if any */}
-      {(submitError || propError) && (
-        <div className={styles.submitError}>{submitError || propError}</div>
-      )}
 
       <div className={styles.formActions}>
         <Button

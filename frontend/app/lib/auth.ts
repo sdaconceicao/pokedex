@@ -4,9 +4,7 @@ const API_BASE_URL = process.env.AUTH_API_URL || "http://localhost:3004";
 
 // Helper function to safely access localStorage
 const getStoredToken = (): string | null => {
-  console.log("getStoredToken window", window);
   if (typeof window === "undefined") return null;
-  console.log("getStoredToken", localStorage.getItem("access_token"));
   return localStorage.getItem("access_token");
 };
 

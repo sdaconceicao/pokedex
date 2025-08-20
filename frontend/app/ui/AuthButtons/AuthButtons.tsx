@@ -106,35 +106,35 @@ export default function AuthButtons() {
           Sign Up
         </Button>
       </div>
-
-      <Modal
-        isOpen={isLoginModalOpen}
-        onClose={handleLoginCancel}
-        title="Login"
-        size="sm"
-      >
-        <LoginForm
-          onSubmit={handleLoginSubmit}
-          onCancel={handleLoginCancel}
-          isLoading={isLoginLoading}
-          error={
-            loginError ? "Invalid credentials. Please try again." : undefined
-          }
-        />
-      </Modal>
-
-      <Modal
-        isOpen={isRegisterModalOpen}
-        onClose={handleRegisterCancel}
-        title="Create Account"
-        size="lg"
-      >
-        <RegisterForm
-          onSubmit={handleRegisterSubmit}
-          onCancel={handleRegisterCancel}
-          isLoading={isRegisterLoading}
-        />
-      </Modal>
+      {isLoginModalOpen && (
+        <Modal
+          isOpen={true}
+          onClose={handleLoginCancel}
+          title="Login"
+          size="sm"
+        >
+          <LoginForm
+            key={isLoginModalOpen ? "open" : "closed"}
+            onSubmit={handleLoginSubmit}
+            onCancel={handleLoginCancel}
+            isLoading={isLoginLoading}
+          />
+        </Modal>
+      )}
+      {isRegisterModalOpen && (
+        <Modal
+          isOpen={true}
+          onClose={handleRegisterCancel}
+          title="Create Account"
+          size="lg"
+        >
+          <RegisterForm
+            onSubmit={handleRegisterSubmit}
+            onCancel={handleRegisterCancel}
+            isLoading={isRegisterLoading}
+          />
+        </Modal>
+      )}
     </>
   );
 }
