@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ApolloWrapper from "@/ui/ApolloWrapper";
+import QueryProvider from "./providers/QueryProvider";
 import { SearchBar } from "@/ui/Search";
 import AuthButtons from "@/ui/AuthButtons";
 import Navbar from "@/ui/Navbar";
@@ -30,19 +31,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ApolloWrapper>
-          <div className={styles.container}>
-            <header className={styles.header}>
-              <h1 className={styles.heading}>Pokédex</h1>
-              <SearchBar />
-              <AuthButtons />
-            </header>
-            <div className={styles.content}>
-              <Navbar />
-              <main className={styles.main}>{children}</main>
+        <QueryProvider>
+          <ApolloWrapper>
+            <div className={styles.container}>
+              <header className={styles.header}>
+                <h1 className={styles.heading}>Pokédex</h1>
+                <SearchBar />
+                <AuthButtons />
+              </header>
+              <div className={styles.content}>
+                <Navbar />
+                <main className={styles.main}>{children}</main>
+              </div>
             </div>
-          </div>
-        </ApolloWrapper>
+          </ApolloWrapper>
+        </QueryProvider>
       </body>
     </html>
   );

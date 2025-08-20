@@ -4,12 +4,13 @@ import { useCallback, useState } from "react";
 import Button from "@/ui/Button";
 import Modal from "@/ui/Modal";
 import LoginForm from "./LoginForm";
-import { loginUser } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+
 import styles from "./AuthButtons.module.css";
 
 export default function AuthButtons() {
+  const { user, login, logout, isLoginLoading, isLogoutLoading } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = useCallback(() => {
     // TODO: Implement sign up functionality
@@ -22,36 +23,39 @@ export default function AuthButtons() {
 
   const handleLoginSubmit = useCallback(
     async (email: string, password: string) => {
-      setIsLoading(true);
       try {
-        const response = await loginUser({ email, password });
-
-        // Store the access token (you might want to use a more secure method)
-        localStorage.setItem("access_token", response.access_token);
-
-        console.log("Login successful", response);
+        login({ email, password });
         setIsLoginModalOpen(false);
-
-        // TODO: Update app state to reflect logged-in user
-        // You might want to trigger a context update or redirect
       } catch (error) {
         console.error("Login failed:", error);
-        // TODO: Display error message to user
-        alert(
-          error instanceof Error
-            ? error.message
-            : "Login failed. Please try again."
-        );
-      } finally {
-        setIsLoading(false);
+        // Error handling is now managed by TanStack Query
       }
     },
-    []
+    [login]
   );
 
   const handleLoginCancel = useCallback(() => {
     setIsLoginModalOpen(false);
   }, []);
+
+  const handleLogout = useCallback(() => {
+    logout();
+  }, [logout]);
+
+  if (user) {
+    return (
+      <div className={styles.authContainer}>
+        <span>Welcome, {user.email}</span>
+        <Button
+          variant="outline"
+          onClick={handleLogout}
+          disabled={isLogoutLoading}
+        >
+          {isLogoutLoading ? "Logging out..." : "Logout"}
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -73,7 +77,7 @@ export default function AuthButtons() {
         <LoginForm
           onSubmit={handleLoginSubmit}
           onCancel={handleLoginCancel}
-          isLoading={isLoading}
+          isLoading={isLoginLoading}
         />
       </Modal>
     </>
