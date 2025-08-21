@@ -21,11 +21,11 @@ describe('AuthService', () => {
 
   const mockUser: UserEntity = {
     id: 'user-123',
-    username: 'testuser',
+    username: '',
     email: 'test@example.com',
     password: 'hashedPassword123',
-    firstName: 'Test',
-    lastName: 'User',
+    firstName: '',
+    lastName: '',
   };
 
   const mockRegisterDto: RegisterRequestDto = {
@@ -119,7 +119,7 @@ describe('AuthService', () => {
   describe('login', () => {
     it('should generate access token for valid user', async () => {
       const mockToken = 'jwt-token-123';
-      const expectedPayload = { email: mockUser.email, id: mockUser.id };
+      const expectedPayload = { email: mockUser.email, userId: mockUser.id };
 
       jwtService.signAsync.mockResolvedValue(mockToken);
 
@@ -145,6 +145,7 @@ describe('AuthService', () => {
       usersService.create.mockResolvedValue(createdUser);
       jwtService.signAsync.mockResolvedValue(mockToken);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await service.register(mockRegisterDto);
 
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
@@ -153,11 +154,14 @@ describe('AuthService', () => {
       expect(bcrypt.hash).toHaveBeenCalledWith(mockRegisterDto.password, 10);
       expect(usersService.create).toHaveBeenCalledWith({
         ...mockRegisterDto,
+        username: '',
+        firstName: '',
+        lastName: '',
         password: hashedPassword,
       });
       expect(jwtService.signAsync).toHaveBeenCalledWith({
         email: createdUser.email,
-        id: createdUser.id,
+        userId: createdUser.id,
       });
       expect(result).toEqual({ access_token: mockToken });
     });
