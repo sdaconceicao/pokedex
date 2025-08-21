@@ -19,9 +19,6 @@ describe('AuthController', () => {
   };
 
   const mockRegisterDto: RegisterRequestDto = {
-    firstName: 'John',
-    lastName: 'Doe',
-    username: 'johndoe',
     email: 'john@example.com',
     password: 'password123',
   };
