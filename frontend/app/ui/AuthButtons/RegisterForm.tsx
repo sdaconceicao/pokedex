@@ -8,7 +8,7 @@ import { validatePassword, validateEmail } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 
 interface RegisterFormProps {
-  onSubmit: (data: { email: string; password: string }) => void;
+  onSubmit: (data: { email: string; password: string }) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -28,6 +28,7 @@ export default function RegisterForm({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -70,8 +71,12 @@ export default function RegisterForm({
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Clear previous errors
+    setErrors({});
+    setSubmitError("");
 
     const newErrors = validateForm();
 
@@ -80,14 +85,36 @@ export default function RegisterForm({
       return;
     }
 
-    onSubmit({
-      email: formData.email.trim(),
-      password: formData.password,
-    });
+    try {
+      await onSubmit({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
+    } catch (error) {
+      console.error("Registration failed:", error);
+      // Handle specific error messages from the server
+      if (error instanceof Error) {
+        if (
+          error.message.includes("already exists") ||
+          error.message.includes("Email")
+        ) {
+          setSubmitError(
+            "Email already exists. Please use a different email address."
+          );
+        } else {
+          setSubmitError("Registration failed. Please try again.");
+        }
+      } else {
+        setSubmitError("Registration failed. Please try again.");
+      }
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.registerForm}>
+      {/* Display submit error if any */}
+      {submitError && <div className={styles.submitError}>{submitError}</div>}
+
       <div className={styles.formGroup}>
         <Label htmlFor="email" required>
           Email

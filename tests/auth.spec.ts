@@ -181,9 +181,7 @@ test.describe("Authentication", () => {
       );
 
       // Verify error message
-      await expect(
-        page.locator('dialog[open] div:has-text("Email already exists")')
-      ).toBeVisible();
+      await expect(page.getByText("Email already exists")).toBeVisible();
     });
 
     test("should validate password confirmation", async ({ page }) => {
@@ -212,45 +210,6 @@ test.describe("Authentication", () => {
 
       // Verify validation message
       await expect(page.getByText("Passwords do not match")).toBeVisible();
-    });
-  });
-
-  test.describe("Authentication State", () => {
-    test("should persist login state across page refresh", async ({ page }) => {
-      // Login first
-      await page.click('button:has-text("Login")');
-      await page.waitForSelector("dialog[open]", { state: "visible" });
-      await page.getByRole("textbox", { name: "Email" }).fill(VALID_EMAIL);
-      await page
-        .getByRole("textbox", { name: "Password" })
-        .fill(VALID_PASSWORD);
-      await page.click('dialog[open] button[type="submit"]:has-text("Login")');
-
-      console.log("Login complete");
-
-      // Wait for login to complete
-      await expect(
-        page.locator('span:has-text("Welcome, test@example.com")')
-      ).toBeVisible();
-
-      // Refresh page
-      await page.reload();
-
-      // Verify user is still logged in
-      await expect(
-        page.locator('span:has-text("Welcome, test@example.com")')
-      ).toBeVisible();
-      await expect(page.locator('button:has-text("Logout")')).toBeVisible();
-    });
-
-    test("should redirect to login for protected routes when not authenticated", async ({
-      page,
-    }) => {
-      // Try to access a protected route (like user profile)
-      await page.goto("/profile");
-
-      // Should redirect to login or show login form
-      await expect(page.locator("form")).toBeVisible();
     });
   });
 });

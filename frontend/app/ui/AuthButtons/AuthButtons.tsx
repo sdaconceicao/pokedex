@@ -13,7 +13,7 @@ export default function AuthButtons() {
   const {
     user,
     loginAsync,
-    register,
+    registerAsync,
     logout,
     isLoginLoading,
     isRegisterLoading,
@@ -34,7 +34,7 @@ export default function AuthButtons() {
     async (email: string, password: string) => {
       try {
         // Use loginAsync to get a promise we can await
-        const result = await loginAsync({ email, password });
+        await loginAsync({ email, password });
       } catch (error) {
         console.error("Login failed:", error);
         // Don't close the modal on error - let the form handle it
@@ -47,13 +47,16 @@ export default function AuthButtons() {
   const handleRegisterSubmit = useCallback(
     async (data: { email: string; password: string }) => {
       try {
-        register(data);
+        // Use registerAsync to get a promise we can await
+        await registerAsync(data);
         setIsRegisterModalOpen(false);
       } catch (error) {
         console.error("Registration failed:", error);
+        // Don't close the modal on error - let the form handle it
+        throw error; // Re-throw so the form can handle the error
       }
     },
-    [register]
+    [registerAsync]
   );
 
   const handleLoginCancel = useCallback(() => {

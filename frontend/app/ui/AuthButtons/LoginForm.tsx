@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Input from "@/ui/Input";
 import Label from "@/ui/Label";
 import Button from "@/ui/Button";
