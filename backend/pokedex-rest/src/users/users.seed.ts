@@ -14,7 +14,7 @@ export default class UserSeeder implements Seeder {
 
     if (!existingUser) {
       // Hash the password with bcrypt
-      const hashedPassword = await bcrypt.hash('test', 10);
+      const hashedPassword = await bcrypt.hash('Test@Password123', 10);
 
       await repository.insert({
         email: 'test@test.com',

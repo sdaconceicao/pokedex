@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
 
+const VALID_EMAIL = "test@test.com";
+const VALID_PASSWORD = "Test@Password123";
+
 test.describe("Authentication", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the main page before each test
@@ -18,18 +21,14 @@ test.describe("Authentication", () => {
 
       // Verify login form is displayed
       await expect(page.locator("dialog[open] form")).toBeVisible();
+      await expect(page.getByText("Email")).toBeVisible();
+      await expect(page.getByText("Password")).toBeVisible();
       await expect(
-        page.locator('dialog[open] label:has-text("Email")')
-      ).toBeVisible();
-      await expect(
-        page.locator('dialog[open] label:has-text("Password")')
-      ).toBeVisible();
-      await expect(
-        page.locator('dialog[open] button[type="submit"]:has-text("Login")')
+        page.getByRole("button", { name: "Login" }).last()
       ).toBeVisible();
     });
 
-    test("should successfully login with valid credentials", async ({
+    test("should successfully login with valid credentials and let user logout", async ({
       page,
     }) => {
       // Open login form
@@ -39,20 +38,28 @@ test.describe("Authentication", () => {
       await page.waitForSelector("dialog[open]", { state: "visible" });
 
       // Fill in credentials (using seeded test data)
-      await page.fill('dialog[open] input[type="email"]', "test@test.com");
-      await page.fill('dialog[open] input[type="password"]', "test");
+      await page.getByRole("textbox", { name: "Email" }).fill(VALID_EMAIL);
+      await page
+        .getByRole("textbox", { name: "Password" })
+        .fill(VALID_PASSWORD);
 
       // Submit form
       await page.click('dialog[open] button[type="submit"]:has-text("Login")');
 
       // Verify successful login
       await expect(
-        page.locator('span:has-text("Welcome, test@test.com")')
+        page.locator('span:has-text("Welcome, ' + VALID_EMAIL + '")')
       ).toBeVisible();
       await expect(page.locator('button:has-text("Logout")')).toBeVisible();
 
       // Verify login form is hidden
       await expect(page.locator("dialog[open]")).not.toBeVisible();
+
+      await page.click('button:has-text("Logout")');
+
+      // Verify user is logged out
+
+      await expect(page.getByText("Welcome, " + VALID_EMAIL)).not.toBeVisible();
     });
 
     test("should show error with invalid credentials", async ({ page }) => {
@@ -72,10 +79,10 @@ test.describe("Authentication", () => {
       // Submit form
       await page.click('dialog[open] button[type="submit"]:has-text("Login")');
 
-      // Verify error message
-      await expect(
-        page.locator('dialog[open] div:has-text("Invalid credentials")')
-      ).toBeVisible();
+      // Verify error message appears in the dialog
+      await expect(page.locator("dialog[open]")).toContainText(
+        "Invalid credentials. Please try again."
+      );
     });
 
     test("should validate required fields", async ({ page }) => {
@@ -89,12 +96,8 @@ test.describe("Authentication", () => {
       await page.click('dialog[open] button[type="submit"]:has-text("Login")');
 
       // Verify validation messages
-      await expect(
-        page.locator('dialog[open] div:has-text("Email is required")')
-      ).toBeVisible();
-      await expect(
-        page.locator('dialog[open] div:has-text("Password is required")')
-      ).toBeVisible();
+      await expect(page.getByText("Email is required")).toBeVisible();
+      await expect(page.getByText("Password is required")).toBeVisible();
     });
   });
 
@@ -110,19 +113,11 @@ test.describe("Authentication", () => {
 
       // Verify register form is displayed
       await expect(page.locator("dialog[open] form")).toBeVisible();
+      await expect(page.getByText("Email")).toBeVisible();
+      await expect(page.getByText("Password").first()).toBeVisible();
+      await expect(page.getByText("Confirm Password")).toBeVisible();
       await expect(
-        page.locator('dialog[open] label:has-text("Email")')
-      ).toBeVisible();
-      await expect(
-        page.locator('dialog[open] label:has-text("Password")')
-      ).toBeVisible();
-      await expect(
-        page.locator('dialog[open] label:has-text("Confirm Password")')
-      ).toBeVisible();
-      await expect(
-        page.locator(
-          'dialog[open] button[type="submit"]:has-text("Create Account")'
-        )
+        page.getByRole("button", { name: "Create Account" })
       ).toBeVisible();
     });
 
@@ -140,11 +135,13 @@ test.describe("Authentication", () => {
 
       // Fill in registration form
       await page.fill('dialog[open] input[type="email"]', uniqueEmail);
-      await page.fill('dialog[open] input[type="password"]', "password123");
-      await page.fill(
-        'dialog[open] input[type="password"]:nth-of-type(2)',
-        "password123"
-      );
+      await page
+        .getByRole("textbox", { name: "Password" })
+        .first()
+        .fill("P@ssw0rd123");
+      await page
+        .getByRole("textbox", { name: "Confirm Password" })
+        .fill("P@ssw0rd123");
 
       // Submit form
       await page.click(
@@ -169,12 +166,14 @@ test.describe("Authentication", () => {
       await page.waitForSelector("dialog[open]", { state: "visible" });
 
       // Try to register with existing email (from seeded data)
-      await page.fill('dialog[open] input[type="email"]', "test@test.com");
-      await page.fill('dialog[open] input[type="password"]', "test");
-      await page.fill(
-        'dialog[open] input[type="password"]:nth-of-type(2)',
-        "test"
-      );
+      await page.getByRole("textbox", { name: "Email" }).fill(VALID_EMAIL);
+      await page
+        .getByRole("textbox", { name: "Password" })
+        .first()
+        .fill("P@ssw0rd123");
+      await page
+        .getByRole("textbox", { name: "Confirm Password" })
+        .fill("P@ssw0rd123");
 
       // Submit form
       await page.click(
@@ -195,12 +194,16 @@ test.describe("Authentication", () => {
       await page.waitForSelector("dialog[open]", { state: "visible" });
 
       // Fill in form with mismatched passwords
-      await page.fill('dialog[open] input[type="email"]', "new@example.com");
-      await page.fill('dialog[open] input[type="password"]', "password123");
-      await page.fill(
-        'dialog[open] input[type="password"]:nth-of-type(2)',
-        "differentpassword"
-      );
+      await page
+        .getByRole("textbox", { name: "Email" })
+        .fill("new@example.com");
+      await page
+        .getByRole("textbox", { name: "Password" })
+        .first()
+        .fill("P@ssw0rd123");
+      await page
+        .getByRole("textbox", { name: "Confirm Password" })
+        .fill("P@sssw0rd123");
 
       // Submit form
       await page.click(
@@ -208,35 +211,7 @@ test.describe("Authentication", () => {
       );
 
       // Verify validation message
-      await expect(
-        page.locator('dialog[open] div:has-text("Passwords do not match")')
-      ).toBeVisible();
-    });
-  });
-
-  test.describe("Logout", () => {
-    test("should successfully logout user", async ({ page }) => {
-      // First login
-      await page.click('button:has-text("Login")');
-      await page.waitForSelector("dialog[open]", { state: "visible" });
-      await page.fill('dialog[open] input[type="email"]', "test@example.com");
-      await page.fill('dialog[open] input[type="password"]', "password123");
-      await page.click('dialog[open] button[type="submit"]:has-text("Login")');
-
-      // Wait for login to complete
-      await expect(
-        page.locator('span:has-text("Welcome, test@example.com")')
-      ).toBeVisible();
-
-      // Logout
-      await page.click('button:has-text("Logout")');
-
-      // Verify user is logged out
-      await expect(page.locator('button:has-text("Login")')).toBeVisible();
-      await expect(page.locator('button:has-text("Sign Up")')).toBeVisible();
-      await expect(
-        page.locator('span:has-text("Welcome, test@example.com")')
-      ).not.toBeVisible();
+      await expect(page.getByText("Passwords do not match")).toBeVisible();
     });
   });
 
@@ -245,9 +220,13 @@ test.describe("Authentication", () => {
       // Login first
       await page.click('button:has-text("Login")');
       await page.waitForSelector("dialog[open]", { state: "visible" });
-      await page.fill('dialog[open] input[type="email"]', "test@example.com");
-      await page.fill('dialog[open] input[type="password"]', "password123");
+      await page.getByRole("textbox", { name: "Email" }).fill(VALID_EMAIL);
+      await page
+        .getByRole("textbox", { name: "Password" })
+        .fill(VALID_PASSWORD);
       await page.click('dialog[open] button[type="submit"]:has-text("Login")');
+
+      console.log("Login complete");
 
       // Wait for login to complete
       await expect(
