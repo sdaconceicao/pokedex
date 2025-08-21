@@ -22,8 +22,6 @@ jobs:
           POSTGRES_DB: pokedex_test
         ports:
           - 5434:5432
-        volumes:
-          - ./backend/pokedex-rest/init-test.sql:/docker-entrypoint-initdb.d/init-test.sql
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
