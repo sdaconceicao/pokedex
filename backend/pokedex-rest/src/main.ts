@@ -46,18 +46,6 @@ async function bootstrap() {
       } as DataSourceOptions & SeederOptions);
 
       await dataSource.initialize();
-
-      // Create users schema if it doesn't exist
-      await dataSource.query('CREATE SCHEMA IF NOT EXISTS users');
-
-      // Grant privileges to pokedex_user
-      await dataSource.query(`
-        GRANT ALL PRIVILEGES ON SCHEMA users TO pokedex_user;
-        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA users TO pokedex_user;
-        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA users TO pokedex_user;
-        ALTER DEFAULT PRIVILEGES IN SCHEMA users GRANT ALL PRIVILEGES ON TABLES TO pokedex_user;
-        ALTER DEFAULT PRIVILEGES IN SCHEMA users GRANT ALL PRIVILEGES ON SEQUENCES TO pokedex_user;
-      `);
       await runSeeders(dataSource);
       console.log('Database seeded successfully for test environment');
       await dataSource.destroy();
