@@ -18,10 +18,6 @@ setup("create new database", async () => {
     );
     console.log("PostgreSQL is ready!");
 
-    // Wait a bit more for initialization scripts to complete
-    console.log("Waiting for database initialization to complete...");
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
     // Test connection with the application user
     console.log("Testing connection with application user...");
     execSync(
