@@ -9,7 +9,6 @@ import { ConfigService } from '@nestjs/config';
 
 import { AppModule } from './app.module';
 import { UserEntity } from './users/users.entity';
-import { databaseConfig } from './config/database.config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -33,27 +32,14 @@ async function bootstrap() {
     try {
       const configService = app.get(ConfigService);
 
-      console.log('database.host', configService.get<string>('database.host'));
-      console.log('database.port', configService.get<number>('database.port'));
-      console.log(
-        'database.username',
-        configService.get<string>('database.username'),
-      );
-      console.log(
-        'database.password',
-        configService.get<string>('database.password'),
-      );
-      console.log(
-        'database.database',
-        configService.get<string>('database.database'),
-      );
-      console.log(
-        'database.schema',
-        configService.get<string>('database.schema'),
-      );
-
       const dataSource = new DataSource({
-        ...databaseConfig,
+        type: 'postgres',
+        host: configService.get<string>('database.host')!,
+        port: configService.get<number>('database.port')!,
+        username: configService.get<string>('database.username')!,
+        password: configService.get<string>('database.password')!,
+        database: configService.get<string>('database.database')!,
+        schema: configService.get<string>('database.schema')!,
         entities: [UserEntity],
         seeds: ['src/**/*.seed{.ts,.js}'],
         seedTracking: false,

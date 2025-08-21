@@ -1,5 +1,20 @@
-export const databaseConfig = {
-  type: 'postgres' as const,
+import { registerAs } from '@nestjs/config';
+
+export interface DatabaseConfig {
+  type: 'postgres';
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+  schema: string;
+  entities: string[];
+  synchronize: boolean;
+  logging: boolean;
+}
+
+export default registerAs<DatabaseConfig>('database', () => ({
+  type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5433', 10),
   username: process.env.DB_USERNAME || 'pokedex_user',
@@ -9,4 +24,4 @@ export const databaseConfig = {
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: process.env.NODE_ENV !== 'production',
   logging: process.env.NODE_ENV !== 'production',
-};
+}));

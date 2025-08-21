@@ -1,5 +1,6 @@
 import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { UserEntity } from './users.entity';
 
 export default class UserSeeder implements Seeder {
@@ -12,9 +13,12 @@ export default class UserSeeder implements Seeder {
     });
 
     if (!existingUser) {
+      // Hash the password with bcrypt
+      const hashedPassword = await bcrypt.hash('test', 10);
+
       await repository.insert({
         email: 'test@test.com',
-        password: 'test',
+        password: hashedPassword,
         firstName: 'Test',
         lastName: 'User',
         username: 'testuser',
