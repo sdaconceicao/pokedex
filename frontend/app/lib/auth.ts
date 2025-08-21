@@ -6,7 +6,8 @@ import type {
   RegisterResponse,
 } from "./types/auth";
 
-const API_BASE_URL = process.env.AUTH_API_URL || "http://localhost:3004";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_AUTH_API_URL || "http://localhost:3004";
 
 // Helper function to safely access localStorage
 export const getStoredToken = (): string | null => {

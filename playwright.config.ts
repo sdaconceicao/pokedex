@@ -13,18 +13,8 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "setup db",
-      testMatch: /global\.setup\.ts/,
-      teardown: "teardown db",
-    },
-    {
-      name: "teardown db",
-      testMatch: /global\.teardown\.ts/,
-    },
-    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      dependencies: ["setup db"],
     },
   ],
   webServer: [
@@ -54,12 +44,16 @@ export default defineConfig({
     },
     {
       name: "frontend",
-      command: "cd frontend && npm run dev",
+      command: "cd frontend && npm run dev:test",
       url: "http://localhost:3000",
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
       env: {
-        AUTH_API_URL: "http://localhost:3005",
+        NODE_ENV: "test",
+        NEXT_PUBLIC_AUTH_API_URL: "http://localhost:3005",
+        NEXT_PUBLIC_GRAPHQL_API_URL: "http://localhost:4000",
+        NEXT_TELEMETRY_DISABLED: "1",
+        NEXT_PUBLIC_TEST_MODE: "true",
       },
     },
   ],
