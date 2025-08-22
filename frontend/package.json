@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"next dev --turbopack\" \"npm run codegen:watch\"",
-    "dev:test": "NODE_ENV=test next dev",
+    "dev:test": "NODE_ENV=test next dev --port 3001",
     "prebuild": "npm run codegen",
     "build": "next build",
     "start": "next start",
