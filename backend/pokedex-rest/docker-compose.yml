@@ -12,5 +12,16 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  postgres-test:
+    image: postgres:15
+    container_name: pokedex-postgres-test
+    environment:
+      POSTGRES_DB: pokedex_test
+      POSTGRES_USER: pokedex_user
+      POSTGRES_PASSWORD: pokedex_password
+    ports:
+      - '5434:5432'
+    restart: unless-stopped
+
 volumes:
   postgres_data:
