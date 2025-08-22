@@ -21,7 +21,7 @@ describe('AuthService', () => {
 
   const mockUser: UserEntity = {
     id: 'user-123',
-    username: '',
+    username: 'test@example.com',
     email: 'test@example.com',
     password: 'hashedPassword123',
     firstName: '',
@@ -154,7 +154,7 @@ describe('AuthService', () => {
       expect(bcrypt.hash).toHaveBeenCalledWith(mockRegisterDto.password, 10);
       expect(usersService.create).toHaveBeenCalledWith({
         ...mockRegisterDto,
-        username: '',
+        username: mockRegisterDto.email,
         firstName: '',
         lastName: '',
         password: hashedPassword,

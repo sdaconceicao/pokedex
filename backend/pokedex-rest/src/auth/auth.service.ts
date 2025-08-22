@@ -39,7 +39,7 @@ export class AuthService {
       ...user,
       firstName: '', // Default empty value
       lastName: '', // Default empty value
-      username: '', // Default empty value
+      username: user.email, // Use email as username to ensure uniqueness
       password: hashedPassword,
     };
 
