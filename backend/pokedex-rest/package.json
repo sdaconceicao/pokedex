@@ -13,7 +13,6 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "start:test": "NODE_ENV=test nest start --env test",
-    "start:env": "NODE_ENV=${ENV:-development} nest start --env ${ENV:-development}",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:restart": "docker-compose restart",
