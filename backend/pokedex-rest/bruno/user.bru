@@ -1,0 +1,19 @@
+meta {
+  name: user
+  type: http
+  seq: 3
+}
+
+get {
+  url: 127.0.0.1:3004/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+vars:post-response {
+  authToken: res.body.access_token
+}

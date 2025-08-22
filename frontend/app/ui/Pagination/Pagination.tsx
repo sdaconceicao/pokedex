@@ -5,6 +5,7 @@ import {
   getPageNumbers,
   getTotalPages,
 } from "./Pagination.util";
+import Button from "@/ui/Button";
 
 import styles from "./Pagination.module.css";
 
@@ -68,36 +69,40 @@ export default function Pagination({
       </div>
 
       <div className={styles.controls}>
-        <button
+        <Button
           onClick={handlePrevious}
           disabled={currentPage === 1}
-          className={`${styles.button} ${styles.previousNext}`}
+          variant="primary"
+          size="sm"
+          className={styles.previousNext}
         >
           Previous
-        </button>
+        </Button>
 
         <div className={styles.pageNumbers}>
           {pageNumbers.map((page, index) => (
-            <button
+            <Button
               key={index}
               onClick={() => typeof page === "number" && handlePageClick(page)}
-              className={`${styles.button} ${styles.pageButton} ${
-                page === currentPage ? styles.active : ""
-              } ${typeof page === "string" ? styles.ellipsis : ""}`}
+              variant={page === currentPage ? "primary" : "outline"}
+              size="sm"
               disabled={typeof page === "string"}
+              className={`${typeof page === "string" ? styles.ellipsis : ""}`}
             >
               {page}
-            </button>
+            </Button>
           ))}
         </div>
 
-        <button
+        <Button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className={`${styles.button} ${styles.previousNext}`}
+          variant="primary"
+          size="sm"
+          className={styles.previousNext}
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );

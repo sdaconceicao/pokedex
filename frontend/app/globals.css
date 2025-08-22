@@ -8,10 +8,14 @@
   --layout-tertiary-foreground: #666;
   --layout-quaternary-background: #d0d0d0;
   --layout-quaternary-foreground: #888;
+  --foreground: #333;
+  --background: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --foreground: #ffffff;
+    --background: #1a1a1a;
   }
 }
 
