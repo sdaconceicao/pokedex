@@ -13,7 +13,6 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     services:
-      # Label used to access the service container
       postgres:
         image: postgres
         env:
@@ -22,7 +21,6 @@ jobs:
           POSTGRES_DB: pokedex_test
         ports:
           - 5434:5432
-        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
