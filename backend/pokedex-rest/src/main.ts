@@ -3,17 +3,33 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { Logger } from '@nestjs/common';
 import { runSeeders, SeederOptions } from 'typeorm-extension';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 
 import { AppModule } from './app.module';
 import { UserEntity } from './users/users.entity';
+import { WinstonModule } from 'nest-winston';
+import { createWinstonLogger } from './config/logging.config';
 
 async function bootstrap() {
+  const winstonLogger = createWinstonLogger({
+    level: process.env.LOG_LEVEL || 'info',
+    directory: process.env.LOG_DIRECTORY || 'logs',
+    maxSize: process.env.LOG_MAX_SIZE || '20m',
+    maxFiles: process.env.LOG_MAX_FILES || '14d',
+    filename: process.env.LOG_FILENAME || 'application-%DATE%.log',
+  });
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
+    {
+      logger: WinstonModule.createLogger({
+        instance: winstonLogger,
+      }),
+    },
   );
 
   // Enable CORS with configurable origins
@@ -29,8 +45,6 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
-
-  console.log('NODE_ENV', process.env.NODE_ENV);
 
   if (process.env.NODE_ENV === 'test') {
     try {
@@ -51,10 +65,10 @@ async function bootstrap() {
 
       await dataSource.initialize();
       await runSeeders(dataSource);
-      console.log('Database seeded successfully for test environment');
+      Logger.log('Database seeded successfully for test environment');
       await dataSource.destroy();
     } catch (error) {
-      console.error('Error seeding database:', error);
+      Logger.error('Error seeding database:', error);
     }
   }
 
