@@ -43,6 +43,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: nowrap;
 }
 
 .content {
@@ -100,7 +101,10 @@
   height: 48px;
   padding: 0 20px;
   border: 1px solid transparent;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -166,6 +170,7 @@ a.secondary {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .heading {

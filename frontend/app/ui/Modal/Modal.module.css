@@ -1,0 +1,186 @@
+/* Backdrop */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+/* Dialog element */
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0.75rem;
+  background: var(--background);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+/* Remove default dialog styling */
+.dialog::backdrop {
+  background: transparent;
+}
+
+/* Content container */
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--layout-quaternary-background);
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.closeButton {
+  margin-left: auto;
+  padding: 0.5rem;
+  min-width: auto;
+  height: auto;
+}
+
+/* Body */
+.body {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--layout-quaternary-background);
+  flex-shrink: 0;
+}
+
+/* Size variants */
+.sm {
+  width: 400px;
+  min-height: 200px;
+}
+
+.md {
+  width: 600px;
+  min-height: 300px;
+}
+
+.lg {
+  width: 800px;
+  min-height: 400px;
+}
+
+.xl {
+  width: 1000px;
+  min-height: 500px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .dialog {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .sm,
+  .md,
+  .lg,
+  .xl {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+  }
+
+  .header {
+    padding: 1rem 1rem 0 1rem;
+  }
+
+  .body {
+    padding: 1rem;
+  }
+
+  .footer {
+    padding: 0 1rem 1rem 1rem;
+  }
+}
+
+/* Animation for modal appearance */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dialog {
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@media (max-width: 640px) {
+  .dialog {
+    animation: modalSlideIn 0.3s ease-out;
+  }
+}
+
+/* Focus management */
+.dialog:focus {
+  outline: none;
+}
+
+/* Ensure proper stacking context */
+.dialog {
+  isolation: isolate;
+}

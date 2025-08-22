@@ -10,17 +10,48 @@
 $ npm install
 ```
 
+## Environment Configuration
+
+The application supports multiple environment configurations:
+
+- **Development**: Uses `.env` file (default)
+- **Test**: Uses `.env.test` file
+- **Production**: Uses `.env.production` file
+
+### Setting up environment files
+
+1. Copy `env.test.example` to `.env.test` for test environment
+2. Create `.env` for development environment
+3. Create `.env.production` for production environment
+
+### Environment Variables
+
+Key environment variables:
+
+- `NODE_ENV`: Environment name (development, test, production)
+- `PORT`: Application port (default: 3002)
+- `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`, `DB_SCHEMA`: Database configuration
+- `ALLOWED_ORIGINS`: CORS allowed origins
+- `JWT_SECRET`, `JWT_EXPIRES_IN`: JWT configuration
+
 ## Compile and run the project
 
 ```bash
-# development
+# development (uses .env)
 $ npm run start
 
-# watch mode
+# watch mode (uses .env)
 $ npm run start:dev
 
-# production mode
+# production mode (uses .env.production)
 $ npm run start:prod
+
+# test mode (uses .env.test)
+$ npm run start:test
+
+# custom environment (uses .env.{ENV})
+$ npm run start:env
+$ ENV=staging npm run start:env
 ```
 
 ## Run tests

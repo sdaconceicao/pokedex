@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -10,15 +11,36 @@ import { UsersModule } from './users/users.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 
-import { databaseConfig } from './config/database.config';
+import databaseConfig from './config/database.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+      load: [databaseConfig],
     }),
-    TypeOrmModule.forRoot(databaseConfig),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (
+        configService: ConfigService,
+      ): PostgresConnectionOptions => ({
+        type: 'postgres',
+        host: configService.get('database.host')!,
+        port: configService.get('database.port')!,
+        username: configService.get('database.username')!,
+        password: configService.get('database.password')!,
+        database: configService.get('database.database')!,
+        schema: 'public', // Start with public schema so migrations can run
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: false, // Disable when using migrations
+        logging: configService.get('database.logging')!,
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        migrationsRun: true, // Automatically run migrations on startup
+        migrationsTableName: 'migrations', // Name of the migrations table
+      }),
+      inject: [ConfigService],
+    }),
     AuthModule,
     UsersModule,
   ],

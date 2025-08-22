@@ -4,6 +4,8 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchSm, XCircle } from "@untitled-ui/icons-react";
 
+import Button from "@/ui/Button";
+import Input from "@/ui/Input";
 import styles from "./SearchBar.module.css";
 
 export default function SearchBar() {
@@ -41,24 +43,25 @@ export default function SearchBar() {
   return (
     <div className={styles.searchContainer}>
       <form onSubmit={handleSearch} className={styles.searchForm}>
-        <input
+        <Input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search Pokemon..."
           className={styles.searchInput}
         />
-        <button type="submit" className={styles.searchButton}>
+        <Button type="submit" variant="primary" className={styles.searchButton}>
           <SearchSm aria-label="Search" />
-        </button>
+        </Button>
         {searchQuery && (
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={handleClear}
             className={styles.clearButton}
           >
             <XCircle aria-label="Clear search" />
-          </button>
+          </Button>
         )}
       </form>
     </div>
