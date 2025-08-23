@@ -1,0 +1,16 @@
+{
+  "release-type": "node",
+  "versioning": "default",
+  "separate-pull-requests": true,
+  "pull-request-title-pattern": "chore${scope}: Release ${component} ${version}",
+  "packages": {
+    "backend/pokedex-rest": {},
+    "backend/pokedex-graphql": {},
+    "frontend": {}
+  },
+  "changelog-sections": [
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "chore", "section": "Chores", "hidden": true }
+  ]
+}
