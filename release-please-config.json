@@ -4,8 +4,8 @@
   "separate-pull-requests": true,
   "pull-request-title-pattern": "chore${scope}: Release ${component} ${version}",
   "packages": {
-    "backend/pokedex-rest": {},
     "backend/pokedex-graphql": {},
+    "backend/pokedex-rest": {},
     "frontend": {}
   },
   "changelog-sections": [
