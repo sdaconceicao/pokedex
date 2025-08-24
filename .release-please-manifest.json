@@ -1,5 +1,5 @@
 {
   "backend/pokedex-graphql": "0.0.1",
-  "backend/pokedex-rest": "0.0.1",
+  "backend/pokedex-rest": "0.1.0",
   "frontend": "0.0.1"
 }
