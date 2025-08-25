@@ -2,7 +2,10 @@ import { gql } from "@apollo/client";
 
 export const GET_TYPES = gql`
   query GetTypes {
-    types
+    types {
+      name
+      count
+    }
   }
 `;
 
@@ -104,7 +107,10 @@ export const GET_POKEMON_BY_POKEDEX = gql`
 
 export const GET_REGIONS = gql`
   query GetRegions {
-    regions
+    regions {
+      name
+      count
+    }
   }
 `;
 

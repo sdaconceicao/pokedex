@@ -54,6 +54,18 @@ export type PokemonList = {
   total: Scalars['Int']['output'];
 };
 
+export type PokemonRegion = {
+  __typename?: 'PokemonRegion';
+  count: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type PokemonType = {
+  __typename?: 'PokemonType';
+  count: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   ability?: Maybe<Ability>;
@@ -63,8 +75,8 @@ export type Query = {
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
   pokemonSearch?: Maybe<PokemonList>;
-  regions: Array<Scalars['String']['output']>;
-  types: Array<Scalars['String']['output']>;
+  regions: Array<PokemonRegion>;
+  types: Array<PokemonType>;
 };
 
 
@@ -193,6 +205,8 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
   PokemonList: ResolverTypeWrapper<PokemonList>;
+  PokemonRegion: ResolverTypeWrapper<PokemonRegion>;
+  PokemonType: ResolverTypeWrapper<PokemonType>;
   Query: ResolverTypeWrapper<{}>;
   Stats: ResolverTypeWrapper<Stats>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -207,6 +221,8 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   Pokemon: Pokemon;
   PokemonList: PokemonList;
+  PokemonRegion: PokemonRegion;
+  PokemonType: PokemonType;
   Query: {};
   Stats: Stats;
   String: Scalars['String']['output'];
@@ -249,6 +265,18 @@ export type PokemonListResolvers<ContextType = DataSourceContext, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PokemonRegionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonRegion'] = ResolversParentTypes['PokemonRegion']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonTypeResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonType'] = ResolversParentTypes['PokemonType']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ability?: Resolver<Maybe<ResolversTypes['Ability']>, ParentType, ContextType, RequireFields<QueryAbilityArgs, 'id'>>;
   pokedexes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
@@ -257,8 +285,8 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByRegionArgs>>;
   pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByTypeArgs>>;
   pokemonSearch?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query'>>;
-  regions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  types?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  regions?: Resolver<Array<ResolversTypes['PokemonRegion']>, ParentType, ContextType>;
+  types?: Resolver<Array<ResolversTypes['PokemonType']>, ParentType, ContextType>;
 };
 
 export type StatsResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Stats'] = ResolversParentTypes['Stats']> = {
@@ -276,6 +304,8 @@ export type Resolvers<ContextType = DataSourceContext> = {
   AbilityLite?: AbilityLiteResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   PokemonList?: PokemonListResolvers<ContextType>;
+  PokemonRegion?: PokemonRegionResolvers<ContextType>;
+  PokemonType?: PokemonTypeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Stats?: StatsResolvers<ContextType>;
 };

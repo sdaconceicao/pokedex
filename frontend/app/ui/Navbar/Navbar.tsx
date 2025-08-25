@@ -1,16 +1,17 @@
 import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "@/lib/queries";
 import { client } from "@/lib/apollo-client";
+import { PokemonType, PokemonRegion } from "@/lib/types";
 import NavbarSection from "./NavbarSection";
 import { NavItem } from "./NavbarItem";
 
 import styles from "./Navbar.module.css";
 
-async function getTypes(): Promise<string[]> {
+async function getTypes(): Promise<PokemonType[]> {
   try {
-    const { data } = await client.query<{ types: string[] }>({
+    const { data } = await client.query<{ types: PokemonType[] }>({
       query: GET_TYPES,
     });
-    return data.types || [];
+    return data.types.filter((type) => type.count > 0) || [];
   } catch (error) {
     console.error("Error fetching types:", error);
     return [];
@@ -29,12 +30,12 @@ async function getPokedexes(): Promise<string[]> {
   }
 }
 
-async function getRegions(): Promise<string[]> {
+async function getRegions(): Promise<PokemonRegion[]> {
   try {
-    const { data } = await client.query<{ regions: string[] }>({
+    const { data } = await client.query<{ regions: PokemonRegion[] }>({
       query: GET_REGIONS,
     });
-    return data.regions || [];
+    return data.regions.filter((region) => region.count > 0) || [];
   } catch (error) {
     console.error("Error fetching regions:", error);
     return [];
@@ -49,9 +50,9 @@ export default async function Navbar() {
   ]);
 
   const typeItems: NavItem[] = types.map((type) => ({
-    label: type.charAt(0).toUpperCase() + type.slice(1),
-    href: `/?type=${encodeURIComponent(type)}`,
-    activeWhenQueryParamEquals: { key: "type", value: type },
+    label: `${type.name.charAt(0).toUpperCase()}${type.name.slice(1)} (${type.count})`,
+    href: `/?type=${encodeURIComponent(type.name)}`,
+    activeWhenQueryParamEquals: { key: "type", value: type.name },
   }));
 
   const pokedexItems: NavItem[] = pokedexes.map((pokedex) => ({
@@ -62,9 +63,9 @@ export default async function Navbar() {
   }));
 
   const regionItems: NavItem[] = regions.map((region) => ({
-    label: region.charAt(0).toUpperCase() + region.slice(1),
-    href: `/?region=${encodeURIComponent(region)}`,
-    activeWhenQueryParamEquals: { key: "region", value: region },
+    label: `${region.name.charAt(0).toUpperCase()}${region.name.slice(1)} (${region.count})`,
+    href: `/?region=${encodeURIComponent(region.name)}`,
+    activeWhenQueryParamEquals: { key: "region", value: region.name },
   }));
 
   const specialItems: NavItem[] = [
