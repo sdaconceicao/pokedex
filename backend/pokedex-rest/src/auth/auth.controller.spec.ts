@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
+import { AuthController, AuthenticatedRequest } from './auth.controller';
 import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 import { UserEntity } from '../users/users.entity';
 import { AccessToken } from './types/AccessToken';
-
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: jest.Mocked<AuthService>;
@@ -61,7 +60,9 @@ describe('AuthController', () => {
     it('should call authService.login with user from request', async () => {
       authService.login.mockResolvedValue(mockAccessToken);
 
-      const result = await controller.login(mockRequest as any);
+      const result = await controller.login(
+        mockRequest as AuthenticatedRequest,
+      );
 
       expect(authService.login).toHaveBeenCalledWith(mockUser);
       expect(result).toEqual(mockAccessToken);
@@ -71,7 +72,9 @@ describe('AuthController', () => {
       const customToken: AccessToken = { access_token: 'custom-token' };
       authService.login.mockResolvedValue(customToken);
 
-      const result = await controller.login(mockRequest as any);
+      const result = await controller.login(
+        mockRequest as AuthenticatedRequest,
+      );
 
       expect(result).toEqual(customToken);
     });
