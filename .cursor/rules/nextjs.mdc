@@ -16,7 +16,7 @@ When importing from outside your current folder, use the `@/` root import alias 
 // ✅ Good - Use root imports for cross-folder imports
 import { Button } from "@/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
-import { Pokemon } from "@/lib/types";
+import { Pokemon } from "@/types";
 import { NavigationDataProvider } from "@/providers/NavigationDataProvider";
 
 // ❌ Bad - Avoid relative paths for cross-folder imports
@@ -29,7 +29,7 @@ import { Pokemon } from "../../../lib/types";
 
 - **UI Components**: `@/ui/Button`, `@/ui/Modal`, `@/ui/Navbar`
 - **Hooks**: `@/hooks/useAuth`, `@/hooks/useLocalStorage`
-- **Types**: `@/lib/types`, `@/lib/types/auth`
+- **Types**: `@/types`
 - **Utilities**: `@/lib/string`, `@/lib/validation`
 - **Providers**: `@/providers/QueryProvider`, `@/providers/NavigationDataProvider`
 - **Constants**: `@/lib/constants`
