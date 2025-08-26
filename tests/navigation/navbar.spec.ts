@@ -25,8 +25,12 @@ test.describe("Navbar", () => {
       page.getByRole("heading", { level: 2 }).filter({ hasText: /grass/i })
     ).toBeVisible();
 
-    // Look for Bulbasaur in the results
-    const bulbasaurLink = page.getByRole("link", { name: /bulbasaur/i });
+    // Look for Bulbasaur in the results - use a more specific approach
+    // Find the first link that contains "bulbasaur" text
+    const bulbasaurLink = page
+      .getByRole("link")
+      .filter({ hasText: /^bulbasaur$/i })
+      .first();
     await expect(bulbasaurLink).toBeVisible();
 
     // Click on Bulbasaur
