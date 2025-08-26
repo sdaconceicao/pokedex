@@ -1,28 +1,28 @@
-.searchContainer {
+.searchBar {
   flex: 1;
 }
 
-.searchForm {
+.searchBar .searchForm {
   display: flex;
   gap: 0;
   align-items: center;
   position: relative;
 }
 
-.searchInput {
+.searchBar .searchInput {
   flex: 1;
   border-right: none;
   border-radius: 4px 0 0 4px;
-  height: 35px;
+  height: var(--input-height);
 }
 
-.searchButton {
+.searchBar .searchButton {
   border-left: none;
   border-radius: 0 4px 4px 0;
-  height: 35px;
+  height: var(--input-height);
 }
 
-.clearButton {
+.searchBar .clearButton {
   position: absolute;
   right: 65px;
   top: 50%;
@@ -31,6 +31,6 @@
   color: var(--layout-primary-foreground);
 }
 
-.clearButton:hover {
+.searchBar .clearButton:hover {
   color: var(--layout-quaternary-foreground);
 }
