@@ -170,7 +170,3 @@ import styles from "./SearchBar.module.css";
 ## Remember
 
 > "Server Components are the default in Next.js 13+. Use them for static content and data fetching, and only add 'use client' when you need interactivity or browser APIs. Use root imports (`@/`) for cross-folder dependencies to maintain clean, maintainable code."
-> description:
-> globs:
-
-## alwaysApply: false
