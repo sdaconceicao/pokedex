@@ -57,15 +57,3 @@ export function validateEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
-
-export function validateUsername(username: string): boolean {
-  // Username should be 3-20 characters, alphanumeric and underscores only
-  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-  return usernameRegex.test(username);
-}
-
-export function validateName(name: string): boolean {
-  // Name should be 2-50 characters, letters and spaces only
-  const nameRegex = /^[a-zA-Z\s]{2,50}$/;
-  return nameRegex.test(name);
-}

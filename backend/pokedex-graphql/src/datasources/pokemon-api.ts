@@ -1,5 +1,12 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
-import { Ability, AbilityLite, Pokemon } from "../types";
+import {
+  Ability,
+  AbilityLite,
+  Pokemon,
+  PokemonPokedex,
+  PokemonRegion,
+  PokemonType,
+} from "../types";
 import {
   NamedAPIResource,
   PokemonListResponse,
@@ -7,9 +14,9 @@ import {
   PokemonAbility,
   PokemonEntity,
   TypeResponse,
+  Region,
   Pokedex,
   PokedexListResponse,
-  Region,
   RegionListResponse,
 } from "./pokemon-api.types";
 import {
@@ -35,9 +42,8 @@ export class PokemonAPI extends RESTDataSource {
     if (PokemonAPI.isIndexLoaded) return;
 
     try {
-      const response = await this.get<PokemonListResponse>(
-        "pokemon?limit=1500"
-      );
+      const response =
+        await this.get<PokemonListResponse>("pokemon?limit=1500");
       const entries = response.results;
 
       PokemonAPI.pokemonIndex = entries
@@ -202,21 +208,91 @@ export class PokemonAPI extends RESTDataSource {
       });
   }
 
-  getPokedexes(): Promise<string[]> {
-    return this.get<PokedexListResponse>("pokedex?limit=50").then((data) =>
-      data.results.map((entry: NamedAPIResource) => entry.name).sort()
+  getPokedexes(): Promise<PokemonPokedex[]> {
+    return this.get<PokedexListResponse>("pokedex?limit=50").then(
+      async (data) => {
+        const pokedexesWithCounts = await Promise.all(
+          data.results.map(async (entry: NamedAPIResource) => {
+            try {
+              const count = await this.getPokemonByPokedex(entry.name).then(
+                (pokemon) => pokemon.length
+              );
+              return {
+                name: entry.name,
+                count,
+              };
+            } catch (error) {
+              logger.error(
+                `Error getting count for pokedex ${entry.name}:`,
+                error
+              );
+              return {
+                name: entry.name,
+                count: 0,
+              };
+            }
+          })
+        );
+
+        return pokedexesWithCounts.sort((a, b) => a.name.localeCompare(b.name));
+      }
     );
   }
 
-  getRegions(): Promise<string[]> {
-    return this.get<RegionListResponse>("region?limit=50").then((data) =>
-      data.results.map((entry: NamedAPIResource) => entry.name).sort()
+  getRegions(): Promise<PokemonRegion[]> {
+    return this.get<RegionListResponse>("region?limit=50").then(
+      async (data) => {
+        const regionsWithCounts = await Promise.all(
+          data.results.map(async (entry: NamedAPIResource) => {
+            try {
+              const count = await this.getPokemonByRegion(entry.name).then(
+                (pokemon) => pokemon.length
+              );
+              return {
+                name: entry.name,
+                count,
+              };
+            } catch (error) {
+              logger.error(
+                `Error getting count for region ${entry.name}:`,
+                error
+              );
+              return {
+                name: entry.name,
+                count: 0,
+              };
+            }
+          })
+        );
+
+        return regionsWithCounts.sort((a, b) => a.name.localeCompare(b.name));
+      }
     );
   }
 
-  getTypes(): Promise<string[]> {
-    return this.get<PokemonListResponse>("type?limit=50").then((data) =>
-      data.results.map((entry: NamedAPIResource) => entry.name).sort()
-    );
+  getTypes(): Promise<PokemonType[]> {
+    return this.get<PokemonListResponse>("type?limit=50").then(async (data) => {
+      const typesWithCounts = await Promise.all(
+        data.results.map(async (entry: NamedAPIResource) => {
+          try {
+            const count = await this.getPokemonByType(entry.name).then(
+              (pokemon) => pokemon.length
+            );
+            return {
+              name: entry.name,
+              count,
+            };
+          } catch (error) {
+            logger.error(`Error getting count for type ${entry.name}:`, error);
+            return {
+              name: entry.name,
+              count: 0,
+            };
+          }
+        })
+      );
+
+      return typesWithCounts.sort((a, b) => a.name.localeCompare(b.name));
+    });
   }
 }

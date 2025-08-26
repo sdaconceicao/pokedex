@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UsersService } from './users.service';
 import { UserEntity } from './users.entity';
 
@@ -162,7 +162,11 @@ describe('UsersService', () => {
       const updateData = { firstName: 'Updated', lastName: 'Name' };
       const updatedUser = { ...mockUser, ...updateData };
 
-      repository.update.mockResolvedValue({ affected: 1, raw: [] } as any);
+      repository.update.mockResolvedValue({
+        affected: 1,
+        raw: [],
+        generatedMaps: [],
+      } as UpdateResult);
       repository.findOne.mockResolvedValue(updatedUser);
 
       const result = await service.update('user-123', updateData);
@@ -177,7 +181,11 @@ describe('UsersService', () => {
     it('should return null when user not found for update', async () => {
       const updateData = { firstName: 'Updated' };
 
-      repository.update.mockResolvedValue({ affected: 0, raw: [] } as any);
+      repository.update.mockResolvedValue({
+        affected: 0,
+        raw: [],
+        generatedMaps: [],
+      } as UpdateResult);
       repository.findOne.mockResolvedValue(null);
 
       const result = await service.update('nonexistent-id', updateData);
@@ -192,7 +200,11 @@ describe('UsersService', () => {
 
   describe('delete', () => {
     it('should delete user successfully', async () => {
-      repository.delete.mockResolvedValue({ affected: 1, raw: [] } as any);
+      repository.delete.mockResolvedValue({
+        affected: 1,
+        raw: [],
+        generatedMaps: [],
+      } as DeleteResult);
 
       const result = await service.delete('user-123');
 
@@ -201,7 +213,11 @@ describe('UsersService', () => {
     });
 
     it('should return false when user not found for deletion', async () => {
-      repository.delete.mockResolvedValue({ affected: 0, raw: [] } as any);
+      repository.delete.mockResolvedValue({
+        affected: 0,
+        raw: [],
+        generatedMaps: [],
+      } as DeleteResult);
 
       const result = await service.delete('nonexistent-id');
 
@@ -210,7 +226,10 @@ describe('UsersService', () => {
     });
 
     it('should handle undefined affected value', async () => {
-      repository.delete.mockResolvedValue({ raw: [] } as any);
+      repository.delete.mockResolvedValue({
+        raw: [],
+        generatedMaps: [],
+      } as DeleteResult);
 
       const result = await service.delete('user-123');
 
