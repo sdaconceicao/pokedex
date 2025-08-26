@@ -1,6 +1,6 @@
 import { client } from "./apollo-client";
 import { gql } from "@apollo/client";
-import type { Pokemon } from "./types";
+import type { Pokemon } from "../types";
 
 const GET_POKEMON_BY_ID = gql`
   query GetPokemonById($id: ID!) {

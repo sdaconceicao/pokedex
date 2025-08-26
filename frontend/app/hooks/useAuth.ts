@@ -5,7 +5,7 @@ import type {
   RegisterCredentials,
   LoginResponse,
   RegisterResponse,
-} from "@/lib/types/auth";
+} from "@/types/auth";
 
 // Custom hooks for authentication
 export function useAuth() {
