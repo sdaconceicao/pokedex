@@ -1,0 +1,440 @@
+---
+description: React Standards
+globs: **/*.tsx
+alwaysApply: false
+---
+
+# React Component Standards
+
+## Quick Reference
+
+This rule works with:
+
+- **Pure Functions Guide** - Extract logic from components
+- **CSS Modules Styling Standards** - Style components properly
+- **Unit Testing Standards** - Test components thoroughly
+- **E2E Testing Standards** - Test user workflows
+
+## Core Principles
+
+1. **Always use functional components** - No class components
+2. **Keep components focused on rendering** - Extract logic to utilities and hooks
+3. **Use CSS Modules for styling** - Follow [CSS Modules Styling Standards](mdc:styling-css-modules.mdc)
+4. **Break out logic into pure functions** - Follow [Pure Functions Guide](mdc:pure-functions.mdc)
+5. **All components must have unit tests** - 100% test coverage required
+6. **Use hooks for complex state logic** - Extract reusable logic into custom hooks
+7. **Optimize performance** - Use `useMemo` for computed values, `useCallback` for functions
+
+## Component Structure
+
+### File Organization
+
+```
+ComponentName/
+├── index.tsx
+├── ComponentName.module.css
+├── ComponentName.test.tsx
+├── ComponentName.hooks.ts (if complex state logic)
+└── ComponentName.utils.ts (if complex calculations)
+```
+
+### Component Template
+
+```tsx
+interface ComponentNameProps {
+  // Required props should not have default values
+  requiredProp: string;
+  // Optional props should have default values
+  optionalProp?: string;
+}
+
+export const ComponentName: FunctionComponent<ComponentNameProps> = ({
+  requiredProp,
+  optionalProp = "default value",
+}: ComponentNameProps) => {
+  // Custom hooks at the top
+  const { data, loading } = useComponentData(requiredProp);
+
+  // Memoized computed values
+  const processedData = useMemo(() => {
+    return processData(data);
+  }, [data]);
+
+  // Memoized callbacks
+  const handleClick = useCallback(() => {
+    // Handle click logic
+  }, []);
+
+  // Component logic here (keep minimal)
+
+  // Return JSX last
+  return <div className={css.componentName}>{/* Component content */}</div>;
+};
+
+export default ComponentName;
+```
+
+## CSS Modules Integration
+
+### Import and Usage
+
+```tsx
+import css from "./ComponentName.module.css";
+
+export const ComponentName = () => (
+  <div className={css.componentName}>
+    <header className={css.header}>Title</header>
+    <main className={css.content}>Content</main>
+  </div>
+);
+```
+
+### CSS File Structure
+
+```css
+/* ComponentName.module.css */
+.componentName {
+  /* Root styles */
+}
+
+.componentName .header {
+  /* One level deep - following CSS Modules rule */
+}
+
+.componentName .content {
+  /* One level deep - following CSS Modules rule */
+}
+```
+
+## Logic Extraction
+
+### Pure Functions in Utils
+
+```tsx
+// ComponentName.utils.ts
+export const processData = (data: RawData[]): ProcessedData[] => {
+  return data
+    .filter((item) => item.isValid)
+    .map((item) => ({
+      ...item,
+      processedValue: calculateValue(item),
+    }))
+    .sort((a, b) => a.processedValue - b.processedValue);
+};
+
+export const calculateValue = (item: RawData): number => {
+  return item.baseValue * item.multiplier;
+};
+```
+
+### Component Using Utils
+
+```tsx
+export const ComponentName = ({ data }: { data: RawData[] }) => {
+  const processedData = useMemo(() => {
+    return processData(data);
+  }, [data]);
+
+  return (
+    <div className={css.componentName}>
+      {processedData.map((item) => (
+        <DataItem key={item.id} item={item} />
+      ))}
+    </div>
+  );
+};
+```
+
+## Custom Hooks
+
+### When to Create Hooks
+
+- Complex state management
+- Reusable component logic
+- DOM manipulation with refs
+- API calls and data fetching
+- Form handling
+
+### Hook Structure
+
+```tsx
+// ComponentName.hooks.ts
+export const useComponentData = (id: string) => {
+  const [data, setData] = useState<Data | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const result = await api.getData(id);
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  return { data, loading, error };
+};
+```
+
+### Component Using Hooks
+
+```tsx
+export const ComponentName = ({ id }: { id: string }) => {
+  const { data, loading, error } = useComponentData(id);
+
+  if (loading) return <div className={css.loading}>Loading...</div>;
+  if (error) return <div className={css.error}>{error}</div>;
+  if (!data) return null;
+
+  return <div className={css.componentName}>{/* Render data */}</div>;
+};
+```
+
+## Performance Optimization
+
+### useMemo for Computed Values
+
+```tsx
+export const ComponentName = ({ items }: { items: Item[] }) => {
+  // Memoize expensive calculations
+  const sortedItems = useMemo(() => {
+    return [...items].sort((a, b) => a.name.localeCompare(b.name));
+  }, [items]);
+
+  const filteredItems = useMemo(() => {
+    return sortedItems.filter((item) => item.isActive);
+  }, [sortedItems]);
+
+  const totalValue = useMemo(() => {
+    return filteredItems.reduce((sum, item) => sum + item.value, 0);
+  }, [filteredItems]);
+
+  return (
+    <div className={css.componentName}>
+      <div className={css.total}>Total: {totalValue}</div>
+      {filteredItems.map((item) => (
+        <ItemCard key={item.id} item={item} />
+      ))}
+    </div>
+  );
+};
+```
+
+### useCallback for Functions
+
+```tsx
+export const ComponentName = ({ onSave }: { onSave: (data: Data) => void }) => {
+  const [formData, setFormData] = useState<Data>({});
+
+  // Memoize event handlers
+  const handleInputChange = useCallback((field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleSubmit = useCallback(() => {
+    onSave(formData);
+  }, [formData, onSave]);
+
+  const handleReset = useCallback(() => {
+    setFormData({});
+  }, []);
+
+  return (
+    <form className={css.form} onSubmit={handleSubmit}>
+      <input
+        onChange={(e) => handleInputChange("name", e.target.value)}
+        className={css.input}
+      />
+      <button type="submit" className={css.button}>
+        Save
+      </button>
+      <button type="button" onClick={handleReset} className={css.button}>
+        Reset
+      </button>
+    </form>
+  );
+};
+```
+
+## Testing Requirements
+
+### Test File Structure
+
+```tsx
+// ComponentName.test.tsx
+import { render, screen, fireEvent } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { ComponentName } from "./ComponentName";
+
+describe("ComponentName", () => {
+  const defaultProps = {
+    requiredProp: "test value",
+    optionalProp: "optional value",
+  };
+
+  it("renders with required props", () => {
+    render(<ComponentName {...defaultProps} />);
+    expect(screen.getByText("test value")).toBeInTheDocument();
+  });
+
+  it("renders with optional props", () => {
+    render(<ComponentName requiredProp="required" optionalProp="custom" />);
+    expect(screen.getByText("custom")).toBeInTheDocument();
+  });
+
+  it("handles user interactions", async () => {
+    const user = userEvent.setup();
+    const mockOnClick = jest.fn();
+
+    render(<ComponentName {...defaultProps} onClick={mockOnClick} />);
+
+    const button = screen.getByRole("button");
+    await user.click(button);
+
+    expect(mockOnClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("applies correct CSS classes", () => {
+    render(<ComponentName {...defaultProps} />);
+
+    const container = screen.getByTestId("component-name");
+    expect(container).toHaveClass("componentName");
+  });
+});
+```
+
+### Test Coverage Requirements
+
+- Test all prop variations
+- Test user interactions
+- Test edge cases
+- Test CSS class application
+- Test hook behavior
+- Test utility function integration
+
+## Best Practices
+
+### 1. Component Organization
+
+- One component per file
+- Group related files in component folder
+- Keep components small and focused
+- Extract complex logic to utilities and hooks
+
+### 2. State Management
+
+- Use hooks for local state
+- Extract complex state logic to custom hooks
+- Keep component state minimal
+- Use context for shared state
+
+### 3. Performance
+
+- Memoize expensive calculations with `useMemo`
+- Memoize functions with `useCallback`
+- Use `React.memo` for pure components
+- Avoid unnecessary re-renders
+
+### 4. Code Quality
+
+- Write meaningful component names
+- Document complex logic
+- Follow consistent formatting
+- Use TypeScript strictly
+- Test thoroughly
+
+## Example: Complete Component
+
+### UserProfile Component
+
+```tsx
+// UserProfile/index.tsx
+import css from "./UserProfile.module.css";
+import { useUserData } from "./UserProfile.hooks";
+import { formatUserName, calculateUserStats } from "./UserProfile.utils";
+
+interface UserProfileProps {
+  userId: string;
+  showStats?: boolean;
+}
+
+export const UserProfile: FunctionComponent<UserProfileProps> = ({
+  userId,
+  showStats = false,
+}: UserProfileProps) => {
+  const { user, loading, error } = useUserData(userId);
+
+  const formattedName = useMemo(() => {
+    return user ? formatUserName(user) : "";
+  }, [user]);
+
+  const stats = useMemo(() => {
+    return user ? calculateUserStats(user) : null;
+  }, [user]);
+
+  const handleEdit = useCallback(() => {
+    // Handle edit logic
+  }, []);
+
+  if (loading) return <div className={css.loading}>Loading...</div>;
+  if (error) return <div className={css.error}>{error}</div>;
+  if (!user) return null;
+
+  return (
+    <div className={css.userProfile}>
+      <header className={css.header}>
+        <h1 className={css.name}>{formattedName}</h1>
+        <button onClick={handleEdit} className={css.editButton}>
+          Edit
+        </button>
+      </header>
+
+      <main className={css.content}>
+        <div className={css.info}>
+          <p className={css.email}>{user.email}</p>
+          <p className={css.role}>{user.role}</p>
+        </div>
+
+        {showStats && stats && (
+          <div className={css.stats}>
+            <h2>Statistics</h2>
+            <p>Posts: {stats.postCount}</p>
+            <p>Comments: {stats.commentCount}</p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default UserProfile;
+```
+
+## Automated Checks
+
+- Verify functional component usage (no class components)
+- Check CSS module file naming and structure
+- Ensure logic is extracted to utilities and hooks
+- Verify test file existence and coverage
+- Check for proper use of `useMemo` and `useCallback`
+- Validate component file organization
+- Ensure pure function usage from utilities
+
+## Remember
+
+> "React components should be focused on rendering UI, with logic extracted to pure functions and custom hooks. Use CSS Modules for styling, optimize performance with memoization, and ensure comprehensive testing coverage."
+
+## Related Rules
+
+- [Pure Functions Guide](mdc:pure-functions.mdc) - For extracting logic from components
+- [CSS Modules Styling Standards](mdc:styling-css-modules.mdc) - For component styling and CSS structure
+- [Unit Testing Standards](mdc:testing-unit-standards.mdc) - For testing React components thoroughly
+- [E2E Testing Standards](mdc:testing-e2e-standards.mdc) - For testing user workflows and component interactions
