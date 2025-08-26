@@ -1,0 +1,435 @@
+---
+description: E2E Testing Standards with Playwright
+globs: **/*.spec.ts,**/*.e2e.ts
+alwaysApply: false
+---
+
+# E2E Testing Standards with Playwright
+
+## Quick Reference
+
+This rule works with:
+
+- **React Standards** - Test component interactions and workflows
+- **Pure Functions Guide** - Understand component logic boundaries
+- **CSS Modules Styling Standards** - Test responsive behavior
+- **Unit Testing Standards** - Complementary testing coverage
+
+## Core Principles
+
+1. **Use Playwright exclusively** - No Cypress or other testing frameworks
+2. **Prioritize `page.getByRole()`** - Use semantic roles over other selectors
+3. **Test user workflows** - Focus on real user interactions and journeys
+4. **Test accessibility** - Ensure components are accessible by testing with roles
+5. **Test across browsers** - Run tests on multiple browsers when possible
+6. **Fast and reliable** - Tests should be quick and deterministic
+
+## Query Priority Order
+
+### 1. `page.getByRole()` - **PREFERRED**
+
+```typescript
+// Best: Use semantic roles
+await page.getByRole("button", { name: "Submit" }).click();
+await page.getByRole("textbox", { name: "Email" }).fill("test@example.com");
+await page.getByRole("heading", { name: "Welcome" }).isVisible();
+await page.getByRole("link", { name: "Home" }).click();
+```
+
+### 2. `page.getByLabel()` - For form controls
+
+```typescript
+// Good: Use labels for form elements
+await page.getByLabel("Username").fill("testuser");
+await page.getByLabel("Password").fill("password123");
+```
+
+### 3. `page.getByText()` - For text content
+
+```typescript
+// Acceptable: Use text content when roles aren't available
+await page.getByText("Loading...").waitFor();
+await page.getByText("Success!").isVisible();
+```
+
+### 4. `page.getByTestId()` - **LAST RESORT ONLY**
+
+```typescript
+// Avoid: Only use when no other options exist
+await page.getByTestId("submit-button").click();
+```
+
+## Test Structure
+
+### File Organization
+
+```
+tests/
+├── auth/
+│   ├── login.spec.ts
+│   └── register.spec.ts
+├── navigation/
+│   └── navigation.spec.ts
+└── components/
+    └── user-profile.spec.ts
+```
+
+### Test Template
+
+```typescript
+import { test, expect } from "@playwright/test";
+
+test.describe("User Authentication", () => {
+  test.beforeEach(async ({ page }) => {
+    // Setup: Navigate to login page
+    await page.goto("/login");
+  });
+
+  test("should login successfully with valid credentials", async ({ page }) => {
+    // Arrange: Fill in login form
+    await page.getByRole("textbox", { name: "Email" }).fill("user@example.com");
+    await page.getByRole("textbox", { name: "Password" }).fill("password123");
+
+    // Act: Submit the form
+    await page.getByRole("button", { name: "Sign In" }).click();
+
+    // Assert: Verify successful login
+    await expect(
+      page.getByRole("heading", { name: "Dashboard" })
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Logout" })).toBeVisible();
+  });
+
+  test("should show error with invalid credentials", async ({ page }) => {
+    // Arrange: Fill in invalid credentials
+    await page
+      .getByRole("textbox", { name: "Email" })
+      .fill("invalid@example.com");
+    await page.getByRole("textbox", { name: "Password" }).fill("wrongpassword");
+
+    // Act: Submit the form
+    await page.getByRole("button", { name: "Sign In" }).click();
+
+    // Assert: Verify error message
+    await expect(page.getByRole("alert")).toContainText("Invalid credentials");
+  });
+});
+```
+
+## Common Testing Patterns
+
+### Form Testing
+
+```typescript
+test("should submit form successfully", async ({ page }) => {
+  // Fill form fields using roles
+  await page.getByRole("textbox", { name: "First Name" }).fill("John");
+  await page.getByRole("textbox", { name: "Last Name" }).fill("Doe");
+  await page.getByRole("textbox", { name: "Email" }).fill("john@example.com");
+
+  // Select dropdown options
+  await page.getByRole("combobox", { name: "Country" }).selectOption("US");
+
+  // Check checkboxes
+  await page.getByRole("checkbox", { name: "I agree to terms" }).check();
+
+  // Submit form
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  // Verify success
+  await expect(page.getByRole("alert", { name: "Success" })).toBeVisible();
+});
+```
+
+### Navigation Testing
+
+```typescript
+test("should navigate between pages", async ({ page }) => {
+  // Navigate to home
+  await page.goto("/");
+
+  // Click navigation links
+  await page.getByRole("link", { name: "Products" }).click();
+  await expect(page).toHaveURL("/products");
+
+  await page.getByRole("link", { name: "About" }).click();
+  await expect(page).toHaveURL("/about");
+
+  // Use breadcrumbs
+  await page.getByRole("link", { name: "Home" }).click();
+  await expect(page).toHaveURL("/");
+});
+```
+
+### Data Table Testing
+
+```typescript
+test("should display and interact with data table", async ({ page }) => {
+  await page.goto("/users");
+
+  // Verify table headers
+  await expect(page.getByRole("columnheader", { name: "Name" })).toBeVisible();
+  await expect(page.getByRole("columnheader", { name: "Email" })).toBeVisible();
+
+  // Check table rows
+  const rows = page.getByRole("row");
+  await expect(rows).toHaveCount(11); // Header + 10 data rows
+
+  // Interact with table actions
+  await page
+    .getByRole("button", { name: "Edit", exact: false })
+    .first()
+    .click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+});
+```
+
+### Modal/Dialog Testing
+
+```typescript
+test("should open and close modal", async ({ page }) => {
+  await page.goto("/dashboard");
+
+  // Open modal
+  await page.getByRole("button", { name: "Add User" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+
+  // Fill modal form
+  await page.getByRole("textbox", { name: "User Name" }).fill("New User");
+  await page.getByRole("textbox", { name: "Email" }).fill("new@example.com");
+
+  // Submit modal
+  await page.getByRole("button", { name: "Create User" }).click();
+
+  // Verify modal closed
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+
+  // Verify user created
+  await expect(page.getByText("New User")).toBeVisible();
+});
+```
+
+## Accessibility Testing
+
+### Screen Reader Testing
+
+```typescript
+test("should be accessible to screen readers", async ({ page }) => {
+  await page.goto("/profile");
+
+  // Test heading hierarchy
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2 })).toBeVisible();
+
+  // Test form labels
+  await expect(page.getByRole("textbox", { name: "Full Name" })).toBeVisible();
+  await expect(
+    page.getByRole("textbox", { name: "Email Address" })
+  ).toBeVisible();
+
+  // Test button names
+  await expect(
+    page.getByRole("button", { name: "Save Changes" })
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Cancel" })).toBeVisible();
+});
+```
+
+### Keyboard Navigation
+
+```typescript
+test("should support keyboard navigation", async ({ page }) => {
+  await page.goto("/dashboard");
+
+  // Tab through interactive elements
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "Home" })).toBeFocused();
+
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Menu" })).toBeFocused();
+
+  // Use Enter to activate
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("menu")).toBeVisible();
+});
+```
+
+## Page Object Model
+
+### Page Class Structure
+
+```typescript
+// pages/LoginPage.ts
+export class LoginPage {
+  constructor(private page: Page) {}
+
+  // Locators using roles
+  get emailInput() {
+    return this.page.getByRole("textbox", { name: "Email" });
+  }
+
+  get passwordInput() {
+    return this.page.getByRole("textbox", { name: "Password" });
+  }
+
+  get signInButton() {
+    return this.page.getByRole("button", { name: "Sign In" });
+  }
+
+  get errorMessage() {
+    return this.page.getByRole("alert");
+  }
+
+  // Actions
+  async login(email: string, password: string) {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.signInButton.click();
+  }
+
+  async expectErrorMessage(message: string) {
+    await expect(this.errorMessage).toContainText(message);
+  }
+}
+```
+
+### Test Using Page Object
+
+```typescript
+test("should login successfully", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await page.goto("/login");
+
+  await loginPage.login("user@example.com", "password123");
+
+  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+});
+```
+
+## Test Configuration
+
+### Playwright Config
+
+```typescript
+// playwright.config.ts
+import { defineConfig, devices } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "./tests",
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: "html",
+
+  use: {
+    baseURL: "http://localhost:3000",
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+  },
+
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+    },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+    },
+  ],
+});
+```
+
+## Best Practices
+
+### 1. Test Organization
+
+- Group related tests using `test.describe()`
+- Use descriptive test names that explain the scenario
+- Keep tests independent and isolated
+- Use `test.beforeEach()` for common setup
+
+### 2. Assertions
+
+- Use `expect()` for assertions
+- Test one thing per test
+- Use specific assertions over generic ones
+- Verify both positive and negative cases
+
+### 3. Performance
+
+- Use `page.waitForLoadState()` sparingly
+- Prefer specific element waits over page waits
+- Use `page.waitForSelector()` only when necessary
+- Avoid arbitrary timeouts
+
+### 4. Data Management
+
+- Use test data factories
+- Clean up test data after tests
+- Use unique identifiers for test data
+- Mock external dependencies when appropriate
+
+## Common Anti-Patterns to Avoid
+
+### ❌ Don't Use
+
+```typescript
+// Bad: CSS selectors
+await page.locator(".btn-primary").click();
+await page.locator("#email-input").fill("test@example.com");
+
+// Bad: XPath
+await page.locator('//button[contains(text(), "Submit")]').click();
+
+// Bad: Generic text selectors
+await page.locator("text=Submit").click();
+
+// Bad: Arbitrary waits
+await page.waitForTimeout(2000);
+```
+
+### ✅ Do Use
+
+```typescript
+// Good: Semantic roles
+await page.getByRole("button", { name: "Submit" }).click();
+await page.getByRole("textbox", { name: "Email" }).fill("test@example.com");
+
+// Good: Specific element waits
+await page.getByRole("button", { name: "Submit" }).waitFor();
+
+// Good: State-based waits
+await page.waitForLoadState("networkidle");
+```
+
+## Testing Checklist
+
+- [ ] Use `page.getByRole()` as primary selector
+- [ ] Test user workflows, not implementation details
+- [ ] Verify accessibility with semantic roles
+- [ ] Test across multiple browsers
+- [ ] Use page objects for complex pages
+- [ ] Avoid CSS selectors and XPath
+- [ ] Test both positive and negative scenarios
+- [ ] Verify URL changes and navigation
+- [ ] Test form submissions and validation
+- [ ] Ensure responsive behavior
+- [ ] Test keyboard navigation
+- [ ] Verify error handling and messages
+
+## Remember
+
+> "E2E tests should simulate real user behavior using semantic roles. Use `page.getByRole()` to target elements by their accessibility role, making tests more robust and ensuring your application is accessible. Test user workflows, not implementation details."
+
+## Related Rules
+
+- [React Standards](mdc:react.mdc) - For component structure and accessibility requirements
+- [Pure Functions Guide](mdc:pure-functions.mdc) - For understanding component logic boundaries
+- [CSS Modules Styling Standards](mdc:styling-css-modules.mdc) - For testing responsive behavior and styling
+- [Unit Testing Standards](mdc:testing-unit-standards.mdc) - For complementary unit testing coverage
