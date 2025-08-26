@@ -1,8 +1,4 @@
-import {
-  isBackdropClick,
-  getDialogClassName,
-  shouldRenderModal,
-} from "./Modal.utils";
+import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 
 describe("Modal utilities", () => {
   describe("isBackdropClick", () => {
@@ -58,30 +54,6 @@ describe("Modal utilities", () => {
 
       const result = isBackdropClick(mockEvent);
       expect(result).toBe(false);
-    });
-  });
-
-  describe("getDialogClassName", () => {
-    it("combines base class, size class, and custom class", () => {
-      const result = getDialogClassName("dialog", "md", "custom-class");
-      expect(result).toBe("dialog md custom-class");
-    });
-
-    it("handles empty custom class name", () => {
-      const result = getDialogClassName("dialog", "lg", "");
-      expect(result).toBe("dialog lg");
-    });
-
-    it("handles different sizes", () => {
-      expect(getDialogClassName("dialog", "sm", "test")).toBe("dialog sm test");
-      expect(getDialogClassName("dialog", "md", "test")).toBe("dialog md test");
-      expect(getDialogClassName("dialog", "lg", "test")).toBe("dialog lg test");
-      expect(getDialogClassName("dialog", "xl", "test")).toBe("dialog xl test");
-    });
-
-    it("trims whitespace from custom class name", () => {
-      const result = getDialogClassName("dialog", "md", "  custom-class  ");
-      expect(result).toBe("dialog md custom-class");
     });
   });
 

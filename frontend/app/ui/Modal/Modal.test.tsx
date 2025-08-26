@@ -3,11 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Modal } from "./Modal";
-import {
-  isBackdropClick,
-  getDialogClassName,
-  shouldRenderModal,
-} from "./Modal.utils";
+import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 
 // Mock the custom hook
 jest.mock("./Modal.hooks", () => ({
@@ -195,11 +191,6 @@ describe("Modal", () => {
 
     const result = isBackdropClick(mockEvent);
     expect(result).toBe(true);
-  });
-
-  it("generates correct dialog class names", () => {
-    const result = getDialogClassName("dialog", "md", "custom");
-    expect(result).toBe("dialog md custom");
   });
 
   it("determines modal should render correctly", () => {

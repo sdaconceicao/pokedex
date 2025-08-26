@@ -1,5 +1,3 @@
-import styles from "./Modal.module.css";
-
 /**
  * Pure utility functions for Modal component
  */
@@ -18,20 +16,6 @@ export const isBackdropClick = (
     e.clientY >= rect.top &&
     e.clientY <= rect.bottom
   );
-};
-
-/**
- * Generates CSS class names for the modal dialog
- */
-export const getDialogClassName = (
-  baseClass: string,
-  size: "sm" | "md" | "lg" | "xl",
-  customClassName: string
-): string => {
-  const trimmedCustomClass = customClassName.trim();
-  return trimmedCustomClass
-    ? `${baseClass} ${styles[size]} ${trimmedCustomClass}`.trim()
-    : `${baseClass} ${styles[size]}`.trim();
 };
 
 /**

@@ -2,14 +2,11 @@
 
 import React, { useCallback, useMemo } from "react";
 import { X } from "@untitled-ui/icons-react";
+import clsx from "clsx";
 
 import Button from "@/ui/Button";
 import { useModal } from "./Modal.hooks";
-import {
-  isBackdropClick,
-  getDialogClassName,
-  shouldRenderModal,
-} from "./Modal.utils";
+import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 import styles from "./Modal.module.css";
 
 interface ModalProps {
@@ -43,7 +40,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   // Memoized computed values
   const dialogClassName = useMemo(() => {
-    return getDialogClassName(styles.dialog, size, className);
+    return clsx(styles.dialog, styles[size], className);
   }, [size, className]);
 
   const shouldShowHeader = useMemo(() => {
