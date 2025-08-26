@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Grass Type Navigation", () => {
+test.describe("Navbar", () => {
   test("should navigate to grass type and load Bulbasaur details", async ({
     page,
   }) => {
