@@ -20,6 +20,10 @@ interface ButtonBaseProps {
   children: React.ReactNode;
   onClick?: () => void;
   "data-testid"?: string;
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-expanded"?: boolean;
+  "aria-pressed"?: boolean;
 }
 
 interface ButtonAsButtonProps extends ButtonBaseProps {
@@ -42,6 +46,10 @@ export const Button: FunctionComponent<ButtonProps> = (props) => {
     className = "",
     children,
     "data-testid": testId,
+    "aria-label": ariaLabel,
+    "aria-describedby": ariaDescribedby,
+    "aria-expanded": ariaExpanded,
+    "aria-pressed": ariaPressed,
     ...restProps
   } = props;
 
@@ -62,6 +70,10 @@ export const Button: FunctionComponent<ButtonProps> = (props) => {
         href={restProps.href}
         className={buttonClasses}
         data-testid={testId || "button-link"}
+        aria-label={ariaLabel}
+        aria-describedby={ariaDescribedby}
+        aria-expanded={ariaExpanded}
+        aria-pressed={ariaPressed}
       >
         {children}
       </Link>
@@ -78,6 +90,10 @@ export const Button: FunctionComponent<ButtonProps> = (props) => {
       disabled={disabled}
       onClick={onClick}
       data-testid={testId || "button"}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedby}
+      aria-expanded={ariaExpanded}
+      aria-pressed={ariaPressed}
     >
       {children}
     </button>

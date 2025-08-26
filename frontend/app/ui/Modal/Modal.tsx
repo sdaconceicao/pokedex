@@ -1,8 +1,15 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useMemo } from "react";
 import { X } from "@untitled-ui/icons-react";
+
 import Button from "@/ui/Button";
+import { useModal } from "./Modal.hooks";
+import {
+  isBackdropClick,
+  getDialogClassName,
+  shouldRenderModal,
+} from "./Modal.utils";
 import styles from "./Modal.module.css";
 
 interface ModalProps {
@@ -32,85 +39,54 @@ export const Modal: React.FC<ModalProps> = ({
   className = "",
   size = "md",
 }: ModalProps) => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const { dialogRef } = useModal(isOpen, onClose);
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+  // Memoized computed values
+  const dialogClassName = useMemo(() => {
+    return getDialogClassName(styles.dialog, size, className);
+  }, [size, className]);
 
-    if (isOpen) {
-      dialog.showModal();
-      // Prevent body scroll when modal is open
-      document.body.style.overflow = "hidden";
-    } else {
-      dialog.close();
-      // Restore body scroll when modal is closed
-      document.body.style.overflow = "unset";
-    }
+  const shouldShowHeader = useMemo(() => {
+    return !!(header || title || showCloseButton);
+  }, [header, title, showCloseButton]);
 
-    // Cleanup function to restore body scroll
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+  const shouldShowFooter = useMemo(() => {
+    return !!footer;
+  }, [footer]);
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (!closeOnBackdropClick) return;
+  // Memoized callbacks
+  const handleBackdropClick = useCallback(
+    (e: React.MouseEvent<HTMLDialogElement>) => {
+      if (!closeOnBackdropClick) return;
 
-    // Check if the click was on the backdrop (dialog element itself)
-    const rect = e.currentTarget.getBoundingClientRect();
-    const isInDialog =
-      e.clientX >= rect.left &&
-      e.clientX <= rect.right &&
-      e.clientY >= rect.top &&
-      e.clientY <= rect.bottom;
-
-    // If click is outside the dialog content, close the modal
-    if (!isInDialog) {
-      onClose();
-    }
-  };
-
-  const handleClose = () => {
-    onClose();
-  };
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (isBackdropClick(e)) {
         onClose();
       }
-    };
+    },
+    [closeOnBackdropClick, onClose]
+  );
 
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  // Early return if modal should not be rendered
+  if (!shouldRenderModal(isOpen)) return null;
 
   return (
     <>
       {showBackdrop && <div className={styles.backdrop} />}
       <dialog
         ref={dialogRef}
-        className={`${styles.dialog} ${styles[size]} ${className}`}
+        className={dialogClassName}
         onClick={handleBackdropClick}
       >
         <div className={styles.content}>
           {/* Header */}
-          {(header || title) && (
+          {shouldShowHeader && (
             <div className={styles.header}>
               {header || (title && <h2 className={styles.title}>{title}</h2>)}
               {showCloseButton && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handleClose}
+                  onClick={onClose}
                   className={styles.closeButton}
                   aria-label="Close modal"
                 >
@@ -124,7 +100,7 @@ export const Modal: React.FC<ModalProps> = ({
           <div className={styles.body}>{children}</div>
 
           {/* Footer */}
-          {footer && <div className={styles.footer}>{footer}</div>}
+          {shouldShowFooter && <div className={styles.footer}>{footer}</div>}
         </div>
       </dialog>
     </>
