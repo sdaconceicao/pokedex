@@ -1,6 +1,13 @@
 "use client";
 
-import React, { forwardRef } from "react";
+import React, { forwardRef, useMemo } from "react";
+import {
+  generateInputClasses,
+  generateTypeClasses,
+  generateErrorMessageId,
+  shouldShowErrorMessage,
+} from "./Input.utils";
+
 import styles from "./Input.module.css";
 
 export type InputType =
@@ -9,10 +16,12 @@ export type InputType =
   | "email"
   | "number"
   | "tel"
-  | "url";
+  | "url"
+  | "search";
+
 export type InputSize = "sm" | "md" | "lg";
 
-interface InputProps {
+export interface InputProps {
   type?: InputType;
   size?: InputSize;
   placeholder?: string;
@@ -36,9 +45,10 @@ interface InputProps {
   min?: number;
   max?: number;
   pattern?: string;
+  "data-testid"?: string;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       type = "text",
@@ -64,21 +74,36 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       min,
       max,
       pattern,
+      "data-testid": testId,
     },
     ref
   ) => {
-    const inputClasses = [
-      styles.input,
-      styles[size],
-      error ? styles.error : "",
-      disabled ? styles.disabled : "",
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+    // Use utility functions for class generation and accessibility
+    const inputClasses = useMemo(() => {
+      const typeClass = generateTypeClasses(type);
+
+      // Convert class names to CSS module classes
+      const cssClasses = [
+        ...generateInputClasses(size, error, disabled).map(
+          (className) => styles[className]
+        ),
+        ...(typeClass && [styles[typeClass]]),
+        className,
+      ];
+
+      return cssClasses.filter(Boolean).join(" ");
+    }, [type, size, error, disabled, className]);
+
+    const errorMessageId = useMemo(() => {
+      return generateErrorMessageId(id, errorMessage);
+    }, [id, errorMessage]);
+
+    const showErrorMessage = useMemo(() => {
+      return shouldShowErrorMessage(error, errorMessage);
+    }, [error, errorMessage]);
 
     return (
-      <div className={styles.container}>
+      <div className={styles.container} data-testid={testId}>
         <input
           ref={ref}
           type={type}
@@ -102,10 +127,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           max={max}
           pattern={pattern}
           aria-invalid={error}
-          aria-describedby={error && errorMessage ? `${id}-error` : undefined}
+          aria-describedby={errorMessageId}
+          data-testid={`${testId}-input`}
         />
-        {error && errorMessage && (
-          <div id={`${id}-error`} className={styles.errorMessage} role="alert">
+        {showErrorMessage && (
+          <div
+            id={errorMessageId}
+            className={styles.errorMessage}
+            role="alert"
+            data-testid={`${testId}-error`}
+          >
             {errorMessage}
           </div>
         )}
