@@ -54,6 +54,12 @@ export type PokemonList = {
   total: Scalars['Int']['output'];
 };
 
+export type PokemonPokedex = {
+  __typename?: 'PokemonPokedex';
+  count: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type PokemonRegion = {
   __typename?: 'PokemonRegion';
   count: Scalars['Int']['output'];
@@ -69,7 +75,7 @@ export type PokemonType = {
 export type Query = {
   __typename?: 'Query';
   ability?: Maybe<Ability>;
-  pokedexes: Array<Scalars['String']['output']>;
+  pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;
@@ -205,6 +211,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
   PokemonList: ResolverTypeWrapper<PokemonList>;
+  PokemonPokedex: ResolverTypeWrapper<PokemonPokedex>;
   PokemonRegion: ResolverTypeWrapper<PokemonRegion>;
   PokemonType: ResolverTypeWrapper<PokemonType>;
   Query: ResolverTypeWrapper<{}>;
@@ -221,6 +228,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   Pokemon: Pokemon;
   PokemonList: PokemonList;
+  PokemonPokedex: PokemonPokedex;
   PokemonRegion: PokemonRegion;
   PokemonType: PokemonType;
   Query: {};
@@ -265,6 +273,12 @@ export type PokemonListResolvers<ContextType = DataSourceContext, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PokemonPokedexResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonPokedex'] = ResolversParentTypes['PokemonPokedex']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PokemonRegionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonRegion'] = ResolversParentTypes['PokemonRegion']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -279,7 +293,7 @@ export type PokemonTypeResolvers<ContextType = DataSourceContext, ParentType ext
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ability?: Resolver<Maybe<ResolversTypes['Ability']>, ParentType, ContextType, RequireFields<QueryAbilityArgs, 'id'>>;
-  pokedexes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  pokedexes?: Resolver<Array<ResolversTypes['PokemonPokedex']>, ParentType, ContextType>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
   pokemonByPokedex?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByPokedexArgs>>;
   pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByRegionArgs>>;
@@ -304,6 +318,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   AbilityLite?: AbilityLiteResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   PokemonList?: PokemonListResolvers<ContextType>;
+  PokemonPokedex?: PokemonPokedexResolvers<ContextType>;
   PokemonRegion?: PokemonRegionResolvers<ContextType>;
   PokemonType?: PokemonTypeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

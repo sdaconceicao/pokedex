@@ -1,7 +1,7 @@
 import { client } from "../lib/apollo-client";
 import { getTypes, getPokedexes, getRegions } from "./NavigationDataProvider";
 import NavigationDataProvider from "./NavigationDataProvider";
-import { PokemonType, PokemonRegion } from "../lib/types";
+import { PokemonType, PokemonRegion, PokemonPokedex } from "../lib/types";
 
 // Mock the Apollo client
 jest.mock("../lib/apollo-client", () => ({
@@ -113,11 +113,16 @@ describe("NavigationDataProvider", () => {
 
   describe("getPokedexes", () => {
     it("should fetch pokedexes successfully", async () => {
-      const mockPokedexes = ["national", "kanto", "johto", "hoenn"];
+      const mockPokedexes: PokemonPokedex[] = [
+        { name: "national", count: 1008 },
+        { name: "kanto", count: 151 },
+        { name: "johto", count: 100 },
+        { name: "hoenn", count: 135 },
+      ];
 
       mockClient.query.mockResolvedValue({
         data: { pokedexes: mockPokedexes },
-      } as MockQueryResult<{ pokedexes: string[] }>);
+      } as MockQueryResult<{ pokedexes: PokemonPokedex[] }>);
 
       const result = await getPokedexes();
 
@@ -130,7 +135,7 @@ describe("NavigationDataProvider", () => {
     it("should return empty array when pokedexes data is undefined", async () => {
       mockClient.query.mockResolvedValue({
         data: { pokedexes: undefined },
-      } as MockQueryResult<{ pokedexes: string[] | undefined }>);
+      } as MockQueryResult<{ pokedexes: PokemonPokedex[] | undefined }>);
 
       const result = await getPokedexes();
 
@@ -140,7 +145,7 @@ describe("NavigationDataProvider", () => {
     it("should return empty array when pokedexes data is null", async () => {
       mockClient.query.mockResolvedValue({
         data: { pokedexes: null },
-      } as MockQueryResult<{ pokedexes: string[] | null }>);
+      } as MockQueryResult<{ pokedexes: PokemonPokedex[] | null }>);
 
       const result = await getPokedexes();
 
@@ -168,11 +173,33 @@ describe("NavigationDataProvider", () => {
     it("should handle empty pokedexes array", async () => {
       mockClient.query.mockResolvedValue({
         data: { pokedexes: [] },
-      } as MockQueryResult<{ pokedexes: string[] }>);
+      } as MockQueryResult<{ pokedexes: PokemonPokedex[] }>);
 
       const result = await getPokedexes();
 
       expect(result).toEqual([]);
+    });
+
+    it("should filter out pokedexes with count 0", async () => {
+      const mockPokedexes: PokemonPokedex[] = [
+        { name: "national", count: 1008 },
+        { name: "kanto", count: 0 },
+        { name: "johto", count: 100 },
+        { name: "hoenn", count: 0 },
+        { name: "sinnoh", count: 107 },
+      ];
+
+      mockClient.query.mockResolvedValue({
+        data: { pokedexes: mockPokedexes },
+      } as MockQueryResult<{ pokedexes: PokemonPokedex[] }>);
+
+      const result = await getPokedexes();
+
+      expect(result).toEqual([
+        { name: "national", count: 1008 },
+        { name: "johto", count: 100 },
+        { name: "sinnoh", count: 107 },
+      ]);
     });
   });
 
@@ -193,7 +220,7 @@ describe("NavigationDataProvider", () => {
       const result = await getRegions();
 
       expect(mockClient.query).toHaveBeenCalledWith({
-        query: expect.any(Object), 
+        query: expect.any(Object),
       });
       expect(result).toEqual([
         { name: "kanto", count: 151 },
@@ -273,7 +300,10 @@ describe("NavigationDataProvider", () => {
         { name: "fire", count: 5 },
         { name: "water", count: 3 },
       ];
-      const mockPokedexes = ["national", "kanto"];
+      const mockPokedexes: PokemonPokedex[] = [
+        { name: "national", count: 1008 },
+        { name: "kanto", count: 151 },
+      ];
       const mockRegions: PokemonRegion[] = [
         { name: "kanto", count: 151 },
         { name: "johto", count: 100 },
@@ -286,7 +316,7 @@ describe("NavigationDataProvider", () => {
         } as MockQueryResult<{ types: PokemonType[] }>)
         .mockResolvedValueOnce({
           data: { pokedexes: mockPokedexes },
-        } as MockQueryResult<{ pokedexes: string[] }>)
+        } as MockQueryResult<{ pokedexes: PokemonPokedex[] }>)
         .mockResolvedValueOnce({
           data: { regions: mockRegions },
         } as MockQueryResult<{ regions: PokemonRegion[] }>);
@@ -307,7 +337,11 @@ describe("NavigationDataProvider", () => {
         { name: "water", count: 0 }, // Should be filtered out
         { name: "grass", count: 3 },
       ];
-      const mockPokedexes = ["national", "kanto"];
+      const mockPokedexes: PokemonPokedex[] = [
+        { name: "national", count: 1008 },
+        { name: "kanto", count: 0 },
+        { name: "johto", count: 100 },
+      ];
       const mockRegions: PokemonRegion[] = [
         { name: "kanto", count: 151 },
         { name: "johto", count: 0 }, // Should be filtered out
@@ -321,7 +355,7 @@ describe("NavigationDataProvider", () => {
         } as MockQueryResult<{ types: PokemonType[] }>)
         .mockResolvedValueOnce({
           data: { pokedexes: mockPokedexes },
-        } as MockQueryResult<{ pokedexes: string[] }>)
+        } as MockQueryResult<{ pokedexes: PokemonPokedex[] }>)
         .mockResolvedValueOnce({
           data: { regions: mockRegions },
         } as MockQueryResult<{ regions: PokemonRegion[] }>);
@@ -333,7 +367,10 @@ describe("NavigationDataProvider", () => {
           { name: "fire", count: 5 },
           { name: "grass", count: 3 },
         ],
-        pokedexes: ["national", "kanto"],
+        pokedexes: [
+          { name: "national", count: 1008 },
+          { name: "johto", count: 100 },
+        ],
         regions: [
           { name: "kanto", count: 151 },
           { name: "hoenn", count: 135 },

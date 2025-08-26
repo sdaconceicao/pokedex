@@ -3,6 +3,7 @@ import {
   Ability,
   AbilityLite,
   Pokemon,
+  PokemonPokedex,
   PokemonRegion,
   PokemonType,
 } from "../types";
@@ -207,9 +208,34 @@ export class PokemonAPI extends RESTDataSource {
       });
   }
 
-  getPokedexes(): Promise<string[]> {
-    return this.get<PokedexListResponse>("pokedex?limit=50").then((data) =>
-      data.results.map((entry: NamedAPIResource) => entry.name).sort()
+  getPokedexes(): Promise<PokemonPokedex[]> {
+    return this.get<PokedexListResponse>("pokedex?limit=50").then(
+      async (data) => {
+        const pokedexesWithCounts = await Promise.all(
+          data.results.map(async (entry: NamedAPIResource) => {
+            try {
+              const count = await this.getPokemonByPokedex(entry.name).then(
+                (pokemon) => pokemon.length
+              );
+              return {
+                name: entry.name,
+                count,
+              };
+            } catch (error) {
+              logger.error(
+                `Error getting count for pokedex ${entry.name}:`,
+                error
+              );
+              return {
+                name: entry.name,
+                count: 0,
+              };
+            }
+          })
+        );
+
+        return pokedexesWithCounts.sort((a, b) => a.name.localeCompare(b.name));
+      }
     );
   }
 

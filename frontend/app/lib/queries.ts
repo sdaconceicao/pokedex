@@ -71,7 +71,10 @@ export const SEARCH_POKEMON = gql`
 
 export const GET_POKEDEXES = gql`
   query GetPokedexes {
-    pokedexes
+    pokedexes {
+      name
+      count
+    }
   }
 `;
 

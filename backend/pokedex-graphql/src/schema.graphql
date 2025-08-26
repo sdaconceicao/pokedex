@@ -6,7 +6,7 @@ type Query {
   pokemonByRegion(region: String, limit: Int, offset: Int): PokemonList
   ability(id: ID!): Ability
   types: [PokemonType!]!
-  pokedexes: [String!]!
+  pokedexes: [PokemonPokedex!]!
   regions: [PokemonRegion!]!
 }
 
@@ -53,6 +53,11 @@ type Ability {
 }
 
 type PokemonRegion {
+  name: String!
+  count: Int!
+}
+
+type PokemonPokedex {
   name: String!
   count: Int!
 }

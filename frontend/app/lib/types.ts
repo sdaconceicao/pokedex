@@ -47,6 +47,11 @@ export type PokemonList = {
   total: Scalars['Int']['output'];
 };
 
+export type PokemonPokedex = {
+  count: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type PokemonRegion = {
   count: Scalars['Int']['output'];
   name: Scalars['String']['output'];
@@ -59,7 +64,7 @@ export type PokemonType = {
 
 export type Query = {
   ability?: Maybe<Ability>;
-  pokedexes: Array<Scalars['String']['output']>;
+  pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;

@@ -1,4 +1,4 @@
-import { PokemonType, PokemonRegion } from "@/lib/types";
+import { PokemonType, PokemonRegion, PokemonPokedex } from "@/lib/types";
 import { NavItem } from "./NavbarItem";
 import { capitalize } from "@/lib/string";
 
@@ -9,11 +9,11 @@ export const getTypeItems = (types: PokemonType[]): NavItem[] =>
     activeWhenQueryParamEquals: { key: "type", value: type.name },
   }));
 
-export const getPokedexItems = (pokedexes: string[]): NavItem[] =>
+export const getPokedexItems = (pokedexes: PokemonPokedex[]): NavItem[] =>
   pokedexes.map((pokedex) => ({
-    label: capitalize(pokedex).replace(/-/g, " "),
-    href: `/?pokedex=${encodeURIComponent(pokedex)}`,
-    activeWhenQueryParamEquals: { key: "pokedex", value: pokedex },
+    label: `${capitalize(pokedex.name).replace(/-/g, " ")} (${pokedex.count})`,
+    href: `/?pokedex=${encodeURIComponent(pokedex.name)}`,
+    activeWhenQueryParamEquals: { key: "pokedex", value: pokedex.name },
   }));
 
 export const getRegionItems = (regions: PokemonRegion[]): NavItem[] =>

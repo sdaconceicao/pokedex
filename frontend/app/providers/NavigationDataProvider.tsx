@@ -1,10 +1,10 @@
-import { PokemonType, PokemonRegion } from "@/lib/types";
+import { PokemonType, PokemonRegion, PokemonPokedex } from "@/lib/types";
 import { client } from "@/lib/apollo-client";
 import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "@/lib/queries";
 
 export interface NavigationData {
   types: PokemonType[];
-  pokedexes: string[];
+  pokedexes: PokemonPokedex[];
   regions: PokemonRegion[];
 }
 
@@ -20,12 +20,12 @@ export const getTypes = async (): Promise<PokemonType[]> => {
   }
 };
 
-export const getPokedexes = async (): Promise<string[]> => {
+export const getPokedexes = async (): Promise<PokemonPokedex[]> => {
   try {
-    const { data } = await client.query<{ pokedexes: string[] }>({
+    const { data } = await client.query<{ pokedexes: PokemonPokedex[] }>({
       query: GET_POKEDEXES,
     });
-    return data.pokedexes || [];
+    return data.pokedexes?.filter((pokedex) => pokedex.count > 0) || [];
   } catch (error) {
     console.error("Error fetching pokedexes:", error);
     return [];
