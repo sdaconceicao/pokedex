@@ -6,6 +6,14 @@ alwaysApply: false
 
 # CSS Modules Styling Standards
 
+## Quick Reference
+
+This rule works with:
+
+- **React Standards** - Style React components properly
+- **Unit Testing Standards** - Test CSS class application
+- **E2E Testing Standards** - Test responsive behavior
+
 ## Core Principles
 
 1. **Use CSS Modules** - All component styles must use `.module.css` files
@@ -372,3 +380,9 @@ it("applies correct CSS classes", () => {
 ## Remember
 
 > "CSS Modules provide component-scoped styling with a maximum depth of 1 level. This keeps styles predictable, maintainable, and prevents specificity wars. Keep it simple, keep it shallow."
+
+## Related Rules
+
+- [React Standards](mdc:react.mdc) - For component structure and CSS module integration
+- [Unit Testing Standards](mdc:testing-unit-standards.mdc) - For testing CSS class application
+- [E2E Testing Standards](mdc:testing-e2e-standards.mdc) - For testing responsive behavior and styling

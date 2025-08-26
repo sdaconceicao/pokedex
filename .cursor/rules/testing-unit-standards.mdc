@@ -6,6 +6,15 @@ alwaysApply: false
 
 # Unit Testing Standards
 
+## Quick Reference
+
+This rule works with:
+
+- **React Standards** - Test React components thoroughly
+- **Pure Functions Guide** - Test extracted logic functions
+- **CSS Modules Styling Standards** - Test CSS class application
+- **E2E Testing Standards** - Complementary testing coverage
+
 ## Core Principles
 
 1. **Test the smallest units of code possible** - Functions, components, and utilities in isolation
@@ -446,3 +455,10 @@ describe('SearchInput', () => {
 ## Remember
 
 > "Unit tests should be fast, focused, and thorough. Test the smallest units of code possible, use proper testing patterns, and ensure comprehensive coverage. For React components, prefer `getByRole` queries and test user behavior, not implementation details."
+
+## Related Rules
+
+- [React Standards](mdc:react.mdc) - For component structure and testing requirements
+- [Pure Functions Guide](mdc:pure-functions.mdc) - For testing pure functions and extracted logic
+- [CSS Modules Styling Standards](mdc:styling-css-modules.mdc) - For testing CSS class application
+- [E2E Testing Standards](mdc:testing-e2e-standards.mdc) - For complementary user workflow testing

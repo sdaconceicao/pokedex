@@ -6,6 +6,13 @@ alwaysApply: false
 
 # Pure Functions Guide
 
+## Quick Reference
+
+This rule works with:
+
+- **React Standards** - Extract logic from React components
+- **Unit Testing Standards** - Test pure functions thoroughly
+
 ## What Makes a Function Pure
 
 A pure function is a function that:
@@ -226,3 +233,8 @@ const memoizedCalculation = useMemo(() => {
 ## Remember
 
 "A pure function is like a mathematical function: it always returns the same output for the same input, and it has no side effects. It's the foundation of functional programming and makes your code more predictable, testable, and maintainable."
+
+## Related Rules
+
+- [React Standards](mdc:react.mdc) - For component structure and logic extraction patterns
+- [Unit Testing Standards](mdc:testing-unit-standards.mdc) - For testing pure functions thoroughly

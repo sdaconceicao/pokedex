@@ -6,6 +6,15 @@ alwaysApply: false
 
 # React Component Standards
 
+## Quick Reference
+
+This rule works with:
+
+- **Pure Functions Guide** - Extract logic from components
+- **CSS Modules Styling Standards** - Style components properly
+- **Unit Testing Standards** - Test components thoroughly
+- **E2E Testing Standards** - Test user workflows
+
 ## Core Principles
 
 1. **Always use functional components** - No class components
@@ -422,3 +431,10 @@ export default UserProfile;
 ## Remember
 
 > "React components should be focused on rendering UI, with logic extracted to pure functions and custom hooks. Use CSS Modules for styling, optimize performance with memoization, and ensure comprehensive testing coverage."
+
+## Related Rules
+
+- [Pure Functions Guide](mdc:pure-functions.mdc) - For extracting logic from components
+- [CSS Modules Styling Standards](mdc:styling-css-modules.mdc) - For component styling and CSS structure
+- [Unit Testing Standards](mdc:testing-unit-standards.mdc) - For testing React components thoroughly
+- [E2E Testing Standards](mdc:testing-e2e-standards.mdc) - For testing user workflows and component interactions

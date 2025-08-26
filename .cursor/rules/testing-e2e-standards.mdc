@@ -6,6 +6,15 @@ alwaysApply: false
 
 # E2E Testing Standards with Playwright
 
+## Quick Reference
+
+This rule works with:
+
+- **React Standards** - Test component interactions and workflows
+- **Pure Functions Guide** - Understand component logic boundaries
+- **CSS Modules Styling Standards** - Test responsive behavior
+- **Unit Testing Standards** - Complementary testing coverage
+
 ## Core Principles
 
 1. **Use Playwright exclusively** - No Cypress or other testing frameworks
@@ -417,3 +426,10 @@ await page.waitForLoadState("networkidle");
 ## Remember
 
 > "E2E tests should simulate real user behavior using semantic roles. Use `page.getByRole()` to target elements by their accessibility role, making tests more robust and ensuring your application is accessible. Test user workflows, not implementation details."
+
+## Related Rules
+
+- [React Standards](mdc:react.mdc) - For component structure and accessibility requirements
+- [Pure Functions Guide](mdc:pure-functions.mdc) - For understanding component logic boundaries
+- [CSS Modules Styling Standards](mdc:styling-css-modules.mdc) - For testing responsive behavior and styling
+- [Unit Testing Standards](mdc:testing-unit-standards.mdc) - For complementary unit testing coverage
