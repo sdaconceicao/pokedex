@@ -15,7 +15,7 @@ import { FastifyRequest } from 'fastify';
 import { UserEntity } from '../users/users.entity';
 import { Public } from './decorators/public.decorator';
 
-interface AuthenticatedRequest extends FastifyRequest {
+export interface AuthenticatedRequest extends FastifyRequest {
   user: UserEntity;
 }
 @Public()

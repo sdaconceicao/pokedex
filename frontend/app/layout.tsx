@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import ApolloWrapper from "@/ui/ApolloWrapper";
 import QueryProvider from "./providers/QueryProvider";
+import NavigationDataProvider from "./providers/NavigationDataProvider";
 import { SearchBar } from "@/ui/Search";
 import AuthButtons from "@/ui/AuthButtons";
 import Navbar from "@/ui/Navbar";
@@ -23,11 +25,13 @@ export const metadata: Metadata = {
   description: "A Pokémon database with GraphQL API",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navigationData = await NavigationDataProvider();
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
@@ -36,11 +40,17 @@ export default function RootLayout({
             <div className={styles.container}>
               <header className={styles.header}>
                 <h1 className={styles.heading}>Pokédex</h1>
-                <SearchBar />
-                <AuthButtons />
+                <Suspense fallback={<div>Loading search...</div>}>
+                  <SearchBar />
+                </Suspense>
+                <Suspense fallback={<div>Loading auth...</div>}>
+                  <AuthButtons />
+                </Suspense>
               </header>
               <div className={styles.content}>
-                <Navbar />
+                <Suspense fallback={<div>Loading navigation...</div>}>
+                  <Navbar navigationData={navigationData} />
+                </Suspense>
                 <main className={styles.main}>{children}</main>
               </div>
             </div>
