@@ -19,8 +19,8 @@
   color: var(--layout-primary-background);
 }
 
-/* Disabled state */
-.label:has(input:disabled) {
+/* Disabled state - using a modifier class instead of deep selector */
+.labelDisabled {
   color: var(--layout-quaternary-foreground);
   cursor: not-allowed;
 }

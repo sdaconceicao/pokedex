@@ -19,7 +19,7 @@ interface ModalProps {
   size?: "sm" | "md" | "lg" | "xl";
 }
 
-export default function Modal({
+export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   children,
@@ -31,7 +31,7 @@ export default function Modal({
   closeOnBackdropClick = true,
   className = "",
   size = "md",
-}: ModalProps) {
+}: ModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -129,4 +129,6 @@ export default function Modal({
       </dialog>
     </>
   );
-}
+};
+
+export default Modal;
