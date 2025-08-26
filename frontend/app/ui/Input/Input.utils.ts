@@ -1,42 +1,12 @@
-import { InputSize, InputType } from "./Input";
-
-/**
- * Generates CSS classes for the input element
- * @param size - The size variant of the input
- * @param error - Whether the input has an error state
- * @param disabled - Whether the input is disabled
- * @param className - Additional custom classes
- * @returns An array of CSS class names
- */
-export const generateInputClasses = (
-  size: InputSize,
-  error: boolean,
-  disabled: boolean
-): string[] => {
-  return [
-    "input",
-    size,
-    error ? "error" : "",
-    disabled ? "disabled" : "",
-  ].filter(Boolean);
-};
+import { InputType } from "./Input";
 
 /**
  * Generates CSS class for type-specific styling
  * @param type - The input type
  * @returns CSS class name for type-specific styling or empty string
  */
-export const generateTypeClasses = (type: InputType): string => {
-  switch (type) {
-    case "password":
-      return "password";
-    case "number":
-      return "number";
-    case "search":
-      return "search";
-    default:
-      return "";
-  }
+export const generateTypeClass = (type: InputType): string => {
+  return ["password", "number", "search"].includes(type) ? type : "";
 };
 
 /**

@@ -1,6 +1,5 @@
 import {
-  generateInputClasses,
-  generateTypeClasses,
+  generateTypeClass,
   generateErrorMessageId,
   shouldShowErrorMessage,
   validateInputProps,
@@ -8,69 +7,39 @@ import {
 } from "./Input.utils";
 
 describe("Input Utils", () => {
-  describe("generateInputClasses", () => {
-    it("generates base classes correctly", () => {
-      const result = generateInputClasses("md", false, false);
-      expect(result).toEqual(["input", "md"]);
-    });
-
-    it("includes error class when error is true", () => {
-      const result = generateInputClasses("md", true, false);
-      expect(result).toEqual(["input", "md", "error"]);
-    });
-
-    it("includes disabled class when disabled is true", () => {
-      const result = generateInputClasses("md", false, true);
-      expect(result).toEqual(["input", "md", "disabled"]);
-    });
-
-    it("combines multiple states correctly", () => {
-      const result = generateInputClasses("lg", true, true);
-      expect(result).toEqual(["input", "lg", "error", "disabled"]);
-    });
-
-    it("handles different sizes", () => {
-      const smallResult = generateInputClasses("sm", false, false);
-      const largeResult = generateInputClasses("lg", false, false);
-
-      expect(smallResult).toEqual(["input", "sm"]);
-      expect(largeResult).toEqual(["input", "lg"]);
-    });
-  });
-
-  describe("generateTypeClasses", () => {
+  describe("generateTypeClass", () => {
     it("returns empty string for text type", () => {
-      const result = generateTypeClasses("text");
+      const result = generateTypeClass("text");
       expect(result).toBe("");
     });
 
     it("returns password class for password type", () => {
-      const result = generateTypeClasses("password");
+      const result = generateTypeClass("password");
       expect(result).toBe("password");
     });
 
     it("returns number class for number type", () => {
-      const result = generateTypeClasses("number");
+      const result = generateTypeClass("number");
       expect(result).toBe("number");
     });
 
     it("returns search class for search type", () => {
-      const result = generateTypeClasses("search");
+      const result = generateTypeClass("search");
       expect(result).toBe("search");
     });
 
     it("returns empty string for email type", () => {
-      const result = generateTypeClasses("email");
+      const result = generateTypeClass("email");
       expect(result).toBe("");
     });
 
     it("returns empty string for tel type", () => {
-      const result = generateTypeClasses("tel");
+      const result = generateTypeClass("tel");
       expect(result).toBe("");
     });
 
     it("returns empty string for url type", () => {
-      const result = generateTypeClasses("url");
+      const result = generateTypeClass("url");
       expect(result).toBe("");
     });
   });

@@ -1,9 +1,9 @@
 "use client";
 
 import React, { forwardRef, useMemo } from "react";
+import clsx from "clsx";
 import {
-  generateInputClasses,
-  generateTypeClasses,
+  generateTypeClass,
   generateErrorMessageId,
   shouldShowErrorMessage,
 } from "./Input.utils";
@@ -78,20 +78,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    // Use utility functions for class generation and accessibility
+    // Generate classes directly in component using clsx
     const inputClasses = useMemo(() => {
-      const typeClass = generateTypeClasses(type);
+      const typeClass = generateTypeClass(type);
 
-      // Convert class names to CSS module classes
-      const cssClasses = [
-        ...generateInputClasses(size, error, disabled).map(
-          (className) => styles[className]
-        ),
-        ...(typeClass && [styles[typeClass]]),
-        className,
-      ];
-
-      return cssClasses.filter(Boolean).join(" ");
+      return clsx(
+        styles.input,
+        styles[size],
+        {
+          [styles.error]: error,
+          [styles.disabled]: disabled,
+        },
+        typeClass && styles[typeClass],
+        className
+      );
     }, [type, size, error, disabled, className]);
 
     const errorMessageId = useMemo(() => {
