@@ -46,12 +46,11 @@
 .primary:hover:not(.disabled) {
   background: var(--layout-primary-background-hover);
   border-color: var(--layout-primary-background-hover);
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
 }
 
 .primary:active:not(.disabled) {
-  transform: translateY(0);
+  /* Active state - no transform needed */
 }
 
 .secondary {
@@ -98,51 +97,12 @@
   border-color: #b91c1c;
 }
 
-/* Disabled state */
+/* Disabled state - must come after variant styles to override them */
 .disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
   box-shadow: none !important;
-}
-
-.disabled:hover {
-  background: inherit;
-  border-color: inherit;
-  color: inherit;
-}
-
-/* Special styles for pagination buttons */
-.pagination {
-  min-width: 2.5rem;
-}
-
-.pagination.previousNext {
-  min-width: 5rem;
-}
-
-.pagination.active {
-  background: var(--layout-primary-background);
-  color: var(--layout-primary-foreground);
-  border-color: var(--layout-primary-background);
-}
-
-.pagination.active:hover:not(.disabled) {
-  background: var(--layout-primary-background-hover);
-  border-color: var(--layout-primary-background-hover);
-}
-
-.pagination.ellipsis {
-  cursor: default;
-  border: none;
-  background: transparent;
-  min-width: 2rem;
-}
-
-.pagination.ellipsis:hover {
-  background: transparent;
-  transform: none;
-  box-shadow: none;
 }
 
 /* Responsive adjustments */

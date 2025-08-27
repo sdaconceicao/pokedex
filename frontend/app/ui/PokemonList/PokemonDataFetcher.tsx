@@ -8,7 +8,7 @@ import {
   GET_POKEMON_BY_REGION,
   SEARCH_POKEMON,
 } from "@/lib/queries";
-import { Pokemon } from "@/lib/types";
+import { Pokemon } from "@/types";
 import PokemonList from "./PokemonList";
 
 interface PokemonDataFetcherProps {
@@ -192,17 +192,17 @@ export default function PokemonDataFetcher({
   const loading = searchQuery
     ? searchLoading
     : selectedType
-    ? typeLoading
-    : selectedPokedex
-    ? pokedexLoading
-    : regionLoading;
+      ? typeLoading
+      : selectedPokedex
+        ? pokedexLoading
+        : regionLoading;
   const error = searchQuery
     ? searchError?.message
     : selectedType
-    ? typeError?.message
-    : selectedPokedex
-    ? pokedexError?.message
-    : regionError?.message;
+      ? typeError?.message
+      : selectedPokedex
+        ? pokedexError?.message
+        : regionError?.message;
 
   // Only show pagination when we have a query context and data has loaded
   const shouldShowPagination = useMemo(

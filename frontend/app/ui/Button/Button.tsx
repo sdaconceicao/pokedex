@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { FunctionComponent } from "react";
 import Link from "next/link";
 import styles from "./Button.module.css";
 
@@ -19,6 +19,11 @@ interface ButtonBaseProps {
   className?: string;
   children: React.ReactNode;
   onClick?: () => void;
+  "data-testid"?: string;
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-expanded"?: boolean;
+  "aria-pressed"?: boolean;
 }
 
 interface ButtonAsButtonProps extends ButtonBaseProps {
@@ -33,13 +38,18 @@ interface ButtonAsLinkProps extends ButtonBaseProps {
 
 type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
-export default function Button(props: ButtonProps) {
+export const Button: FunctionComponent<ButtonProps> = (props) => {
   const {
     variant = "primary",
     size = "md",
     disabled = false,
     className = "",
     children,
+    "data-testid": testId,
+    "aria-label": ariaLabel,
+    "aria-describedby": ariaDescribedby,
+    "aria-expanded": ariaExpanded,
+    "aria-pressed": ariaPressed,
     ...restProps
   } = props;
 
@@ -56,7 +66,15 @@ export default function Button(props: ButtonProps) {
   // Handle link variant
   if ("as" in restProps && restProps.as === "link") {
     return (
-      <Link href={restProps.href} className={buttonClasses}>
+      <Link
+        href={restProps.href}
+        className={buttonClasses}
+        data-testid={testId || "button-link"}
+        aria-label={ariaLabel}
+        aria-describedby={ariaDescribedby}
+        aria-expanded={ariaExpanded}
+        aria-pressed={ariaPressed}
+      >
         {children}
       </Link>
     );
@@ -71,8 +89,15 @@ export default function Button(props: ButtonProps) {
       className={buttonClasses}
       disabled={disabled}
       onClick={onClick}
+      data-testid={testId || "button"}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedby}
+      aria-expanded={ariaExpanded}
+      aria-pressed={ariaPressed}
     >
       {children}
     </button>
   );
-}
+};
+
+export default Button;
