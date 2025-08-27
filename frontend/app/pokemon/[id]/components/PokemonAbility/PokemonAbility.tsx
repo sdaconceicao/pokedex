@@ -1,4 +1,4 @@
-import { Ability } from "@/lib/types";
+import { Ability } from "@/types";
 import styles from "./PokemonAbility.module.css";
 
 interface PokemonAbilityProps {

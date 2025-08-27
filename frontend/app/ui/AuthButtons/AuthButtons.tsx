@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import Button from "@/ui/Button";
-import Modal from "@/ui/Modal";
+import { Modal } from "@/ui/Modal";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import { useAuth } from "@/hooks/useAuth";

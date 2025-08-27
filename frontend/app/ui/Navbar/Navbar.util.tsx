@@ -1,4 +1,4 @@
-import { PokemonType, PokemonRegion, PokemonPokedex } from "@/lib/types";
+import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
 import { NavItem } from "./NavbarItem";
 import { capitalize } from "@/lib/string";
 

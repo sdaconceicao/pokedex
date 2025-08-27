@@ -4,7 +4,7 @@ const config: CodegenConfig = {
   schema: "../backend/pokedex-graphql/src/schema.graphql",
   documents: ["app/**/*.{ts,tsx}"],
   generates: {
-    "./app/lib/types.ts": {
+    "./app/types/graphql.ts": {
       plugins: ["typescript"],
       config: {
         skipTypename: true,

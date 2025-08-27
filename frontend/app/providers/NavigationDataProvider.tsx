@@ -1,4 +1,4 @@
-import { PokemonType, PokemonRegion, PokemonPokedex } from "@/lib/types";
+import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
 import { client } from "@/lib/apollo-client";
 import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "@/lib/queries";
 

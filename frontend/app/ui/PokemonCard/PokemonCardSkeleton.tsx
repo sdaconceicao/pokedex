@@ -1,19 +1,22 @@
-import styles from "./PokemonCard.module.css";
+import { FunctionComponent } from "react";
+import css from "./PokemonCard.module.css";
 
-export default function PokemonCardSkeleton() {
+export const PokemonCardSkeleton: FunctionComponent = () => {
   return (
-    <div className={styles.card}>
-      <div className={`${styles.pokemonImage} ${styles.skeletonImage}`} />
-      <div className={`${styles.pokemonName} ${styles.skeletonName}`} />
-      <div className={styles.typeList}>
-        <div className={`${styles.skeletonType} ${styles.skeletonType1}`} />
-        <div className={`${styles.skeletonType} ${styles.skeletonType2}`} />
+    <div className={css.pokemonCard} data-testid="pokemon-card-skeleton">
+      <div className={`${css.pokemonImage} ${css.skeletonImage}`} />
+      <div className={`${css.pokemonName} ${css.skeletonName}`} />
+      <div className={css.typeList}>
+        <div className={`${css.skeletonType} ${css.skeletonType1}`} />
+        <div className={`${css.skeletonType} ${css.skeletonType2}`} />
       </div>
-      <div className={styles.stats}>
-        <div className={styles.skeletonStat} />
-        <div className={styles.skeletonStat} />
-        <div className={styles.skeletonStatLast} />
+      <div className={css.stats}>
+        <div className={css.skeletonStat} />
+        <div className={css.skeletonStat} />
+        <div className={css.skeletonStatLast} />
       </div>
     </div>
   );
-}
+};
+
+export default PokemonCardSkeleton;

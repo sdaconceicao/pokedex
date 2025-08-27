@@ -1,35 +1,38 @@
-.searchContainer {
+.searchBar {
   flex: 1;
 }
 
-.searchForm {
+.searchBar .searchForm {
   display: flex;
   gap: 0;
   align-items: center;
   position: relative;
 }
 
-.searchInput {
+.searchBar .searchInput {
   flex: 1;
   border-right: none;
   border-radius: 4px 0 0 4px;
 }
 
-.searchButton {
+.searchBar .searchButton {
   border-left: none;
   border-radius: 0 4px 4px 0;
-  height: 38px;
 }
 
-.clearButton {
+.searchBar .clearButton {
   position: absolute;
   right: 65px;
   top: 50%;
   transform: translateY(-50%);
   padding: 0.25rem;
   color: var(--layout-primary-foreground);
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
-.clearButton:hover {
-  color: var(--layout-quaternary-foreground);
+.searchBar .clearButton:hover {
+  color: red;
+  background: none;
 }

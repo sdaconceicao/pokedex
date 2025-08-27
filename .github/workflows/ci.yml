@@ -2,7 +2,7 @@ name: CI Status Checks
 
 on:
   push:
-    branches: [development, main]
+    branches: [main]
 
 jobs:
   setup:

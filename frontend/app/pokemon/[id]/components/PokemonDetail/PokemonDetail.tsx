@@ -1,12 +1,11 @@
 import Image from "next/image";
-import { Ability } from "@/lib/types";
+import { Pokemon, Ability } from "@/types";
 import BackButton from "@/ui/BackButton";
-import { Pokemon } from "@/lib/types";
+import PokemonTypePill from "@/ui/PokemonTypePill";
 import PokemonStat from "../PokemonStat";
 import PokemonAbility from "../PokemonAbility";
 
 import styles from "./PokemonDetail.module.css";
-import PokemonTypePill from "@/ui/PokemonTypePill";
 
 interface PokemonDetailProps {
   pokemon: Pokemon;

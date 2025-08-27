@@ -1,0 +1,172 @@
+---
+description: Next.js Standards
+globs: **/*.tsx
+alwaysApply: false
+---
+
+# Next.js Development Standards
+
+## Import Strategy
+
+### Use Root Imports for Cross-Folder Imports
+
+When importing from outside your current folder, use the `@/` root import alias instead of relative paths:
+
+```typescript
+// ✅ Good - Use root imports for cross-folder imports
+import { Button } from "@/ui/Button";
+import { useAuth } from "@/hooks/useAuth";
+import { Pokemon } from "@/types";
+import { NavigationDataProvider } from "@/providers/NavigationDataProvider";
+
+// ❌ Bad - Avoid relative paths for cross-folder imports
+import { Button } from "../../../ui/Button";
+import { useAuth } from "../../hooks/useAuth";
+import { Pokemon } from "../../../lib/types";
+```
+
+### When to Use Root Imports
+
+- **UI Components**: `@/ui/Button`, `@/ui/Modal`, `@/ui/Navbar`
+- **Hooks**: `@/hooks/useAuth`, `@/hooks/useLocalStorage`
+- **Types**: `@/types`
+- **Utilities**: `@/lib/string`, `@/lib/validation`
+- **Providers**: `@/providers/QueryProvider`, `@/providers/NavigationDataProvider`
+- **Constants**: `@/lib/constants`
+
+### When to Use Relative Imports
+
+- **Same folder imports**: `./Component`, `./styles.module.css`
+- **Adjacent folder imports**: `../utils/helper`, `../types/ComponentProps`
+
+## Server Components
+
+### Prioritize Server Components
+
+Use Server Components by default, especially for:
+
+- **Static data retrieval**
+- **SEO-critical content**
+- **Performance-sensitive pages**
+- **Data fetching operations**
+
+### Server Component Examples
+
+```typescript
+// ✅ Good - Server Component for static data
+export default async function PokemonList() {
+  const pokemon = await fetchPokemon();
+
+  return (
+    <div>
+      {pokemon.map(pokemon => (
+        <PokemonCard key={pokemon.id} pokemon={pokemon} />
+      ))}
+    </div>
+  );
+}
+
+// ✅ Good - Server Component with data fetching
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    type?: string;
+    pokedex?: string;
+    region?: string;
+    q?: string;
+  }>;
+}) {
+  const params = await searchParams;
+
+  return (
+    <PokemonDataFetcher
+      searchQuery={params.q}
+      selectedType={params.type}
+      selectedPokedex={params.pokedex}
+      selectedRegion={params.region}
+    />
+  );
+}
+```
+
+### When to Use Client Components
+
+Only use Client Components when you need:
+
+- **Interactive state**: `useState`, `useEffect`, `useCallback`
+- **Browser APIs**: `window`, `document`, `localStorage`
+- **Event handlers**: `onClick`, `onSubmit`, `onChange`
+- **Client-side routing**: `useRouter`, `useSearchParams`
+
+```typescript
+// ✅ Good - Client Component for interactivity
+"use client";
+
+export default function SearchBar() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    // ... search logic
+  }, [searchQuery, router]);
+
+  return (
+    <form onSubmit={handleSearch}>
+      <Input
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search Pokemon..."
+      />
+    </form>
+  );
+}
+```
+
+## File Organization
+
+### Component Structure
+
+```
+app/
+├── ui/                    # Reusable UI components
+│   ├── Button/
+│   ├── Modal/
+│   └── Navbar/
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utilities, types, constants
+├── providers/             # Context providers
+└── components/            # Page-specific components
+```
+
+### Import Order
+
+1. **React imports** (if needed)
+2. **Third-party libraries**
+3. **Root imports** (`@/...`)
+4. **Relative imports** (`./...`)
+
+```typescript
+// ✅ Good - Proper import order
+import { useState, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { SearchSm, XCircle } from "@untitled-ui/icons-react";
+
+import Button from "@/ui/Button";
+import Input from "@/ui/Input";
+import { useAuth } from "@/hooks/useAuth";
+import styles from "./SearchBar.module.css";
+```
+
+## Best Practices
+
+1. **Start with Server Components** - Make components server-side by default
+2. **Add "use client" only when necessary** - Don't make everything a client component
+3. **Use root imports for cross-folder dependencies** - Makes refactoring easier
+4. **Keep client components small** - Extract logic to server components when possible
+5. **Leverage Next.js 13+ features** - Use `async` components for data fetching
+
+## Remember
+
+> "Server Components are the default in Next.js 13+. Use them for static content and data fetching, and only add 'use client' when you need interactivity or browser APIs. Use root imports (`@/`) for cross-folder dependencies to maintain clean, maintainable code."

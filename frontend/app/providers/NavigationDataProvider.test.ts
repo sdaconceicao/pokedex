@@ -1,7 +1,7 @@
-import { client } from "../lib/apollo-client";
+import { client } from "@/lib/apollo-client";
 import { getTypes, getPokedexes, getRegions } from "./NavigationDataProvider";
 import NavigationDataProvider from "./NavigationDataProvider";
-import { PokemonType, PokemonRegion, PokemonPokedex } from "../lib/types";
+import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
 
 // Mock the Apollo client
 jest.mock("../lib/apollo-client", () => ({

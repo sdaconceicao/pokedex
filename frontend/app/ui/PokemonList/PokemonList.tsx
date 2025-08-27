@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense, useCallback, useMemo, useRef } from "react";
-import { Pokemon } from "@/lib/types";
+import { Pokemon } from "@/types";
 import PokemonCard, { PokemonCardSkeleton } from "@/ui/PokemonCard";
 import Pagination from "@/ui/Pagination";
 import PokemonListSkeleton from "./PokemonListSkeleton";

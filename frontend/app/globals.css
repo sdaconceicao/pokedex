@@ -10,6 +10,7 @@
   --layout-quaternary-foreground: #888;
   --foreground: #333;
   --background: #ffffff;
+  --input-height: 35px;
 }
 
 @media (prefers-color-scheme: dark) {

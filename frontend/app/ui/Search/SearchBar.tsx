@@ -41,7 +41,7 @@ export default function SearchBar() {
   }, [setSearchQuery, router]);
 
   return (
-    <div className={styles.searchContainer}>
+    <div className={styles.searchBar}>
       <form onSubmit={handleSearch} className={styles.searchForm}>
         <Input
           type="text"

@@ -20,10 +20,11 @@ This rule works with:
 1. **Always use functional components** - No class components
 2. **Keep components focused on rendering** - Extract logic to utilities and hooks
 3. **Use CSS Modules for styling** - Follow [CSS Modules Styling Standards](mdc:styling-css-modules.mdc)
-4. **Break out logic into pure functions** - Follow [Pure Functions Guide](mdc:pure-functions.mdc)
-5. **All components must have unit tests** - 100% test coverage required
-6. **Use hooks for complex state logic** - Extract reusable logic into custom hooks
-7. **Optimize performance** - Use `useMemo` for computed values, `useCallback` for functions
+4. **Use clsx for className logic** - Handle conditional and dynamic class names cleanly
+5. **Break out logic into pure functions** - Follow [Pure Functions Guide](mdc:pure-functions.mdc)
+6. **All components must have unit tests** - 100% test coverage required
+7. **Use hooks for complex state logic** - Extract reusable logic into custom hooks
+8. **Optimize performance** - Use `useMemo` for computed values, `useCallback` for functions
 
 ## Component Structure
 
@@ -41,6 +42,8 @@ ComponentName/
 ### Component Template
 
 ```tsx
+import clsx from "clsx";
+
 interface ComponentNameProps {
   // Required props should not have default values
   requiredProp: string;
@@ -80,6 +83,7 @@ export default ComponentName;
 
 ```tsx
 import css from "./ComponentName.module.css";
+import clsx from "clsx";
 
 export const ComponentName = () => (
   <div className={css.componentName}>
@@ -104,6 +108,160 @@ export const ComponentName = () => (
 .componentName .content {
   /* One level deep - following CSS Modules rule */
 }
+```
+
+## ClassName Logic with clsx
+
+### Basic Usage
+
+```tsx
+import clsx from "clsx";
+import css from "./ComponentName.module.css";
+
+export const ComponentName = ({
+  isActive,
+  variant,
+  className,
+}: ComponentNameProps) => {
+  return (
+    <div
+      className={clsx(
+        css.componentName,
+        {
+          [css.active]: isActive,
+          [css.primary]: variant === "primary",
+          [css.secondary]: variant === "secondary",
+        },
+        className
+      )}
+    >
+      Content
+    </div>
+  );
+};
+```
+
+### Conditional Classes
+
+```tsx
+export const Button = ({
+  variant = "primary",
+  size = "medium",
+  disabled = false,
+  className,
+}: ButtonProps) => {
+  return (
+    <button
+      className={clsx(
+        css.button,
+        css[variant],
+        css[size],
+        {
+          [css.disabled]: disabled,
+          [css.loading]: loading,
+        },
+        className
+      )}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  );
+};
+```
+
+### Complex Class Logic
+
+```tsx
+export const Card = ({
+  type,
+  status,
+  isSelected,
+  isHovered,
+  className,
+}: CardProps) => {
+  const cardClasses = clsx(
+    css.card,
+    {
+      // Type-based classes
+      [css.pokemon]: type === "pokemon",
+      [css.trainer]: type === "trainer",
+      [css.item]: type === "item",
+
+      // Status-based classes
+      [css.normal]: status === "normal",
+      [css.rare]: status === "rare",
+      [css.legendary]: status === "legendary",
+
+      // State-based classes
+      [css.selected]: isSelected,
+      [css.hovered]: isHovered,
+
+      // Interactive states
+      [css.clickable]: onClick !== undefined,
+    },
+    className
+  );
+
+  return <div className={cardClasses}>{children}</div>;
+};
+```
+
+### Array and Object Syntax
+
+```tsx
+export const Navigation = ({
+  items,
+  currentPath,
+  className,
+}: NavigationProps) => {
+  return (
+    <nav className={clsx(css.navigation, className)}>
+      {items.map((item) => (
+        <a
+          key={item.path}
+          href={item.path}
+          className={clsx(css.navItem, css[item.type], {
+            [css.active]: currentPath === item.path,
+            [css.disabled]: item.disabled,
+          })}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  );
+};
+```
+
+### Utility Functions for Complex Logic
+
+```tsx
+// ComponentName.utils.ts
+export const getComponentClasses = (
+  baseClass: string,
+  variants: Record<string, string>,
+  modifiers: Record<string, boolean>,
+  additionalClasses?: string
+): string => {
+  return clsx(baseClass, Object.values(variants), modifiers, additionalClasses);
+};
+
+// Usage in component
+export const ComponentName = ({
+  variant,
+  modifiers,
+  className,
+}: ComponentNameProps) => {
+  const componentClasses = getComponentClasses(
+    css.componentName,
+    { [css[variant]]: true },
+    modifiers,
+    className
+  );
+
+  return <div className={componentClasses}>{/* Content */}</div>;
+};
 ```
 
 ## Logic Extraction
@@ -308,6 +466,15 @@ describe("ComponentName", () => {
     const container = screen.getByTestId("component-name");
     expect(container).toHaveClass("componentName");
   });
+
+  it("applies conditional classes correctly", () => {
+    render(
+      <ComponentName {...defaultProps} isActive={true} variant="primary" />
+    );
+
+    const container = screen.getByTestId("component-name");
+    expect(container).toHaveClass("componentName", "active", "primary");
+  });
 });
 ```
 
@@ -317,6 +484,7 @@ describe("ComponentName", () => {
 - Test user interactions
 - Test edge cases
 - Test CSS class application
+- Test conditional className logic with clsx
 - Test hook behavior
 - Test utility function integration
 
@@ -343,7 +511,14 @@ describe("ComponentName", () => {
 - Use `React.memo` for pure components
 - Avoid unnecessary re-renders
 
-### 4. Code Quality
+### 4. ClassName Management
+
+- Use `clsx` for all conditional className logic
+- Keep className logic readable and maintainable
+- Extract complex className logic to utility functions
+- Test className combinations thoroughly
+
+### 5. Code Quality
 
 - Write meaningful component names
 - Document complex logic
@@ -358,17 +533,24 @@ describe("ComponentName", () => {
 ```tsx
 // UserProfile/index.tsx
 import css from "./UserProfile.module.css";
+import clsx from "clsx";
 import { useUserData } from "./UserProfile.hooks";
 import { formatUserName, calculateUserStats } from "./UserProfile.utils";
 
 interface UserProfileProps {
   userId: string;
   showStats?: boolean;
+  variant?: "default" | "compact" | "detailed";
+  isSelected?: boolean;
+  className?: string;
 }
 
 export const UserProfile: FunctionComponent<UserProfileProps> = ({
   userId,
   showStats = false,
+  variant = "default",
+  isSelected = false,
+  className,
 }: UserProfileProps) => {
   const { user, loading, error } = useUserData(userId);
 
@@ -384,12 +566,22 @@ export const UserProfile: FunctionComponent<UserProfileProps> = ({
     // Handle edit logic
   }, []);
 
+  const profileClasses = clsx(
+    css.userProfile,
+    {
+      [css.compact]: variant === "compact",
+      [css.detailed]: variant === "detailed",
+      [css.selected]: isSelected,
+    },
+    className
+  );
+
   if (loading) return <div className={css.loading}>Loading...</div>;
   if (error) return <div className={css.error}>{error}</div>;
   if (!user) return null;
 
   return (
-    <div className={css.userProfile}>
+    <div className={profileClasses}>
       <header className={css.header}>
         <h1 className={css.name}>{formattedName}</h1>
         <button onClick={handleEdit} className={css.editButton}>
@@ -427,10 +619,12 @@ export default UserProfile;
 - Check for proper use of `useMemo` and `useCallback`
 - Validate component file organization
 - Ensure pure function usage from utilities
+- Verify clsx usage for className logic
+- Check for proper conditional class handling
 
 ## Remember
 
-> "React components should be focused on rendering UI, with logic extracted to pure functions and custom hooks. Use CSS Modules for styling, optimize performance with memoization, and ensure comprehensive testing coverage."
+> "React components should be focused on rendering UI, with logic extracted to pure functions and custom hooks. Use CSS Modules for styling, clsx for className logic, optimize performance with memoization, and ensure comprehensive testing coverage."
 
 ## Related Rules
 

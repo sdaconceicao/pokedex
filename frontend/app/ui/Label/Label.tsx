@@ -10,16 +10,18 @@ interface LabelProps {
   className?: string;
 }
 
-export default function Label({
+export const Label: React.FC<LabelProps> = ({
   htmlFor,
   children,
   required = false,
   className = "",
-}: LabelProps) {
+}: LabelProps) => {
   return (
     <label htmlFor={htmlFor} className={`${styles.label} ${className}`}>
       {children}
       {required && <span className={styles.required}>*</span>}
     </label>
   );
-}
+};
+
+export default Label;

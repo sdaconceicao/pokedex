@@ -1,14 +1,18 @@
+import { FunctionComponent } from "react";
 import styles from "./PokemonTypePill.module.css";
 
 interface PokemonTypePillProps {
   type: string;
+  className?: string;
 }
 
-export const PokemonTypePill = ({ type }: PokemonTypePillProps) => {
+export const PokemonTypePill: FunctionComponent<PokemonTypePillProps> = ({
+  type,
+  className,
+}: PokemonTypePillProps) => {
   return (
     <span
-      key={type}
-      className={`${styles.typePill} ${styles[type.toLowerCase()]}`}
+      className={`${styles.pokemonTypePill} ${styles[type.toLowerCase()]} ${className || ""}`}
     >
       {type}
     </span>

@@ -20,6 +20,7 @@ This rule works with:
 2. **Maximum Depth of 1** - Never nest CSS selectors more than one level deep
 3. **Component-Scoped** - Styles are automatically scoped to components
 4. **Predictable Naming** - Use consistent naming conventions
+5. **Avoid important overrides** - Only use if there is no other option
 
 ## File Structure
 

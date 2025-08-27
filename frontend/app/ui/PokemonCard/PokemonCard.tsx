@@ -2,47 +2,58 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Pokemon } from "@/lib/types";
+import { FunctionComponent } from "react";
+import { Pokemon } from "@/types/graphql";
 import PokemonTypePill from "@/ui/PokemonTypePill";
+import {
+  formatPokemonName,
+  getPokemonTypeClass,
+  getPrimaryType,
+} from "./PokemonCard.utils";
 
-import styles from "./PokemonCard.module.css";
+import css from "./PokemonCard.module.css";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
 }
 
-export default function PokemonCard({ pokemon }: PokemonCardProps) {
+export const PokemonCard: FunctionComponent<PokemonCardProps> = ({
+  pokemon,
+}) => {
+  const primaryType = getPrimaryType(pokemon.type);
+  const typeClass = getPokemonTypeClass(primaryType);
+  const formattedName = formatPokemonName(pokemon.name);
+
   return (
     <div
-      className={`${styles.card} ${
-        styles[`type-${pokemon.type[0].toLowerCase()}` as keyof typeof styles]
-      }`}
+      className={`${css.pokemonCard} ${css[typeClass as keyof typeof css]}`}
+      data-testid="pokemon-card"
     >
       <Image
         src={pokemon.image}
         alt={pokemon.name}
         width={239}
         height={128}
-        className={styles.pokemonImage}
+        className={css.pokemonImage}
         loading="lazy"
         placeholder="blur"
-        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaHfbcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
       />
-      <h3 className={styles.pokemonName}>
-        <Link href={`pokemon/${pokemon.id}`}>
-          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
-        </Link>
+      <h3 className={css.pokemonName}>
+        <Link href={`pokemon/${pokemon.id}`}>{formattedName}</Link>
       </h3>
-      <div className={styles.typeList}>
+      <div className={css.typeList}>
         {pokemon.type.map((type: string) => (
           <PokemonTypePill key={type} type={type} />
         ))}
       </div>
-      <div className={styles.stats}>
+      <div className={css.stats}>
         <p>HP: {pokemon.stats.hp}</p>
         <p>Attack: {pokemon.stats.attack}</p>
         <p>Defense: {pokemon.stats.defense}</p>
       </div>
     </div>
   );
-}
+};
+
+export default PokemonCard;

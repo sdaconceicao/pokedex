@@ -1,4 +1,4 @@
-.typePill {
+.pokemonTypePill {
   padding: 0.375rem 0.625rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -12,92 +12,92 @@
 }
 
 /* Type-specific colors - matching Pokemon card styles */
-.typePill.normal {
+.pokemonTypePill.normal {
   background: #a8a878;
   color: #fff;
 }
 
-.typePill.fire {
+.pokemonTypePill.fire {
   background: #f08030;
   color: #fff;
 }
 
-.typePill.water {
+.pokemonTypePill.water {
   background: #6890f0;
   color: #fff;
 }
 
-.typePill.electric {
+.pokemonTypePill.electric {
   background: #f8d030;
   color: #000;
 }
 
-.typePill.grass {
+.pokemonTypePill.grass {
   background: #78c850;
   color: #fff;
 }
 
-.typePill.ice {
+.pokemonTypePill.ice {
   background: #98d8d8;
   color: #000;
 }
 
-.typePill.fighting {
+.pokemonTypePill.fighting {
   background: #c03028;
   color: #fff;
 }
 
-.typePill.poison {
+.pokemonTypePill.poison {
   background: #a040a0;
   color: #fff;
 }
 
-.typePill.ground {
+.pokemonTypePill.ground {
   background: #e0c068;
   color: #000;
 }
 
-.typePill.flying {
+.pokemonTypePill.flying {
   background: #a890f0;
   color: #fff;
 }
 
-.typePill.psychic {
+.pokemonTypePill.psychic {
   background: #f85888;
   color: #fff;
 }
 
-.typePill.bug {
+.pokemonTypePill.bug {
   background: #a8b820;
   color: #fff;
 }
 
-.typePill.rock {
+.pokemonTypePill.rock {
   background: #b8a038;
   color: #fff;
 }
 
-.typePill.ghost {
+.pokemonTypePill.ghost {
   background: #705898;
   color: #fff;
 }
 
-.typePill.dragon {
+.pokemonTypePill.dragon {
   background: #7038f8;
   color: #fff;
 }
 
-.typePill.dark {
+.pokemonTypePill.dark {
   background: #705848;
   color: #fff;
 }
 
-.typePill.steel {
+.pokemonTypePill.steel {
   background: #b8b8d0;
   color: #000;
 }
 
-.typePill.fairy {
+.pokemonTypePill.fairy {
   background: #ee99ac;
   color: #fff;
 }
