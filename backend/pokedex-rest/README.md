@@ -7,7 +7,7 @@
 ## Project setup
 
 ```bash
-$ npm install
+$ npm i
 ```
 
 ## Environment Configuration
@@ -16,13 +16,10 @@ The application supports multiple environment configurations:
 
 - **Development**: Uses `.env` file (default)
 - **Test**: Uses `.env.test` file
-- **Production**: Uses `.env.production` file
 
 ### Setting up environment files
 
-1. Copy `env.test.example` to `.env.test` for test environment
-2. Create `.env` for development environment
-3. Create `.env.production` for production environment
+1. Copy `env.example` to `.env` for dev environment
 
 ### Environment Variables
 
@@ -64,7 +61,7 @@ $ npm run test
 $ npm run test:e2e
 
 # test coverage
-$ npm run test:cov
+$ npm run test:coverage
 ```
 
 ## Deployment

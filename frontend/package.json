@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev --turbopack\" \"npm run codegen:watch\"",
-    "dev:test": "NODE_ENV=test next dev --port 3001",
     "prebuild": "npm run codegen",
     "build": "next build",
     "start": "next start",
+    "start:dev": "concurrently \"next dev --turbopack\" \"npm run codegen:watch\"",
+    "start:dev:test": "NODE_ENV=test next dev --port 3001",
     "lint": "next lint",
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
