@@ -19,7 +19,7 @@ export default defineConfig({
   webServer: [
     {
       name: "pokedex-graphql",
-      command: "cd backend/pokedex-graphql && npm run dev:mock",
+      command: "cd backend/pokedex-graphql && npm run start:dev:mock",
       url: "http://localhost:4000",
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
@@ -43,7 +43,7 @@ export default defineConfig({
     },
     {
       name: "frontend",
-      command: "cd frontend && npm run dev:test",
+      command: "cd frontend && npm run start:dev:test",
       url: "http://localhost:3001",
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
