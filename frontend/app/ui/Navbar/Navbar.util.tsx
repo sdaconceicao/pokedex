@@ -35,3 +35,14 @@ export const getSpecialItems = (): NavItem[] => [
     activeWhenQueryParamEquals: { key: "special", value: "mega" },
   },
 ];
+
+export const mapSpecialToTitle = (special: string) => {
+  switch (special) {
+    case "gmax":
+      return "Gigantamax";
+    case "mega":
+      return "Mega Evolve";
+    default:
+      return "";
+  }
+};

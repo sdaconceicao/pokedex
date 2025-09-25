@@ -8,6 +8,8 @@ import {
   GET_POKEMON_BY_REGION,
   SEARCH_POKEMON,
 } from "@/lib/queries";
+import { mapSpecialToTitle } from "@/ui/Navbar/Navbar.util";
+
 import { Pokemon } from "@/types";
 import PokemonList from "./PokemonList";
 
@@ -104,6 +106,98 @@ export default function PokemonDataFetcher({
     }
   );
 
+  // Determine active query context key based on current selections
+  const activeContext = useMemo<
+    "search" | "special" | "type" | "pokedex" | "region" | null
+  >(() => {
+    if (searchQuery) return "search";
+    if (selectedSpecial) return "special";
+    if (selectedType) return "type";
+    if (selectedPokedex) return "pokedex";
+    if (selectedRegion) return "region";
+    return null;
+  }, [
+    searchQuery,
+    selectedSpecial,
+    selectedType,
+    selectedPokedex,
+    selectedRegion,
+  ]);
+
+  // Build a unified query object for loading, error, and data
+  const unifiedQuery = useMemo(() => {
+    switch (activeContext) {
+      case "search":
+        return {
+          loading: searchLoading,
+          error: searchError,
+          data: searchData?.pokemonSearch,
+          title: `Search results for "${searchQuery ?? ""}"`,
+        } as const;
+      case "special":
+        return {
+          loading: searchLoading,
+          error: searchError,
+          data: searchData?.pokemonSearch,
+          title: `${mapSpecialToTitle(selectedSpecial ?? "")} Pokemon`,
+        } as const;
+      case "type":
+        return {
+          loading: typeLoading,
+          error: typeError,
+          data: typeData?.pokemonByType,
+          title: `Pokemon of type: ${
+            selectedType
+              ? selectedType.charAt(0).toUpperCase() + selectedType.slice(1)
+              : ""
+          }`,
+        } as const;
+      case "pokedex":
+        return {
+          loading: pokedexLoading,
+          error: pokedexError,
+          data: pokedexData?.pokemonByPokedex,
+          title: (() => {
+            const display = selectedPokedex
+              ? selectedPokedex.charAt(0).toUpperCase() +
+                selectedPokedex.slice(1).replace(/-/g, " ")
+              : "";
+            return `Pokemon from pokedex: ${display}`;
+          })(),
+        } as const;
+      case "region":
+        return {
+          loading: regionLoading,
+          error: regionError,
+          data: regionData?.pokemonByRegion,
+          title: `Pokemon from region: ${
+            selectedRegion
+              ? selectedRegion.charAt(0).toUpperCase() + selectedRegion.slice(1)
+              : ""
+          }`,
+        } as const;
+    }
+  }, [
+    activeContext,
+    searchLoading,
+    searchError,
+    searchData,
+    typeLoading,
+    typeError,
+    typeData,
+    pokedexLoading,
+    pokedexError,
+    pokedexData,
+    regionLoading,
+    regionError,
+    regionData,
+    searchQuery,
+    selectedSpecial,
+    selectedType,
+    selectedPokedex,
+    selectedRegion,
+  ]);
+
   // Reset to first page when search, type, pokedex, or region changes
   useEffect(() => {
     // Determine the new query context
@@ -136,94 +230,28 @@ export default function PokemonDataFetcher({
   ]);
 
   useEffect(() => {
-    if (searchQuery) {
-      // If we have a search query, use search results only
-      if (searchData?.pokemonSearch) {
-        setPokemon(searchData.pokemonSearch.pokemon);
-        setTotal(searchData.pokemonSearch.total);
-        setTitle(`Search results for "${searchQuery}"`);
-      }
-    } else if (selectedSpecial) {
-      console.log("selectedSpecial", selectedSpecial, searchData);
-      if (searchData?.pokemonSearch) {
-        console.log("searchData", searchData);
-        setPokemon(searchData.pokemonSearch.pokemon);
-        setTotal(searchData.pokemonSearch.total);
-        setTitle(`Special results for "${selectedSpecial}"`);
-      }
-    } else if (selectedType) {
-      // If no search query but type selected, use type results only
-      if (typeData?.pokemonByType) {
-        setPokemon(typeData.pokemonByType.pokemon);
-        setTotal(typeData.pokemonByType.total);
-        setTitle(
-          `Pokemon of type: ${
-            selectedType.charAt(0).toUpperCase() + selectedType.slice(1)
-          }`
-        );
-      }
-    } else if (selectedPokedex) {
-      // If no search query but pokedex selected, use pokedex results only
-      if (pokedexData?.pokemonByPokedex) {
-        setPokemon(pokedexData.pokemonByPokedex.pokemon);
-        setTotal(pokedexData.pokemonByPokedex.total);
-        setTitle(
-          `Pokemon from pokedex: ${
-            selectedPokedex.charAt(0).toUpperCase() +
-            selectedPokedex.slice(1).replace(/-/g, " ")
-          }`
-        );
-      }
-    } else if (selectedRegion) {
-      // If no search query but region selected, use region results only
-      if (regionData?.pokemonByRegion) {
-        setPokemon(regionData.pokemonByRegion.pokemon);
-        setTotal(regionData.pokemonByRegion.total);
-        setTitle(
-          `Pokemon from region: ${
-            selectedRegion.charAt(0).toUpperCase() + selectedRegion.slice(1)
-          }`
-        );
-      }
-    } else {
+    if (activeContext && unifiedQuery?.data) {
+      setPokemon(unifiedQuery.data.pokemon);
+      setTotal(unifiedQuery.data.total);
+      if (unifiedQuery?.title) setTitle(unifiedQuery.title);
+    } else if (!activeContext) {
       setPokemon([]);
       setTotal(0);
       setTitle("");
       setCurrentQueryContext(""); // Clear query context when no query is active
     }
   }, [
+    activeContext,
+    unifiedQuery,
     searchQuery,
+    selectedSpecial,
     selectedType,
     selectedPokedex,
     selectedRegion,
-    selectedSpecial,
-    searchData,
-    typeData,
-    pokedexData,
-    regionData,
   ]);
 
-  let loading = false;
-  if (searchQuery || selectedSpecial) {
-    loading = searchLoading;
-  } else if (selectedType) {
-    loading = typeLoading;
-  } else if (selectedPokedex) {
-    loading = pokedexLoading;
-  } else if (selectedRegion) {
-    loading = regionLoading;
-  }
-
-  let error: string | undefined;
-  if (searchQuery || selectedSpecial) {
-    error = searchError?.message;
-  } else if (selectedType) {
-    error = typeError?.message;
-  } else if (selectedPokedex) {
-    error = pokedexError?.message;
-  } else if (selectedRegion) {
-    error = regionError?.message;
-  }
+  const loading = unifiedQuery?.loading;
+  const error: string | undefined = unifiedQuery?.error?.message;
 
   // Only show pagination when we have a query context and data has loaded
   const shouldShowPagination = useMemo(
