@@ -7,6 +7,7 @@ export default async function Home({
     type?: string;
     pokedex?: string;
     region?: string;
+    special?: string;
     q?: string;
   }>;
 }) {
@@ -18,6 +19,7 @@ export default async function Home({
       selectedType={params.type}
       selectedPokedex={params.pokedex}
       selectedRegion={params.region}
+      selectedSpecial={params.special}
     />
   );
 }

@@ -15,6 +15,7 @@ interface PokemonDataFetcherProps {
   searchQuery?: string;
   selectedType?: string;
   selectedPokedex?: string;
+  selectedSpecial?: string;
   selectedRegion?: string;
 }
 
@@ -22,6 +23,7 @@ export default function PokemonDataFetcher({
   searchQuery,
   selectedType,
   selectedPokedex,
+  selectedSpecial,
   selectedRegion,
 }: PokemonDataFetcherProps) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -94,11 +96,11 @@ export default function PokemonDataFetcher({
     SEARCH_POKEMON,
     {
       variables: {
-        query: searchQuery || "",
+        query: searchQuery || selectedSpecial || "",
         limit: itemsPerPage,
         offset: (currentPage - 1) * itemsPerPage,
       },
-      skip: !searchQuery,
+      skip: !searchQuery && !selectedSpecial,
     }
   );
 
@@ -114,6 +116,8 @@ export default function PokemonDataFetcher({
       newQueryContext = `pokedex:${selectedPokedex}`;
     } else if (selectedRegion) {
       newQueryContext = `region:${selectedRegion}`;
+    } else if (selectedSpecial) {
+      newQueryContext = `special:${selectedSpecial}`;
     }
 
     // If query context changed, reset pagination and page
@@ -124,6 +128,7 @@ export default function PokemonDataFetcher({
     }
   }, [
     searchQuery,
+    selectedSpecial,
     selectedType,
     selectedPokedex,
     selectedRegion,
@@ -137,6 +142,14 @@ export default function PokemonDataFetcher({
         setPokemon(searchData.pokemonSearch.pokemon);
         setTotal(searchData.pokemonSearch.total);
         setTitle(`Search results for "${searchQuery}"`);
+      }
+    } else if (selectedSpecial) {
+      console.log("selectedSpecial", selectedSpecial, searchData);
+      if (searchData?.pokemonSearch) {
+        console.log("searchData", searchData);
+        setPokemon(searchData.pokemonSearch.pokemon);
+        setTotal(searchData.pokemonSearch.total);
+        setTitle(`Special results for "${selectedSpecial}"`);
       }
     } else if (selectedType) {
       // If no search query but type selected, use type results only
@@ -183,26 +196,34 @@ export default function PokemonDataFetcher({
     selectedType,
     selectedPokedex,
     selectedRegion,
+    selectedSpecial,
     searchData,
     typeData,
     pokedexData,
     regionData,
   ]);
 
-  const loading = searchQuery
-    ? searchLoading
-    : selectedType
-      ? typeLoading
-      : selectedPokedex
-        ? pokedexLoading
-        : regionLoading;
-  const error = searchQuery
-    ? searchError?.message
-    : selectedType
-      ? typeError?.message
-      : selectedPokedex
-        ? pokedexError?.message
-        : regionError?.message;
+  let loading = false;
+  if (searchQuery || selectedSpecial) {
+    loading = searchLoading;
+  } else if (selectedType) {
+    loading = typeLoading;
+  } else if (selectedPokedex) {
+    loading = pokedexLoading;
+  } else if (selectedRegion) {
+    loading = regionLoading;
+  }
+
+  let error: string | undefined;
+  if (searchQuery || selectedSpecial) {
+    error = searchError?.message;
+  } else if (selectedType) {
+    error = typeError?.message;
+  } else if (selectedPokedex) {
+    error = pokedexError?.message;
+  } else if (selectedRegion) {
+    error = regionError?.message;
+  }
 
   // Only show pagination when we have a query context and data has loaded
   const shouldShowPagination = useMemo(
@@ -211,8 +232,19 @@ export default function PokemonDataFetcher({
   );
 
   const shouldShowInstructions = useMemo(
-    () => !searchQuery && !selectedType && !selectedPokedex && !selectedRegion,
-    [searchQuery, selectedType, selectedPokedex, selectedRegion]
+    () =>
+      !searchQuery &&
+      !selectedType &&
+      !selectedPokedex &&
+      !selectedRegion &&
+      !selectedSpecial,
+    [
+      searchQuery,
+      selectedType,
+      selectedPokedex,
+      selectedRegion,
+      selectedSpecial,
+    ]
   );
 
   if (shouldShowInstructions) {
