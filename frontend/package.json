@@ -2,6 +2,9 @@
   "name": "pokedex-frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "prebuild": "npm run codegen",
     "build": "next build",
