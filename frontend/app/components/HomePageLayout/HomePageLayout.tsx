@@ -1,17 +1,13 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 
-import PokemonList, { usePokemonUnifiedQuery } from "@/ui/PokemonList";
+import PokemonList from "@/components/PokemonList";
+import PokemonInstructions from "@/components/PokemonInstructions";
 import Pagination from "@/ui/Pagination";
+import { usePokemonUnifiedQuery } from "./usePokemonUnifiedQuery";
 
-import styles from "./HomePage.module.css";
+import styles from "./HomePageLayout.module.css";
 
 interface HomePageProps {
   searchQuery?: string;
@@ -29,10 +25,8 @@ export default function HomePage({
   selectedRegion,
 }: HomePageProps) {
   const headerRef = useRef<HTMLHeadingElement>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const {
     loading,
-    error,
     data,
     title,
     currentQueryContext,
@@ -58,24 +52,13 @@ export default function HomePage({
   const handlePageChange = useCallback(
     (page: number) => {
       headerRef.current?.scrollIntoView({ behavior: "smooth" });
-      setCurrentPage(page);
+      setPage(page);
     },
-    [setCurrentPage]
+    [setPage]
   );
 
   if (shouldShowInstructions) {
-    return (
-      <div style={{ textAlign: "center", padding: "2rem" }}>
-        <p>
-          Select a Pokemon type, pokedex, or region from the sidebar or search
-          for Pokemon to get started
-        </p>
-        <p style={{ fontSize: "0.9rem", color: "#666", marginTop: "0.5rem" }}>
-          Note: Search, type selection, pokedex selection, and region selection
-          are separate - use one at a time
-        </p>
-      </div>
-    );
+    return <PokemonInstructions />;
   }
 
   return (
@@ -90,7 +73,7 @@ export default function HomePage({
       />
       {shouldShowPagination && (
         <Pagination
-          currentPage={currentPage}
+          currentPage={page}
           onPageChange={handlePageChange}
           totalItems={total || 0}
           itemsPerPage={itemsPerPage}

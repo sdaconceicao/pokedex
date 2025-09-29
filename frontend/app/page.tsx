@@ -1,4 +1,4 @@
-import HomaePage from "@/components/HomePage";
+import HomePage from "@/components/HomePageLayout";
 
 export default async function Home({
   searchParams,
@@ -14,7 +14,7 @@ export default async function Home({
   const params = await searchParams;
 
   return (
-    <HomaePage
+    <HomePage
       searchQuery={params.q}
       selectedType={params.type}
       selectedPokedex={params.pokedex}
