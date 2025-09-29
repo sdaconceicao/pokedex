@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
   GET_POKEMON_BY_TYPE,
@@ -8,12 +8,22 @@ import {
   GET_POKEMON_BY_REGION,
   SEARCH_POKEMON,
 } from "@/lib/queries";
+import { Pokemon } from "@/types";
 import { mapSpecialToTitle } from "@/ui/Navbar/Navbar.util";
 
-import { Pokemon } from "@/types";
-import PokemonList from "./PokemonList";
+export interface UnifiedPokemonQuery {
+  loading: boolean;
+  error?: Error;
+  data: { pokemon: Pokemon[]; total: number };
+  title?: string;
+  currentQueryContext: string;
+  page: number;
+  setPage: (page: number) => void;
+  itemsPerPage: number;
+  shouldShowInstructions: boolean;
+}
 
-interface PokemonDataFetcherProps {
+interface Params {
   searchQuery?: string;
   selectedType?: string;
   selectedPokedex?: string;
@@ -21,21 +31,17 @@ interface PokemonDataFetcherProps {
   selectedRegion?: string;
 }
 
-export default function PokemonDataFetcher({
+export function usePokemonUnifiedQuery({
   searchQuery,
   selectedType,
   selectedPokedex,
   selectedSpecial,
   selectedRegion,
-}: PokemonDataFetcherProps) {
+}: Params): UnifiedPokemonQuery {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-  const [total, setTotal] = useState(0);
-  const [title, setTitle] = useState("");
   const [currentQueryContext, setCurrentQueryContext] = useState<string>("");
   const itemsPerPage = 20;
 
-  // Query for Pokemon by type with pagination
   const {
     loading: typeLoading,
     error: typeError,
@@ -49,11 +55,10 @@ export default function PokemonDataFetcher({
         offset: (currentPage - 1) * itemsPerPage,
       },
       skip:
-        !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion, // Skip if we have other queries
+        !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion,
     }
   );
 
-  // Query for Pokemon by pokedex with pagination
   const {
     loading: pokedexLoading,
     error: pokedexError,
@@ -67,11 +72,10 @@ export default function PokemonDataFetcher({
         offset: (currentPage - 1) * itemsPerPage,
       },
       skip:
-        !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion, // Skip if we have other queries
+        !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion,
     }
   );
 
-  // Query for Pokemon by region with pagination
   const {
     loading: regionLoading,
     error: regionError,
@@ -85,11 +89,10 @@ export default function PokemonDataFetcher({
         offset: (currentPage - 1) * itemsPerPage,
       },
       skip:
-        !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex, // Skip if we have other queries
+        !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex,
     }
   );
 
-  // Query for Pokemon search with pagination
   const {
     loading: searchLoading,
     error: searchError,
@@ -106,7 +109,6 @@ export default function PokemonDataFetcher({
     }
   );
 
-  // Determine active query context key based on current selections
   const activeContext = useMemo<
     "search" | "special" | "type" | "pokedex" | "region" | null
   >(() => {
@@ -124,8 +126,50 @@ export default function PokemonDataFetcher({
     selectedRegion,
   ]);
 
-  // Build a unified query object for loading, error, and data
-  const unifiedQuery = useMemo(() => {
+  const shouldShowInstructions = useMemo(
+    () =>
+      !searchQuery &&
+      !selectedType &&
+      !selectedPokedex &&
+      !selectedRegion &&
+      !selectedSpecial,
+    [
+      searchQuery,
+      selectedType,
+      selectedPokedex,
+      selectedRegion,
+      selectedSpecial,
+    ]
+  );
+
+  useEffect(() => {
+    let newQueryContext = "";
+    if (searchQuery) {
+      newQueryContext = `search:${searchQuery}`;
+    } else if (selectedType) {
+      newQueryContext = `type:${selectedType}`;
+    } else if (selectedPokedex) {
+      newQueryContext = `pokedex:${selectedPokedex}`;
+    } else if (selectedRegion) {
+      newQueryContext = `region:${selectedRegion}`;
+    } else if (selectedSpecial) {
+      newQueryContext = `special:${selectedSpecial}`;
+    }
+
+    if (newQueryContext !== currentQueryContext) {
+      setCurrentQueryContext(newQueryContext);
+      setCurrentPage(1);
+    }
+  }, [
+    searchQuery,
+    selectedSpecial,
+    selectedType,
+    selectedPokedex,
+    selectedRegion,
+    currentQueryContext,
+  ]);
+
+  const unified = useMemo(() => {
     switch (activeContext) {
       case "search":
         return {
@@ -176,6 +220,13 @@ export default function PokemonDataFetcher({
               : ""
           }`,
         } as const;
+      default:
+        return {
+          loading: false,
+          error: undefined,
+          data: undefined,
+          title: undefined,
+        } as const;
     }
   }, [
     activeContext,
@@ -198,109 +249,15 @@ export default function PokemonDataFetcher({
     selectedRegion,
   ]);
 
-  // Reset to first page when search, type, pokedex, or region changes
-  useEffect(() => {
-    // Determine the new query context
-    let newQueryContext = "";
-    if (searchQuery) {
-      newQueryContext = `search:${searchQuery}`;
-    } else if (selectedType) {
-      newQueryContext = `type:${selectedType}`;
-    } else if (selectedPokedex) {
-      newQueryContext = `pokedex:${selectedPokedex}`;
-    } else if (selectedRegion) {
-      newQueryContext = `region:${selectedRegion}`;
-    } else if (selectedSpecial) {
-      newQueryContext = `special:${selectedSpecial}`;
-    }
-
-    // If query context changed, reset pagination and page
-    if (newQueryContext !== currentQueryContext) {
-      setCurrentQueryContext(newQueryContext);
-      setCurrentPage(1); // Reset to first page for new query
-      setTotal(0); // This will hide pagination until new data loads
-    }
-  }, [
-    searchQuery,
-    selectedSpecial,
-    selectedType,
-    selectedPokedex,
-    selectedRegion,
+  return {
+    loading: unified.loading,
+    error: unified.error,
+    data: unified.data || { pokemon: [], total: 0 },
+    title: unified.title,
     currentQueryContext,
-  ]);
-
-  useEffect(() => {
-    if (activeContext && unifiedQuery?.data) {
-      setPokemon(unifiedQuery.data.pokemon);
-      setTotal(unifiedQuery.data.total);
-      if (unifiedQuery?.title) setTitle(unifiedQuery.title);
-    } else if (!activeContext) {
-      setPokemon([]);
-      setTotal(0);
-      setTitle("");
-      setCurrentQueryContext(""); // Clear query context when no query is active
-    }
-  }, [
-    activeContext,
-    unifiedQuery,
-    searchQuery,
-    selectedSpecial,
-    selectedType,
-    selectedPokedex,
-    selectedRegion,
-  ]);
-
-  const loading = unifiedQuery?.loading;
-  const error: string | undefined = unifiedQuery?.error?.message;
-
-  // Only show pagination when we have a query context and data has loaded
-  const shouldShowPagination = useMemo(
-    () => !!currentQueryContext && total > 0,
-    [currentQueryContext, total]
-  );
-
-  const shouldShowInstructions = useMemo(
-    () =>
-      !searchQuery &&
-      !selectedType &&
-      !selectedPokedex &&
-      !selectedRegion &&
-      !selectedSpecial,
-    [
-      searchQuery,
-      selectedType,
-      selectedPokedex,
-      selectedRegion,
-      selectedSpecial,
-    ]
-  );
-
-  if (shouldShowInstructions) {
-    return (
-      <div style={{ textAlign: "center", padding: "2rem" }}>
-        <p>
-          Select a Pokemon type, pokedex, or region from the sidebar or search
-          for Pokemon to get started
-        </p>
-        <p style={{ fontSize: "0.9rem", color: "#666", marginTop: "0.5rem" }}>
-          Note: Search, type selection, pokedex selection, and region selection
-          are separate - use one at a time
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <PokemonList
-      pokemon={pokemon}
-      total={total}
-      title={title}
-      loading={loading}
-      error={error}
-      currentPage={currentPage}
-      onPageChange={setCurrentPage}
-      itemsPerPage={itemsPerPage}
-      hasQueryContext={shouldShowPagination}
-    />
-  );
+    page: currentPage,
+    setPage: setCurrentPage,
+    itemsPerPage,
+    shouldShowInstructions,
+  };
 }

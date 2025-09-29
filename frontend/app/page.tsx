@@ -1,4 +1,4 @@
-import { PokemonDataFetcher } from "@/ui/PokemonList";
+import HomaePage from "@/components/HomePage";
 
 export default async function Home({
   searchParams,
@@ -14,7 +14,7 @@ export default async function Home({
   const params = await searchParams;
 
   return (
-    <PokemonDataFetcher
+    <HomaePage
       searchQuery={params.q}
       selectedType={params.type}
       selectedPokedex={params.pokedex}
