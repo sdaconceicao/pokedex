@@ -21,6 +21,7 @@ export interface UnifiedPokemonQuery {
   setPage: (page: number) => void;
   itemsPerPage: number;
   shouldShowInstructions: boolean;
+  shouldShowPagination: boolean;
 }
 
 interface Params {
@@ -125,22 +126,6 @@ export function usePokemonUnifiedQuery({
     selectedPokedex,
     selectedRegion,
   ]);
-
-  const shouldShowInstructions = useMemo(
-    () =>
-      !searchQuery &&
-      !selectedType &&
-      !selectedPokedex &&
-      !selectedRegion &&
-      !selectedSpecial,
-    [
-      searchQuery,
-      selectedType,
-      selectedPokedex,
-      selectedRegion,
-      selectedSpecial,
-    ]
-  );
 
   useEffect(() => {
     let newQueryContext = "";
@@ -249,6 +234,28 @@ export function usePokemonUnifiedQuery({
     selectedRegion,
   ]);
 
+  const shouldShowInstructions = useMemo(
+    () =>
+      !searchQuery &&
+      !selectedType &&
+      !selectedPokedex &&
+      !selectedRegion &&
+      !selectedSpecial,
+    [
+      searchQuery,
+      selectedType,
+      selectedPokedex,
+      selectedRegion,
+      selectedSpecial,
+    ]
+  );
+
+  // Only show pagination when we have a query context and data has loaded
+  const shouldShowPagination = useMemo(
+    () => !!currentQueryContext && !!unified.data && unified?.data?.total > 0,
+    [currentQueryContext, unified.data]
+  );
+
   return {
     loading: unified.loading,
     error: unified.error,
@@ -259,5 +266,6 @@ export function usePokemonUnifiedQuery({
     setPage: setCurrentPage,
     itemsPerPage,
     shouldShowInstructions,
+    shouldShowPagination,
   };
 }

@@ -35,11 +35,11 @@ export default function HomePage({
     loading,
     data,
     title,
-    currentQueryContext,
     page,
     setPage,
     itemsPerPage,
     shouldShowInstructions,
+    shouldShowPagination,
   } = usePokemonUnifiedQuery({
     searchQuery,
     selectedType,
@@ -49,12 +49,6 @@ export default function HomePage({
   });
   const [pokemon, setPokemon] = useState(data?.pokemon || []);
   const [total, setTotal] = useState(data?.total || 0);
-
-  // Only show pagination when we have a query context and data has loaded
-  const shouldShowPagination = useMemo(
-    () => !!currentQueryContext && total > 0,
-    [currentQueryContext, total]
-  );
 
   useEffect(() => {
     if (data) {
