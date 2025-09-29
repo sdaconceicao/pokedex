@@ -14,7 +14,7 @@ import { mapSpecialToTitle } from "@/ui/Navbar/Navbar.util";
 export interface UnifiedPokemonQuery {
   loading: boolean;
   error?: Error;
-  data: { pokemon: Pokemon[]; total: number };
+  data?: { pokemon: Pokemon[]; total: number };
   title?: string;
   currentQueryContext: string;
   page: number;
@@ -252,7 +252,7 @@ export function usePokemonUnifiedQuery({
   return {
     loading: unified.loading,
     error: unified.error,
-    data: unified.data || { pokemon: [], total: 0 },
+    data: unified.data,
     title: unified.title,
     currentQueryContext,
     page: currentPage,

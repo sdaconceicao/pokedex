@@ -1,8 +1,14 @@
 "use client";
 
-import React, { useCallback, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-import PokemonList from "@/components/PokemonList";
+import PokemonList, { PokemonListSkeleton } from "@/components/PokemonList";
 import PokemonInstructions from "@/components/PokemonInstructions";
 import Pagination from "@/ui/Pagination";
 import { usePokemonUnifiedQuery } from "./usePokemonUnifiedQuery";
@@ -41,13 +47,21 @@ export default function HomePage({
     selectedSpecial,
     selectedRegion,
   });
+  const [pokemon, setPokemon] = useState(data?.pokemon || []);
+  const [total, setTotal] = useState(data?.total || 0);
 
-  const { pokemon, total } = data;
   // Only show pagination when we have a query context and data has loaded
   const shouldShowPagination = useMemo(
     () => !!currentQueryContext && total > 0,
     [currentQueryContext, total]
   );
+
+  useEffect(() => {
+    if (data) {
+      setPokemon(data.pokemon);
+      setTotal(data.total);
+    }
+  }, [data]);
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -66,11 +80,15 @@ export default function HomePage({
       <h2 className={styles.heading} ref={headerRef}>
         {title}
       </h2>
-      <PokemonList
-        pokemon={pokemon}
-        loading={loading}
-        itemsPerPage={itemsPerPage}
-      />
+      {loading ? (
+        <PokemonListSkeleton count={itemsPerPage} />
+      ) : (
+        <PokemonList
+          pokemon={pokemon}
+          loading={loading}
+          itemsPerPage={itemsPerPage}
+        />
+      )}
       {shouldShowPagination && (
         <Pagination
           currentPage={page}

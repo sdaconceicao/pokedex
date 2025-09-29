@@ -1,2 +1,2 @@
 export { default } from "./PokemonList";
-export { default as PokmenListSkeleton } from "./PokemonListSkeleton";
+export { default as PokemonListSkeleton } from "./PokemonListSkeleton";
