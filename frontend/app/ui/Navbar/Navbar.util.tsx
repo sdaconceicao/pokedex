@@ -26,12 +26,23 @@ export const getRegionItems = (regions: PokemonRegion[]): NavItem[] =>
 export const getSpecialItems = (): NavItem[] => [
   {
     label: "Gigantamax",
-    href: "/?q=gmax",
-    activeWhenQueryParamEquals: { key: "query", value: "gmax" },
+    href: "/?special=gmax",
+    activeWhenQueryParamEquals: { key: "special", value: "gmax" },
   },
   {
     label: "Mega Evolve",
-    href: "/?q=-mega",
-    activeWhenQueryParamEquals: { key: "query", value: "mega" },
+    href: "/?special=mega",
+    activeWhenQueryParamEquals: { key: "special", value: "mega" },
   },
 ];
+
+export const mapSpecialToTitle = (special: string) => {
+  switch (special) {
+    case "gmax":
+      return "Gigantamax";
+    case "mega":
+      return "Mega Evolve";
+    default:
+      return "";
+  }
+};

@@ -54,4 +54,42 @@ test.describe("Navbar", () => {
       page.getByRole("heading", { level: 2 }).filter({ hasText: /Abilities/i })
     ).toBeVisible();
   });
+
+  test("should navigate to gigantamax special type and verify nav highlighting with empty search", async ({
+    page,
+  }) => {
+    // Navigate to the home page
+    await page.goto("/");
+
+    // Wait for the page to load
+    await page.waitForLoadState("networkidle");
+
+    // Verify search bar is empty initially
+    const searchInput = page.getByPlaceholder("Search Pokemon...");
+    await expect(searchInput).toHaveValue("");
+
+    // Look for the Gigantamax link in the Special section of the navbar
+    const gigantamaxLink = page.getByRole("link", { name: /gigantamax/i });
+    await expect(gigantamaxLink).toBeVisible();
+
+    // Click on the Gigantamax link
+    await gigantamaxLink.click();
+
+    // Wait for the page to load
+    await page.waitForLoadState("networkidle");
+
+    // Verify the URL contains the special=gmax parameter
+    await expect(page).toHaveURL(/\?special=gmax/);
+
+    // Verify the Gigantamax link is highlighted (has active class)
+    await expect(gigantamaxLink).toHaveClass(/active/);
+
+    // Verify the search bar is still empty after navigation
+    await expect(searchInput).toHaveValue("");
+
+    // Verify the page heading shows Gigantamax Pokemon
+    await expect(
+      page.getByRole("heading", { level: 2 }).filter({ hasText: /gigantamax/i })
+    ).toBeVisible();
+  });
 });

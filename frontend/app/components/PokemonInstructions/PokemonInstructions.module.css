@@ -1,0 +1,10 @@
+.instructions {
+  text-align: center;
+  padding: 2rem;
+}
+
+.instructions .note {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
