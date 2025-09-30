@@ -40,21 +40,6 @@ jobs:
           curl https://cursor.com/install -fsS | bash
           echo "$HOME/.cursor/bin" >> $GITHUB_PATH
 
-      - name: Create Cursor CLI configuration
-        run: |
-          mkdir -p .cursor
-          cat > .cursor/cli.json << 'EOF'
-          {
-            "permissions": {
-              "deny": [
-                "Shell(git push)",
-                "Shell(gh pr create)",
-                "Write(**)"
-              ]
-            }
-          }
-          EOF
-
       - name: Load project rules
         run: |
           echo "Loading project rules from .cursor/rules directory..."
