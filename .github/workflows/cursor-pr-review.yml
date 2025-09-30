@@ -81,7 +81,6 @@ jobs:
             * styling-css-modules.mdc - CSS Modules standards (max depth 1, component-scoped, naming)
             * testing-unit-standards.mdc - Unit testing requirements (100% coverage, getByRole, user behavior)
             * testing-e2e-standards.mdc - E2E testing with Playwright (semantic roles, accessibility)
-            * interaction-standards.mdc - User interaction and UX standards
           - Ensure code follows the project's established patterns and conventions
           - Check for proper imports, component structure, styling, and testing practices
 
