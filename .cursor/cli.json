@@ -1,5 +1,3 @@
 {
-  "version": 1,
-  "editor": { "vimMode": false },
   "permissions": { "allow": ["Shell(ls)"], "deny": [] }
 }
