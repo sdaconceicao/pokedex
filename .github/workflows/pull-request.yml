@@ -67,3 +67,12 @@ jobs:
     uses: ./.github/workflows/e2e-checks.yml
     with:
       cached-build-id: ${{ needs.setup.outputs.cache-key }}
+
+  cursor-pr-review:
+    name: Cursor PR Review
+    needs: setup
+    uses: ./.github/workflows/cursor-pr-review.yml
+    with:
+      cached-build-id: ${{ needs.setup.outputs.cache-key }}
+    secrets:
+      CURSOR_PR_REVIEW: ${{ secrets.CURSOR_PR_REVIEW }}
