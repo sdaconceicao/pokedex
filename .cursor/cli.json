@@ -1,3 +1,12 @@
 {
-  "permissions": { "allow": ["Shell(ls)"], "deny": [] }
+  "permissions": {
+    "allow": [
+      "Shell(ls)",
+      "Shell(cat)",
+      "Shell(chmod)",
+      "Shell(timeout)",
+      "Shell(cursor-agent)"
+    ],
+    "deny": []
+  }
 }
