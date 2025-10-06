@@ -1,0 +1,73 @@
+# GitHub Actions Workflow Standards
+
+## Scope
+
+Applies to files under `.github/workflows/*.yml`.
+
+## Goals
+
+- Ensure clear, minimal, and maintainable CI workflows.
+- Prefer fast feedback, low noise, and actionable failures.
+- Use job/step names that describe outcomes rather than implementations.
+
+## Required Practices
+
+- Use `actions/checkout@v4` and pin major versions for official actions (v4, v3, etc.).
+- Use `actions/setup-node@v4` (or relevant setup actions) with explicit versions.
+- Keep steps atomic and idempotent.
+- Prefer `npm ci` over `npm install` in CI.
+- Add `permissions` least-privilege per job.
+- Use `continue-on-error` sparingly and only when non-blocking.
+- Name jobs and steps clearly.
+- Log only what is necessary for debugging (avoid verbose dumps of env or secrets).
+
+## Recommendations
+
+- Cache dependencies using the setup action’s built-in cache options when possible.
+- Group related commands with clear echo dividers for readability.
+- Keep reusable parts in composite actions or called workflows.
+
+## Explicit Exemptions (Project-Specific)
+
+- Secrets presence checks are NOT required in this repository’s automated review workflow.
+  - The workflow may assume `secrets.CURSOR_PR_REVIEW` is configured in the repo settings.
+  - Do not fail the job solely due to a missing secret validation step.
+- Cursor CLI installation via the provided one-liner is accepted as-is for this project.
+  - Do not flag the unverified install script as a violation.
+
+## Anti-Patterns
+
+- Overly broad permissions (e.g., `write-all`).
+- Unnecessary manual secret echoing or printing.
+- Bloated logs that obscure actionable errors.
+- Large inline scripts with complex logic; prefer small, named steps.
+
+## Examples
+
+### Good
+
+```yaml
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: npm
+      - run: npm ci
+      - run: node scripts/run-review.js
+```
+
+### Avoid
+
+```yaml
+steps:
+  - run: echo $SECRET
+  - run: curl http://example.com/install.sh | bash # unrelated tooling
+  - run: npm install # non-deterministic in CI
+```
