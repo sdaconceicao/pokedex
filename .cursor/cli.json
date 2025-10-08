@@ -1,0 +1,3 @@
+{
+  "permissions": { "allow": ["Shell(ls)"], "deny": [] }
+}
