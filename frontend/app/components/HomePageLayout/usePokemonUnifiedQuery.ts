@@ -21,7 +21,6 @@ export interface UnifiedPokemonQuery {
   setPage: (page: number) => void;
   itemsPerPage: number;
   shouldShowInstructions: boolean;
-  shouldShowPagination: boolean;
 }
 
 interface Params {
@@ -250,12 +249,6 @@ export function usePokemonUnifiedQuery({
     ]
   );
 
-  // Only show pagination when we have a query context and data has loaded
-  const shouldShowPagination = useMemo(
-    () => !!currentQueryContext && !!unified.data && unified?.data?.total > 0,
-    [currentQueryContext, unified.data]
-  );
-
   return {
     loading: unified.loading,
     error: unified.error,
@@ -266,6 +259,5 @@ export function usePokemonUnifiedQuery({
     setPage: setCurrentPage,
     itemsPerPage,
     shouldShowInstructions,
-    shouldShowPagination,
   };
 }

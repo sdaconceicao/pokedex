@@ -1,11 +1,55 @@
+import {
+  IconBug,
+  IconDark,
+  IconDragon,
+  IconElectric,
+  IconFairy,
+  IconFighting,
+  IconFire,
+  IconFlying,
+  IconGhost,
+  IconGrass,
+  IconGround,
+  IconIce,
+  IconNormal,
+  IconPoison,
+  IconPsychic,
+  IconRock,
+  IconSteel,
+  IconWater,
+} from "@pokemonle/icons-react";
 import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
 import { NavItem } from "./NavbarItem";
 import { capitalize } from "@/lib/string";
+
+export const ICONS_BY_TYPE = {
+  bug: <IconBug />,
+  dark: <IconDark />,
+  dragon: <IconDragon />,
+  electric: <IconElectric />,
+  fairy: <IconFairy />,
+  fighting: <IconFighting />,
+  fire: <IconFire />,
+  flying: <IconFlying />,
+  ghost: <IconGhost />,
+  grass: <IconGrass />,
+  ground: <IconGround />,
+  ice: <IconIce />,
+  normal: <IconNormal />,
+  poison: <IconPoison />,
+  psychic: <IconPsychic />,
+  rock: <IconRock />,
+  steel: <IconSteel />,
+  water: <IconWater />,
+};
 
 export const getTypeItems = (types: PokemonType[]): NavItem[] =>
   types.map((type) => ({
     label: `${capitalize(type.name)} (${type.count})`,
     href: `/?type=${encodeURIComponent(type.name)}`,
+    icon: ICONS_BY_TYPE[type.name as keyof typeof ICONS_BY_TYPE] || (
+      <IconNormal />
+    ),
     activeWhenQueryParamEquals: { key: "type", value: type.name },
   }));
 

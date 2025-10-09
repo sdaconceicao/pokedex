@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -13,6 +13,7 @@ export interface NavItem {
     key: string;
     value: string;
   };
+  icon?: ReactNode;
 }
 
 interface NavbarItemProps {
@@ -38,7 +39,7 @@ export default function NavbarItem({ item }: NavbarItemProps) {
       className={`${styles.navItem} ${isActive ? styles.active : ""}`}
       onClick={handleTypeClick}
     >
-      {item.label}
+      {item.label} {item.icon}
     </Link>
   );
 }
