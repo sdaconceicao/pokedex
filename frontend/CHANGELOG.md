@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.1.0...pokedex-frontend-v0.2.0) (2025-10-09)
+
+
+### Features
+
+* Added type svgs ([#31](https://github.com/sdaconceicao/pokedex/issues/31)) ([7aac9ee](https://github.com/sdaconceicao/pokedex/commit/7aac9eeccf086ae18ea2b7574964b44af0ea4707))
+
+
+### Bug Fixes
+
+* Exclude empty categories from navbar ([#20](https://github.com/sdaconceicao/pokedex/issues/20)) ([a248aa3](https://github.com/sdaconceicao/pokedex/commit/a248aa35cb0bbcf1a770909f800f76d8ea8f7584))
+* Update handling of special types ([#29](https://github.com/sdaconceicao/pokedex/issues/29)) ([8606dac](https://github.com/sdaconceicao/pokedex/commit/8606dac01ee57bff36a52e5e9243360c7e51c66e))
+
 ## [0.1.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.0.1...pokedex-frontend-v0.1.0) (2025-08-24)
 
 
