@@ -39,7 +39,6 @@ export default function HomePage({
     setPage,
     itemsPerPage,
     shouldShowInstructions,
-    shouldShowPagination,
   } = usePokemonUnifiedQuery({
     searchQuery,
     selectedType,
@@ -83,14 +82,13 @@ export default function HomePage({
           itemsPerPage={itemsPerPage}
         />
       )}
-      {shouldShowPagination && (
-        <Pagination
-          currentPage={page}
-          onPageChange={handlePageChange}
-          totalItems={total || 0}
-          itemsPerPage={itemsPerPage}
-        />
-      )}
+
+      <Pagination
+        currentPage={page}
+        onPageChange={handlePageChange}
+        totalItems={total || 0}
+        itemsPerPage={itemsPerPage}
+      />
     </div>
   );
 }
