@@ -10,8 +10,8 @@ import React, {
 
 import PokemonList, {
   PokemonListSkeleton,
-} from "@/ui/HomePageLayout/components/PokemonList";
-import PokemonInstructions from "@/ui/HomePageLayout/components/PokemonInstructions";
+} from "@/layout/HomePageLayout/components/PokemonList";
+import PokemonInstructions from "@/layout/HomePageLayout/components/PokemonInstructions";
 import Pagination from "@/components/Pagination";
 import { usePokemonUnifiedQuery } from "./usePokemonUnifiedQuery";
 

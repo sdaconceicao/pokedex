@@ -9,7 +9,7 @@ import {
   SEARCH_POKEMON,
 } from "@/lib/queries";
 import { Pokemon } from "@/types";
-import { mapSpecialToTitle } from "@/ui/Navbar/Navbar.util";
+import { mapSpecialToTitle } from "@/layout/Navbar/Navbar.util";
 
 export interface UnifiedPokemonQuery {
   loading: boolean;
@@ -174,11 +174,10 @@ export function usePokemonUnifiedQuery({
           loading: typeLoading,
           error: typeError,
           data: typeData?.pokemonByType,
-          title: `Pokemon of type: ${
-            selectedType
+          title: `Pokemon of type: ${selectedType
               ? selectedType.charAt(0).toUpperCase() + selectedType.slice(1)
               : ""
-          }`,
+            }`,
         } as const;
       case "pokedex":
         return {
@@ -188,7 +187,7 @@ export function usePokemonUnifiedQuery({
           title: (() => {
             const display = selectedPokedex
               ? selectedPokedex.charAt(0).toUpperCase() +
-                selectedPokedex.slice(1).replace(/-/g, " ")
+              selectedPokedex.slice(1).replace(/-/g, " ")
               : "";
             return `Pokemon from pokedex: ${display}`;
           })(),
@@ -198,11 +197,10 @@ export function usePokemonUnifiedQuery({
           loading: regionLoading,
           error: regionError,
           data: regionData?.pokemonByRegion,
-          title: `Pokemon from region: ${
-            selectedRegion
+          title: `Pokemon from region: ${selectedRegion
               ? selectedRegion.charAt(0).toUpperCase() + selectedRegion.slice(1)
               : ""
-          }`,
+            }`,
         } as const;
       default:
         return {

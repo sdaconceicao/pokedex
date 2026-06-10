@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import ApolloWrapper from "@/ui/ApolloWrapper";
+import ApolloWrapper from "@/layout/ApolloWrapper";
 import QueryProvider from "./providers/QueryProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
-import AppShell from "@/ui/AppShellLayout";
+import AppShell from "@/layout/AppShellLayout";
 import "./globals.css";
 
 const geistSans = Geist({

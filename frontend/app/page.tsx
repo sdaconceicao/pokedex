@@ -1,4 +1,4 @@
-import HomePage from "@/ui/HomePageLayout";
+import HomePage from "@/layout/HomePageLayout";
 
 export default async function Home({
   searchParams,

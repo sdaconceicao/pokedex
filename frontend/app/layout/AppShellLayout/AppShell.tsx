@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { ChevronLeft, ChevronRight, Menu01 } from "@untitled-ui/icons-react";
 import { SearchBar } from "@/components/Search";
 import AuthButtons from "@/components/AuthButtons";
-import Navbar from "@/ui/Navbar";
+import Navbar from "@/layout/Navbar";
 import { NavigationData } from "@/providers/NavigationDataProvider";
 import styles from "./AppShell.module.css";
 

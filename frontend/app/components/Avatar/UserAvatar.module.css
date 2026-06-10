@@ -10,14 +10,22 @@
   color: var(--layout-primary-foreground);
   border: none;
   padding: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  line-height: 1;
   transition: opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+.initials {
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  transform: translateY(1px);
 }
 
 .avatar:hover {

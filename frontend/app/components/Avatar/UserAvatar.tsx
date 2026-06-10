@@ -46,7 +46,7 @@ export default function UserAvatar({
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        {getInitials(email)}
+        <span className={styles.initials}>{getInitials(email)}</span>
       </button>
       {isOpen && (
         <div className={styles.dropdown} role="menu">
