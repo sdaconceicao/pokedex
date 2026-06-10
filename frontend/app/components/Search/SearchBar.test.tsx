@@ -6,25 +6,29 @@ import SearchBar from "./SearchBar";
 import styles from "./SearchBar.module.css";
 
 // Mock Next.js navigation hooks
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
-  useSearchParams: jest.fn(),
+vi.mock("next/navigation", () => ({
+  useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
 }));
 
-const mockPush = jest.fn();
+const mockPush = vi.fn();
 const mockRouter = {
   push: mockPush,
 };
 
 const mockSearchParams = {
-  get: jest.fn(),
+  get: vi.fn(),
 };
 
 describe("SearchBar", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
+    vi.clearAllMocks();
+    vi.mocked(useRouter).mockReturnValue(
+      mockRouter as unknown as ReturnType<typeof useRouter>
+    );
+    vi.mocked(useSearchParams).mockReturnValue(
+      mockSearchParams as unknown as ReturnType<typeof useSearchParams>
+    );
   });
 
   describe("Initial Rendering", () => {
