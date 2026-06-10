@@ -21,33 +21,40 @@ export default registerAs<LoggingConfig>('logging', () => ({
 
 export const createWinstonLogger = (config: LoggingConfig) => {
   const { level, directory, maxSize, maxFiles, filename } = config;
+  const isServerless =
+    process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
-  const transports = [
+  const transports: winston.transport[] = [
     new winston.transports.Console({
       level,
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.ms(),
-        nestWinstonModuleUtilities.format.nestLike('ItineraryAPI', {
+        nestWinstonModuleUtilities.format.nestLike('PokedexAPI', {
           prettyPrint: true,
           colors: true,
         }),
       ),
     }),
-    new winston.transports.DailyRotateFile({
-      filename: `${directory}/${filename}`,
-      datePattern: 'YYYY-MM-DD',
-      maxSize,
-      maxFiles,
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-      ),
-      zippedArchive: true,
-      handleExceptions: true,
-      handleRejections: true,
-    }),
   ];
+
+  if (!isServerless) {
+    transports.push(
+      new winston.transports.DailyRotateFile({
+        filename: `${directory}/${filename}`,
+        datePattern: 'YYYY-MM-DD',
+        maxSize,
+        maxFiles,
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.json(),
+        ),
+        zippedArchive: true,
+        handleExceptions: true,
+        handleRejections: true,
+      }),
+    );
+  }
 
   return winston.createLogger({
     level,
