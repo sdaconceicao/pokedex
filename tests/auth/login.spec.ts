@@ -1,94 +1,68 @@
 import { test, expect } from "@playwright/test";
+import {
+  getAuthDialog,
+  openSignInModal,
+  expectLoggedIn,
+  logout,
+} from "../helpers/auth";
 
 const VALID_EMAIL = "test@test.com";
 const VALID_PASSWORD = "Test@Password123";
 
 test.describe("User Login", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the main page before each test
     await page.goto("/");
   });
 
-  test("should display login form when clicking login button", async ({
+  test("should display login form when clicking sign in button", async ({
     page,
   }) => {
-    // Click the login button in the navbar
-    await page.getByRole("button", { name: "Login" }).click();
+    await openSignInModal(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    // Verify login form is displayed
-    await expect(page.getByText("Email")).toBeVisible();
-    await expect(page.getByText("Password")).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Login" }).last()
-    ).toBeVisible();
+    const dialog = getAuthDialog(page);
+    await expect(dialog.getByRole("heading", { name: "Sign In" })).toBeVisible();
+    await expect(dialog.getByLabel("Email")).toBeVisible();
+    await expect(dialog.getByLabel("Password")).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Sign In" })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Sign up" })).toBeVisible();
   });
 
   test("should successfully login with valid credentials and let user logout", async ({
     page,
   }) => {
-    // Open login form
-    await page.getByRole("button", { name: "Login" }).click();
+    await openSignInModal(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
+    const dialog = getAuthDialog(page);
+    await dialog.getByLabel("Email").fill(VALID_EMAIL);
+    await dialog.getByLabel("Password").fill(VALID_PASSWORD);
+    await dialog.getByRole("button", { name: "Sign In" }).click();
 
-    // Fill in credentials (using seeded test data)
-    await page.getByRole("textbox", { name: "Email" }).fill(VALID_EMAIL);
-    await page.getByRole("textbox", { name: "Password" }).fill(VALID_PASSWORD);
-
-    // Submit form
-    await page.getByRole("button", { name: "Login" }).last().click();
-
-    // Verify successful login
-    await expect(page.getByText("Welcome, " + VALID_EMAIL)).toBeVisible();
-    await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
-
-    // Verify login form is hidden
+    await expectLoggedIn(page);
     await expect(page.getByRole("dialog")).not.toBeVisible();
 
-    await page.getByRole("button", { name: "Logout" }).click();
-
-    // Verify user is logged out
-    await expect(page.getByText("Welcome, " + VALID_EMAIL)).not.toBeVisible();
+    await logout(page);
   });
 
   test("should show error with invalid credentials", async ({ page }) => {
-    // Open login form
-    await page.getByRole("button", { name: "Login" }).click();
+    await openSignInModal(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
+    const dialog = getAuthDialog(page);
+    await dialog.getByLabel("Email").fill("invalid@example.com");
+    await dialog.getByLabel("Password").fill("wrongpassword");
+    await dialog.getByRole("button", { name: "Sign In" }).click();
 
-    // Fill in invalid credentials
-    await page
-      .getByRole("textbox", { name: "Email" })
-      .fill("invalid@example.com");
-    await page.getByRole("textbox", { name: "Password" }).fill("wrongpassword");
-
-    // Submit form
-    await page.getByRole("button", { name: "Login" }).last().click();
-
-    // Verify error message appears in the dialog
-    await expect(page.getByRole("dialog")).toContainText(
+    await expect(dialog).toContainText(
       "Invalid credentials. Please try again."
     );
   });
 
   test("should validate required fields", async ({ page }) => {
-    // Open login form
-    await page.getByRole("button", { name: "Login" }).click();
+    await openSignInModal(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
+    const dialog = getAuthDialog(page);
+    await dialog.getByRole("button", { name: "Sign In" }).click();
 
-    // Try to submit without filling fields
-    await page.getByRole("button", { name: "Login" }).last().click();
-
-    // Verify validation messages
-    await expect(page.getByText("Email is required")).toBeVisible();
-    await expect(page.getByText("Password is required")).toBeVisible();
+    await expect(dialog.getByText("Email is required")).toBeVisible();
+    await expect(dialog.getByText("Password is required")).toBeVisible();
   });
 });
