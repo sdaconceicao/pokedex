@@ -145,7 +145,6 @@ describe('AuthService', () => {
       usersService.create.mockResolvedValue(createdUser);
       jwtService.signAsync.mockResolvedValue(mockToken);
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await service.register(mockRegisterDto);
 
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
