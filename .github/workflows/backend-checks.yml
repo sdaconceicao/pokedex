@@ -21,11 +21,13 @@ jobs:
           path: ./*
           key: ${{ inputs.cached-build-id }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - name: Run linting - backend
-        run: npm run lint --workspace=backend/**
+        run: pnpm --filter "./backend/*" run lint
 
       - name: Run type checking - backend
-        run: npm run tsc --workspace=backend/**
+        run: pnpm --filter "./backend/*" run tsc
 
       - name: Run tests with coverage - backend
-        run: npm run test:coverage --workspace=backend/**
+        run: pnpm --filter "./backend/*" run test:coverage

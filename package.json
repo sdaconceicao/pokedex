@@ -2,13 +2,10 @@
   "name": "pokedex",
   "version": "0.0.1",
   "description": "A full stack pokedex including GraphQL API and nextjs frontend.",
+  "packageManager": "pnpm@11.3.0",
   "engines": {
     "node": ">=24.0.0"
   },
-  "workspaces": [
-    "backend/*",
-    "frontend"
-  ],
   "scripts": {
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

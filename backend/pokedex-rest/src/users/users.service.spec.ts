@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { UsersService } from './users.service';
 import { UserEntity } from './users.entity';
 
@@ -166,7 +166,7 @@ describe('UsersService', () => {
         affected: 1,
         raw: [],
         generatedMaps: [],
-      } as UpdateResult);
+      });
       repository.findOne.mockResolvedValue(updatedUser);
 
       const result = await service.update('user-123', updateData);
@@ -185,7 +185,7 @@ describe('UsersService', () => {
         affected: 0,
         raw: [],
         generatedMaps: [],
-      } as UpdateResult);
+      });
       repository.findOne.mockResolvedValue(null);
 
       const result = await service.update('nonexistent-id', updateData);

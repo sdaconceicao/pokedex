@@ -3,10 +3,10 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "prebuild": "npm run codegen",
+    "prebuild": "pn  codegen",
     "build": "next build",
     "start": "next start",
-    "start:dev": "concurrently \"next dev --turbopack\" \"npm run codegen:watch\"",
+    "start:dev": "concurrently \"next dev --turbopack\" \"pn  codegen:watch\"",
     "start:dev:test": "NODE_ENV=test next dev --port 3001",
     "lint": "next lint",
     "codegen": "graphql-codegen",

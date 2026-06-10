@@ -15,7 +15,7 @@ Applies to files under `.github/workflows/*.yml`.
 - Use `actions/checkout@v4` and pin major versions for official actions (v4, v3, etc.).
 - Use `actions/setup-node@v4` (or relevant setup actions) with explicit versions.
 - Keep steps atomic and idempotent.
-- Prefer `npm ci` over `npm install` in CI.
+- Prefer `pnpm install --frozen-lockfile` over `pnpm install` in CI.
 - Add `permissions` least-privilege per job.
 - Use `continue-on-error` sparingly and only when non-blocking.
 - Name jobs and steps clearly.
@@ -55,11 +55,12 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: npm
-      - run: npm ci
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: node scripts/run-review.js
 ```
 
@@ -69,5 +70,5 @@ jobs:
 steps:
   - run: echo $SECRET
   - run: curl http://example.com/install.sh | bash # unrelated tooling
-  - run: npm install # non-deterministic in CI
+  - run: pnpm install # non-deterministic in CI without --frozen-lockfile
 ```
