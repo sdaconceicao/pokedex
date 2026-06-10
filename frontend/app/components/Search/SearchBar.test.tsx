@@ -24,10 +24,10 @@ describe("SearchBar", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useRouter).mockReturnValue(
-      mockRouter as ReturnType<typeof useRouter>
+      mockRouter as unknown as ReturnType<typeof useRouter>
     );
     vi.mocked(useSearchParams).mockReturnValue(
-      mockSearchParams as ReturnType<typeof useSearchParams>
+      mockSearchParams as unknown as ReturnType<typeof useSearchParams>
     );
   });
 
