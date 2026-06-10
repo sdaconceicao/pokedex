@@ -8,16 +8,16 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
   backdrop-filter: blur(10px);
-  border-top: 1px solid #e5e7eb;
-  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-subtle);
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.08);
   z-index: 1000;
   transition: all 0.3s ease;
 }
 
 .info {
-  color: #6b7280;
+  color: var(--muted-foreground);
   font-size: 0.875rem;
 }
 

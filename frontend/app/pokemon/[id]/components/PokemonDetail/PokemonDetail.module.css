@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background: #f8f9fa;
+  background: var(--background);
   min-height: 100vh;
 }
 
@@ -15,10 +15,10 @@
   grid-template-columns: 1fr 2fr;
   gap: 40px;
   margin-bottom: 40px;
-  background: var(--card-bg, #fff);
-  border: 2px solid #000;
+  background: var(--card-bg, var(--card-bg-default));
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
   position: relative;
   overflow: hidden;
@@ -38,7 +38,7 @@
 
 .mainSection:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 /* Type-specific card backgrounds */
@@ -159,7 +159,7 @@
   font-weight: 600;
   margin: 0 0 0.75rem 0;
   text-align: left;
-  color: #212529;
+  color: var(--card-foreground);
   text-transform: capitalize;
   letter-spacing: 0.5px;
 }
@@ -180,7 +180,7 @@
 
 .statsSection h2 {
   margin: 0 0 1.5rem 0;
-  color: #212529;
+  color: var(--card-foreground);
   font-size: 1.25rem;
   font-weight: 700;
 }
@@ -191,10 +191,10 @@
 }
 
 .abilitiesSection {
-  background: white;
-  border: 2px solid #000;
+  background: var(--card-bg-default);
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
   position: relative;
   overflow: hidden;
@@ -213,7 +213,7 @@
 
 .abilitiesSection h2 {
   margin: 0 0 1.5rem 0;
-  color: #212529;
+  color: var(--card-foreground);
   font-size: 1.5rem;
   font-weight: 700;
 }

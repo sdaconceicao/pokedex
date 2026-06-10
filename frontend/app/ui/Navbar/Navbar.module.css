@@ -1,6 +1,7 @@
 .navbar {
   width: 16rem;
-  background: var(--layout-tertiary-background);
+  background: var(--surface-elevated);
+  border-right: 1px solid var(--border-subtle);
   height: 100%;
   padding: 0;
   box-sizing: border-box;

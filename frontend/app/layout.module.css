@@ -35,10 +35,10 @@
 }
 
 .header {
-  background: var(--layout-tertiary-background);
-  color: var(--layout-tertiary-foreground);
-  border-bottom: 1px solid var(--layout-tertiary-foreground);
-  padding: 1.5rem;
+  background: var(--surface-elevated);
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 1.25rem;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -59,6 +59,7 @@
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
+  background: var(--background);
 }
 
 .heading {

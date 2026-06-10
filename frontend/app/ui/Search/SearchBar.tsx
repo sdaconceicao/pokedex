@@ -45,12 +45,19 @@ export default function SearchBar() {
       <form onSubmit={handleSearch} className={styles.searchForm}>
         <Input
           type="text"
+          size="md"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search Pokemon..."
+          wrapperClassName={styles.searchField}
           className={styles.searchInput}
         />
-        <Button type="submit" variant="primary" className={styles.searchButton}>
+        <Button
+          type="submit"
+          size="md"
+          variant="primary"
+          className={styles.searchButton}
+        >
           <SearchSm aria-label="Search" />
         </Button>
         {searchQuery && (

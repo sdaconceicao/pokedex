@@ -36,6 +36,7 @@ export interface InputProps {
   name?: string;
   id?: string;
   className?: string;
+  wrapperClassName?: string;
   error?: boolean;
   errorMessage?: string;
   autoComplete?: string;
@@ -65,6 +66,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       name,
       id,
       className = "",
+      wrapperClassName = "",
       error = false,
       errorMessage,
       autoComplete,
@@ -103,7 +105,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     }, [error, errorMessage]);
 
     return (
-      <div className={styles.container} data-testid={testId}>
+      <div
+        className={clsx(styles.container, wrapperClassName)}
+        data-testid={testId}
+      >
         <input
           ref={ref}
           type={type}
