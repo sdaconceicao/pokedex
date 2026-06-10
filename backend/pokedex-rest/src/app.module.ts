@@ -36,7 +36,7 @@ import databaseConfig from './config/database.config';
         synchronize: false, // Disable when using migrations
         logging: configService.get('database.logging')!,
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
-        migrationsRun: true, // Automatically run migrations on startup
+        migrationsRun: configService.get('database.migrationsRun')!,
         migrationsTableName: 'migrations', // Name of the migrations table
       }),
       inject: [ConfigService],

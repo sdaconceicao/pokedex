@@ -23,5 +23,6 @@ export default registerAs<DatabaseConfig>('database', () => ({
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: false,
   logging: process.env.NODE_ENV !== 'production',
-  migrationsRun: true,
+  migrationsRun:
+    process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1',
 }));
