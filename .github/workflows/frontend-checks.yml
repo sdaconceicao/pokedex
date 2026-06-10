@@ -21,6 +21,9 @@ jobs:
           path: ./*
           key: ${{ inputs.cached-build-id }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Run linting - frontend
         run: pnpm --filter pokedex-frontend run lint
 

@@ -35,6 +35,9 @@ jobs:
           path: ./*
           key: ${{ inputs.cached-build-id }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Install Playwright
         run: pnpm run test:e2e:install
 
