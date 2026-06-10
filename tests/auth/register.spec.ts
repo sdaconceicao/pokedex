@@ -1,109 +1,72 @@
 import { test, expect } from "@playwright/test";
+import {
+  getAuthDialog,
+  openRegisterForm,
+  expectLoggedIn,
+} from "../helpers/auth";
 
 const VALID_EMAIL = "test@test.com";
 
 test.describe("User Registration", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the main page before each test
     await page.goto("/");
   });
 
-  test("should display register form when clicking register button", async ({
+  test("should display register form when switching from sign in", async ({
     page,
   }) => {
-    // Click the register button in the navbar
-    await page.getByRole("button", { name: "Sign Up" }).click();
+    await openRegisterForm(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    // Verify register form is displayed
-    await expect(page.getByText("Email")).toBeVisible();
-    await expect(page.getByText("Password").first()).toBeVisible();
-    await expect(page.getByText("Confirm Password")).toBeVisible();
+    const dialog = getAuthDialog(page);
+    await expect(dialog.getByLabel("Email")).toBeVisible();
+    await expect(dialog.getByPlaceholder("Enter your password")).toBeVisible();
+    await expect(dialog.getByPlaceholder("Confirm your password")).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Create Account" })
+      dialog.getByRole("button", { name: "Create Account" })
     ).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Sign in" })).toBeVisible();
   });
 
   test("should successfully register with valid credentials", async ({
     page,
   }) => {
-    // Open register form
-    await page.getByRole("button", { name: "Sign Up" }).click();
+    await openRegisterForm(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    // Generate unique email for test
+    const dialog = getAuthDialog(page);
     const uniqueEmail = `test${Date.now()}@example.com`;
 
-    // Fill in registration form
-    await page.getByRole("textbox", { name: "Email" }).fill(uniqueEmail);
-    await page
-      .getByRole("textbox", { name: "Password" })
-      .first()
-      .fill("P@ssw0rd123");
-    await page
-      .getByRole("textbox", { name: "Confirm Password" })
-      .fill("P@ssw0rd123");
+    await dialog.getByLabel("Email").fill(uniqueEmail);
+    await dialog.getByPlaceholder("Enter your password").fill("P@ssw0rd123");
+    await dialog.getByPlaceholder("Confirm your password").fill("P@ssw0rd123");
+    await dialog.getByRole("button", { name: "Create Account" }).click();
 
-    // Submit form
-    await page.getByRole("button", { name: "Create Account" }).click();
-
-    // Verify successful registration (should auto-login)
-    await expect(page.getByText("Welcome, " + uniqueEmail)).toBeVisible();
-    await expect(page.getByRole("button", { name: "Logout" })).toBeVisible();
-
-    // Verify register form is hidden
+    await expectLoggedIn(page);
     await expect(page.getByRole("dialog")).not.toBeVisible();
   });
 
   test("should show error with existing email", async ({ page }) => {
-    // Open register form
-    await page.getByRole("button", { name: "Sign Up" }).click();
+    await openRegisterForm(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
+    const dialog = getAuthDialog(page);
+    await dialog.getByLabel("Email").fill(VALID_EMAIL);
+    await dialog.getByPlaceholder("Enter your password").fill("P@ssw0rd123");
+    await dialog.getByPlaceholder("Confirm your password").fill("P@ssw0rd123");
+    await dialog.getByRole("button", { name: "Create Account" }).click();
 
-    // Try to register with existing email (from seeded data)
-    await page.getByRole("textbox", { name: "Email" }).fill(VALID_EMAIL);
-    await page
-      .getByRole("textbox", { name: "Password" })
-      .first()
-      .fill("P@ssw0rd123");
-    await page
-      .getByRole("textbox", { name: "Confirm Password" })
-      .fill("P@ssw0rd123");
-
-    // Submit form
-    await page.getByRole("button", { name: "Create Account" }).click();
-
-    // Verify error message
-    await expect(page.getByText("Email already exists")).toBeVisible();
+    await expect(
+      dialog.getByText("An account with this email already exists.")
+    ).toBeVisible();
   });
 
   test("should validate password confirmation", async ({ page }) => {
-    // Open register form
-    await page.getByRole("button", { name: "Sign Up" }).click();
+    await openRegisterForm(page);
 
-    // Wait for modal to be fully rendered
-    await expect(page.getByRole("dialog")).toBeVisible();
+    const dialog = getAuthDialog(page);
+    await dialog.getByLabel("Email").fill("new@example.com");
+    await dialog.getByPlaceholder("Enter your password").fill("P@ssw0rd123");
+    await dialog.getByPlaceholder("Confirm your password").fill("P@sssw0rd123");
+    await dialog.getByRole("button", { name: "Create Account" }).click();
 
-    // Fill in form with mismatched passwords
-    await page.getByRole("textbox", { name: "Email" }).fill("new@example.com");
-    await page
-      .getByRole("textbox", { name: "Password" })
-      .first()
-      .fill("P@ssw0rd123");
-    await page
-      .getByRole("textbox", { name: "Confirm Password" })
-      .fill("P@sssw0rd123");
-
-    // Submit form
-    await page.getByRole("button", { name: "Create Account" }).click();
-
-    // Verify validation message
-    await expect(page.getByText("Passwords do not match")).toBeVisible();
+    await expect(dialog.getByText("Passwords do not match")).toBeVisible();
   });
 });
