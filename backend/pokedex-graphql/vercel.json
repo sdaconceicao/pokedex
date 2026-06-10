@@ -1,0 +1,7 @@
+{
+  "installCommand": "cd ../.. && npm ci",
+  "buildCommand": "npm run compile",
+  "rewrites": [
+    { "source": "/graphql", "destination": "/api/graphql" }
+  ]
+}

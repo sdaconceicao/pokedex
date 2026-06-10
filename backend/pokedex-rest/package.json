@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "migration:run": "nest build && node dist/run-migrations.js",
     "start:test": "NODE_ENV=test nest start --env test",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",

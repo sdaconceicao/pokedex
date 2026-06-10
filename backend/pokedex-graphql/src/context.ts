@@ -6,10 +6,12 @@ export type DataSourceContext = {
   };
 };
 
-export async function createContext(): Promise<DataSourceContext> {
-  const pokemonAPI = new PokemonAPI();
+export async function createContext(
+  cache?: ConstructorParameters<typeof PokemonAPI>[0]
+): Promise<DataSourceContext> {
+  const pokemonAPI = cache ? new PokemonAPI(cache) : new PokemonAPI();
 
-  // Load the Pokémon index on startup for searching
+  // Lazy-load index on first request; static cache reuses across warm instances
   await pokemonAPI.loadPokemonIndex();
 
   return {
