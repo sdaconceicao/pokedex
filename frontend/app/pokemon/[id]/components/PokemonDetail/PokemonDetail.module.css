@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background: #f8f9fa;
+  background: var(--background);
   min-height: 100vh;
 }
 
@@ -15,10 +15,10 @@
   grid-template-columns: 1fr 2fr;
   gap: 40px;
   margin-bottom: 40px;
-  background: var(--card-bg, #fff);
-  border: 2px solid #000;
+  background: var(--card-bg, var(--card-bg-default));
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
   position: relative;
   overflow: hidden;
@@ -31,87 +31,105 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: #f0f0f0;
-  border-bottom: 1px solid #ddd;
+  height: 5px;
+  background: var(--type-accent, var(--layout-primary-background));
+  border-radius: 0.75rem 0.75rem 0 0;
 }
 
 .mainSection:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
-/* Type-specific card backgrounds */
+/* Type-specific card backgrounds + accent colors */
 .mainSection.type-normal {
-  --card-bg: #f8f8f0;
+  --card-bg: #f6f6ec;
+  --type-accent: #a8a878;
 }
 
 .mainSection.type-fire {
-  --card-bg: #fff8f0;
+  --card-bg: #fff3e6;
+  --type-accent: #f08030;
 }
 
 .mainSection.type-water {
-  --card-bg: #f0f8ff;
+  --card-bg: #e8f3ff;
+  --type-accent: #6890f0;
 }
 
 .mainSection.type-electric {
-  --card-bg: #fffef0;
+  --card-bg: #fffce0;
+  --type-accent: #f8d030;
 }
 
 .mainSection.type-grass {
-  --card-bg: #f0fff0;
+  --card-bg: #e8ffe8;
+  --type-accent: #78c850;
 }
 
 .mainSection.type-ice {
-  --card-bg: #f0ffff;
+  --card-bg: #e6fafa;
+  --type-accent: #98d8d8;
 }
 
 .mainSection.type-fighting {
-  --card-bg: #fff0f0;
+  --card-bg: #ffe8e8;
+  --type-accent: #c03028;
 }
 
 .mainSection.type-poison {
-  --card-bg: #f8f0f8;
+  --card-bg: #f5e8f5;
+  --type-accent: #a040a0;
 }
 
 .mainSection.type-ground {
-  --card-bg: #fff8f0;
+  --card-bg: #fdf3de;
+  --type-accent: #e0c068;
 }
 
 .mainSection.type-flying {
-  --card-bg: #f0f0ff;
+  --card-bg: #ebebff;
+  --type-accent: #a890f0;
 }
 
 .mainSection.type-psychic {
-  --card-bg: #fff0f8;
+  --card-bg: #ffe8f5;
+  --type-accent: #f85888;
 }
 
 .mainSection.type-bug {
-  --card-bg: #f8fff0;
+  --card-bg: #f3ffe6;
+  --type-accent: #a8b820;
 }
 
 .mainSection.type-rock {
-  --card-bg: #f8f8f0;
+  --card-bg: #f5f0e0;
+  --type-accent: #b8a038;
 }
 
 .mainSection.type-ghost {
-  --card-bg: #f0f0f8;
+  --card-bg: #eae8f5;
+  --type-accent: #705898;
 }
 
 .mainSection.type-dragon {
-  --card-bg: #f0f0ff;
+  --card-bg: #e8e8ff;
+  --type-accent: #7038f8;
 }
 
 .mainSection.type-dark {
-  --card-bg: #f0f0f0;
+  --card-bg: #edebe8;
+  --type-accent: #705848;
 }
 
 .mainSection.type-steel {
-  --card-bg: #f8f8f8;
+  --card-bg: #f0f0f6;
+  --type-accent: #b8b8d0;
 }
 
 .mainSection.type-fairy {
-  --card-bg: #fff0f8;
+  --card-bg: #ffe8f2;
+  --type-accent: #ee99ac;
 }
 
 .imageSection {
@@ -124,15 +142,16 @@
   height: 182px !important;
   object-fit: contain;
   margin-bottom: 0.75rem;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
+  border: none;
+  border-radius: 0;
   padding: 0.5rem;
-  transition: transform 0.2s ease;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.18));
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
 
 .pokemonImage:hover {
-  transform: scale(1.02);
+  transform: scale(1.06) translateY(-4px);
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.22));
 }
 
 .pokemonNumber {
@@ -159,7 +178,7 @@
   font-weight: 600;
   margin: 0 0 0.75rem 0;
   text-align: left;
-  color: #212529;
+  color: var(--card-foreground);
   text-transform: capitalize;
   letter-spacing: 0.5px;
 }
@@ -180,7 +199,7 @@
 
 .statsSection h2 {
   margin: 0 0 1.5rem 0;
-  color: #212529;
+  color: var(--card-foreground);
   font-size: 1.25rem;
   font-weight: 700;
 }
@@ -191,10 +210,10 @@
 }
 
 .abilitiesSection {
-  background: white;
-  border: 2px solid #000;
+  background: var(--card-bg-default);
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
   position: relative;
   overflow: hidden;
@@ -213,7 +232,7 @@
 
 .abilitiesSection h2 {
   margin: 0 0 1.5rem 0;
-  color: #212529;
+  color: var(--card-foreground);
   font-size: 1.5rem;
   font-weight: 700;
 }

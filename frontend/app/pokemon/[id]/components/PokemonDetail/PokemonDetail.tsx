@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Pokemon, Ability } from "@/types";
-import BackButton from "@/ui/BackButton";
-import PokemonTypePill from "@/ui/PokemonTypePill";
+import BackButton from "@/components/BackButton";
+import PokemonTypePill from "@/components/PokemonTypePill";
 import PokemonStat from "../PokemonStat";
 import PokemonAbility from "../PokemonAbility";
 
