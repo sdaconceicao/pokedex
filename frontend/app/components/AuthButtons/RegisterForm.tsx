@@ -1,27 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import Input from "@/ui/Input";
-import Label from "@/ui/Label";
-import Button from "@/ui/Button";
+import Input from "@/components/Input";
+import Label from "@/components/Label";
+import Button from "@/components/Button";
 import { validatePassword, validateEmail } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 
 interface RegisterFormProps {
   onSubmit: (data: { email: string; password: string }) => Promise<void>;
-  onCancel: () => void;
+  onSwitchToLogin: () => void;
   isLoading?: boolean;
 }
 
 export default function RegisterForm({
   onSubmit,
-  onCancel,
+  onSwitchToLogin,
   isLoading = false,
 }: RegisterFormProps) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -34,34 +31,27 @@ export default function RegisterForm({
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Email validation
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!validateEmail(formData.email.trim())) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else {
       const passwordValidation = validatePassword(formData.password);
       if (!passwordValidation.isValid) {
-        newErrors.password = passwordValidation.errors[0]; // Show first error
+        newErrors.password = passwordValidation.errors[0];
       }
     }
 
-    // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
@@ -73,13 +63,10 @@ export default function RegisterForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Clear previous errors
     setErrors({});
     setSubmitError("");
 
     const newErrors = validateForm();
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -91,19 +78,12 @@ export default function RegisterForm({
         password: formData.password,
       });
     } catch (error) {
-      console.error("Registration failed:", error);
-      // Handle specific error messages from the server
-      if (error instanceof Error) {
-        if (
-          error.message.includes("already exists") ||
-          error.message.includes("Email")
-        ) {
-          setSubmitError(
-            "Email already exists. Please use a different email address."
-          );
-        } else {
-          setSubmitError("Registration failed. Please try again.");
-        }
+      if (
+        error instanceof Error &&
+        (error.message.includes("already exists") ||
+          error.message.includes("Email"))
+      ) {
+        setSubmitError("An account with this email already exists.");
       } else {
         setSubmitError("Registration failed. Please try again.");
       }
@@ -112,15 +92,14 @@ export default function RegisterForm({
 
   return (
     <form onSubmit={handleSubmit} className={styles.registerForm}>
-      {/* Display submit error if any */}
       {submitError && <div className={styles.submitError}>{submitError}</div>}
 
       <div className={styles.formGroup}>
-        <Label htmlFor="email" required>
+        <Label htmlFor="reg-email" required>
           Email
         </Label>
         <Input
-          id="email"
+          id="reg-email"
           type="email"
           value={formData.email}
           onChange={(e) => handleInputChange("email", e.target.value)}
@@ -133,12 +112,12 @@ export default function RegisterForm({
       </div>
 
       <div className={styles.formGroup}>
-        <Label htmlFor="password" required>
+        <Label htmlFor="reg-password" required>
           Password
         </Label>
         <div className={styles.passwordContainer}>
           <Input
-            id="password"
+            id="reg-password"
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={(e) => handleInputChange("password", e.target.value)}
@@ -162,12 +141,12 @@ export default function RegisterForm({
       </div>
 
       <div className={styles.formGroup}>
-        <Label htmlFor="confirmPassword" required>
+        <Label htmlFor="reg-confirm-password" required>
           Confirm Password
         </Label>
         <div className={styles.passwordContainer}>
           <Input
-            id="confirmPassword"
+            id="reg-confirm-password"
             type={showConfirmPassword ? "text" : "password"}
             value={formData.confirmPassword}
             onChange={(e) =>
@@ -193,18 +172,22 @@ export default function RegisterForm({
       </div>
 
       <div className={styles.formActions}>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
-          Cancel
-        </Button>
         <Button type="submit" variant="primary" disabled={isLoading}>
-          {isLoading ? "Creating Account..." : "Create Account"}
+          {isLoading ? "Creating Account…" : "Create Account"}
         </Button>
       </div>
+
+      <p className={styles.switchPrompt}>
+        Already have an account?{" "}
+        <button
+          type="button"
+          className={styles.switchLink}
+          onClick={onSwitchToLogin}
+          disabled={isLoading}
+        >
+          Sign in
+        </button>
+      </p>
     </form>
   );
 }

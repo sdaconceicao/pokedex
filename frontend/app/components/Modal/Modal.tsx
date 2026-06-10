@@ -4,7 +4,7 @@ import React, { useCallback, useMemo } from "react";
 import { X } from "@untitled-ui/icons-react";
 import clsx from "clsx";
 
-import Button from "@/ui/Button";
+import Button from "@/components/Button";
 import { useModal } from "./Modal.hooks";
 import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 import styles from "./Modal.module.css";

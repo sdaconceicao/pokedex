@@ -1,21 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import Input from "@/ui/Input";
-import Label from "@/ui/Label";
-import Button from "@/ui/Button";
+import Input from "@/components/Input";
+import Label from "@/components/Label";
+import Button from "@/components/Button";
 import styles from "./AuthButtons.module.css";
 
 interface LoginFormProps {
   onSubmit: (email: string, password: string) => void | Promise<void>;
-  onCancel: () => void;
+  onSwitchToRegister: () => void;
   isLoading?: boolean;
-  error?: string;
 }
 
 export default function LoginForm({
   onSubmit,
-  onCancel,
+  onSwitchToRegister,
   isLoading = false,
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
@@ -27,12 +26,9 @@ export default function LoginForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Clear previous errors
     setErrors({});
     setSubmitError("");
 
-    // Basic validation
     const newErrors: { email?: string; password?: string } = {};
 
     if (!email.trim()) {
@@ -52,41 +48,24 @@ export default function LoginForm({
 
     try {
       await onSubmit(email, password);
-    } catch (error) {
-      console.error("Login failed:", error);
+    } catch {
       setSubmitError("Invalid credentials. Please try again.");
     }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    if (errors.email) {
-      setErrors((prev) => ({ ...prev, email: undefined }));
-    }
+    if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    if (errors.password) {
+    if (errors.password)
       setErrors((prev) => ({ ...prev, password: undefined }));
-    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={styles.loginForm}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-          // Manually trigger form submission logic
-          const mockEvent = { preventDefault: () => {} } as React.FormEvent;
-          handleSubmit(mockEvent);
-        }
-      }}
-    >
-      {/* Display submit error if any */}
+    <form onSubmit={handleSubmit} className={styles.loginForm}>
       {submitError && <div className={styles.submitError}>{submitError}</div>}
 
       <div className={styles.formGroup}>
@@ -124,18 +103,22 @@ export default function LoginForm({
       </div>
 
       <div className={styles.formActions}>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
-          Cancel
-        </Button>
         <Button type="submit" variant="primary" disabled={isLoading}>
-          {isLoading ? "Logging in..." : "Login"}
+          {isLoading ? "Signing in…" : "Sign In"}
         </Button>
       </div>
+
+      <p className={styles.switchPrompt}>
+        Don&apos;t have an account?{" "}
+        <button
+          type="button"
+          className={styles.switchLink}
+          onClick={onSwitchToRegister}
+          disabled={isLoading}
+        >
+          Sign up
+        </button>
+      </p>
     </form>
   );
 }

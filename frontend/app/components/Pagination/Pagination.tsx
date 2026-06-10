@@ -5,7 +5,7 @@ import {
   getPageNumbers,
   getTotalPages,
 } from "./Pagination.util";
-import Button from "@/ui/Button";
+import Button from "@/components/Button";
 
 import styles from "./Pagination.module.css";
 

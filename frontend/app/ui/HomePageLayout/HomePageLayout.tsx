@@ -8,9 +8,11 @@ import React, {
   useState,
 } from "react";
 
-import PokemonList, { PokemonListSkeleton } from "@/components/PokemonList";
-import PokemonInstructions from "@/components/PokemonInstructions";
-import Pagination from "@/ui/Pagination";
+import PokemonList, {
+  PokemonListSkeleton,
+} from "@/ui/HomePageLayout/components/PokemonList";
+import PokemonInstructions from "@/ui/HomePageLayout/components/PokemonInstructions";
+import Pagination from "@/components/Pagination";
 import { usePokemonUnifiedQuery } from "./usePokemonUnifiedQuery";
 
 import styles from "./HomePageLayout.module.css";

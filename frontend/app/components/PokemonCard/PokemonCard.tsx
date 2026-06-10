@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FunctionComponent } from "react";
 import { Pokemon } from "@/types/graphql";
-import PokemonTypePill from "@/ui/PokemonTypePill";
+import PokemonTypePill from "@/components/PokemonTypePill";
 import {
   formatPokemonName,
   getPokemonTypeClass,

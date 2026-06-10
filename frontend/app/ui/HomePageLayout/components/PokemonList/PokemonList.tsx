@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import { Pokemon } from "@/types";
-import PokemonCard, { PokemonCardSkeleton } from "@/ui/PokemonCard";
+import PokemonCard, { PokemonCardSkeleton } from "@/components/PokemonCard";
 import PokemonListSkeleton from "./PokemonListSkeleton";
 
 import styles from "./PokemonList.module.css";
