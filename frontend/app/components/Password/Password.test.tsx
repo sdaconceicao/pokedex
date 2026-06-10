@@ -36,7 +36,7 @@ describe("Password", () => {
 
   it("forwards value and onChange to the input", async () => {
     const user = userEvent.setup();
-    const handleChange = jest.fn();
+    const handleChange = vi.fn();
 
     render(
       <Password {...defaultProps} value="" onChange={handleChange} />

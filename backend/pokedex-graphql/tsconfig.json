@@ -31,7 +31,7 @@
     "dist",
     "node_modules",
     "**/*.test.ts",
-    "**/jest.setup.ts",
+    "**/vitest.setup.ts",
     "codegen.ts"
   ]
 }
