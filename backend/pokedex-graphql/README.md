@@ -16,7 +16,7 @@ A GraphQL API server for the Pokedex project built with [Apollo Server](https://
 ## Project setup
 
 ```bash
-$ npm i
+pnpm install
 ```
 
 ## Environment Configuration
@@ -38,16 +38,16 @@ Key environment variables:
 
 ```bash
 # development (uses real Pokemon API)
-$ npm run start
+$ pn  start
 
 # watch mode (uses real Pokemon API)
-$ npm run start:dev
+$ pn  start:dev
 
 # development with mock data
-$ npm run start:dev:mock
+$ pn  start:dev:mock
 
 # production mode
-$ npm run start:prod
+$ pn  start:prod
 ```
 
 ## GraphQL Schema
@@ -68,10 +68,10 @@ The API provides the following main queries:
 
 ```bash
 # unit tests
-$ npm run test
+$ pn  test
 
 # test coverage
-$ npm run test:coverage
+$ pn  test:coverage
 ```
 
 ## Development
@@ -82,27 +82,27 @@ The project uses GraphQL Code Generator to generate TypeScript types from the Gr
 
 ```bash
 # Generate types from schema
-$ npm run generate
+$ pn  generate
 ```
 
 ### Linting
 
 ```bash
 # Check for linting errors
-$ npm run lint
+$ pn  lint
 
 # Fix linting errors
-$ npm run lint:fix
+$ pn  lint:fix
 
 # Check linting with zero warnings
-$ npm run lint:check
+$ pn  lint:check
 ```
 
 ### Type Checking
 
 ```bash
 # Run TypeScript compiler check
-$ npm run tsc
+$ pn  tsc
 ```
 
 ## API Endpoints

@@ -6,7 +6,7 @@ This is a full stack application setup to provide information on pokemon. You ca
 
 ## Getting Started
 
-1. Run `npm i`
-2. Run `npm run start:dev` in the backend/pokedex-graphql folder
-3. Run `npm run start:dev` in the backend/pokedex-rest folder
-4. Run `npm run start:dev` in the frontend folder
+1. Run `pnpm install`
+2. Run `pn  start:dev` in the backend/pokedex-graphql folder
+3. Run `pn  start:dev` in the backend/pokedex-rest folder
+4. Run `pn  start:dev` in the frontend folder

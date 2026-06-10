@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Request as ExpressRequest } from 'express';
+import { FastifyRequest } from 'fastify';
 import { UserEntity } from '../../users/users.entity';
 
-interface AuthenticatedRequest extends ExpressRequest {
+interface AuthenticatedRequest extends FastifyRequest {
   user: UserEntity;
 }
 

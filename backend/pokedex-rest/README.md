@@ -7,7 +7,7 @@
 ## Project setup
 
 ```bash
-$ npm i
+pnpm install
 ```
 
 ## Environment Configuration
@@ -35,33 +35,33 @@ Key environment variables:
 
 ```bash
 # development (uses .env)
-$ npm run start
+$ pn  start
 
 # watch mode (uses .env)
-$ npm run start:dev
+$ pn  start:dev
 
 # production mode (uses .env.production)
-$ npm run start:prod
+$ pn  start:prod
 
 # test mode (uses .env.test)
-$ npm run start:test
+$ pn  start:test
 
 # custom environment (uses .env.{ENV})
-$ npm run start:env
-$ ENV=staging npm run start:env
+$ pn  start:env
+$ ENV=staging pn  start:env
 ```
 
 ## Run tests
 
 ```bash
 # unit tests
-$ npm run test
+$ pn  test
 
 # e2e tests
-$ npm run test:e2e
+$ pn  test:e2e
 
 # test coverage
-$ npm run test:coverage
+$ pn  test:coverage
 ```
 
 ## Deployment
@@ -71,8 +71,8 @@ When you're ready to deploy your NestJS application to production, there are som
 If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install -g @nestjs/mau
+mau deploy
 ```
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.

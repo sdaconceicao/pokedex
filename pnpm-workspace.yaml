@@ -1,0 +1,12 @@
+packages:
+  - "backend/*"
+  - "frontend"
+
+allowBuilds:
+  "@apollo/protobufjs": true
+  "@parcel/watcher": true
+  bcrypt: true
+  esbuild: true
+  msw: true
+  sharp: true
+  unrs-resolver: true

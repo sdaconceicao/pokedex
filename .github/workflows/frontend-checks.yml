@@ -21,17 +21,14 @@ jobs:
           path: ./*
           key: ${{ inputs.cached-build-id }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Run linting - frontend
-        run: |
-          cd frontend
-          npm run lint
+        run: pnpm --filter pokedex-frontend run lint
 
       - name: Run type checking - frontend
-        run: |
-          cd frontend
-          npx tsc --noEmit
+        run: pnpm --filter pokedex-frontend exec tsc --noEmit
 
       - name: Run tests with coverage - frontend
-        run: |
-          cd frontend
-          npm run test:coverage
+        run: pnpm --filter pokedex-frontend run test:coverage
