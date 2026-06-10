@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Button from "@/components/Button";
+import Password from "@/components/Password";
 import styles from "./AuthButtons.module.css";
 
 interface LoginFormProps {
@@ -89,9 +90,8 @@ export default function LoginForm({
         <Label htmlFor="password" required>
           Password
         </Label>
-        <Input
+        <Password
           id="password"
-          type="password"
           value={password}
           onChange={handlePasswordChange}
           placeholder="Enter your password"

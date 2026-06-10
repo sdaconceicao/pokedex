@@ -22,7 +22,7 @@ test.describe("User Login", () => {
     const dialog = getAuthDialog(page);
     await expect(dialog.getByRole("heading", { name: "Sign In" })).toBeVisible();
     await expect(dialog.getByLabel("Email")).toBeVisible();
-    await expect(dialog.getByLabel("Password")).toBeVisible();
+    await expect(dialog.getByPlaceholder("Enter your password")).toBeVisible();
     await expect(dialog.getByRole("button", { name: "Sign In" })).toBeVisible();
     await expect(dialog.getByRole("button", { name: "Sign up" })).toBeVisible();
   });
@@ -34,7 +34,7 @@ test.describe("User Login", () => {
 
     const dialog = getAuthDialog(page);
     await dialog.getByLabel("Email").fill(VALID_EMAIL);
-    await dialog.getByLabel("Password").fill(VALID_PASSWORD);
+    await dialog.getByPlaceholder("Enter your password").fill(VALID_PASSWORD);
     await dialog.getByRole("button", { name: "Sign In" }).click();
 
     await expectLoggedIn(page);
@@ -48,7 +48,7 @@ test.describe("User Login", () => {
 
     const dialog = getAuthDialog(page);
     await dialog.getByLabel("Email").fill("invalid@example.com");
-    await dialog.getByLabel("Password").fill("wrongpassword");
+    await dialog.getByPlaceholder("Enter your password").fill("wrongpassword");
     await dialog.getByRole("button", { name: "Sign In" }).click();
 
     await expect(dialog).toContainText(

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
 import Button from "@/components/Button";
+import Password from "@/components/Password";
 import { validatePassword, validateEmail } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 
@@ -26,8 +27,6 @@ export default function RegisterForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string>("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -115,60 +114,34 @@ export default function RegisterForm({
         <Label htmlFor="reg-password" required>
           Password
         </Label>
-        <div className={styles.passwordContainer}>
-          <Input
-            id="reg-password"
-            type={showPassword ? "text" : "password"}
-            value={formData.password}
-            onChange={(e) => handleInputChange("password", e.target.value)}
-            placeholder="Enter your password"
-            autoComplete="new-password"
-            error={!!errors.password}
-            errorMessage={errors.password}
-            disabled={isLoading}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowPassword(!showPassword)}
-            className={styles.togglePassword}
-            disabled={isLoading}
-          >
-            {showPassword ? "Hide" : "Show"}
-          </Button>
-        </div>
+        <Password
+          id="reg-password"
+          value={formData.password}
+          onChange={(e) => handleInputChange("password", e.target.value)}
+          placeholder="Enter your password"
+          autoComplete="new-password"
+          error={!!errors.password}
+          errorMessage={errors.password}
+          disabled={isLoading}
+        />
       </div>
 
       <div className={styles.formGroup}>
         <Label htmlFor="reg-confirm-password" required>
           Confirm Password
         </Label>
-        <div className={styles.passwordContainer}>
-          <Input
-            id="reg-confirm-password"
-            type={showConfirmPassword ? "text" : "password"}
-            value={formData.confirmPassword}
-            onChange={(e) =>
-              handleInputChange("confirmPassword", e.target.value)
-            }
-            placeholder="Confirm your password"
-            autoComplete="new-password"
-            error={!!errors.confirmPassword}
-            errorMessage={errors.confirmPassword}
-            disabled={isLoading}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className={styles.togglePassword}
-            disabled={isLoading}
-          >
-            {showConfirmPassword ? "Hide" : "Show"}
-          </Button>
-        </div>
+        <Password
+          id="reg-confirm-password"
+          value={formData.confirmPassword}
+          onChange={(e) =>
+            handleInputChange("confirmPassword", e.target.value)
+          }
+          placeholder="Confirm your password"
+          autoComplete="new-password"
+          error={!!errors.confirmPassword}
+          errorMessage={errors.confirmPassword}
+          disabled={isLoading}
+        />
       </div>
 
       <div className={styles.formActions}>

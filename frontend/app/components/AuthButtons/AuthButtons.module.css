@@ -24,17 +24,6 @@
   flex: 1;
 }
 
-.passwordContainer {
-  display: flex;
-  gap: 0.5rem;
-  align-items: flex-start;
-}
-
-.togglePassword {
-  flex-shrink: 0;
-  margin-top: 0.125rem;
-}
-
 .submitError {
   color: #dc2626;
   background-color: #fef2f2;
