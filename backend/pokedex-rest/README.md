@@ -7,7 +7,7 @@
 ## Project setup
 
 ```bash
-$ npm i
+$ pnpm install
 ```
 
 ## Environment Configuration
@@ -35,33 +35,33 @@ Key environment variables:
 
 ```bash
 # development (uses .env)
-$ npm run start
+$ pnpm run start
 
 # watch mode (uses .env)
-$ npm run start:dev
+$ pnpm run start:dev
 
 # production mode (uses .env.production)
-$ npm run start:prod
+$ pnpm run start:prod
 
 # test mode (uses .env.test)
-$ npm run start:test
+$ pnpm run start:test
 
 # custom environment (uses .env.{ENV})
-$ npm run start:env
-$ ENV=staging npm run start:env
+$ pnpm run start:env
+$ ENV=staging pnpm run start:env
 ```
 
 ## Run tests
 
 ```bash
 # unit tests
-$ npm run test
+$ pnpm run test
 
 # e2e tests
-$ npm run test:e2e
+$ pnpm run test:e2e
 
 # test coverage
-$ npm run test:coverage
+$ pnpm run test:coverage
 ```
 
 ## Deployment

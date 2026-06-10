@@ -1,6 +1,6 @@
 {
-  "installCommand": "cd ../.. && npm ci",
-  "buildCommand": "npm run compile",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm run compile",
   "rewrites": [
     { "source": "/graphql", "destination": "/api/graphql" }
   ]

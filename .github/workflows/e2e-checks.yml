@@ -36,10 +36,10 @@ jobs:
           key: ${{ inputs.cached-build-id }}
 
       - name: Install Playwright
-        run: npm run test:e2e:install
+        run: pnpm run test:e2e:install
 
       - name: Run E2E Tests
-        run: npm run test:e2e
+        run: pnpm run test:e2e
         env:
           CI: true
 

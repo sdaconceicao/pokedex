@@ -3,7 +3,7 @@
 # Prerequisites:
 #   1. npx vercel login  (or set VERCEL_TOKEN)
 #   2. Neon Free database with pooled connection — set REST env vars below
-#   3. Run migrations once: cd backend/pokedex-rest && npm run migration:run
+#   3. Run migrations once: cd backend/pokedex-rest && pnpm run migration:run
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -35,7 +35,7 @@ npx vercel env add DB_DATABASE production <<< "$DB_DATABASE" 2>/dev/null || true
 npx vercel env add JWT_SECRET production <<< "$JWT_SECRET" 2>/dev/null || true
 npx vercel env add NODE_ENV production <<< "production" 2>/dev/null || true
 npx vercel env add ALLOWED_ORIGINS production <<< "$ALLOWED_ORIGINS" 2>/dev/null || true
-npx vercel env add ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC production <<< "3600s" 2>/dev/null || true
+npx vercel env add ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC production <<< "3600" 2>/dev/null || true
 REST_URL=$(npx vercel deploy --prod --yes)
 echo "REST deployed: $REST_URL"
 
