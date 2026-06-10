@@ -3,7 +3,7 @@
 # Prerequisites:
 #   1. npx vercel login  (or set VERCEL_TOKEN)
 #   2. Neon Free database with pooled connection — set REST env vars below
-#   3. Run migrations once: cd backend/pokedex-rest && pnpm run migration:run
+#   3. Run migrations once: cd backend/pokedex-rest && pn  migration:run
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

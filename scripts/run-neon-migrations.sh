@@ -14,4 +14,4 @@ cd "$ROOT/backend/pokedex-rest"
 export DB_PORT="${DB_PORT:-5432}"
 export NODE_ENV=development
 
-pnpm run migration:run
+pn  migration:run

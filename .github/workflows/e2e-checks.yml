@@ -39,10 +39,10 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Install Playwright
-        run: pnpm run test:e2e:install
+        run: pn  test:e2e:install
 
       - name: Run E2E Tests
-        run: pnpm run test:e2e
+        run: pn  test:e2e
         env:
           CI: true
 

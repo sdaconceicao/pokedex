@@ -1,7 +1,7 @@
 {
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm run compile",
-  "rewrites": [
-    { "source": "/graphql", "destination": "/api/graphql" }
-  ]
+  "buildCommand": "pn compile && mkdir -p public",
+  "outputDirectory": "public",
+  "framework": null,
+  "rewrites": [{ "source": "/graphql", "destination": "/api/graphql" }]
 }
