@@ -2,10 +2,10 @@ import { renderHook, act } from "@testing-library/react";
 import { useModal } from "./Modal.hooks";
 
 describe("useModal", () => {
-  const mockOnClose = jest.fn();
+  const mockOnClose = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("initializes with correct return values", () => {
@@ -63,7 +63,7 @@ describe("useModal", () => {
   });
 
   it("removes event listener on cleanup", () => {
-    const removeEventListenerSpy = jest.spyOn(document, "removeEventListener");
+    const removeEventListenerSpy = vi.spyOn(document, "removeEventListener");
     const { unmount } = renderHook(() => useModal(true, mockOnClose));
 
     unmount();
@@ -76,8 +76,8 @@ describe("useModal", () => {
   });
 
   it("handles multiple modal instances correctly", () => {
-    const onClose1 = jest.fn();
-    const onClose2 = jest.fn();
+    const onClose1 = vi.fn();
+    const onClose2 = vi.fn();
 
     const { result: result1 } = renderHook(() => useModal(true, onClose1));
     const { result: result2 } = renderHook(() => useModal(false, onClose2));

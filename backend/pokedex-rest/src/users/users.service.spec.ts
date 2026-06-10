@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { UsersService } from './users.service';
@@ -6,7 +7,7 @@ import { UserEntity } from './users.entity';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let repository: jest.Mocked<Repository<UserEntity>>;
+  let repository: Mocked<Repository<UserEntity>>;
 
   const mockUser: UserEntity = {
     id: 'user-123',
@@ -32,11 +33,11 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
-            findOne: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            findOne: vi.fn(),
+            update: vi.fn(),
+            delete: vi.fn(),
           },
         },
       ],
@@ -47,7 +48,7 @@ describe('UsersService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

@@ -4,20 +4,20 @@ import NavigationDataProvider from "./NavigationDataProvider";
 import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
 
 // Mock the Apollo client
-jest.mock("../lib/apollo-client", () => ({
+vi.mock("../lib/apollo-client", () => ({
   client: {
-    query: jest.fn(),
+    query: vi.fn(),
   },
 }));
 
-const mockClient = client as jest.Mocked<typeof client>;
+const mockClient = vi.mocked(client);
 
 // Helper type for mock query results
 type MockQueryResult<T> = never;
 
 describe("NavigationDataProvider", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("getTypes", () => {
@@ -83,7 +83,7 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors gracefully and return empty array", async () => {
-      const consoleSpy = jest
+      const consoleSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
 
@@ -153,7 +153,7 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors gracefully and return empty array", async () => {
-      const consoleSpy = jest
+      const consoleSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
 
@@ -266,7 +266,7 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors gracefully and return empty array", async () => {
-      const consoleSpy = jest
+      const consoleSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
 
@@ -379,7 +379,7 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors in individual queries gracefully", async () => {
-      const consoleSpy = jest
+      const consoleSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
 

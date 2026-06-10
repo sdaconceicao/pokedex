@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 import { JwtService } from '@nestjs/jwt';
 import { BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -7,17 +8,17 @@ import { UserEntity } from '../users/users.entity';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 
 // Mock bcrypt module
-jest.mock('bcrypt', () => ({
-  compareSync: jest.fn(),
-  hash: jest.fn(),
+vi.mock('bcrypt', () => ({
+  compareSync: vi.fn(),
+  hash: vi.fn(),
 }));
 
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let usersService: jest.Mocked<UsersService>;
-  let jwtService: jest.Mocked<JwtService>;
+  let usersService: Mocked<UsersService>;
+  let jwtService: Mocked<JwtService>;
 
   const mockUser: UserEntity = {
     id: 'user-123',
@@ -40,14 +41,14 @@ describe('AuthService', () => {
         {
           provide: UsersService,
           useValue: {
-            findOneByEmail: jest.fn(),
-            create: jest.fn(),
+            findOneByEmail: vi.fn(),
+            create: vi.fn(),
           },
         },
         {
           provide: JwtService,
           useValue: {
-            signAsync: jest.fn(),
+            signAsync: vi.fn(),
           },
         },
       ],
@@ -59,7 +60,7 @@ describe('AuthService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('validateUser', () => {
@@ -72,7 +73,7 @@ describe('AuthService', () => {
       const password = 'password123';
 
       usersService.findOneByEmail.mockResolvedValue(mockUser);
-      (bcrypt.compareSync as jest.Mock).mockReturnValue(true);
+      vi.mocked(bcrypt.compareSync).mockReturnValue(true);
 
       const result = await service.validateUser(email, password);
 
@@ -102,7 +103,7 @@ describe('AuthService', () => {
       const password = 'wrongpassword';
 
       usersService.findOneByEmail.mockResolvedValue(mockUser);
-      (bcrypt.compareSync as jest.Mock).mockReturnValue(false);
+      vi.mocked(bcrypt.compareSync).mockReturnValue(false);
 
       await expect(service.validateUser(email, password)).rejects.toThrow(
         new BadRequestException('Password does not match'),
@@ -141,7 +142,7 @@ describe('AuthService', () => {
       };
 
       usersService.findOneByEmail.mockResolvedValue(null);
-      (bcrypt.hash as jest.Mock).mockResolvedValue(hashedPassword);
+      vi.mocked(bcrypt.hash).mockResolvedValue(hashedPassword as never);
       usersService.create.mockResolvedValue(createdUser);
       jwtService.signAsync.mockResolvedValue(mockToken);
 

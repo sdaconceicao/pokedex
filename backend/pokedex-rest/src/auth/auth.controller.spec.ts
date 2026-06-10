@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 import { AuthController, AuthenticatedRequest } from './auth.controller';
 import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dtos/register-request.dto';
@@ -6,7 +7,7 @@ import { UserEntity } from '../users/users.entity';
 import { AccessToken } from './types/AccessToken';
 describe('AuthController', () => {
   let controller: AuthController;
-  let authService: jest.Mocked<AuthService>;
+  let authService: Mocked<AuthService>;
 
   const mockUser: UserEntity = {
     id: 'user-123',
@@ -37,8 +38,8 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: {
-            login: jest.fn(),
-            register: jest.fn(),
+            login: vi.fn(),
+            register: vi.fn(),
           },
         },
       ],
@@ -49,7 +50,7 @@ describe('AuthController', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

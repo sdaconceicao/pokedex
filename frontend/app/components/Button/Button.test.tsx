@@ -93,7 +93,7 @@ describe("Button", () => {
 
   describe("Button Interactions", () => {
     it("calls onClick when clicked", async () => {
-      const mockOnClick = jest.fn();
+      const mockOnClick = vi.fn();
       const user = userEvent.setup();
 
       render(<Button {...defaultProps} onClick={mockOnClick} />);
@@ -105,7 +105,7 @@ describe("Button", () => {
     });
 
     it("does not call onClick when disabled", async () => {
-      const mockOnClick = jest.fn();
+      const mockOnClick = vi.fn();
       const user = userEvent.setup();
 
       render(<Button {...defaultProps} onClick={mockOnClick} disabled />);

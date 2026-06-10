@@ -44,7 +44,7 @@ describe("Input", () => {
 
   it("renders with value", () => {
     const value = "test value";
-    const mockOnChange = jest.fn();
+    const mockOnChange = vi.fn();
     render(<Input {...defaultProps} value={value} onChange={mockOnChange} />);
 
     const input = screen.getByTestId("test-input-input");
@@ -61,7 +61,7 @@ describe("Input", () => {
 
   it("handles onChange event", async () => {
     const user = userEvent.setup();
-    const mockOnChange = jest.fn();
+    const mockOnChange = vi.fn();
 
     render(<Input {...defaultProps} onChange={mockOnChange} />);
 
@@ -73,7 +73,7 @@ describe("Input", () => {
 
   it("handles onBlur event", async () => {
     const user = userEvent.setup();
-    const mockOnBlur = jest.fn();
+    const mockOnBlur = vi.fn();
 
     render(<Input {...defaultProps} onBlur={mockOnBlur} />);
 
@@ -86,7 +86,7 @@ describe("Input", () => {
 
   it("handles onFocus event", async () => {
     const user = userEvent.setup();
-    const mockOnFocus = jest.fn();
+    const mockOnFocus = vi.fn();
 
     render(<Input {...defaultProps} onFocus={mockOnFocus} />);
 

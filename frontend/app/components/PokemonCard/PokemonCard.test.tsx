@@ -3,7 +3,7 @@ import { PokemonCard } from "./PokemonCard";
 import { Pokemon } from "@/types/graphql";
 
 // Mock the PokemonTypePill component
-jest.mock("../PokemonTypePill", () => ({
+vi.mock("../PokemonTypePill", () => ({
   __esModule: true,
   default: ({ type }: { type: string }) => (
     <span data-testid={`type-pill-${type}`}>{type}</span>
@@ -11,8 +11,8 @@ jest.mock("../PokemonTypePill", () => ({
 }));
 
 // Mock Next.js components
-jest.mock("next/link", () => {
-  return function MockLink({
+vi.mock("next/link", () => ({
+  default: function MockLink({
     children,
     href,
   }: {
@@ -20,11 +20,11 @@ jest.mock("next/link", () => {
     href: string;
   }) {
     return <a href={href}>{children}</a>;
-  };
-});
+  },
+}));
 
-jest.mock("next/image", () => {
-  return function MockImage({
+vi.mock("next/image", () => ({
+  default: function MockImage({
     src,
     alt,
     width,
@@ -36,8 +36,8 @@ jest.mock("next/image", () => {
     height: number;
   }) {
     return <img src={src} alt={alt} width={width} height={height} />;
-  };
-});
+  },
+}));
 
 describe("PokemonCard", () => {
   const mockPokemon: Pokemon = {

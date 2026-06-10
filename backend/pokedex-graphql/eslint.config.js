@@ -56,7 +56,7 @@ export default [
     files: ["**/*.test.ts", "**/*.spec.ts"],
     languageOptions: {
       globals: {
-        jest: "readonly",
+        vi: "readonly",
         describe: "readonly",
         it: "readonly",
         expect: "readonly",

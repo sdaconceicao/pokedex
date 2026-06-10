@@ -12,7 +12,7 @@ describe('AppService', () => {
         {
           provide: UsersService,
           useValue: {
-            findOneById: jest.fn(),
+            findOneById: vi.fn(),
           },
         },
       ],
@@ -22,7 +22,7 @@ describe('AppService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

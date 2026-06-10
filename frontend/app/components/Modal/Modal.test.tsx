@@ -6,34 +6,34 @@ import { Modal } from "./Modal";
 import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 
 // Mock the custom hook
-jest.mock("./Modal.hooks", () => ({
-  useModal: jest.fn(),
+vi.mock("./Modal.hooks", () => ({
+  useModal: vi.fn(),
 }));
 
 import { useModal } from "./Modal.hooks";
 
-const mockUseModal = useModal as jest.MockedFunction<typeof useModal>;
+const mockUseModal = vi.mocked(useModal);
 
 describe("Modal", () => {
   const defaultProps = {
     isOpen: true,
-    onClose: jest.fn(),
+    onClose: vi.fn(),
     children: <div>Modal content</div>,
   };
 
   const mockDialogRef = {
     current: {
-      showModal: jest.fn(),
-      close: jest.fn(),
+      showModal: vi.fn(),
+      close: vi.fn(),
     } as Partial<HTMLDialogElement>,
   };
 
   beforeEach(() => {
     mockUseModal.mockReturnValue({
       dialogRef: mockDialogRef as React.RefObject<HTMLDialogElement>,
-      handleClose: jest.fn(),
+      handleClose: vi.fn(),
     });
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders when open", () => {
@@ -126,7 +126,7 @@ describe("Modal", () => {
   });
 
   it("calls onClose when close button is clicked", async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     const user = userEvent.setup();
 
     render(<Modal {...defaultProps} onClose={onClose} />);
@@ -141,7 +141,7 @@ describe("Modal", () => {
   });
 
   it("calls onClose when backdrop is clicked and closeOnBackdropClick is true", async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     const user = userEvent.setup();
 
     render(
@@ -161,7 +161,7 @@ describe("Modal", () => {
   });
 
   it("does not call onClose when backdrop is clicked and closeOnBackdropClick is false", async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     const user = userEvent.setup();
 
     render(
@@ -202,21 +202,21 @@ describe("Modal", () => {
 describe("Modal accessibility", () => {
   const defaultProps = {
     isOpen: true,
-    onClose: jest.fn(),
+    onClose: vi.fn(),
     children: <div>Modal content</div>,
   };
 
   const mockDialogRef = {
     current: {
-      showModal: jest.fn(),
-      close: jest.fn(),
+      showModal: vi.fn(),
+      close: vi.fn(),
     } as Partial<HTMLDialogElement>,
   };
 
   beforeEach(() => {
     mockUseModal.mockReturnValue({
       dialogRef: mockDialogRef as React.RefObject<HTMLDialogElement>,
-      handleClose: jest.fn(),
+      handleClose: vi.fn(),
     });
   });
 
