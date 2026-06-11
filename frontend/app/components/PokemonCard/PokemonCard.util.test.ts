@@ -1,8 +1,4 @@
-import {
-  formatPokemonName,
-  getPokemonTypeClass,
-  getPrimaryType,
-} from "./PokemonCard.utils";
+import { formatPokemonName, getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";
 
 describe("PokemonCard Utils", () => {
   describe("formatPokemonName", () => {
@@ -110,9 +106,7 @@ describe("PokemonCard Utils", () => {
     });
 
     it("handles edge cases", () => {
-      expect(getPrimaryType(["electric", "flying", "psychic"])).toBe(
-        "electric"
-      );
+      expect(getPrimaryType(["electric", "flying", "psychic"])).toBe("electric");
       expect(getPrimaryType(["dark"])).toBe("dark");
       expect(getPrimaryType(["steel", "fairy"])).toBe("steel");
     });

@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { Pokemon, Ability } from "@/types";
 import BackButton from "@/components/BackButton";
 import PokemonTypePill from "@/components/PokemonTypePill";
-import PokemonStat from "../PokemonStat";
+import type { Ability, Pokemon } from "@/types";
 import PokemonAbility from "../PokemonAbility";
+import PokemonStat from "../PokemonStat";
 
 import styles from "./PokemonDetail.module.css";
 
@@ -18,11 +18,7 @@ export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
         <BackButton>← Back to Pokédex</BackButton>
       </div>
 
-      <div
-        className={`${styles.mainSection} ${
-          styles[`type-${pokemon.type[0].toLowerCase()}`]
-        }`}
-      >
+      <div className={`${styles.mainSection} ${styles[`type-${pokemon.type[0].toLowerCase()}`]}`}>
         <div className={styles.imageSection}>
           <Image
             src={pokemon.image}
@@ -49,14 +45,8 @@ export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
               <PokemonStat name="HP" value={pokemon.stats.hp} />
               <PokemonStat name="Attack" value={pokemon.stats.attack} />
               <PokemonStat name="Defense" value={pokemon.stats.defense} />
-              <PokemonStat
-                name="SP Attack"
-                value={pokemon.stats.specialAttack}
-              />
-              <PokemonStat
-                name="SP Defense"
-                value={pokemon.stats.specialDefense}
-              />
+              <PokemonStat name="SP Attack" value={pokemon.stats.specialAttack} />
+              <PokemonStat name="SP Defense" value={pokemon.stats.specialDefense} />
               <PokemonStat name="Speed" value={pokemon.stats.speed} />
             </div>
           </div>

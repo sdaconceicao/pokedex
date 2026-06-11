@@ -1,8 +1,8 @@
 "use client";
 
-import React, { ReactNode } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import type { ReactNode } from "react";
 
 import styles from "./NavbarItem.module.css";
 

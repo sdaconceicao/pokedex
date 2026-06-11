@@ -20,9 +20,7 @@ describe("PokemonStat Component", () => {
 
   it("should apply correct width percentage to stat fill bar", () => {
     render(<PokemonStat name="Speed" value={255} />);
-    const statFill = screen
-      .getByText("Speed")
-      .parentElement?.querySelector('[class*="statFill"]');
+    const statFill = screen.getByText("Speed").parentElement?.querySelector('[class*="statFill"]');
     expect(statFill).toHaveStyle({ width: "100%" });
   });
 
@@ -46,9 +44,7 @@ describe("PokemonStat Component", () => {
 
   it("should apply correct width percentage for high stat value", () => {
     render(<PokemonStat name="HP" value={200} />);
-    const statFill = screen
-      .getByText("HP")
-      .parentElement?.querySelector('[class*="statFill"]');
+    const statFill = screen.getByText("HP").parentElement?.querySelector('[class*="statFill"]');
     // Check that the width is approximately 78.4% (allowing for floating point precision)
     const computedWidth = statFill?.getAttribute("style");
     expect(computedWidth).toContain("width: 78.4");
@@ -56,9 +52,7 @@ describe("PokemonStat Component", () => {
 
   it("should handle decimal stat values correctly", () => {
     render(<PokemonStat name="Attack" value={127.5} />);
-    const statFill = screen
-      .getByText("Attack")
-      .parentElement?.querySelector('[class*="statFill"]');
+    const statFill = screen.getByText("Attack").parentElement?.querySelector('[class*="statFill"]');
     expect(statFill).toHaveStyle({ width: "50%" });
   });
 

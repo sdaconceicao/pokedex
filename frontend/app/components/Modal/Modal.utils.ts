@@ -5,9 +5,7 @@
 /**
  * Checks if a click event occurred on the backdrop (outside the dialog content)
  */
-export const isBackdropClick = (
-  e: React.MouseEvent<HTMLDialogElement>
-): boolean => {
+export const isBackdropClick = (e: React.MouseEvent<HTMLDialogElement>): boolean => {
   const rect = e.currentTarget.getBoundingClientRect();
 
   return !(

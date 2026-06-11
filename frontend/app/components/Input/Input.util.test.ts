@@ -1,9 +1,9 @@
 import {
-  generateTypeClass,
   generateErrorMessageId,
+  generateTypeClass,
+  isReadOnly,
   shouldShowErrorMessage,
   validateInputProps,
-  isReadOnly,
 } from "./Input.utils";
 
 describe("Input Utils", () => {
@@ -137,9 +137,7 @@ describe("Input Utils", () => {
         max: 0,
       });
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain(
-        "min value cannot be greater than max value"
-      );
+      expect(result.errors).toContain("min value cannot be greater than max value");
     });
 
     it("returns invalid when minLength is greater than maxLength", () => {
@@ -148,9 +146,7 @@ describe("Input Utils", () => {
         maxLength: 3,
       });
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain(
-        "minLength cannot be greater than maxLength"
-      );
+      expect(result.errors).toContain("minLength cannot be greater than maxLength");
     });
 
     it("returns valid when min is undefined", () => {
@@ -197,12 +193,8 @@ describe("Input Utils", () => {
       });
       expect(result.isValid).toBe(false);
       expect(result.errors).toHaveLength(2);
-      expect(result.errors).toContain(
-        "min value cannot be greater than max value"
-      );
-      expect(result.errors).toContain(
-        "minLength cannot be greater than maxLength"
-      );
+      expect(result.errors).toContain("min value cannot be greater than max value");
+      expect(result.errors).toContain("minLength cannot be greater than maxLength");
     });
   });
 

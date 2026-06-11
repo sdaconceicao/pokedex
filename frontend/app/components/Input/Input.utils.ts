@@ -1,4 +1,4 @@
-import { InputType } from "./Input";
+import type { InputType } from "./Input";
 
 /**
  * Generates CSS class for type-specific styling
@@ -15,10 +15,7 @@ export const generateTypeClass = (type: InputType): string => {
  * @param errorMessage - The error message text
  * @returns The error message ID or undefined
  */
-export const generateErrorMessageId = (
-  id?: string,
-  errorMessage?: string
-): string | undefined => {
+export const generateErrorMessageId = (id?: string, errorMessage?: string): string | undefined => {
   if (!id || !errorMessage) {
     return undefined;
   }
@@ -32,10 +29,7 @@ export const generateErrorMessageId = (
  * @param errorMessage - The error message text
  * @returns True if error message should be displayed
  */
-export const shouldShowErrorMessage = (
-  error: boolean,
-  errorMessage?: string
-): boolean => {
+export const shouldShowErrorMessage = (error: boolean, errorMessage?: string): boolean => {
   return error && Boolean(errorMessage);
 };
 
@@ -55,11 +49,7 @@ export const validateInputProps = (props: {
 
   // Validate number input constraints
   if (props.type === "number") {
-    if (
-      props.min !== undefined &&
-      props.max !== undefined &&
-      props.min > props.max
-    ) {
+    if (props.min !== undefined && props.max !== undefined && props.min > props.max) {
       errors.push("min value cannot be greater than max value");
     }
   }

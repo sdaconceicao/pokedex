@@ -1,7 +1,10 @@
 import { client } from "@/lib/apollo-client";
-import { getTypes, getPokedexes, getRegions } from "./NavigationDataProvider";
-import NavigationDataProvider from "./NavigationDataProvider";
-import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
+import type { PokemonPokedex, PokemonRegion, PokemonType } from "@/types";
+import NavigationDataProvider, {
+  getPokedexes,
+  getRegions,
+  getTypes,
+} from "./NavigationDataProvider";
 
 // Mock the Apollo client
 vi.mock("../lib/apollo-client", () => ({
@@ -13,7 +16,7 @@ vi.mock("../lib/apollo-client", () => ({
 const mockClient = vi.mocked(client);
 
 // Helper type for mock query results
-type MockQueryResult<T> = never;
+type MockQueryResult<_T> = never;
 
 describe("NavigationDataProvider", () => {
   beforeEach(() => {
@@ -83,18 +86,13 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors gracefully and return empty array", async () => {
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       mockClient.query.mockRejectedValue(new Error("Network error"));
 
       const result = await getTypes();
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Error fetching types:",
-        expect.any(Error)
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("Error fetching types:", expect.any(Error));
       expect(result).toEqual([]);
 
       consoleSpy.mockRestore();
@@ -153,18 +151,13 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors gracefully and return empty array", async () => {
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       mockClient.query.mockRejectedValue(new Error("Network error"));
 
       const result = await getPokedexes();
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Error fetching pokedexes:",
-        expect.any(Error)
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("Error fetching pokedexes:", expect.any(Error));
       expect(result).toEqual([]);
 
       consoleSpy.mockRestore();
@@ -266,18 +259,13 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors gracefully and return empty array", async () => {
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       mockClient.query.mockRejectedValue(new Error("Network error"));
 
       const result = await getRegions();
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Error fetching regions:",
-        expect.any(Error)
-      );
+      expect(consoleSpy).toHaveBeenCalledWith("Error fetching regions:", expect.any(Error));
       expect(result).toEqual([]);
 
       consoleSpy.mockRestore();
@@ -379,9 +367,7 @@ describe("NavigationDataProvider", () => {
     });
 
     it("should handle errors in individual queries gracefully", async () => {
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       const mockTypes: PokemonType[] = [{ name: "fire", count: 5 }];
 

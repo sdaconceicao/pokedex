@@ -3,10 +3,10 @@
 import { useCallback, useState } from "react";
 import Button from "@/components/Button";
 import { Modal } from "@/components/Modal";
+import { useAuth } from "@/hooks/useAuth";
+import UserAvatar from "../Avatar/UserAvatar";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import UserAvatar from "../Avatar/UserAvatar";
-import { useAuth } from "@/hooks/useAuth";
 
 export default function AuthButtons() {
   const {
@@ -32,7 +32,7 @@ export default function AuthButtons() {
       await loginAsync({ email, password });
       setIsModalOpen(false);
     },
-    [loginAsync]
+    [loginAsync],
   );
 
   const handleRegisterSubmit = useCallback(
@@ -40,7 +40,7 @@ export default function AuthButtons() {
       await registerAsync(data);
       setIsModalOpen(false);
     },
-    [registerAsync]
+    [registerAsync],
   );
 
   const handleModalClose = useCallback(() => {
@@ -48,13 +48,7 @@ export default function AuthButtons() {
   }, []);
 
   if (user) {
-    return (
-      <UserAvatar
-        email={user.email}
-        onLogout={logout}
-        isLogoutLoading={isLogoutLoading}
-      />
-    );
+    return <UserAvatar email={user.email} onLogout={logout} isLogoutLoading={isLogoutLoading} />;
   }
 
   return (

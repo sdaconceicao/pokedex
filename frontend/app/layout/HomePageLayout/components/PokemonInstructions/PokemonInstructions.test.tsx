@@ -7,8 +7,8 @@ describe("PokemonInstructions", () => {
 
     expect(
       screen.getByText(
-        "Select a Pokemon type, pokedex, or region from the sidebar or search for Pokemon to get started"
-      )
+        "Select a Pokemon type, pokedex, or region from the sidebar or search for Pokemon to get started",
+      ),
     ).toBeInTheDocument();
   });
 });

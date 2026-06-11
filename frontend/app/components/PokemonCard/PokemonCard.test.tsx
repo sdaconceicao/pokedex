@@ -1,24 +1,16 @@
 import { render, screen } from "@testing-library/react";
+import type { Pokemon } from "@/types/graphql";
 import { PokemonCard } from "./PokemonCard";
-import { Pokemon } from "@/types/graphql";
 
 // Mock the PokemonTypePill component
 vi.mock("../PokemonTypePill", () => ({
   __esModule: true,
-  default: ({ type }: { type: string }) => (
-    <span data-testid={`type-pill-${type}`}>{type}</span>
-  ),
+  default: ({ type }: { type: string }) => <span data-testid={`type-pill-${type}`}>{type}</span>,
 }));
 
 // Mock Next.js components
 vi.mock("next/link", () => ({
-  default: function MockLink({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) {
+  default: function MockLink({ children, href }: { children: React.ReactNode; href: string }) {
     return <a href={href}>{children}</a>;
   },
 }));
