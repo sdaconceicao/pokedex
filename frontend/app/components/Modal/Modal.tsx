@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
 import { X } from "@untitled-ui/icons-react";
 import clsx from "clsx";
+import type React from "react";
+import { useCallback, useMemo } from "react";
 
 import Button from "@/components/Button";
 import { useModal } from "./Modal.hooks";
-import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 import styles from "./Modal.module.css";
+import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 
 interface ModalProps {
   isOpen: boolean;
@@ -60,7 +61,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClose();
       }
     },
-    [closeOnBackdropClick, onClose]
+    [closeOnBackdropClick, onClose],
   );
 
   // Early return if modal should not be rendered
@@ -69,11 +70,8 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <>
       {showBackdrop && <div className={styles.backdrop} />}
-      <dialog
-        ref={dialogRef}
-        className={dialogClassName}
-        onClick={handleBackdropClick}
-      >
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop dismiss is a mouse-only interaction on the native dialog element */}
+      <dialog ref={dialogRef} className={dialogClassName} onClick={handleBackdropClick}>
         <div className={styles.content}>
           {/* Header */}
           {shouldShowHeader && (

@@ -1,4 +1,4 @@
-import { IconNormal, IconFire, IconGrass } from "@pokemonle/icons-react";
+import { IconFire, IconGrass, IconNormal } from "@pokemonle/icons-react";
 import { getTypeItems } from "./Navbar.util";
 
 describe("getTypeItems", () => {
@@ -11,8 +11,6 @@ describe("getTypeItems", () => {
     expect(items[1].icon).toEqual(<IconGrass />);
   });
   it("handles unknown types with a normal icon", () => {
-    expect(getTypeItems([{ name: "bacon", count: 0 }])[0].icon).toEqual(
-      <IconNormal />
-    );
+    expect(getTypeItems([{ name: "bacon", count: 0 }])[0].icon).toEqual(<IconNormal />);
   });
 });

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useCallback, useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { SearchSm, XCircle } from "@untitled-ui/icons-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
@@ -32,13 +33,13 @@ export default function SearchBar() {
       const newUrl = params.toString() ? `/?${params.toString()}` : "/";
       router.push(newUrl);
     },
-    [router, searchQuery]
+    [router, searchQuery],
   );
 
   const handleClear = useCallback(() => {
     setSearchQuery("");
     router.push("/");
-  }, [setSearchQuery, router]);
+  }, [router]);
 
   return (
     <div className={styles.searchBar}>
@@ -52,12 +53,7 @@ export default function SearchBar() {
           wrapperClassName={styles.searchField}
           className={styles.searchInput}
         />
-        <Button
-          type="submit"
-          size="md"
-          variant="primary"
-          className={styles.searchButton}
-        >
+        <Button type="submit" size="md" variant="primary" className={styles.searchButton}>
           <SearchSm aria-label="Search" />
         </Button>
         {searchQuery && (

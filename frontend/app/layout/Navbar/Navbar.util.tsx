@@ -18,9 +18,9 @@ import {
   IconSteel,
   IconWater,
 } from "@pokemonle/icons-react";
-import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
-import { NavItem } from "./NavbarItem";
 import { capitalize } from "@/lib/string";
+import type { PokemonPokedex, PokemonRegion, PokemonType } from "@/types";
+import type { NavItem } from "./NavbarItem";
 
 export const ICONS_BY_TYPE = {
   bug: <IconBug />,
@@ -47,9 +47,7 @@ export const getTypeItems = (types: PokemonType[]): NavItem[] =>
   types.map((type) => ({
     label: `${capitalize(type.name)} (${type.count})`,
     href: `/?type=${encodeURIComponent(type.name)}`,
-    icon: ICONS_BY_TYPE[type.name as keyof typeof ICONS_BY_TYPE] || (
-      <IconNormal />
-    ),
+    icon: ICONS_BY_TYPE[type.name as keyof typeof ICONS_BY_TYPE] || <IconNormal />,
     activeWhenQueryParamEquals: { key: "type", value: type.name },
   }));
 

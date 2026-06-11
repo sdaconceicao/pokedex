@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import react from "@vitejs/plugin-react";
 import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
@@ -33,7 +33,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./app"),
       "@pokemonle/icons-react": path.resolve(
         __dirname,
-        "node_modules/@pokemonle/icons-react/dist/index.js"
+        "node_modules/@pokemonle/icons-react/dist/index.js",
       ),
     },
   },

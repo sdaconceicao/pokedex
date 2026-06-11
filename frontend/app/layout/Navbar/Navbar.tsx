@@ -1,14 +1,8 @@
 import { useMemo } from "react";
-import { NavigationData } from "@/providers/NavigationDataProvider";
-import {
-  getTypeItems,
-  getSpecialItems,
-  getRegionItems,
-  getPokedexItems,
-} from "./Navbar.util";
-import NavbarSection from "./NavbarSection";
-
+import type { NavigationData } from "@/providers/NavigationDataProvider";
 import styles from "./Navbar.module.css";
+import { getPokedexItems, getRegionItems, getSpecialItems, getTypeItems } from "./Navbar.util";
+import NavbarSection from "./NavbarSection";
 
 interface NavbarProps {
   navigationData: NavigationData;

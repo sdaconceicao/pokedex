@@ -26,9 +26,7 @@ describe("Password", () => {
 
     await user.click(toggleButton);
     expect(input).toHaveAttribute("type", "text");
-    expect(
-      screen.getByRole("button", { name: "Hide password" })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Hide password" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Hide password" }));
     expect(input).toHaveAttribute("type", "password");
@@ -38,9 +36,7 @@ describe("Password", () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
 
-    render(
-      <Password {...defaultProps} value="" onChange={handleChange} />
-    );
+    render(<Password {...defaultProps} value="" onChange={handleChange} />);
 
     const input = screen.getByTestId("password-field-input-input");
     await user.type(input, "secret");
@@ -49,13 +45,7 @@ describe("Password", () => {
   });
 
   it("renders error message when provided", () => {
-    render(
-      <Password
-        {...defaultProps}
-        error
-        errorMessage="Password is required"
-      />
-    );
+    render(<Password {...defaultProps} error errorMessage="Password is required" />);
 
     expect(screen.getByText("Password is required")).toBeInTheDocument();
   });
@@ -63,8 +53,6 @@ describe("Password", () => {
   it("disables the toggle button when the input is disabled", () => {
     render(<Password {...defaultProps} disabled />);
 
-    expect(
-      screen.getByRole("button", { name: "Show password" })
-    ).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Show password" })).toBeDisabled();
   });
 });
