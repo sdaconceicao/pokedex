@@ -1,15 +1,11 @@
 "use client";
 
-import React, { FunctionComponent } from "react";
 import Link from "next/link";
+import type React from "react";
+import type { FunctionComponent } from "react";
 import styles from "./Button.module.css";
 
-export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "outline"
-  | "ghost"
-  | "danger";
+export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonBaseProps {

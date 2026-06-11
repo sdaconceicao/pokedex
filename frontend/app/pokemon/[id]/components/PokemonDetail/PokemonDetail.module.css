@@ -146,7 +146,9 @@
   border-radius: 0;
   padding: 0.5rem;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.18));
-  transition: transform 0.25s ease, filter 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
 }
 
 .pokemonImage:hover {

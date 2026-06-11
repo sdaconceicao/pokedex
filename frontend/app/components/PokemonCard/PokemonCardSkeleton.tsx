@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
 import css from "./PokemonCard.module.css";
 
 export const PokemonCardSkeleton: FunctionComponent = () => {

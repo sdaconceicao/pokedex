@@ -6,9 +6,7 @@ interface PokemonListSkeletonProps {
   count?: number;
 }
 
-export default function PokemonListSkeleton({
-  count = 20,
-}: PokemonListSkeletonProps) {
+export default function PokemonListSkeleton({ count = 20 }: PokemonListSkeletonProps) {
   return (
     <div className={styles.container}>
       <div className={`${styles.heading} ${styles.skeletonHeading}`} />

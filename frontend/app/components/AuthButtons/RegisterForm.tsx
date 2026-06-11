@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
-import Button from "@/components/Button";
 import Password from "@/components/Password";
-import { validatePassword, validateEmail } from "@/lib/validation";
+import { validateEmail, validatePassword } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 
 interface RegisterFormProps {
@@ -79,8 +79,7 @@ export default function RegisterForm({
     } catch (error) {
       if (
         error instanceof Error &&
-        (error.message.includes("already exists") ||
-          error.message.includes("Email"))
+        (error.message.includes("already exists") || error.message.includes("Email"))
       ) {
         setSubmitError("An account with this email already exists.");
       } else {
@@ -133,9 +132,7 @@ export default function RegisterForm({
         <Password
           id="reg-confirm-password"
           value={formData.confirmPassword}
-          onChange={(e) =>
-            handleInputChange("confirmPassword", e.target.value)
-          }
+          onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
           placeholder="Confirm your password"
           autoComplete="new-password"
           error={!!errors.confirmPassword}

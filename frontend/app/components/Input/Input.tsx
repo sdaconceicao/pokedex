@@ -1,23 +1,12 @@
 "use client";
 
-import React, { forwardRef, useMemo } from "react";
 import clsx from "clsx";
-import {
-  generateTypeClass,
-  generateErrorMessageId,
-  shouldShowErrorMessage,
-} from "./Input.utils";
-
+import type React from "react";
+import { forwardRef, useMemo } from "react";
 import styles from "./Input.module.css";
+import { generateErrorMessageId, generateTypeClass, shouldShowErrorMessage } from "./Input.utils";
 
-export type InputType =
-  | "text"
-  | "password"
-  | "email"
-  | "number"
-  | "tel"
-  | "url"
-  | "search";
+export type InputType = "text" | "password" | "email" | "number" | "tel" | "url" | "search";
 
 export type InputSize = "sm" | "md" | "lg";
 
@@ -78,7 +67,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       pattern,
       "data-testid": testId,
     },
-    ref
+    ref,
   ) => {
     // Generate classes directly in component using clsx
     const inputClasses = useMemo(() => {
@@ -92,7 +81,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           [styles.disabled]: disabled,
         },
         typeClass && styles[typeClass],
-        className
+        className,
       );
     }, [type, size, error, disabled, className]);
 
@@ -105,10 +94,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     }, [error, errorMessage]);
 
     return (
-      <div
-        className={clsx(styles.container, wrapperClassName)}
-        data-testid={testId}
-      >
+      <div className={clsx(styles.container, wrapperClassName)} data-testid={testId}>
         <input
           ref={ref}
           type={type}
@@ -147,7 +133,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

@@ -1,4 +1,4 @@
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { useModal } from "./Modal.hooks";
 
 describe("useModal", () => {
@@ -68,10 +68,7 @@ describe("useModal", () => {
 
     unmount();
 
-    expect(removeEventListenerSpy).toHaveBeenCalledWith(
-      "keydown",
-      expect.any(Function)
-    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith("keydown", expect.any(Function));
     removeEventListenerSpy.mockRestore();
   });
 

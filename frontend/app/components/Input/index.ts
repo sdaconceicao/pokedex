@@ -1,8 +1,8 @@
 export {
   default,
   Input,
-  type InputType,
-  type InputSize,
   type InputProps,
+  type InputSize,
+  type InputType,
 } from "./Input";
 export * from "./Input.utils";

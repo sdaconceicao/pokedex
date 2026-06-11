@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
+import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Label from "@/components/Label";
-import Button from "@/components/Button";
 import Password from "@/components/Password";
 import styles from "./AuthButtons.module.css";
 
@@ -20,9 +21,7 @@ export default function LoginForm({
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [submitError, setSubmitError] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,8 +60,7 @@ export default function LoginForm({
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    if (errors.password)
-      setErrors((prev) => ({ ...prev, password: undefined }));
+    if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
   };
 
   return (

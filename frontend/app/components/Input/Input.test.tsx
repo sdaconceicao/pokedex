@@ -1,6 +1,6 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
 import { Input } from "./Input";
 
 describe("Input", () => {
@@ -72,7 +72,7 @@ describe("Input", () => {
   });
 
   it("handles onBlur event", async () => {
-    const user = userEvent.setup();
+    const _user = userEvent.setup();
     const mockOnBlur = vi.fn();
 
     render(<Input {...defaultProps} onBlur={mockOnBlur} />);
@@ -85,7 +85,7 @@ describe("Input", () => {
   });
 
   it("handles onFocus event", async () => {
-    const user = userEvent.setup();
+    const _user = userEvent.setup();
     const mockOnFocus = vi.fn();
 
     render(<Input {...defaultProps} onFocus={mockOnFocus} />);
@@ -162,9 +162,7 @@ describe("Input", () => {
 
   it("does not render error message when error is false", () => {
     const errorMessage = "This field is required";
-    render(
-      <Input {...defaultProps} error={false} errorMessage={errorMessage} />
-    );
+    render(<Input {...defaultProps} error={false} errorMessage={errorMessage} />);
 
     const errorElement = screen.queryByTestId("test-input-error");
     expect(errorElement).not.toBeInTheDocument();
@@ -257,9 +255,7 @@ describe("Input", () => {
   it("sets aria-describedby when error message is present", () => {
     const id = "test-id";
     const errorMessage = "Error message";
-    render(
-      <Input {...defaultProps} id={id} error errorMessage={errorMessage} />
-    );
+    render(<Input {...defaultProps} id={id} error errorMessage={errorMessage} />);
 
     const input = screen.getByTestId("test-input-input");
     expect(input).toHaveAttribute("aria-describedby", `${id}-error`);
@@ -281,9 +277,7 @@ describe("Input", () => {
   });
 
   it("applies correct CSS classes for different states", () => {
-    const { rerender } = render(
-      <Input {...defaultProps} size="sm" error disabled />
-    );
+    const { rerender } = render(<Input {...defaultProps} size="sm" error disabled />);
 
     let input = screen.getByTestId("test-input-input");
     expect(input).toHaveClass("input", "sm", "error", "disabled");

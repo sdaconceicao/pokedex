@@ -1,6 +1,6 @@
-import { PokemonType, PokemonRegion, PokemonPokedex } from "@/types";
 import { client } from "@/lib/apollo-client";
-import { GET_TYPES, GET_POKEDEXES, GET_REGIONS } from "@/lib/queries";
+import { GET_POKEDEXES, GET_REGIONS, GET_TYPES } from "@/lib/queries";
+import type { PokemonPokedex, PokemonRegion, PokemonType } from "@/types";
 
 export interface NavigationData {
   types: PokemonType[];
@@ -45,11 +45,7 @@ export const getRegions = async (): Promise<PokemonRegion[]> => {
 };
 
 export default async function NavigationDataProvider() {
-  const [types, pokedexes, regions] = await Promise.all([
-    getTypes(),
-    getPokedexes(),
-    getRegions(),
-  ]);
+  const [types, pokedexes, regions] = await Promise.all([getTypes(), getPokedexes(), getRegions()]);
 
   return { types, pokedexes, regions };
 }

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
 import { ChevronLeft, ChevronRight, Menu01 } from "@untitled-ui/icons-react";
-import { SearchBar } from "@/components/Search";
+import { Suspense, useEffect, useState } from "react";
 import AuthButtons from "@/components/AuthButtons";
+import { SearchBar } from "@/components/Search";
 import Navbar from "@/layout/Navbar";
-import { NavigationData } from "@/providers/NavigationDataProvider";
+import type { NavigationData } from "@/providers/NavigationDataProvider";
 import styles from "./AppShell.module.css";
 
 interface AppShellProps {
@@ -70,9 +70,7 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
         )}
 
         <aside
-          className={`${styles.sidebar} ${
-            sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed
-          }`}
+          className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}
         >
           <Navbar navigationData={navigationData} />
         </aside>

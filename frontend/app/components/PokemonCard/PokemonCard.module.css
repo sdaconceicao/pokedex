@@ -9,7 +9,9 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 /* Type-specific card backgrounds + accent colors */
@@ -128,7 +130,9 @@
   border-radius: 0;
   padding: 0.25rem;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
 }
 
 .pokemonCard:hover .pokemonImage {
@@ -196,24 +200,14 @@
 }
 
 .pokemonCard .skeletonImage {
-  background: linear-gradient(
-    90deg,
-    #f3f4f6 25%,
-    #e5e7eb 50%,
-    #f3f4f6 75%
-  ) !important;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%) !important;
   background-size: 200% 100% !important;
   animation: shimmer 1.5s infinite !important;
   border-radius: 0.5rem !important;
 }
 
 .pokemonCard .skeletonName {
-  background: linear-gradient(
-    90deg,
-    #f3f4f6 25%,
-    #e5e7eb 50%,
-    #f3f4f6 75%
-  ) !important;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%) !important;
   background-size: 200% 100% !important;
   animation: shimmer 1.5s infinite !important;
   height: 1.5rem !important;
@@ -222,12 +216,7 @@
 }
 
 .pokemonCard .skeletonType {
-  background: linear-gradient(
-    90deg,
-    #dbeafe 25%,
-    #bfdbfe 50%,
-    #dbeafe 75%
-  ) !important;
+  background: linear-gradient(90deg, #dbeafe 25%, #bfdbfe 50%, #dbeafe 75%) !important;
   background-size: 200% 100% !important;
   animation: shimmer 1.5s infinite !important;
   height: 2rem !important;
@@ -243,12 +232,7 @@
 }
 
 .pokemonCard .skeletonStat {
-  background: linear-gradient(
-    90deg,
-    #f3f4f6 25%,
-    #e5e7eb 50%,
-    #f3f4f6 75%
-  ) !important;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%) !important;
   background-size: 200% 100% !important;
   animation: shimmer 1.5s infinite !important;
   height: 1rem !important;
@@ -257,12 +241,7 @@
 }
 
 .pokemonCard .skeletonStatLast {
-  background: linear-gradient(
-    90deg,
-    #f3f4f6 25%,
-    #e5e7eb 50%,
-    #f3f4f6 75%
-  ) !important;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%) !important;
   background-size: 200% 100% !important;
   animation: shimmer 1.5s infinite !important;
   height: 1rem !important;

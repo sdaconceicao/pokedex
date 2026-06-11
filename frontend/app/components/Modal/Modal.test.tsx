@@ -1,6 +1,6 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type React from "react";
 
 import { Modal } from "./Modal";
 import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
@@ -78,18 +78,14 @@ describe("Modal", () => {
     const header = document.querySelector(".header");
     expect(header).toBeInTheDocument();
 
-    const closeButton = document.querySelector(
-      'button[aria-label="Close modal"]'
-    );
+    const closeButton = document.querySelector('button[aria-label="Close modal"]');
     expect(closeButton).toBeInTheDocument();
   });
 
   it("hides close button when showCloseButton is false", () => {
     render(<Modal {...defaultProps} showCloseButton={false} />);
 
-    const closeButton = document.querySelector(
-      'button[aria-label="Close modal"]'
-    );
+    const closeButton = document.querySelector('button[aria-label="Close modal"]');
     expect(closeButton).not.toBeInTheDocument();
   });
 
@@ -132,7 +128,7 @@ describe("Modal", () => {
     render(<Modal {...defaultProps} onClose={onClose} />);
 
     const closeButton = document.querySelector(
-      'button[aria-label="Close modal"]'
+      'button[aria-label="Close modal"]',
     ) as HTMLButtonElement;
     expect(closeButton).toBeInTheDocument();
     await user.click(closeButton);
@@ -144,9 +140,7 @@ describe("Modal", () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
 
-    render(
-      <Modal {...defaultProps} onClose={onClose} closeOnBackdropClick={true} />
-    );
+    render(<Modal {...defaultProps} onClose={onClose} closeOnBackdropClick={true} />);
 
     const dialog = document.querySelector("dialog") as HTMLDialogElement;
     expect(dialog).toBeInTheDocument();
@@ -164,9 +158,7 @@ describe("Modal", () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
 
-    render(
-      <Modal {...defaultProps} onClose={onClose} closeOnBackdropClick={false} />
-    );
+    render(<Modal {...defaultProps} onClose={onClose} closeOnBackdropClick={false} />);
 
     const dialog = document.querySelector("dialog") as HTMLDialogElement;
     expect(dialog).toBeInTheDocument();
@@ -223,9 +215,7 @@ describe("Modal accessibility", () => {
   it("has proper ARIA label on close button", () => {
     render(<Modal {...defaultProps} />);
 
-    const closeButton = document.querySelector(
-      'button[aria-label="Close modal"]'
-    );
+    const closeButton = document.querySelector('button[aria-label="Close modal"]');
     expect(closeButton).toBeInTheDocument();
   });
 
