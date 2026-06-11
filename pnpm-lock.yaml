@@ -188,8 +188,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       '@types/dotenv':
-        specifier: ^6.1.1
-        version: 6.1.1
+        specifier: ^8.2.3
+        version: 8.2.3
       '@types/node':
         specifier: ^22.10.7
         version: 22.19.20
@@ -2628,8 +2628,9 @@ packages:
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
 
-  '@types/dotenv@6.1.1':
-    resolution: {integrity: sha512-ftQl3DtBvqHl9L16tpqqzA4YzCSXZfi7g8cQceTz5rOlYtk/IZbFjAv3mLOQlNIgOaylCQWQoBdDQHPgEBJPHg==}
+  '@types/dotenv@8.2.3':
+    resolution: {integrity: sha512-g2FXjlDX/cYuc5CiQvyU/6kkbP1JtmGzh0obW50zD7OKeILVL0NSpPWLXVfqoAGQjom2/SLLx9zHq0KXvD6mbw==}
+    deprecated: This is a stub types definition. dotenv provides its own type definitions, so you do not need this installed.
 
   '@types/eslint-scope@3.7.7':
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
@@ -9234,9 +9235,9 @@ snapshots:
 
   '@types/deep-eql@4.0.2': {}
 
-  '@types/dotenv@6.1.1':
+  '@types/dotenv@8.2.3':
     dependencies:
-      '@types/node': 22.19.20
+      dotenv: 17.4.2
 
   '@types/eslint-scope@3.7.7':
     dependencies:
