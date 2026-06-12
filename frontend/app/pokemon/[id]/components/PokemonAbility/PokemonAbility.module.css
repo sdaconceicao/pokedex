@@ -45,7 +45,11 @@
 }
 
 .abilitySlot {
-  background: color-mix(in srgb, var(--type-accent, var(--layout-primary-background)) 14%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--type-accent, var(--layout-primary-background)) 14%,
+    transparent
+  );
   color: var(--type-accent, var(--layout-primary-background));
   padding: 0.2rem 0.625rem;
   border-radius: 999px;
