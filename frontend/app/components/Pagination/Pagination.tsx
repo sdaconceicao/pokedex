@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from "@untitled-ui/icons-react";
 import { useCallback, useMemo } from "react";
 import Button from "@/components/Button";
 import styles from "./Pagination.module.css";
@@ -69,8 +70,9 @@ export default function Pagination({
           variant="primary"
           size="sm"
           className={styles.previousNext}
+          aria-label="Previous page"
         >
-          Previous
+          <ChevronLeft width={18} height={18} />
         </Button>
 
         <div className={styles.pageNumbers}>
@@ -94,8 +96,9 @@ export default function Pagination({
           variant="primary"
           size="sm"
           className={styles.previousNext}
+          aria-label="Next page"
         >
-          Next
+          <ChevronRight width={18} height={18} />
         </Button>
       </div>
     </div>

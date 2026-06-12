@@ -39,7 +39,9 @@
 }
 
 .previousNext {
-  min-width: 5rem;
+  min-width: 32px;
+  width: 32px;
+  padding: 0;
 }
 
 .pageNumbers {
@@ -74,5 +76,11 @@
 
   .info {
     display: none;
+  }
+
+  /* Button sm shrinks to 28px tall on mobile — keep chevrons square */
+  .previousNext {
+    width: 28px;
+    min-width: 28px;
   }
 }
