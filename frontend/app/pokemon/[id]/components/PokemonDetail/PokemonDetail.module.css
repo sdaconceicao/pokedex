@@ -303,8 +303,8 @@
 
   .heroImage {
     order: -1;
-    justify-content: flex-end;
-    margin: -2.5rem -3.25rem 0 0;
+    justify-content: center;
+    margin: -2.5rem 0 0;
   }
 
   .pokemonImage {
