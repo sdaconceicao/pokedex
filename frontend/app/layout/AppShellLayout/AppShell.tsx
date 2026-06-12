@@ -35,7 +35,21 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
     >
       {/* ── Main header: logo + auth ───────────────── */}
       <header className={styles.header}>
-        <span className={styles.logo}>Pokédex</span>
+        <span className={styles.logo}>
+          <svg
+            className={styles.logoMark}
+            viewBox="0 0 100 100"
+            width="22"
+            height="22"
+            aria-hidden="true"
+          >
+            <circle cx="50" cy="50" r="44" fill="#fff" stroke="currentColor" strokeWidth="10" />
+            <path d="M6 50a44 44 0 0 1 88 0Z" fill="currentColor" />
+            <path d="M6 50h88" stroke="currentColor" strokeWidth="10" />
+            <circle cx="50" cy="50" r="15" fill="#fff" stroke="currentColor" strokeWidth="8" />
+          </svg>
+          Pokédex
+        </span>
         <div className={styles.headerRight}>
           <Suspense fallback={null}>
             <AuthButtons />

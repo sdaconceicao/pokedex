@@ -46,7 +46,7 @@
 .primary:hover:not(.disabled) {
   background: var(--layout-primary-background-hover);
   border-color: var(--layout-primary-background-hover);
-  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+  box-shadow: 0 4px 12px rgba(211, 43, 43, 0.25);
 }
 
 .primary:active:not(.disabled) {

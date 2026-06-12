@@ -18,13 +18,19 @@
 
 .info {
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.controls button {
+  border-radius: 999px;
 }
 
 .previousNext {
