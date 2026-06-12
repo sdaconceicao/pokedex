@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Menu01 } from "@untitled-ui/icons-react";
+import { ChevronLeft, ChevronRight, Menu01, XClose } from "@untitled-ui/icons-react";
 import { Suspense, useEffect, useState } from "react";
 import AuthButtons from "@/components/AuthButtons";
 import { SearchBar } from "@/components/Search";
@@ -13,16 +13,32 @@ interface AppShellProps {
   navigationData: NavigationData;
 }
 
-const SIDEBAR_WIDTH = "16rem";
+const SIDEBAR_WIDTH = "17rem";
+const MOBILE_BREAKPOINT = 768;
 
 export default function AppShell({ children, navigationData }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // Track viewport; drawer starts closed on mobile, docked open on desktop
   useEffect(() => {
-    if (window.innerWidth <= 768) {
-      setSidebarOpen(false);
-    }
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
+    setIsMobile(mq.matches);
+    if (mq.matches) setSidebarOpen(false);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, []);
+
+  // Close the mobile drawer on Escape
+  useEffect(() => {
+    if (!sidebarOpen || !isMobile) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSidebarOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [sidebarOpen, isMobile]);
 
   return (
     <div
@@ -33,9 +49,40 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
         } as React.CSSProperties
       }
     >
-      {/* ── Main header: logo + auth ───────────────── */}
+      {/* ── App bar ────────────────────────────────── */}
       <header className={styles.header}>
-        <span className={styles.logo}>Pokédex</span>
+        <div className={styles.headerLeft}>
+          <button
+            className={styles.hamburger}
+            onClick={() => setSidebarOpen((v) => !v)}
+            aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+            aria-expanded={sidebarOpen}
+          >
+            <Menu01 width={22} height={22} />
+          </button>
+          <span className={styles.logo}>
+            <svg
+              className={styles.logoMark}
+              viewBox="0 0 100 100"
+              width="24"
+              height="24"
+              aria-hidden="true"
+            >
+              <circle cx="50" cy="50" r="44" fill="#fff" stroke="currentColor" strokeWidth="10" />
+              <path d="M6 50a44 44 0 0 1 88 0Z" fill="currentColor" />
+              <path d="M6 50h88" stroke="currentColor" strokeWidth="10" />
+              <circle cx="50" cy="50" r="15" fill="#fff" stroke="currentColor" strokeWidth="8" />
+            </svg>
+            Pokédex
+          </span>
+        </div>
+
+        <div className={styles.headerSearch}>
+          <Suspense fallback={null}>
+            <SearchBar />
+          </Suspense>
+        </div>
+
         <div className={styles.headerRight}>
           <Suspense fallback={null}>
             <AuthButtons />
@@ -43,25 +90,10 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
         </div>
       </header>
 
-      {/* ── Subheader: hamburger (mobile) + search ─── */}
-      <div className={styles.subheader}>
-        <button
-          className={styles.mobileHamburger}
-          onClick={() => setSidebarOpen((v) => !v)}
-          aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-          aria-expanded={sidebarOpen}
-        >
-          <Menu01 width={20} height={20} />
-        </button>
-        <Suspense fallback={null}>
-          <SearchBar />
-        </Suspense>
-      </div>
-
-      {/* ── Body: sidebar + edge toggle + main ─────── */}
+      {/* ── Body: sidebar + main ───────────────────── */}
       <div className={styles.body}>
-        {/* Mobile backdrop */}
-        {sidebarOpen && (
+        {/* Mobile-only backdrop */}
+        {sidebarOpen && isMobile && (
           <div
             className={styles.backdrop}
             onClick={() => setSidebarOpen(false)}
@@ -70,9 +102,23 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
         )}
 
         <aside
-          className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}
+          className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}
+          aria-hidden={!sidebarOpen}
+          inert={!sidebarOpen}
         >
-          <Navbar navigationData={navigationData} />
+          <div className={styles.sidebarInner}>
+            <div className={styles.drawerHeader}>
+              <span className={styles.drawerTitle}>Browse</span>
+              <button
+                className={styles.drawerClose}
+                onClick={() => setSidebarOpen(false)}
+                aria-label="Close menu"
+              >
+                <XClose width={18} height={18} />
+              </button>
+            </div>
+            <Navbar navigationData={navigationData} />
+          </div>
         </aside>
 
         {/* Desktop edge toggle — sits on the sidebar border */}

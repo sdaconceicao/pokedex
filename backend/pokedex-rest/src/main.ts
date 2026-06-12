@@ -37,7 +37,7 @@ async function bootstrap() {
     ? process.env.ALLOWED_ORIGINS.split(',')
         .map((origin) => origin.trim())
         .filter((origin) => origin.length > 0)
-    : ['http://localhost:3000', 'http://localhost:3001'];
+    : ['http://localhost:3010'];
 
   app.enableCors({
     origin: allowedOrigins,
