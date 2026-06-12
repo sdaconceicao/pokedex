@@ -1,63 +1,82 @@
 .abilityCard {
-  background: var(--card-bg, #fff);
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  transition: all 0.2s ease;
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+  overflow: hidden;
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s ease;
+}
+
+/* Type accent bar on the left edge */
+.abilityCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--type-accent, var(--layout-primary-background));
 }
 
 .abilityCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -8px var(--type-shadow, rgba(0, 0, 0, 0.2));
 }
 
 .abilityHeader {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
   flex-wrap: wrap;
 }
 
 .abilityName {
   margin: 0;
-  color: #212529;
-  font-size: 1.125rem;
-  font-weight: 600;
+  color: var(--foreground);
+  font-size: 1.05rem;
+  font-weight: 700;
   text-transform: capitalize;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
 }
 
 .abilitySlot {
-  background: #6c757d;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
+  background: color-mix(in srgb, var(--type-accent, var(--layout-primary-background)) 14%, transparent);
+  color: var(--type-accent, var(--layout-primary-background));
+  padding: 0.2rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .abilityDetails {
-  border-top: 1px solid #dee2e6;
-  padding-top: 15px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 0.875rem;
 }
 
 .abilityDescription {
-  margin: 0 0 10px 0;
-  color: #495057;
+  margin: 0 0 0.625rem 0;
+  color: var(--foreground);
   line-height: 1.6;
   font-size: 0.875rem;
 }
 
 .abilityEffect,
 .abilityGeneration {
-  margin: 5px 0;
-  color: #6c757d;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  margin: 0.3rem 0;
+  color: var(--muted-foreground);
+  font-size: 0.825rem;
+  line-height: 1.55;
 }
 
 .abilityEffect strong,
 .abilityGeneration strong {
-  color: #495057;
+  color: var(--foreground);
+  font-weight: 600;
 }
