@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  z-index: 200;
+  z-index: 400;
   position: relative;
   box-shadow: 0 2px 12px rgba(211, 43, 43, 0.35);
 }
@@ -29,7 +29,7 @@
 }
 
 .hamburger {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   width: 40px;
@@ -89,7 +89,9 @@
   flex-shrink: 0;
 }
 
-.headerRight button {
+/* Only style top-level header buttons (e.g. Sign In) —
+   not buttons nested in dropdown menus */
+.headerRight > button {
   background: rgba(255, 255, 255, 0.14);
   border-color: rgba(255, 255, 255, 0.45);
   color: #fff;
@@ -229,6 +231,10 @@
     row-gap: 0.5rem;
   }
 
+  .hamburger {
+    display: flex;
+  }
+
   .headerRight {
     order: 2;
     margin-left: auto;
@@ -251,7 +257,7 @@
     width: 18.5rem;
     max-width: 86vw;
     border-right: none;
-    z-index: 310;
+    z-index: 460;
     transform: translateX(-103%);
     transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 0 1.25rem 1.25rem 0;
@@ -273,7 +279,7 @@
     inset: 0;
     background: rgba(15, 15, 20, 0.45);
     backdrop-filter: blur(3px);
-    z-index: 300;
+    z-index: 450;
     animation: fadeIn 0.2s ease;
   }
 
