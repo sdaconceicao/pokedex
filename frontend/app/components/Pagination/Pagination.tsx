@@ -1,13 +1,7 @@
-import React, { useCallback, useMemo } from "react";
-import {
-  getStartItem,
-  getEndItem,
-  getPageNumbers,
-  getTotalPages,
-} from "./Pagination.util";
+import { useCallback, useMemo } from "react";
 import Button from "@/components/Button";
-
 import styles from "./Pagination.module.css";
+import { getEndItem, getPageNumbers, getStartItem, getTotalPages } from "./Pagination.util";
 
 interface PaginationProps {
   currentPage: number;
@@ -24,19 +18,19 @@ export default function Pagination({
 }: PaginationProps) {
   const startItem = useMemo(
     () => getStartItem(currentPage, itemsPerPage),
-    [currentPage, itemsPerPage]
+    [currentPage, itemsPerPage],
   );
   const endItem = useMemo(
     () => getEndItem(currentPage, itemsPerPage, totalItems),
-    [currentPage, itemsPerPage, totalItems]
+    [currentPage, itemsPerPage, totalItems],
   );
   const totalPages = useMemo(
     () => getTotalPages(totalItems, itemsPerPage),
-    [totalItems, itemsPerPage]
+    [totalItems, itemsPerPage],
   );
   const pageNumbers = useMemo(
     () => getPageNumbers(currentPage, totalPages),
-    [currentPage, totalPages]
+    [currentPage, totalPages],
   );
 
   const handlePrevious = useCallback(() => {
@@ -55,7 +49,7 @@ export default function Pagination({
     (page: number) => {
       onPageChange(page);
     },
-    [onPageChange]
+    [onPageChange],
   );
 
   if (totalPages <= 1) {

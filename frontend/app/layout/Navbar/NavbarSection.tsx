@@ -1,21 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronDown } from "@untitled-ui/icons-react";
-import NavbarItem, { NavItem } from "./NavbarItem";
-
+import { useState } from "react";
 import styles from "./Navbar.module.css";
+import NavbarItem, { type NavItem } from "./NavbarItem";
+
 interface NavbarSectionProps {
   title: string;
   items: NavItem[];
   defaultOpen?: boolean;
 }
 
-export default function NavbarSection({
-  title,
-  items,
-  defaultOpen = true,
-}: NavbarSectionProps) {
+export default function NavbarSection({ title, items, defaultOpen = true }: NavbarSectionProps) {
   const [open, setOpen] = useState<boolean>(defaultOpen);
 
   return (
@@ -30,9 +26,7 @@ export default function NavbarSection({
         <span className={styles.sectionHeaderLeft}>
           <span className={styles.sectionTitle}>{title}</span>
         </span>
-        <ChevronDown
-          className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`}
-        />
+        <ChevronDown className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`} />
       </button>
       {open && (
         <ul id={`section-${title}`} className={styles.list}>

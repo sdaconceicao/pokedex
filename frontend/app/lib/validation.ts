@@ -23,9 +23,7 @@ export function validatePassword(password: string): PasswordValidationResult {
   const errors: string[] = [];
 
   if (password.length < PASSWORD_REQUIREMENTS.minLength) {
-    errors.push(
-      `Password must be at least ${PASSWORD_REQUIREMENTS.minLength} characters long`
-    );
+    errors.push(`Password must be at least ${PASSWORD_REQUIREMENTS.minLength} characters long`);
   }
 
   if (PASSWORD_REQUIREMENTS.hasUppercase && !/[A-Z]/.test(password)) {
@@ -42,7 +40,7 @@ export function validatePassword(password: string): PasswordValidationResult {
 
   if (
     PASSWORD_REQUIREMENTS.hasSpecialChar &&
-    !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)
   ) {
     errors.push("Password must contain at least one special character");
   }

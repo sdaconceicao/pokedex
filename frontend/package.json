@@ -8,7 +8,9 @@
     "start": "next start",
     "start:dev": "concurrently \"next dev --turbopack\" \"pn  codegen:watch\"",
     "start:dev:test": "NODE_ENV=test next dev --port 3001",
-    "lint": "next lint",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
     "test": "vitest run",
@@ -24,14 +26,14 @@
     "clsx": "^2.1.1",
     "graphql": "^16.11.0",
     "nanoid": "^5.1.5",
-    "next": "15.4.2",
+    "next": "16.2.9",
     "picocolors": "^1.1.1",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "source-map-js": "^1.2.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@biomejs/biome": "^2.4.16",
     "@graphql-codegen/cli": "^5.0.7",
     "@graphql-codegen/typescript": "^4.1.6",
     "@graphql-codegen/typescript-operations": "^6.0.3",
@@ -44,14 +46,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/testing-library__user-event": "^4.1.1",
-    "concurrently": "^8.2.2",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.2",
-    "husky": "^9.1.7",
     "@vitejs/plugin-react": "^4.5.2",
     "@vitest/coverage-v8": "^3.2.4",
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "vitest": "^3.2.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }

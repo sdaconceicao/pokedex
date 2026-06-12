@@ -1,9 +1,4 @@
-import {
-  getTotalPages,
-  getStartItem,
-  getEndItem,
-  getPageNumbers,
-} from "./Pagination.util";
+import { getEndItem, getPageNumbers, getStartItem, getTotalPages } from "./Pagination.util";
 
 describe("Pagination Utilities", () => {
   describe("getTotalPages", () => {
@@ -111,15 +106,7 @@ describe("Pagination Utilities", () => {
       });
 
       it("should work for larger total pages", () => {
-        expect(getPageNumbers(50, 100)).toEqual([
-          1,
-          "...",
-          49,
-          50,
-          51,
-          "...",
-          100,
-        ]);
+        expect(getPageNumbers(50, 100)).toEqual([1, "...", 49, 50, 51, "...", 100]);
       });
     });
 

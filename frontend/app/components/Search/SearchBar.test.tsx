@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -23,11 +23,9 @@ const mockSearchParams = {
 describe("SearchBar", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useRouter).mockReturnValue(
-      mockRouter as unknown as ReturnType<typeof useRouter>
-    );
+    vi.mocked(useRouter).mockReturnValue(mockRouter as unknown as ReturnType<typeof useRouter>);
     vi.mocked(useSearchParams).mockReturnValue(
-      mockSearchParams as unknown as ReturnType<typeof useSearchParams>
+      mockSearchParams as unknown as ReturnType<typeof useSearchParams>,
     );
   });
 
@@ -208,9 +206,7 @@ describe("SearchBar", () => {
       const clearButton = screen.getByRole("button", { name: /clear search/i });
       await user.click(clearButton);
 
-      expect(
-        screen.queryByRole("button", { name: /clear search/i })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /clear search/i })).not.toBeInTheDocument();
     });
   });
 
@@ -322,9 +318,7 @@ describe("SearchBar", () => {
 
       render(<SearchBar />);
 
-      const form = screen
-        .getByPlaceholderText("Search Pokemon...")
-        .closest("form");
+      const form = screen.getByPlaceholderText("Search Pokemon...").closest("form");
       expect(form).toHaveClass(styles.searchForm);
     });
 
@@ -366,9 +360,7 @@ describe("SearchBar", () => {
 
       render(<SearchBar />);
 
-      const form = screen
-        .getByPlaceholderText("Search Pokemon...")
-        .closest("form");
+      const form = screen.getByPlaceholderText("Search Pokemon...").closest("form");
       expect(form).toBeInTheDocument();
     });
 
@@ -490,9 +482,7 @@ describe("SearchBar", () => {
       render(<SearchBar />);
 
       // The component should render without warnings
-      expect(
-        screen.getByPlaceholderText("Search Pokemon...")
-      ).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Search Pokemon...")).toBeInTheDocument();
     });
 
     it("uses useEffect for URL synchronization", () => {
@@ -502,9 +492,7 @@ describe("SearchBar", () => {
 
       // The component should use useEffect for URL sync
       // This is tested by ensuring the component renders without warnings
-      expect(
-        screen.getByPlaceholderText("Search Pokemon...")
-      ).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Search Pokemon...")).toBeInTheDocument();
     });
 
     it("maintains state consistency during re-renders", () => {

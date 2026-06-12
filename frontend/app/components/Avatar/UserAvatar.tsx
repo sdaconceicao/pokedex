@@ -18,11 +18,7 @@ function getInitials(email: string): string {
   return parts[0].slice(0, 2).toUpperCase();
 }
 
-export default function UserAvatar({
-  email,
-  onLogout,
-  isLogoutLoading = false,
-}: UserAvatarProps) {
+export default function UserAvatar({ email, onLogout, isLogoutLoading = false }: UserAvatarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -40,6 +36,7 @@ export default function UserAvatar({
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
       <button
+        type="button"
         className={styles.avatar}
         onClick={() => setIsOpen((v) => !v)}
         aria-label="Account menu"
@@ -53,6 +50,7 @@ export default function UserAvatar({
           <span className={styles.email}>{email}</span>
           <hr className={styles.divider} />
           <button
+            type="button"
             className={styles.logoutItem}
             role="menuitem"
             onClick={() => {

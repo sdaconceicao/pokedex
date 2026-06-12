@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
+import { useEffect, useMemo, useState } from "react";
+import { mapSpecialToTitle } from "@/layout/Navbar/Navbar.util";
 import {
-  GET_POKEMON_BY_TYPE,
   GET_POKEMON_BY_POKEDEX,
   GET_POKEMON_BY_REGION,
+  GET_POKEMON_BY_TYPE,
   SEARCH_POKEMON,
 } from "@/lib/queries";
-import { Pokemon } from "@/types";
-import { mapSpecialToTitle } from "@/layout/Navbar/Navbar.util";
+import type { Pokemon } from "@/types";
 
 export interface UnifiedPokemonQuery {
   loading: boolean;
@@ -46,18 +46,14 @@ export function usePokemonUnifiedQuery({
     loading: typeLoading,
     error: typeError,
     data: typeData,
-  } = useQuery<{ pokemonByType: { pokemon: Pokemon[]; total: number } }>(
-    GET_POKEMON_BY_TYPE,
-    {
-      variables: {
-        type: selectedType,
-        limit: itemsPerPage,
-        offset: (currentPage - 1) * itemsPerPage,
-      },
-      skip:
-        !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion,
-    }
-  );
+  } = useQuery<{ pokemonByType: { pokemon: Pokemon[]; total: number } }>(GET_POKEMON_BY_TYPE, {
+    variables: {
+      type: selectedType,
+      limit: itemsPerPage,
+      offset: (currentPage - 1) * itemsPerPage,
+    },
+    skip: !selectedType || !!searchQuery || !!selectedPokedex || !!selectedRegion,
+  });
 
   const {
     loading: pokedexLoading,
@@ -71,60 +67,44 @@ export function usePokemonUnifiedQuery({
         limit: itemsPerPage,
         offset: (currentPage - 1) * itemsPerPage,
       },
-      skip:
-        !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion,
-    }
+      skip: !selectedPokedex || !!searchQuery || !!selectedType || !!selectedRegion,
+    },
   );
 
   const {
     loading: regionLoading,
     error: regionError,
     data: regionData,
-  } = useQuery<{ pokemonByRegion: { pokemon: Pokemon[]; total: number } }>(
-    GET_POKEMON_BY_REGION,
-    {
-      variables: {
-        region: selectedRegion,
-        limit: itemsPerPage,
-        offset: (currentPage - 1) * itemsPerPage,
-      },
-      skip:
-        !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex,
-    }
-  );
+  } = useQuery<{ pokemonByRegion: { pokemon: Pokemon[]; total: number } }>(GET_POKEMON_BY_REGION, {
+    variables: {
+      region: selectedRegion,
+      limit: itemsPerPage,
+      offset: (currentPage - 1) * itemsPerPage,
+    },
+    skip: !selectedRegion || !!searchQuery || !!selectedType || !!selectedPokedex,
+  });
 
   const {
     loading: searchLoading,
     error: searchError,
     data: searchData,
-  } = useQuery<{ pokemonSearch: { pokemon: Pokemon[]; total: number } }>(
-    SEARCH_POKEMON,
-    {
-      variables: {
-        query: searchQuery || selectedSpecial || "",
-        limit: itemsPerPage,
-        offset: (currentPage - 1) * itemsPerPage,
-      },
-      skip: !searchQuery && !selectedSpecial,
-    }
-  );
+  } = useQuery<{ pokemonSearch: { pokemon: Pokemon[]; total: number } }>(SEARCH_POKEMON, {
+    variables: {
+      query: searchQuery || selectedSpecial || "",
+      limit: itemsPerPage,
+      offset: (currentPage - 1) * itemsPerPage,
+    },
+    skip: !searchQuery && !selectedSpecial,
+  });
 
-  const activeContext = useMemo<
-    "search" | "special" | "type" | "pokedex" | "region" | null
-  >(() => {
+  const activeContext = useMemo<"search" | "special" | "type" | "pokedex" | "region" | null>(() => {
     if (searchQuery) return "search";
     if (selectedSpecial) return "special";
     if (selectedType) return "type";
     if (selectedPokedex) return "pokedex";
     if (selectedRegion) return "region";
     return null;
-  }, [
-    searchQuery,
-    selectedSpecial,
-    selectedType,
-    selectedPokedex,
-    selectedRegion,
-  ]);
+  }, [searchQuery, selectedSpecial, selectedType, selectedPokedex, selectedRegion]);
 
   useEffect(() => {
     let newQueryContext = "";
@@ -174,10 +154,9 @@ export function usePokemonUnifiedQuery({
           loading: typeLoading,
           error: typeError,
           data: typeData?.pokemonByType,
-          title: `Pokemon of type: ${selectedType
-              ? selectedType.charAt(0).toUpperCase() + selectedType.slice(1)
-              : ""
-            }`,
+          title: `Pokemon of type: ${
+            selectedType ? selectedType.charAt(0).toUpperCase() + selectedType.slice(1) : ""
+          }`,
         } as const;
       case "pokedex":
         return {
@@ -187,7 +166,7 @@ export function usePokemonUnifiedQuery({
           title: (() => {
             const display = selectedPokedex
               ? selectedPokedex.charAt(0).toUpperCase() +
-              selectedPokedex.slice(1).replace(/-/g, " ")
+                selectedPokedex.slice(1).replace(/-/g, " ")
               : "";
             return `Pokemon from pokedex: ${display}`;
           })(),
@@ -197,10 +176,9 @@ export function usePokemonUnifiedQuery({
           loading: regionLoading,
           error: regionError,
           data: regionData?.pokemonByRegion,
-          title: `Pokemon from region: ${selectedRegion
-              ? selectedRegion.charAt(0).toUpperCase() + selectedRegion.slice(1)
-              : ""
-            }`,
+          title: `Pokemon from region: ${
+            selectedRegion ? selectedRegion.charAt(0).toUpperCase() + selectedRegion.slice(1) : ""
+          }`,
         } as const;
       default:
         return {
@@ -232,19 +210,8 @@ export function usePokemonUnifiedQuery({
   ]);
 
   const shouldShowInstructions = useMemo(
-    () =>
-      !searchQuery &&
-      !selectedType &&
-      !selectedPokedex &&
-      !selectedRegion &&
-      !selectedSpecial,
-    [
-      searchQuery,
-      selectedType,
-      selectedPokedex,
-      selectedRegion,
-      selectedSpecial,
-    ]
+    () => !searchQuery && !selectedType && !selectedPokedex && !selectedRegion && !selectedSpecial,
+    [searchQuery, selectedType, selectedPokedex, selectedRegion, selectedSpecial],
   );
 
   return {

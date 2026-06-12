@@ -1,25 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { FunctionComponent } from "react";
-import { Pokemon } from "@/types/graphql";
+import Link from "next/link";
+import type { FunctionComponent } from "react";
 import PokemonTypePill from "@/components/PokemonTypePill";
-import {
-  formatPokemonName,
-  getPokemonTypeClass,
-  getPrimaryType,
-} from "./PokemonCard.utils";
-
+import type { Pokemon } from "@/types/graphql";
 import css from "./PokemonCard.module.css";
+import { formatPokemonName, getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
 }
 
-export const PokemonCard: FunctionComponent<PokemonCardProps> = ({
-  pokemon,
-}) => {
+export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon }) => {
   const primaryType = getPrimaryType(pokemon.type);
   const typeClass = getPokemonTypeClass(primaryType);
   const formattedName = formatPokemonName(pokemon.name);

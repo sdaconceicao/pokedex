@@ -1,11 +1,10 @@
 "use client";
 
-import React, { Suspense } from "react";
-import { Pokemon } from "@/types";
+import { Suspense } from "react";
 import PokemonCard, { PokemonCardSkeleton } from "@/components/PokemonCard";
-import PokemonListSkeleton from "./PokemonListSkeleton";
-
+import type { Pokemon } from "@/types";
 import styles from "./PokemonList.module.css";
+import PokemonListSkeleton from "./PokemonListSkeleton";
 
 interface PokemonListProps {
   pokemon: Pokemon[];

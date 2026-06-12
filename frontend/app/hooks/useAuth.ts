@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
   LoginCredentials,
-  RegisterCredentials,
   LoginResponse,
+  RegisterCredentials,
   RegisterResponse,
 } from "@/types/auth";
 
@@ -46,11 +46,7 @@ export function useAuth() {
   });
 
   // Register mutation
-  const registerMutation = useMutation<
-    RegisterResponse,
-    Error,
-    RegisterCredentials
-  >({
+  const registerMutation = useMutation<RegisterResponse, Error, RegisterCredentials>({
     mutationFn: authApi.register,
     onSuccess: (data: RegisterResponse) => {
       setStoredToken(data.access_token);

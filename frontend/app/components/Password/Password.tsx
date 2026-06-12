@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import { Eye, EyeOff } from "@untitled-ui/icons-react";
+import { useCallback, useState } from "react";
 import Button from "@/components/Button";
 import Input, { type InputSize } from "@/components/Input";
 import styles from "./Password.module.css";

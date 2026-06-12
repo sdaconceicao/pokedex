@@ -1,21 +1,11 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-
-import PokemonList, {
-  PokemonListSkeleton,
-} from "@/layout/HomePageLayout/components/PokemonList";
-import PokemonInstructions from "@/layout/HomePageLayout/components/PokemonInstructions";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Pagination from "@/components/Pagination";
-import { usePokemonUnifiedQuery } from "./usePokemonUnifiedQuery";
-
+import PokemonInstructions from "@/layout/HomePageLayout/components/PokemonInstructions";
+import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
 import styles from "./HomePageLayout.module.css";
+import { usePokemonUnifiedQuery } from "./usePokemonUnifiedQuery";
 
 interface HomePageProps {
   searchQuery?: string;
@@ -33,21 +23,14 @@ export default function HomePage({
   selectedRegion,
 }: HomePageProps) {
   const headerRef = useRef<HTMLHeadingElement>(null);
-  const {
-    loading,
-    data,
-    title,
-    page,
-    setPage,
-    itemsPerPage,
-    shouldShowInstructions,
-  } = usePokemonUnifiedQuery({
-    searchQuery,
-    selectedType,
-    selectedPokedex,
-    selectedSpecial,
-    selectedRegion,
-  });
+  const { loading, data, title, page, setPage, itemsPerPage, shouldShowInstructions } =
+    usePokemonUnifiedQuery({
+      searchQuery,
+      selectedType,
+      selectedPokedex,
+      selectedSpecial,
+      selectedRegion,
+    });
   const [pokemon, setPokemon] = useState(data?.pokemon || []);
   const [total, setTotal] = useState(data?.total || 0);
 
@@ -63,7 +46,7 @@ export default function HomePage({
       headerRef.current?.scrollIntoView({ behavior: "smooth" });
       setPage(page);
     },
-    [setPage]
+    [setPage],
   );
 
   if (shouldShowInstructions) {
@@ -78,11 +61,7 @@ export default function HomePage({
       {loading ? (
         <PokemonListSkeleton count={itemsPerPage} />
       ) : (
-        <PokemonList
-          pokemon={pokemon}
-          loading={loading}
-          itemsPerPage={itemsPerPage}
-        />
+        <PokemonList pokemon={pokemon} loading={loading} itemsPerPage={itemsPerPage} />
       )}
 
       <Pagination
