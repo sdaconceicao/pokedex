@@ -7,40 +7,40 @@ export default function PokemonDetailSkeleton() {
         <div className={styles.backButtonSkeleton}></div>
       </div>
 
-      <div className={styles.mainSection}>
-        <div className={styles.imageSection}>
-          <div className={styles.imageSkeleton}></div>
+      {/* Hero skeleton */}
+      <div className={styles.hero}>
+        <div className={styles.heroInfo}>
           <div className={styles.numberSkeleton}></div>
-        </div>
-
-        <div className={styles.infoSection}>
           <div className={styles.nameSkeleton}></div>
-
           <div className={styles.typesContainer}>
             <div className={styles.typeSkeleton}></div>
             <div className={styles.typeSkeleton}></div>
           </div>
-
-          <div className={styles.statsSection}>
-            <div className={styles.statsTitleSkeleton}></div>
-            <div className={styles.statsGrid}>
-              {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className={styles.statItem}>
-                  <div className={styles.statLabelSkeleton}></div>
-                  <div className={styles.statBarSkeleton}>
-                    <div className={styles.statFillSkeleton}></div>
-                  </div>
-                  <div className={styles.statValueSkeleton}></div>
-                </div>
-              ))}
-            </div>
-          </div>
+        </div>
+        <div className={styles.heroImage}>
+          <div className={styles.imageSkeleton}></div>
         </div>
       </div>
 
-      {/* Abilities section skeleton */}
+      {/* Stats skeleton */}
+      <div className={styles.statsSection}>
+        <div className={styles.titleSkeleton}></div>
+        <div className={styles.statsGrid}>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className={styles.statItem}>
+              <div className={styles.statLabelSkeleton}></div>
+              <div className={styles.statBarSkeleton}>
+                <div className={styles.statFillSkeleton}></div>
+              </div>
+              <div className={styles.statValueSkeleton}></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Abilities skeleton */}
       <div className={styles.abilitiesSection}>
-        <div className={styles.abilitiesTitleSkeleton}></div>
+        <div className={styles.titleSkeleton}></div>
         <div className={styles.abilitiesGrid}>
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className={styles.abilityCard}>

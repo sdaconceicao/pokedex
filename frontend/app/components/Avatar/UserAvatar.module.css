@@ -49,6 +49,47 @@
   animation: fadeIn 0.15s ease-out;
 }
 
+/* Desktop: attach flush to the header's bottom edge — square top,
+   aligned with the header's right padding edge */
+@media (min-width: 769px) {
+  .dropdown {
+    /* avatar is 36px centered in a 60px header → 12px to the header edge */
+    top: calc(100% + 12px);
+    right: -1rem;
+    border-top: none;
+    border-radius: 0 0 0.625rem 0.625rem;
+  }
+}
+
+/* Mobile: the menu becomes a full-screen sheet below the header.
+   The header wraps to two rows (avatar row + search row), so the top
+   offset accounts for the search row to land on the header's edge. */
+@media (max-width: 768px) {
+  .dropdown {
+    position: fixed;
+    /* header: 0.5rem pad + 40px row + 0.5rem gap + 38px search + 0.5rem pad */
+    top: calc(40px + var(--input-height) + 1.5rem);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .email {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .logoutItem {
+    padding: 0.875rem 1.25rem;
+  }
+}
+
 .email {
   display: block;
   padding: 0.75rem 1rem;
@@ -68,7 +109,7 @@
 .logoutItem {
   display: block;
   width: 100%;
-  padding: 0.625rem 1rem;
+  padding: 0.7rem 1rem;
   text-align: left;
   font-size: 0.875rem;
   font-family: inherit;
@@ -76,12 +117,14 @@
   color: var(--foreground);
   background: transparent;
   border: none;
+  border-radius: 0;
   cursor: pointer;
   transition: background 0.12s ease;
 }
 
 .logoutItem:hover:not(:disabled) {
-  background: var(--layout-tertiary-background);
+  background: var(--layout-primary-background-hover);
+  color: var(--layout-primary-foreground);
 }
 
 .logoutItem:disabled {
