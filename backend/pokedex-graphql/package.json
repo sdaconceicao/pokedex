@@ -46,7 +46,7 @@
     "eslint": "^9.33.0",
     "eslint-plugin-import": "^2.32.0",
     "graphql-eslint": "^1.5.2",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.1.8",
     "vitest": "^3.2.4",
     "msw": "^2.10.5",
     "nodemon": "^3.0.0",
