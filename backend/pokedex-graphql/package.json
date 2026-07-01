@@ -29,7 +29,7 @@
     "@apollo/server": "^5.0.0",
     "@parcel/watcher": "^2.4.0",
     "graphql": "^16.11.0",
-    "graphql-tag": "^2.12.6",
+    "graphql-tag": "^2.12.7",
     "winston": "^3.17.0"
   },
   "devDependencies": {
