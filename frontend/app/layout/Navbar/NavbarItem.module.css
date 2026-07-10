@@ -1,0 +1,29 @@
+.navItem {
+  display: block;
+  padding: 0.4rem 0.75rem;
+  margin: 0 0.5rem;
+  border-radius: 0.5rem;
+  color: var(--layout-tertiary-foreground);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.navItem:hover {
+  background-color: var(--layout-secondary-background);
+  color: var(--layout-primary-background);
+}
+
+.navItem.active {
+  background-color: var(--layout-primary-background);
+  color: var(--layout-primary-foreground);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(211, 43, 43, 0.3);
+}
+
+.navItem.active:hover {
+  background-color: var(--layout-primary-background-hover);
+}

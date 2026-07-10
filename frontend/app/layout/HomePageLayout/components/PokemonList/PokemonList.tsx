@@ -1,0 +1,51 @@
+"use client";
+
+import { Suspense } from "react";
+import PokemonCard, { PokemonCardSkeleton } from "@/components/PokemonCard";
+import type { Pokemon } from "@/types";
+import styles from "./PokemonList.module.css";
+import PokemonListSkeleton from "./PokemonListSkeleton";
+
+interface PokemonListProps {
+  pokemon: Pokemon[];
+  loading?: boolean;
+  error?: string | null;
+  itemsPerPage: number;
+}
+
+export default function PokemonList({
+  pokemon,
+  loading = false,
+  error = null,
+  itemsPerPage,
+}: PokemonListProps) {
+  if (loading) {
+    return <PokemonListSkeleton count={itemsPerPage} />;
+  }
+
+  if (error) {
+    return (
+      <div className={styles.error}>
+        <p>Error loading Pokemon: {error}</p>
+      </div>
+    );
+  }
+
+  if (pokemon.length === 0) {
+    return (
+      <div className={styles.centerText}>
+        <p>No Pokemon found</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.grid}>
+      {pokemon.map((pokemon: Pokemon) => (
+        <Suspense key={pokemon.id} fallback={<PokemonCardSkeleton />}>
+          <PokemonCard pokemon={pokemon} />
+        </Suspense>
+      ))}
+    </div>
+  );
+}

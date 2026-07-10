@@ -1,4 +1,4 @@
-import { Ability } from "@/types";
+import type { Ability } from "@/types";
 import styles from "./PokemonAbility.module.css";
 
 interface PokemonAbilityProps {
@@ -8,10 +8,7 @@ interface PokemonAbilityProps {
 
 export const PokemonAbility = ({ ability, type }: PokemonAbilityProps) => {
   return (
-    <div
-      key={ability.id}
-      className={`${styles.abilityCard} ${styles[`type-${type}`]}`}
-    >
+    <div key={ability.id} className={styles.abilityCard} data-type={type}>
       <div className={styles.abilityHeader}>
         <h3 className={styles.abilityName}>{ability.name}</h3>
         <span className={styles.abilitySlot}>Slot {ability.slot}</span>

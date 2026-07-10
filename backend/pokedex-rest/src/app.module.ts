@@ -22,23 +22,29 @@ import databaseConfig from './config/database.config';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (
-        configService: ConfigService,
-      ): PostgresConnectionOptions => ({
-        type: 'postgres',
-        host: configService.get('database.host')!,
-        port: configService.get('database.port')!,
-        username: configService.get('database.username')!,
-        password: configService.get('database.password')!,
-        database: configService.get('database.database')!,
-        schema: 'public', // Start with public schema so migrations can run
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: false, // Disable when using migrations
-        logging: configService.get('database.logging')!,
-        migrations: [__dirname + '/migrations/*{.ts,.js}'],
-        migrationsRun: configService.get('database.migrationsRun')!,
-        migrationsTableName: 'migrations', // Name of the migrations table
-      }),
+      useFactory: (configService: ConfigService): PostgresConnectionOptions => {
+        const url = configService.get<string>('database.url');
+        return {
+          type: 'postgres',
+          ...(url
+            ? { url }
+            : {
+                host: configService.get('database.host')!,
+                port: configService.get('database.port')!,
+                username: configService.get('database.username')!,
+                password: configService.get('database.password')!,
+                database: configService.get('database.database')!,
+              }),
+          ssl: configService.get('database.ssl')!,
+          schema: 'public', // Start with public schema so migrations can run
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: false, // Disable when using migrations
+          logging: configService.get('database.logging')!,
+          migrations: [__dirname + '/migrations/*{.ts,.js}'],
+          migrationsRun: configService.get('database.migrationsRun')!,
+          migrationsTableName: 'migrations', // Name of the migrations table
+        };
+      },
       inject: [ConfigService],
     }),
     AuthModule,

@@ -3,20 +3,43 @@
   --layout-primary-foreground: white;
   --layout-primary-background-hover: #9a1c1c;
   --layout-secondary-background: #fcdddc;
-  --layout-secondary-foreground: #333;
-  --layout-tertiary-background: #e0e0e0;
-  --layout-tertiary-foreground: #666;
-  --layout-quaternary-background: #d0d0d0;
+  --layout-secondary-foreground: #3d3d3d;
+  --layout-tertiary-background: #f1f1f4;
+  --layout-tertiary-foreground: #6b6b6b;
+  --layout-quaternary-background: #e2e2e6;
   --layout-quaternary-foreground: #888;
-  --foreground: #333;
+  --foreground: #2d2d2d;
   --background: #ffffff;
-  --input-height: 35px;
+  --surface: #fafafa;
+  --surface-elevated: #ffffff;
+  --border: #e2e2e6;
+  --border-subtle: #efeff2;
+  --muted-foreground: #6b6b6b;
+  --card-bg-default: #ffffff;
+  --card-foreground: #1f2937;
+  --card-muted-foreground: #4b5563;
+  --input-height: 38px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground: #ffffff;
-    --background: #1a1a1a;
+    --foreground: #e8e6e3;
+    --background: #1c1f26;
+    --surface: #252932;
+    --surface-elevated: #2d323d;
+    --border: #3d4451;
+    --border-subtle: #333842;
+    --muted-foreground: #a0a4ad;
+    --layout-secondary-background: #3d2a2a;
+    --layout-secondary-foreground: #e8e6e3;
+    --layout-tertiary-background: #252932;
+    --layout-tertiary-foreground: #a0a4ad;
+    --layout-quaternary-background: #3d4451;
+    --layout-quaternary-foreground: #888;
+    /* Pokemon cards stay light in dark mode */
+    --card-bg-default: #ffffff;
+    --card-foreground: #1f2937;
+    --card-muted-foreground: #4b5563;
   }
 }
 
@@ -29,7 +52,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

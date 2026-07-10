@@ -5,6 +5,8 @@ packages:
 allowBuilds:
   "@apollo/protobufjs": true
   "@parcel/watcher": true
+  "@scarf/scarf": false
+  "@swc/core": true
   bcrypt: true
   esbuild: true
   msw: true

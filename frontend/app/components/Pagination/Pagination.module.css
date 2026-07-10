@@ -1,0 +1,86 @@
+.container {
+  position: fixed;
+  bottom: 1.25rem;
+  left: calc(50% + var(--sidebar-width, 0px) / 2);
+  transform: translateX(-50%);
+  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1.5rem;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 16px 40px rgba(0, 0, 0, 0.14);
+  z-index: 250;
+}
+
+.info {
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.controls button {
+  border-radius: 999px;
+}
+
+.previousNext {
+  min-width: 32px;
+  width: 32px;
+  padding: 0;
+}
+
+.pageNumbers {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.ellipsis {
+  cursor: default;
+  border: none;
+  background: transparent;
+  min-width: 2rem;
+}
+
+.ellipsis:hover {
+  background: transparent;
+}
+
+/* Mobile: drawer overlays content, so center on the viewport */
+@media (max-width: 768px) {
+  .container {
+    left: 50%;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    bottom: 0.75rem;
+    padding: 0.625rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .info {
+    display: none;
+  }
+
+  /* Button sm shrinks to 28px tall on mobile — keep chevrons square */
+  .previousNext {
+    width: 28px;
+    min-width: 28px;
+  }
+}
