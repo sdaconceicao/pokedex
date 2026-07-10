@@ -1,0 +1,71 @@
+// Generated from schema.graphql by scripts/embed-schema.mjs — do not edit.
+export const typeDefs = /* GraphQL */ `
+type Query {
+  pokemon(id: ID!): Pokemon
+  pokemonSearch(query: String!, limit: Int, offset: Int): PokemonList
+  pokemonByType(type: String, limit: Int, offset: Int): PokemonList
+  pokemonByPokedex(pokedex: String, limit: Int, offset: Int): PokemonList
+  pokemonByRegion(region: String, limit: Int, offset: Int): PokemonList
+  ability(id: ID!): Ability
+  types: [PokemonType!]!
+  pokedexes: [PokemonPokedex!]!
+  regions: [PokemonRegion!]!
+}
+
+type PokemonList {
+  total: Int!
+  offset: Int!
+  pokemon: [Pokemon!]!
+}
+
+type Pokemon {
+  id: ID!
+  name: String!
+  type: [String!]!
+  image: String!
+  stats: Stats!
+  abilitiesLite: [AbilityLite!]!
+  abilities: [Ability!]
+}
+
+type Stats {
+  hp: Int!
+  attack: Int!
+  defense: Int!
+  specialAttack: Int!
+  specialDefense: Int!
+  speed: Int!
+}
+
+type AbilityLite {
+  id: ID!
+  name: String!
+  url: String!
+  slot: Int!
+  isHidden: Boolean!
+}
+
+type Ability {
+  id: ID!
+  name: String!
+  description: String!
+  effect: String!
+  generation: String!
+  slot: Int!
+}
+
+type PokemonRegion {
+  name: String!
+  count: Int!
+}
+
+type PokemonPokedex {
+  name: String!
+  count: Int!
+}
+
+type PokemonType {
+  name: String!
+  count: Int!
+}
+`;

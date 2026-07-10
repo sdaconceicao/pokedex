@@ -10,7 +10,7 @@ import {
   pokedexListResponse,
   regionListResponse,
   typeListResponse,
-} from "./pokemon";
+} from "./pokemon.js";
 
 export const handlers = [
   // Pokemon list endpoint - used by loadPokemonIndex()
