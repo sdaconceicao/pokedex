@@ -1,7 +1,7 @@
 import type { DataSourceConfig } from "@apollo/datasource-rest";
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
 
-import { PokemonAPI } from "./datasources/pokemon-api";
+import { PokemonAPI } from "./datasources/pokemon-api.js";
 
 export type DataSourceContext = {
   dataSources: {

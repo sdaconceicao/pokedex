@@ -1,4 +1,4 @@
-import { yoga } from "./yoga";
+import { yoga } from "./yoga.js";
 
 // Cloudflare Workers entry point. Deploy with `wrangler deploy`; the
 // GraphQL endpoint is served at /graphql on the workers.dev URL.

@@ -1,8 +1,8 @@
 import { createYoga, createSchema, type CORSOptions } from "graphql-yoga";
 
-import { typeDefs } from "./schema.generated";
-import { resolvers } from "./resolvers";
-import { createContext, type DataSourceContext } from "./context";
+import { typeDefs } from "./schema.generated.js";
+import { resolvers } from "./resolvers.js";
+import { createContext, type DataSourceContext } from "./context.js";
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())

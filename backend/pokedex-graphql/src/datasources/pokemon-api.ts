@@ -6,7 +6,7 @@ import {
   PokemonPokedex,
   PokemonRegion,
   PokemonType,
-} from "../types";
+} from "../types.js";
 import {
   NamedAPIResource,
   PokemonListResponse,
@@ -18,12 +18,12 @@ import {
   Pokedex,
   PokedexListResponse,
   RegionListResponse,
-} from "./pokemon-api.types";
+} from "./pokemon-api.types.js";
 import {
   convertAbilityLiteToAbility,
   convertPokemonEntityToPokemon,
-} from "../utils/pokemon";
-import { logger } from "../logger";
+} from "../utils/pokemon.js";
+import { logger } from "../logger.js";
 
 export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
