@@ -20,7 +20,7 @@ export default defineConfig({
     {
       name: "pokedex-graphql",
       command: "cd backend/pokedex-graphql && pn  start:dev:mock",
-      url: "http://localhost:4000",
+      url: "http://localhost:4000/graphql",
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
     },
