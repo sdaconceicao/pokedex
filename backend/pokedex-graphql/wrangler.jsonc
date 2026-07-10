@@ -1,0 +1,7 @@
+{
+  "name": "pokedex-graphql",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "preview_urls": true
+}

@@ -1,19 +1,11 @@
-import winston from "winston";
+/* eslint-disable no-console */
+// Console-based logger: works on Node, Vercel, and Workers runtimes,
+// which capture stdout/stderr natively (no writable filesystem required).
+const prefix = (level: string) =>
+  `${new Date().toISOString()} [pokedex-api] ${level}:`;
 
-export const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.json(),
-  defaultMeta: { service: "pokedex-api" },
-  transports: [
-    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
-    new winston.transports.File({ filename: "logs/combined.log" }),
-  ],
-});
-
-if (process.env.NODE_ENV !== "production") {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    })
-  );
-}
+export const logger = {
+  info: (...args: unknown[]) => console.log(prefix("info"), ...args),
+  warn: (...args: unknown[]) => console.warn(prefix("warn"), ...args),
+  error: (...args: unknown[]) => console.error(prefix("error"), ...args),
+};
