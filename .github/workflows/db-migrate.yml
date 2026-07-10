@@ -6,7 +6,7 @@ on:
     paths:
       - "backend/pokedex-rest/src/migrations/**"
       - "backend/pokedex-rest/src/run-migrations.ts"
-      - ".github/workflows/migrate.yml"
+      - ".github/workflows/db-migrate.yml"
   workflow_dispatch:
 
 # Never run two migration jobs at once; queue instead of cancelling so
@@ -39,4 +39,4 @@ jobs:
       - name: Run migrations
         run: pnpm --filter ./backend/pokedex-rest run migration:run
         env:
-          DATABASE_URL_UNPOOLED: ${{ secrets.MIGRATION_DATABASE_URL }}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
