@@ -268,6 +268,9 @@ importers:
       '@untitled-ui/icons-react':
         specifier: ^0.1.4
         version: 0.1.4(@types/react@19.2.17)(react@19.2.7)
+      '@vercel/related-projects':
+        specifier: ^1.1.0
+        version: 1.1.0
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -2906,6 +2909,9 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@vercel/related-projects@1.1.0':
+    resolution: {integrity: sha512-4YjXj8rL9UVX444vaKuSmXgZD0ABOEgQNd6BR75vACaeAcuwU8powNyKDoAM9JIPfVhx7/zHCum5z+7lx2Mp9g==}
 
   '@vitejs/plugin-react@4.7.0':
     resolution: {integrity: sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA==}
@@ -9161,6 +9167,10 @@ snapshots:
       react: 19.2.7
     optionalDependencies:
       '@types/react': 19.2.17
+
+  '@vercel/related-projects@1.1.0':
+    optionalDependencies:
+      ajv: 6.15.0
 
   '@vitejs/plugin-react@4.7.0(vite@7.3.5(@types/node@26.1.1)(jiti@2.7.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))':
     dependencies:
