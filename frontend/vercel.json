@@ -1,8 +1,5 @@
 {
   "installCommand": "cd .. && pnpm install --frozen-lockfile",
   "buildCommand": "pnpm build",
-  "relatedProjects": [
-    "prj_t7vRFq5Tl6oUhClpc3LNN7vguwRG",
-    "prj_mbk4ZCw647BGvGB7lzUBSXuWhtbj"
-  ]
+  "relatedProjects": ["prj_t7vRFq5Tl6oUhClpc3LNN7vguwRG", "prj_mbk4ZCw647BGvGB7lzUBSXuWhtbj"]
 }
