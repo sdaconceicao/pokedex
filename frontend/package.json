@@ -51,7 +51,7 @@
     "concurrently": "^8.2.2",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "typescript": "^5",
+    "typescript": "^7",
     "vitest": "^3.2.4"
   }
 }
