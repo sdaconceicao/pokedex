@@ -117,7 +117,9 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
                 <XClose width={18} height={18} />
               </button>
             </div>
-            <Navbar navigationData={navigationData} />
+            <Suspense fallback={null}>
+              <Navbar navigationData={navigationData} />
+            </Suspense>
           </div>
         </aside>
 
