@@ -22,9 +22,7 @@ import databaseConfig from './config/database.config';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (
-        configService: ConfigService,
-      ): PostgresConnectionOptions => {
+      useFactory: (configService: ConfigService): PostgresConnectionOptions => {
         const url = configService.get<string>('database.url');
         return {
           type: 'postgres',
