@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.1.1...pokedex-rest-v0.2.0) (2026-07-10)
+
+
+### Features
+
+* Updated ux / branding ([#56](https://github.com/sdaconceicao/pokedex/issues/56)) ([71e991e](https://github.com/sdaconceicao/pokedex/commit/71e991ea59e0c6c2c9ca39bf4d398e41018d3300))
+
+
+### Bug Fixes
+
+* Fixing vercel build for pokdex-rest ([#66](https://github.com/sdaconceicao/pokedex/issues/66)) ([5c41ce0](https://github.com/sdaconceicao/pokedex/commit/5c41ce0f52ab559e0d24170a534f60cbb16f225d))
+
 ## [0.1.1](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.1.0...pokedex-rest-v0.1.1) (2026-01-21)
 
 
