@@ -51,6 +51,15 @@ $ pn  start:env
 $ ENV=staging pn  start:env
 ```
 
+## API Documentation
+
+Interactive Swagger (OpenAPI) docs are available while the server is running:
+
+- Swagger UI: `http://localhost:<PORT>/docs`
+- OpenAPI JSON: `http://localhost:<PORT>/docs-json`
+
+Protected endpoints (e.g. `GET /users`) can be tried out by clicking **Authorize** and pasting the `access_token` returned by `POST /auth/login` or `POST /auth/register`.
+
 ## Run tests
 
 ```bash
