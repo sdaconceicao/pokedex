@@ -1,23 +1,8 @@
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { createServer } from "node:http";
+
 import { logger } from "./logger";
-
-import { createApolloServer } from "./apollo-server";
-import { createContext } from "./context";
 import { startMockServer } from "./mocks/server.js";
-
-async function startApolloServer(useMockAPI: boolean = false) {
-  const apolloServer = createApolloServer();
-  const apiName = useMockAPI ? "Mock" : "Real";
-
-  const { url } = await startStandaloneServer(apolloServer, {
-    context: async () => createContext({ cache: apolloServer.cache }),
-  });
-
-  logger.info(`
-    🚀  ${apiName} Server is running!
-    📭  Query at ${url}
-  `);
-}
+import { yoga } from "./yoga";
 
 const useMockAPI =
   process.env.USE_MOCK_API === "true" || process.argv.includes("--mock");
@@ -26,4 +11,12 @@ if (useMockAPI) {
   startMockServer();
 }
 
-startApolloServer(useMockAPI);
+const port = Number(process.env.PORT ?? 4000);
+const apiName = useMockAPI ? "Mock" : "Real";
+
+createServer(yoga).listen(port, () => {
+  logger.info(`
+    🚀  ${apiName} Server is running!
+    📭  Query at http://localhost:${port}${yoga.graphqlEndpoint}
+  `);
+});
