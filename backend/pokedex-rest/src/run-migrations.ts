@@ -6,13 +6,20 @@ import { UserEntity } from './users/users.entity';
 config();
 
 async function runMigrations() {
+  // Use the unpooled URL for migrations — DDL should not go through PgBouncer.
+  const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
   const dataSource = new DataSource({
     type: 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5433', 10),
-    username: process.env.DB_USERNAME || 'pokedex_user',
-    password: process.env.DB_PASSWORD || 'pokedex_password',
-    database: process.env.DB_DATABASE || 'pokedex',
+    ...(url
+      ? { url }
+      : {
+          host: process.env.DB_HOST || 'localhost',
+          port: parseInt(process.env.DB_PORT || '5433', 10),
+          username: process.env.DB_USERNAME || 'pokedex_user',
+          password: process.env.DB_PASSWORD || 'pokedex_password',
+          database: process.env.DB_DATABASE || 'pokedex',
+        }),
+    ssl: process.env.DB_SSL === 'true' || !!url,
     schema: 'public',
     entities: [UserEntity],
     migrations: [__dirname + '/migrations/*{.ts,.js}'],
