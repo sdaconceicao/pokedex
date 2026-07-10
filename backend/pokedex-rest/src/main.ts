@@ -32,12 +32,27 @@ async function bootstrap() {
     },
   );
 
-  // Enable CORS with configurable origins
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
-        .map((origin) => origin.trim())
-        .filter((origin) => origin.length > 0)
-    : ['http://localhost:3010'];
+  // Enable CORS with configurable origins. Entries may contain '*' wildcards
+  // (e.g. https://pokedex-frontend-*.vercel.app for Vercel preview
+  // deployments); a wildcard matches a single hostname label and cannot
+  // cross a '.', so it can't be widened to unrelated domains.
+  const toOriginMatcher = (origin: string): string | RegExp =>
+    origin.includes('*')
+      ? new RegExp(
+          `^${origin
+            .split('*')
+            .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+            .join('[a-zA-Z0-9-]+')}$`,
+        )
+      : origin;
+
+  const allowedOrigins = (
+    process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(',')
+          .map((origin) => origin.trim())
+          .filter((origin) => origin.length > 0)
+      : ['http://localhost:3010']
+  ).map(toOriginMatcher);
 
   app.enableCors({
     origin: allowedOrigins,
