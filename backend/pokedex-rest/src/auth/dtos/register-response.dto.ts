@@ -1,3 +1,7 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { AccessToken } from '../types/AccessToken';
 
-export type RegisterResponseDTO = AccessToken;
+export class RegisterResponseDTO implements AccessToken {
+  @ApiProperty({ description: 'JWT access token' })
+  access_token: string;
+}

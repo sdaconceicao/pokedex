@@ -2,8 +2,8 @@ import {
   PokemonAbility,
   PokemonEntity,
   PokemonStat,
-} from "../datasources/pokemon-api.types";
-import { AbilityLite, Pokemon, Stats } from "../types";
+} from "../datasources/pokemon-api.types.js";
+import { AbilityLite, Pokemon, Stats } from "../types.js";
 
 export const getPokemonAbilitiesLite = (pokemon: PokemonEntity) => {
   return pokemon.abilities.map((ability) => ({

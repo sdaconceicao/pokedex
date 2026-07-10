@@ -4,6 +4,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { Logger } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { runSeeders, SeederOptions } from 'typeorm-extension';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -39,18 +40,18 @@ async function bootstrap() {
   const toOriginMatcher = (origin: string): string | RegExp =>
     origin.includes('*')
       ? new RegExp(
-          `^${origin
-            .split('*')
-            .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-            .join('[a-zA-Z0-9-]+')}$`,
-        )
+        `^${origin
+          .split('*')
+          .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+          .join('[a-zA-Z0-9-]+')}$`,
+      )
       : origin;
 
   const allowedOrigins = (
     process.env.ALLOWED_ORIGINS
       ? process.env.ALLOWED_ORIGINS.split(',')
-          .map((origin) => origin.trim())
-          .filter((origin) => origin.length > 0)
+        .map((origin) => origin.trim())
+        .filter((origin) => origin.length > 0)
       : ['http://localhost:3010']
   ).map(toOriginMatcher);
 
@@ -59,6 +60,24 @@ async function bootstrap() {
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Pokedex REST API')
+    .setDescription('Authentication and user management API for the Pokedex')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  // Serve the swagger-ui assets from a CDN to work with serverless bundlers like Vercel.
+  const swaggerUiCdn = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.32.8';
+  SwaggerModule.setup('docs', app, swaggerDocument, {
+    customCssUrl: `${swaggerUiCdn}/swagger-ui.css`,
+    customJs: [
+      `${swaggerUiCdn}/swagger-ui-bundle.js`,
+      `${swaggerUiCdn}/swagger-ui-standalone-preset.js`,
+    ],
+    customfavIcon: `${swaggerUiCdn}/favicon-32x32.png`,
   });
 
   if (process.env.NODE_ENV === 'test') {

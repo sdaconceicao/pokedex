@@ -11,11 +11,12 @@
     "node": ">=18.0"
   },
   "scripts": {
-    "compile": "tsc",
+    "compile": "node scripts/embed-schema.mjs && tsc",
     "start": "pn compile && nodemon ./dist/index.js",
-    "start:dev": "concurrently \"tsx watch ./src/index.ts\" \"pn  generate\"",
-    "start:dev:mock": "USE_MOCK_API=true tsx watch ./src/index.ts",
+    "start:dev": "node scripts/embed-schema.mjs && concurrently \"tsx watch ./src/index.ts\" \"pn  generate\"",
+    "start:dev:mock": "node scripts/embed-schema.mjs && USE_MOCK_API=true tsx watch ./src/index.ts",
     "generate": "graphql-codegen --watch \"src/schema.graphql\"",
+    "generate:schema": "node scripts/embed-schema.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -26,11 +27,10 @@
   },
   "dependencies": {
     "@apollo/datasource-rest": "^6.4.1",
-    "@apollo/server": "^5.0.0",
+    "@apollo/utils.keyvaluecache": "^4.0.0",
     "@parcel/watcher": "^2.4.0",
     "graphql": "^16.11.0",
-    "graphql-tag": "^2.12.7",
-    "winston": "^3.17.0"
+    "graphql-yoga": "^5.21.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -41,18 +41,17 @@
     "@types/node": "^26.1.1",
     "@typescript-eslint/eslint-plugin": "^8.62.1",
     "@typescript-eslint/parser": "^8.62.1",
-    "@vercel/node": "^5.8.22",
+    "@vitest/coverage-v8": "^3.2.4",
     "concurrently": "^8.2.2",
     "eslint": "^9.33.0",
     "eslint-plugin-import": "^2.32.0",
     "graphql-eslint": "^1.5.2",
-    "@vitest/coverage-v8": "^3.2.4",
-    "vitest": "^3.2.4",
     "msw": "^2.10.5",
     "nodemon": "^3.0.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.20.4",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^3.2.4"
   }
 }

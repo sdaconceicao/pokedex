@@ -1,6 +1,6 @@
-import { Resolvers } from "./types";
-import { getPaginatedResults } from "./utils/pagination";
-import { logger } from "./logger";
+import { Resolvers } from "./types.js";
+import { getPaginatedResults } from "./utils/pagination.js";
+import { logger } from "./logger.js";
 
 export const resolvers: Resolvers = {
   Query: {

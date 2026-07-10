@@ -1,0 +1,5 @@
+{
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm run generate:schema",
+  "rewrites": [{ "source": "/graphql", "destination": "/api/graphql" }]
+}
