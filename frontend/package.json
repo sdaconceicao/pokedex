@@ -35,7 +35,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.1",
     "@graphql-codegen/cli": "^5.0.7",
-    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript": "^6.1.0",
     "@graphql-codegen/typescript-operations": "^6.0.5",
     "@graphql-codegen/typescript-react-apollo": "^4.3.3",
     "@tanstack/react-query-devtools": "^5.101.2",
