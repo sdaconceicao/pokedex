@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-graphql-v0.1.1...pokedex-graphql-v0.2.0) (2026-07-10)
+
+
+### Features
+
+* Vercel setup for graphql ([#69](https://github.com/sdaconceicao/pokedex/issues/69)) ([d366e06](https://github.com/sdaconceicao/pokedex/commit/d366e062b0d4bc0c8df78599f8ccdc666599563a))
+
+
+### Bug Fixes
+
+* Fixing vercel build for pokdex-rest ([#66](https://github.com/sdaconceicao/pokedex/issues/66)) ([5c41ce0](https://github.com/sdaconceicao/pokedex/commit/5c41ce0f52ab559e0d24170a534f60cbb16f225d))
+
 ## [0.1.1](https://github.com/sdaconceicao/pokedex/compare/pokedex-graphql-v0.1.0...pokedex-graphql-v0.1.1) (2026-01-21)
 
 
