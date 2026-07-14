@@ -19,7 +19,7 @@
     "tsc": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
-    "@apollo/client": "^3.13.8",
+    "@apollo/client": "^4.2.6",
     "@pokemonle/icons-react": "^0.0.3",
     "@tanstack/react-query": "^5.101.2",
     "@untitled-ui/icons-react": "^0.1.4",
@@ -38,7 +38,6 @@
     "@graphql-codegen/cli": "^7.2.0",
     "@graphql-codegen/typescript": "^6.1.0",
     "@graphql-codegen/typescript-operations": "^6.0.5",
-    "@graphql-codegen/typescript-react-apollo": "^4.3.3",
     "@tanstack/react-query-devtools": "^5.101.2",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",

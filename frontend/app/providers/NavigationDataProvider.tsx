@@ -13,7 +13,7 @@ export const getTypes = async (): Promise<PokemonType[]> => {
     const { data } = await client.query<{ types: PokemonType[] }>({
       query: GET_TYPES,
     });
-    return data.types?.filter((type) => type.count > 0) || [];
+    return data?.types?.filter((type) => type.count > 0) || [];
   } catch (error) {
     console.error("Error fetching types:", error);
     return [];
@@ -25,7 +25,7 @@ export const getPokedexes = async (): Promise<PokemonPokedex[]> => {
     const { data } = await client.query<{ pokedexes: PokemonPokedex[] }>({
       query: GET_POKEDEXES,
     });
-    return data.pokedexes?.filter((pokedex) => pokedex.count > 0) || [];
+    return data?.pokedexes?.filter((pokedex) => pokedex.count > 0) || [];
   } catch (error) {
     console.error("Error fetching pokedexes:", error);
     return [];
@@ -37,7 +37,7 @@ export const getRegions = async (): Promise<PokemonRegion[]> => {
     const { data } = await client.query<{ regions: PokemonRegion[] }>({
       query: GET_REGIONS,
     });
-    return data.regions?.filter((region) => region.count > 0) || [];
+    return data?.regions?.filter((region) => region.count > 0) || [];
   } catch (error) {
     console.error("Error fetching regions:", error);
     return [];
