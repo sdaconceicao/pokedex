@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.2.0...pokedex-frontend-v0.3.0) (2026-07-10)
+
+
+### Features
+
+* Setup Frontend Vercel ([#70](https://github.com/sdaconceicao/pokedex/issues/70)) ([8d3f7e2](https://github.com/sdaconceicao/pokedex/commit/8d3f7e23e3d4e894f3bb7572c7afdc75f1d14f73))
+* Updated ux / branding ([#56](https://github.com/sdaconceicao/pokedex/issues/56)) ([71e991e](https://github.com/sdaconceicao/pokedex/commit/71e991ea59e0c6c2c9ca39bf4d398e41018d3300))
+* Updated UX / layout ([#34](https://github.com/sdaconceicao/pokedex/issues/34)) ([291c940](https://github.com/sdaconceicao/pokedex/commit/291c94048d8c86131b74c625a719e4003d95ff52))
+
+
+### Bug Fixes
+
+* Fixing vercel build for pokdex-rest ([#66](https://github.com/sdaconceicao/pokedex/issues/66)) ([5c41ce0](https://github.com/sdaconceicao/pokedex/commit/5c41ce0f52ab559e0d24170a534f60cbb16f225d))
+
 ## [0.2.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.1.0...pokedex-frontend-v0.2.0) (2025-10-09)
 
 
