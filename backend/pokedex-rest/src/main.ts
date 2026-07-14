@@ -40,18 +40,18 @@ async function bootstrap() {
   const toOriginMatcher = (origin: string): string | RegExp =>
     origin.includes('*')
       ? new RegExp(
-        `^${origin
-          .split('*')
-          .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-          .join('[a-zA-Z0-9-]+')}$`,
-      )
+          `^${origin
+            .split('*')
+            .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+            .join('[a-zA-Z0-9-]+')}$`,
+        )
       : origin;
 
   const allowedOrigins = (
     process.env.ALLOWED_ORIGINS
       ? process.env.ALLOWED_ORIGINS.split(',')
-        .map((origin) => origin.trim())
-        .filter((origin) => origin.length > 0)
+          .map((origin) => origin.trim())
+          .filter((origin) => origin.length > 0)
       : ['http://localhost:3010']
   ).map(toOriginMatcher);
 
