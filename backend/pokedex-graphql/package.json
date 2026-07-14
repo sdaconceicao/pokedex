@@ -45,11 +45,9 @@
     "concurrently": "^8.2.2",
     "eslint": "^9.33.0",
     "eslint-plugin-import": "^2.32.0",
-    "graphql-eslint": "^1.5.2",
     "msw": "^2.10.5",
     "nodemon": "^3.0.0",
     "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
     "tsx": "^4.20.4",
     "typescript": "^7.0.2",
     "vitest": "^3.2.4"

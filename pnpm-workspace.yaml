@@ -2,6 +2,13 @@ packages:
   - "backend/*"
   - "frontend"
 
+overrides:
+  # glob <13 is deprecated by its maintainer; force the deprecated
+  # v10 (pulled in by typeorm & test-exclude) up to the version already
+  # present elsewhere in the tree. Syntax (** + brace expansion) is
+  # unchanged across v10->v13, so typeorm entity/migration globs are safe.
+  "glob@10": "13.0.6"
+
 allowBuilds:
   "@apollo/protobufjs": true
   "@parcel/watcher": true
