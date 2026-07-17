@@ -1,8 +1,10 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Menu01, XClose } from "@untitled-ui/icons-react";
+import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import AuthButtons from "@/components/AuthButtons";
+import Logo from "@/components/Logo";
 import { SearchBar } from "@/components/Search";
 import Navbar from "@/layout/Navbar";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
@@ -60,21 +62,9 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
           >
             <Menu01 width={22} height={22} />
           </button>
-          <span className={styles.logo}>
-            <svg
-              className={styles.logoMark}
-              viewBox="0 0 100 100"
-              width="24"
-              height="24"
-              aria-hidden="true"
-            >
-              <circle cx="50" cy="50" r="44" fill="#fff" stroke="currentColor" strokeWidth="10" />
-              <path d="M6 50a44 44 0 0 1 88 0Z" fill="currentColor" />
-              <path d="M6 50h88" stroke="currentColor" strokeWidth="10" />
-              <circle cx="50" cy="50" r="15" fill="#fff" stroke="currentColor" strokeWidth="8" />
-            </svg>
-            Pokédex
-          </span>
+          <Link href="/">
+            <Logo />
+          </Link>
         </div>
 
         <div className={styles.headerSearch}>

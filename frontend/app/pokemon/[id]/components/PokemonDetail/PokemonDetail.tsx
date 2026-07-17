@@ -18,7 +18,7 @@ export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
   return (
     <div className={styles.container}>
       <div className={styles.backButton}>
-        <BackButton>← Back to Pokédex</BackButton>
+        <BackButton>← Back to Results</BackButton>
       </div>
 
       {/* ── Hero ─────────────────────────────────── */}
