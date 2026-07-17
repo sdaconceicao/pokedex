@@ -9,10 +9,10 @@ export interface Update {
 
 export const UPDATES: Update[] = [
   {
-    date: "2025-08-24",
-    label: "Aug 24, 2025",
+    date: "2026-07-10",
+    label: "Jul 10, 2026",
     tag: "New",
-    title: "Trainer accounts",
-    body: "Create an account and sign in from the app bar to make the Pokédex your own.",
+    title: "Poképendium",
+    body: "A new way to explore the Pokémon universe. Search for every Pokémon by name, browse by type, region, or regional Pokedex, and dive into full stats, abilities, and special forms.",
   },
 ];
