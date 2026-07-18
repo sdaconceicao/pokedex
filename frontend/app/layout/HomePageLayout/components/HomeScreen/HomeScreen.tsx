@@ -1,76 +1,43 @@
 "use client";
 
-import {
-  BarChart01,
-  Bell01,
-  Compass01,
-  FilterFunnel01,
-  SearchLg,
-  Stars02,
-  UserPlus01,
-} from "@untitled-ui/icons-react";
+import { Bell01, Compass01, UserPlus01 } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { useCallback, useRef } from "react";
 import Button from "@/components/Button";
 import PokeballMark from "@/components/PokeballMark";
 import TypeTag from "@/components/TypeTag";
 import { useIsAuthenticated } from "@/hooks/useAuth";
-import FeatureTile, {
-  type FeatureTileAccent,
-} from "@/layout/HomePageLayout/components/FeatureTile";
+import FeatureTile from "@/layout/HomePageLayout/components/FeatureTile";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import type { PokemonType } from "@/types";
 import styles from "./HomeScreen.module.css";
 import { UPDATES } from "./updates";
-
-const FEATURES: Array<{
-  icon: React.ReactNode;
-  accent: FeatureTileAccent;
-  title: string;
-  body: string;
-}> = [
-  {
-    icon: <SearchLg />,
-    accent: "red",
-    title: "Search instantly",
-    body: "Type a name, or just part of one, into the search bar above to jump straight to any Pokémon.",
-  },
-  {
-    icon: <FilterFunnel01 />,
-    accent: "blue",
-    title: "Browse your way",
-    body: "Filter the full list of Pokémon by type, region, or regional Pokédex from the sidebar. ",
-  },
-  {
-    icon: <Stars02 />,
-    accent: "purple",
-    title: "Discover special forms",
-    body: "Find all Gigantamax and Mega Evolutions in one place.",
-  },
-  {
-    icon: <BarChart01 />,
-    accent: "green",
-    title: "Go deep on stats",
-    body: "Open any Pokémon to see HP, Attack, and Defense, plus abilities.",
-  },
-];
+import { FEATURES } from "./features";
 
 interface HomeScreenProps {
   types: PokemonType[];
 }
 
-export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) => {
+export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
+  types,
+}) => {
   const { isAuthenticated } = useIsAuthenticated();
   const { openSignUp } = useAuthModal();
   const typesSectionRef = useRef<HTMLElement>(null);
   const updatesSectionRef = useRef<HTMLElement>(null);
 
   const scrollToTypes = useCallback(() => {
-    typesSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    typesSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }, []);
 
   const scrollToUpdates = useCallback(() => {
-    updatesSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    updatesSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }, []);
 
   return (
@@ -80,32 +47,54 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
         <p className={styles.eyebrow}>Your Pokémon companion</p>
         <h1 className={styles.heroTitle}>
           Every Pokémon.
-          <span className={styles.heroTitleAccent}>One Pokédex.</span>
+          <span className={styles.heroTitleAccent}>The Poképendium.</span>
         </h1>
         <p className={styles.heroSubtitle}>
-          Search for every Pokémon by name, browse by type, region, or regional Pokedex, and dive
-          into full stats, abilities, and special forms.
+          Search for every Pokémon by name, browse by type, region, or regional
+          Pokedex, and see there full stats, abilities, and special forms.
         </p>
         <div className={styles.heroActions}>
           {isAuthenticated ? (
             <Button size="lg" onClick={scrollToTypes}>
-              <Compass01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
+              <Compass01
+                width={18}
+                height={18}
+                className={styles.ctaIcon}
+                aria-hidden="true"
+              />
               Start exploring
             </Button>
           ) : (
             <Button size="lg" onClick={openSignUp}>
-              <UserPlus01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
+              <UserPlus01
+                width={18}
+                height={18}
+                className={styles.ctaIcon}
+                aria-hidden="true"
+              />
               Sign Up today
             </Button>
           )}
-          <button type="button" className={styles.heroSecondaryCta} onClick={scrollToUpdates}>
-            <Bell01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
+          <button
+            type="button"
+            className={styles.heroSecondaryCta}
+            onClick={scrollToUpdates}
+          >
+            <Bell01
+              width={18}
+              height={18}
+              className={styles.ctaIcon}
+              aria-hidden="true"
+            />
             What&apos;s new
           </button>
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="home-features-heading">
+      <section
+        className={styles.section}
+        aria-labelledby="home-features-heading"
+      >
         <p className={styles.sectionEyebrow}>How it works</p>
         <h2 id="home-features-heading" className={styles.sectionTitle}>
           Find your Pokémon
@@ -161,7 +150,9 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
                   <h3 className={styles.updateTitle}>{update.title}</h3>
                   <span
                     className={`${styles.updateTag} ${
-                      update.tag === "New" ? styles.updateTagNew : styles.updateTagImproved
+                      update.tag === "New"
+                        ? styles.updateTagNew
+                        : styles.updateTagImproved
                     }`}
                   >
                     {update.tag}

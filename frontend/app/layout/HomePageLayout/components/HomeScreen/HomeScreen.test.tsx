@@ -36,12 +36,13 @@ describe("HomeScreen", () => {
     render(<HomeScreen types={MOCK_TYPES} />);
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Every Pokémon.One Pokédex.",
+      "Every Pokémon.The Poképendium.",
     );
     expect(
       screen.getByText((content, element) => {
         const hasText = (node: Element) =>
-          node.textContent?.startsWith("Search for every Pokémon by name") ?? false;
+          node.textContent?.startsWith("Search for every Pokémon by name") ??
+          false;
         const elementHasText = element ? hasText(element) : false;
         return (
           elementHasText &&
@@ -72,7 +73,9 @@ describe("HomeScreen", () => {
     });
     render(<HomeScreen types={MOCK_TYPES} />);
 
-    expect(screen.queryByRole("button", { name: "Sign Up today" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Sign Up today" }),
+    ).not.toBeInTheDocument();
 
     const cta = screen.getByRole("button", { name: "Start exploring" });
     fireEvent.click(cta);
@@ -112,13 +115,17 @@ describe("HomeScreen", () => {
   it("renders no type links when given an empty types list", () => {
     render(<HomeScreen types={[]} />);
 
-    expect(screen.queryAllByRole("link", { name: /Browse .+ Pokémon/ })).toHaveLength(0);
+    expect(
+      screen.queryAllByRole("link", { name: /Browse .+ Pokémon/ }),
+    ).toHaveLength(0);
   });
 
   it("renders the latest updates", () => {
     render(<HomeScreen types={MOCK_TYPES} />);
 
-    expect(screen.getByRole("heading", { name: "Latest updates" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Latest updates" }),
+    ).toBeInTheDocument();
     for (const update of UPDATES) {
       expect(screen.getByText(update.title)).toBeInTheDocument();
     }

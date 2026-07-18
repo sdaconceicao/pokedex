@@ -18,9 +18,8 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["app/*"]
+      "@/*": ["./app/*"]
     }
   },
   "include": [
@@ -34,8 +33,6 @@
   ],
   "exclude": [
     "node_modules",
-    "**/*.test.ts",
-    "**/*.test.tsx",
     "vitest.config.ts",
     "vitest.setup.ts",
     "test/**/*"
