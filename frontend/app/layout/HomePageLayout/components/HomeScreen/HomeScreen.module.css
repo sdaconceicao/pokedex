@@ -8,8 +8,7 @@
   --home-red: #d32b2b;
   position: relative;
   overflow: hidden;
-  max-width: 1080px;
-  margin: 0 auto;
+  width: 100%;
   background: #ffffff;
   color: var(--home-foreground);
   border: 1px solid var(--border-subtle);
@@ -23,8 +22,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
   padding: clamp(1rem, 3vw, 2rem) 0 clamp(2rem, 4vw, 3rem);
 }
 
@@ -58,7 +57,12 @@
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #d32b2b 0 45%, #ffffff 45% 58%, #f6f6f8 58% 100%);
+  background: linear-gradient(
+    180deg,
+    #d32b2b 0 45%,
+    #ffffff 45% 58%,
+    #f6f6f8 58% 100%
+  );
   box-shadow: inset 0 0 0 1px rgba(179, 36, 36, 0.45);
 }
 
@@ -88,7 +92,7 @@
 .heroActions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.875rem;
   margin-top: 2rem;
 }

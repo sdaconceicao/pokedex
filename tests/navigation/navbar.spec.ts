@@ -15,12 +15,12 @@ test.describe("Navbar", () => {
     await expect(page).toHaveURL(/\?type=grass/);
 
     await expect(
-      page.getByRole("heading", { level: 2 }).filter({ hasText: /grass/i })
+      page.getByRole("heading", { level: 2 }).filter({ hasText: /grass/i }),
     ).toBeVisible();
 
     const bulbasaurLink = page
       .getByRole("link")
-      .filter({ hasText: /^bulbasaur$/i })
+      .filter({ hasText: /bulbasaur/i })
       .first();
     await expect(bulbasaurLink).toBeVisible();
     await bulbasaurLink.click();
@@ -28,13 +28,15 @@ test.describe("Navbar", () => {
     await page.waitForLoadState("networkidle");
 
     await expect(
-      page.getByRole("heading", { level: 1 }).filter({ hasText: /bulbasaur/i })
+      page.getByRole("heading", { level: 1 }).filter({ hasText: /bulbasaur/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { level: 2 }).filter({ hasText: /Base Stats/i })
+      page
+        .getByRole("heading", { level: 2 })
+        .filter({ hasText: /Base Stats/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { level: 2 }).filter({ hasText: /Abilities/i })
+      page.getByRole("heading", { level: 2 }).filter({ hasText: /Abilities/i }),
     ).toBeVisible();
   });
 
@@ -58,7 +60,9 @@ test.describe("Navbar", () => {
     await expect(searchInput).toHaveValue("");
 
     await expect(
-      page.getByRole("heading", { level: 2 }).filter({ hasText: /gigantamax/i })
+      page
+        .getByRole("heading", { level: 2 })
+        .filter({ hasText: /gigantamax/i }),
     ).toBeVisible();
   });
 });

@@ -23,7 +23,10 @@ const MOCK_TYPES: PokemonType[] = [
 ];
 
 beforeEach(() => {
-  mockUseIsAuthenticated.mockReturnValue({ isAuthenticated: false, isLoading: false });
+  mockUseIsAuthenticated.mockReturnValue({
+    isAuthenticated: false,
+    isLoading: false,
+  });
   mockOpenSignUp.mockClear();
   Element.prototype.scrollIntoView = vi.fn();
 });
@@ -35,11 +38,26 @@ describe("HomeScreen", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Every Pokémon.One Pokédex.",
     );
-    expect(screen.getByText(/Search for every Pokémon by name/)).toBeInTheDocument();
+    expect(
+      screen.getByText((content, element) => {
+        const hasText = (node: Element) =>
+          node.textContent?.startsWith("Search for every Pokémon by name") ??
+          false;
+        const elementHasText = element ? hasText(element) : false;
+        return (
+          elementHasText &&
+          // Exclude ancestors that also contain the text
+          !Array.from(element?.children ?? []).some((child) => hasText(child))
+        );
+      }),
+    ).toBeInTheDocument();
   });
 
   it("shows a Sign Up CTA that opens the sign up modal when logged out", () => {
-    mockUseIsAuthenticated.mockReturnValue({ isAuthenticated: false, isLoading: false });
+    mockUseIsAuthenticated.mockReturnValue({
+      isAuthenticated: false,
+      isLoading: false,
+    });
     render(<HomeScreen types={MOCK_TYPES} />);
 
     const cta = screen.getByRole("button", { name: "Sign Up today" });
@@ -49,10 +67,15 @@ describe("HomeScreen", () => {
   });
 
   it("shows a Start exploring CTA that scrolls to the types section when logged in", () => {
-    mockUseIsAuthenticated.mockReturnValue({ isAuthenticated: true, isLoading: false });
+    mockUseIsAuthenticated.mockReturnValue({
+      isAuthenticated: true,
+      isLoading: false,
+    });
     render(<HomeScreen types={MOCK_TYPES} />);
 
-    expect(screen.queryByRole("button", { name: "Sign Up today" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Sign Up today" }),
+    ).not.toBeInTheDocument();
 
     const cta = screen.getByRole("button", { name: "Start exploring" });
     fireEvent.click(cta);
@@ -83,20 +106,26 @@ describe("HomeScreen", () => {
     const fireLink = screen.getByRole("link", { name: "Browse fire Pokémon" });
     expect(fireLink).toHaveAttribute("href", "/?type=fire");
 
-    const typeLinks = screen.getAllByRole("link", { name: /Browse .+ Pokémon/ });
+    const typeLinks = screen.getAllByRole("link", {
+      name: /Browse .+ Pokémon/,
+    });
     expect(typeLinks).toHaveLength(MOCK_TYPES.length);
   });
 
   it("renders no type links when given an empty types list", () => {
     render(<HomeScreen types={[]} />);
 
-    expect(screen.queryAllByRole("link", { name: /Browse .+ Pokémon/ })).toHaveLength(0);
+    expect(
+      screen.queryAllByRole("link", { name: /Browse .+ Pokémon/ }),
+    ).toHaveLength(0);
   });
 
   it("renders the latest updates", () => {
     render(<HomeScreen types={MOCK_TYPES} />);
 
-    expect(screen.getByRole("heading", { name: "Latest updates" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Latest updates" }),
+    ).toBeInTheDocument();
     for (const update of UPDATES) {
       expect(screen.getByText(update.title)).toBeInTheDocument();
     }
