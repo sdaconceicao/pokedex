@@ -1,6 +1,10 @@
+import { useMemo } from "react";
 import styles from "./PokemonDetailSkeleton.module.css";
 
 export default function PokemonDetailSkeleton() {
+  const statKeys = useMemo(() => Array.from({ length: 6 }, (_, i) => i), []);
+  const abilityKeys = useMemo(() => Array.from({ length: 3 }, (_, i) => i), []);
+
   return (
     <div className={styles.container}>
       <div className={styles.backButton}>
@@ -26,8 +30,8 @@ export default function PokemonDetailSkeleton() {
       <div className={styles.statsSection}>
         <div className={styles.titleSkeleton}></div>
         <div className={styles.statsGrid}>
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className={styles.statItem}>
+          {statKeys.map((key) => (
+            <div key={key} className={styles.statItem}>
               <div className={styles.statLabelSkeleton}></div>
               <div className={styles.statBarSkeleton}>
                 <div className={styles.statFillSkeleton}></div>
@@ -42,8 +46,8 @@ export default function PokemonDetailSkeleton() {
       <div className={styles.abilitiesSection}>
         <div className={styles.titleSkeleton}></div>
         <div className={styles.abilitiesGrid}>
-          {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className={styles.abilityCard}>
+          {abilityKeys.map((key) => (
+            <div key={key} className={styles.abilityCard}>
               <div className={styles.abilityHeader}>
                 <div className={styles.abilityNameSkeleton}></div>
                 <div className={styles.abilitySlotSkeleton}></div>

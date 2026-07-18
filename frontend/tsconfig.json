@@ -18,9 +18,8 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["app/*"]
+      "@/*": ["./app/*"]
     }
   },
   "include": [
@@ -32,12 +31,5 @@
     "/tmp/nextdist/dev/types/**/*.ts",
     "/tmp/nextdist/dev/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "vitest.config.ts",
-    "vitest.setup.ts",
-    "test/**/*"
-  ]
+  "exclude": ["node_modules", "vitest.config.ts", "vitest.setup.ts", "test/**/*"]
 }

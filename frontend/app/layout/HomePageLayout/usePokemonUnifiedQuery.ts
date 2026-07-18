@@ -20,7 +20,7 @@ export interface UnifiedPokemonQuery {
   page: number;
   setPage: (page: number) => void;
   itemsPerPage: number;
-  shouldShowInstructions: boolean;
+  shouldShowHomeScreen: boolean;
 }
 
 interface Params {
@@ -209,7 +209,7 @@ export function usePokemonUnifiedQuery({
     selectedRegion,
   ]);
 
-  const shouldShowInstructions = useMemo(
+  const shouldShowHomeScreen = useMemo(
     () => !searchQuery && !selectedType && !selectedPokedex && !selectedRegion && !selectedSpecial,
     [searchQuery, selectedType, selectedPokedex, selectedRegion, selectedSpecial],
   );
@@ -223,6 +223,6 @@ export function usePokemonUnifiedQuery({
     page: currentPage,
     setPage: setCurrentPage,
     itemsPerPage,
-    shouldShowInstructions,
+    shouldShowHomeScreen,
   };
 }

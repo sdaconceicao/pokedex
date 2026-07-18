@@ -1,4 +1,5 @@
 import HomePage from "@/layout/HomePageLayout";
+import { getTypes } from "@/providers/NavigationDataProvider";
 
 export default async function Home({
   searchParams,
@@ -11,7 +12,7 @@ export default async function Home({
     q?: string;
   }>;
 }) {
-  const params = await searchParams;
+  const [params, types] = await Promise.all([searchParams, getTypes()]);
   // Keeps the page hydrated on the server, but allows the search params to be updated on the client
 
   return (
@@ -21,6 +22,7 @@ export default async function Home({
       selectedPokedex={params.pokedex}
       selectedRegion={params.region}
       selectedSpecial={params.special}
+      types={types}
     />
   );
 }
