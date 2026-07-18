@@ -18,9 +18,7 @@ interface HomeScreenProps {
   types: PokemonType[];
 }
 
-export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
-  types,
-}) => {
+export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) => {
   const { isAuthenticated } = useIsAuthenticated();
   const { openSignUp } = useAuthModal();
   const typesSectionRef = useRef<HTMLElement>(null);
@@ -50,51 +48,29 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
           <span className={styles.heroTitleAccent}>The Poképendium.</span>
         </h1>
         <p className={styles.heroSubtitle}>
-          Search for every Pokémon by name, browse by type, region, or regional
-          Pokedex, and see there full stats, abilities, and special forms.
+          Search for every Pokémon by name, browse by type, region, or regional Pokedex, and see
+          there full stats, abilities, and special forms.
         </p>
         <div className={styles.heroActions}>
           {isAuthenticated ? (
             <Button size="lg" onClick={scrollToTypes}>
-              <Compass01
-                width={18}
-                height={18}
-                className={styles.ctaIcon}
-                aria-hidden="true"
-              />
+              <Compass01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
               Start exploring
             </Button>
           ) : (
             <Button size="lg" onClick={openSignUp}>
-              <UserPlus01
-                width={18}
-                height={18}
-                className={styles.ctaIcon}
-                aria-hidden="true"
-              />
+              <UserPlus01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
               Sign Up today
             </Button>
           )}
-          <button
-            type="button"
-            className={styles.heroSecondaryCta}
-            onClick={scrollToUpdates}
-          >
-            <Bell01
-              width={18}
-              height={18}
-              className={styles.ctaIcon}
-              aria-hidden="true"
-            />
+          <button type="button" className={styles.heroSecondaryCta} onClick={scrollToUpdates}>
+            <Bell01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
             What&apos;s new
           </button>
         </div>
       </section>
 
-      <section
-        className={styles.section}
-        aria-labelledby="home-features-heading"
-      >
+      <section className={styles.section} aria-labelledby="home-features-heading">
         <p className={styles.sectionEyebrow}>How it works</p>
         <h2 id="home-features-heading" className={styles.sectionTitle}>
           Find your Pokémon
@@ -150,9 +126,7 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
                   <h3 className={styles.updateTitle}>{update.title}</h3>
                   <span
                     className={`${styles.updateTag} ${
-                      update.tag === "New"
-                        ? styles.updateTagNew
-                        : styles.updateTagImproved
+                      update.tag === "New" ? styles.updateTagNew : styles.updateTagImproved
                     }`}
                   >
                     {update.tag}
