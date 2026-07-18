@@ -10,9 +10,9 @@ import { useIsAuthenticated } from "@/hooks/useAuth";
 import FeatureTile from "@/layout/HomePageLayout/components/FeatureTile";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import type { PokemonType } from "@/types";
+import { FEATURES } from "./features";
 import styles from "./HomeScreen.module.css";
 import { UPDATES } from "./updates";
-import { FEATURES } from "./features";
 
 interface HomeScreenProps {
   types: PokemonType[];
