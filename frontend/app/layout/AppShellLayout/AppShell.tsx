@@ -59,6 +59,7 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
             onClick={() => setSidebarOpen((v) => !v)}
             aria-label={sidebarOpen ? "Close menu" : "Open menu"}
             aria-expanded={sidebarOpen}
+            type="button"
           >
             <Menu01 width={22} height={22} />
           </button>
@@ -103,6 +104,7 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
                 className={styles.drawerClose}
                 onClick={() => setSidebarOpen(false)}
                 aria-label="Close menu"
+                type="button"
               >
                 <XClose width={18} height={18} />
               </button>
@@ -119,6 +121,7 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
           onClick={() => setSidebarOpen((v) => !v)}
           aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
           aria-expanded={sidebarOpen}
+          type="button"
         >
           {sidebarOpen ? (
             <ChevronLeft width={14} height={14} />

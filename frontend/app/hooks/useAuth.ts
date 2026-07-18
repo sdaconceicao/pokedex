@@ -46,7 +46,11 @@ export function useAuth() {
   });
 
   // Register mutation
-  const registerMutation = useMutation<RegisterResponse, Error, RegisterCredentials>({
+  const registerMutation = useMutation<
+    RegisterResponse,
+    Error,
+    RegisterCredentials
+  >({
     mutationFn: authApi.register,
     onSuccess: (data: RegisterResponse) => {
       setStoredToken(data.access_token);

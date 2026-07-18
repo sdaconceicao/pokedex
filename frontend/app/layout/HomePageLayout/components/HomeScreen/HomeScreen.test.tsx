@@ -39,7 +39,7 @@ describe("HomeScreen", () => {
       "Every Pokémon.The Poképendium.",
     );
     expect(
-      screen.getByText((content, element) => {
+      screen.getByText((_, element) => {
         const hasText = (node: Element) =>
           node.textContent?.startsWith("Search for every Pokémon by name") ?? false;
         const elementHasText = element ? hasText(element) : false;
