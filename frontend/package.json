@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "tsc": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json"
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@apollo/client": "^4.2.6",

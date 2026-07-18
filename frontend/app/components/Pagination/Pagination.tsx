@@ -76,9 +76,9 @@ export default function Pagination({
         </Button>
 
         <div className={styles.pageNumbers}>
-          {pageNumbers.map((page, index) => (
+          {pageNumbers.map((page) => (
             <Button
-              key={index}
+              key={page}
               onClick={() => typeof page === "number" && handlePageClick(page)}
               variant={page === currentPage ? "primary" : "outline"}
               size="sm"

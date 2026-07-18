@@ -1,0 +1,59 @@
+.featureCard {
+  background: var(--home-surface);
+  border: 1px solid var(--home-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.featureHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.featureIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+}
+
+.featureIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.red {
+  background: #fdeceb;
+  color: #c62828;
+}
+
+.blue {
+  background: #e8f1fd;
+  color: #1e6fd9;
+}
+
+.purple {
+  background: #f3ecfd;
+  color: #7c3aed;
+}
+
+.green {
+  background: #e7f6ec;
+  color: #1f9d55;
+}
+
+.featureTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.featureBody {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--home-muted);
+}

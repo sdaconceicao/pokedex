@@ -2,28 +2,31 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Pagination from "@/components/Pagination";
-import PokemonInstructions from "@/layout/HomePageLayout/components/PokemonInstructions";
+import HomeScreen from "@/layout/HomePageLayout/components/HomeScreen";
 import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
-import styles from "./HomePageLayout.module.css";
+import type { PokemonType } from "@/types";
+import styles from "./AppLayout.module.css";
 import { usePokemonUnifiedQuery } from "./usePokemonUnifiedQuery";
 
-interface HomePageProps {
+interface AppLayoutProps {
   searchQuery?: string;
   selectedType?: string;
   selectedPokedex?: string;
   selectedSpecial?: string;
   selectedRegion?: string;
+  types: PokemonType[];
 }
 
-export default function HomePage({
+export default function AppLayout({
   searchQuery,
   selectedType,
   selectedPokedex,
   selectedSpecial,
   selectedRegion,
-}: HomePageProps) {
+  types,
+}: AppLayoutProps) {
   const headerRef = useRef<HTMLHeadingElement>(null);
-  const { loading, data, title, page, setPage, itemsPerPage, shouldShowInstructions } =
+  const { loading, data, title, page, setPage, itemsPerPage, shouldShowHomeScreen } =
     usePokemonUnifiedQuery({
       searchQuery,
       selectedType,
@@ -49,8 +52,8 @@ export default function HomePage({
     [setPage],
   );
 
-  if (shouldShowInstructions) {
-    return <PokemonInstructions />;
+  if (shouldShowHomeScreen) {
+    return <HomeScreen types={types} />;
   }
 
   return (

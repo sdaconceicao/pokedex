@@ -1,1 +1,1 @@
-export { default } from "./HomePageLayout";
+export { default } from "./AppLayout";
