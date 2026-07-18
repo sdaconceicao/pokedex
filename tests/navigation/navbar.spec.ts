@@ -7,7 +7,7 @@ test.describe("Navbar", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    const grassTypeLink = page.getByRole("link", { name: /grass/i });
+    const grassTypeLink = page.getByRole("link", { name: /^Grass \(\d+\)/ });
     await expect(grassTypeLink).toBeVisible();
     await grassTypeLink.click();
 
@@ -49,7 +49,7 @@ test.describe("Navbar", () => {
     const searchInput = page.getByPlaceholder("Search Pokemon...");
     await expect(searchInput).toHaveValue("");
 
-    const gigantamaxLink = page.getByRole("link", { name: /gigantamax/i });
+    const gigantamaxLink = page.getByRole("link", { name: /^Gigantamax$/ });
     await expect(gigantamaxLink).toBeVisible();
     await gigantamaxLink.click();
 
