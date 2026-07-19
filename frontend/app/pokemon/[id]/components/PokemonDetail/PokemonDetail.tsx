@@ -3,6 +3,8 @@ import BackButton from "@/components/BackButton";
 import PokemonTypePill from "@/components/PokemonTypePill";
 import type { Ability, Pokemon } from "@/types";
 import PokemonAbility from "../PokemonAbility";
+import PokemonEvolution from "../PokemonEvolution";
+import { hasEvolutions } from "../PokemonEvolution/PokemonEvolution.utils";
 import PokemonStat from "../PokemonStat";
 
 import styles from "./PokemonDetail.module.css";
@@ -71,6 +73,14 @@ export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
           ))}
         </div>
       </section>
+
+      {/* ── Evolution ────────────────────────────── */}
+      {pokemon.evolution && hasEvolutions(pokemon.evolution) && (
+        <section className={`${styles.evolutionSection} ${typeClass}`}>
+          <h2 className={styles.sectionTitle}>Evolution</h2>
+          <PokemonEvolution evolution={pokemon.evolution} currentId={String(pokemon.id)} />
+        </section>
+      )}
     </div>
   );
 }

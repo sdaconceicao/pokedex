@@ -1,6 +1,7 @@
 import {
   PokemonEntity,
   PokemonAbility,
+  EvolutionDetail,
 } from "../datasources/pokemon-api.types";
 import { AbilityLite } from "../types";
 import {
@@ -10,6 +11,9 @@ import {
   getPokemonStats,
   convertPokemonEntityToPokemon,
   convertAbilityLiteToAbility,
+  getIdFromUrl,
+  getEvolutionDetail,
+  toPokemonIndex,
 } from "./pokemon";
 
 describe("getPokemonAbilitiesLite", () => {
@@ -1209,5 +1213,130 @@ describe("convertAbilityLiteToAbility", () => {
 
     expect(result.slot).toBe(5);
     expect(typeof result.slot).toBe("number");
+  });
+});
+
+describe("getIdFromUrl", () => {
+  it("should extract the id from a url with a trailing slash", () => {
+    expect(getIdFromUrl("https://pokeapi.co/api/v2/pokemon-species/1/")).toBe(
+      "1"
+    );
+  });
+
+  it("should extract the id from a url without a trailing slash", () => {
+    expect(getIdFromUrl("https://pokeapi.co/api/v2/pokemon-species/25")).toBe(
+      "25"
+    );
+  });
+
+  it("should extract the id from an evolution-chain url", () => {
+    expect(getIdFromUrl("https://pokeapi.co/api/v2/evolution-chain/67/")).toBe(
+      "67"
+    );
+  });
+
+  it("should return an empty string for an empty url", () => {
+    expect(getIdFromUrl("")).toBe("");
+  });
+});
+
+describe("getEvolutionDetail", () => {
+  it("should extract min level and trigger from a level-up evolution", () => {
+    const details: EvolutionDetail[] = [
+      {
+        min_level: 16,
+        trigger: { name: "level-up", url: "" },
+        item: null,
+      },
+    ];
+
+    expect(getEvolutionDetail(details)).toEqual({
+      minLevel: 16,
+      trigger: "level-up",
+      item: null,
+    });
+  });
+
+  it("should extract the item from a use-item evolution", () => {
+    const details: EvolutionDetail[] = [
+      {
+        min_level: null,
+        trigger: { name: "use-item", url: "" },
+        item: { name: "water-stone", url: "" },
+      },
+    ];
+
+    expect(getEvolutionDetail(details)).toEqual({
+      minLevel: null,
+      trigger: "use-item",
+      item: "water-stone",
+    });
+  });
+
+  it("should return null fields for the base form (empty details)", () => {
+    expect(getEvolutionDetail([])).toEqual({
+      minLevel: null,
+      trigger: null,
+      item: null,
+    });
+  });
+
+  it("should use only the first detail when several are present", () => {
+    const details: EvolutionDetail[] = [
+      {
+        min_level: 30,
+        trigger: { name: "level-up", url: "" },
+        item: null,
+      },
+      {
+        min_level: null,
+        trigger: { name: "use-item", url: "" },
+        item: { name: "sun-stone", url: "" },
+      },
+    ];
+
+    expect(getEvolutionDetail(details)).toEqual({
+      minLevel: 30,
+      trigger: "level-up",
+      item: null,
+    });
+  });
+});
+
+describe("toPokemonIndex", () => {
+  it("builds an index entry from a resource with a trailing slash", () => {
+    expect(
+      toPokemonIndex({
+        name: "bulbasaur",
+        url: "https://pokeapi.co/api/v2/pokemon/1/",
+      })
+    ).toEqual({ id: "1", name: "bulbasaur", number: 1 });
+  });
+
+  it("builds an index entry from a species resource without a trailing slash", () => {
+    expect(
+      toPokemonIndex({
+        name: "pikachu",
+        url: "https://pokeapi.co/api/v2/pokemon-species/25",
+      })
+    ).toEqual({ id: "25", name: "pikachu", number: 25 });
+  });
+
+  it("derives a numeric dex number usable for sorting", () => {
+    const entries = [
+      { name: "venusaur", url: "https://pokeapi.co/api/v2/pokemon/3/" },
+      { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/1/" },
+      { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon/2/" },
+    ];
+
+    const sorted = entries
+      .map(toPokemonIndex)
+      .sort((a, b) => a.number - b.number);
+
+    expect(sorted.map((p) => p.name)).toEqual([
+      "bulbasaur",
+      "ivysaur",
+      "venusaur",
+    ]);
   });
 });

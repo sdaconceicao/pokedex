@@ -2,6 +2,8 @@ import { RESTDataSource } from "@apollo/datasource-rest";
 import {
   Ability,
   AbilityLite,
+  EvolutionChain,
+  EvolutionNode,
   Pokemon,
   PokemonPokedex,
   PokemonRegion,
@@ -13,6 +15,9 @@ import {
   PokemonIndex,
   PokemonAbility,
   PokemonEntity,
+  PokemonSpecies,
+  EvolutionChainResponse,
+  ChainLink,
   TypeResponse,
   Region,
   Pokedex,
@@ -22,6 +27,9 @@ import {
 import {
   convertAbilityLiteToAbility,
   convertPokemonEntityToPokemon,
+  getEvolutionDetail,
+  getIdFromUrl,
+  toPokemonIndex,
 } from "../utils/pokemon.js";
 import { logger } from "../logger.js";
 
@@ -29,13 +37,6 @@ export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
   private static pokemonIndex: PokemonIndex[] = [];
   private static isIndexLoaded = false;
-
-  // Retrieve id from NamedAPIResource url value
-  getIndexFromUrl = (entry: NamedAPIResource) => {
-    const urlParts = entry.url.replace(/\/+$/, "").split("/");
-    const number = parseInt(urlParts[urlParts.length - 1], 10);
-    return number;
-  };
 
   // Request name/ids of all pokemon for search
   async loadPokemonIndex(): Promise<void> {
@@ -47,14 +48,7 @@ export class PokemonAPI extends RESTDataSource {
       const entries = response.results;
 
       PokemonAPI.pokemonIndex = entries
-        .map((entry: NamedAPIResource) => {
-          const number = this.getIndexFromUrl(entry);
-          return {
-            id: number.toString(),
-            name: entry.name,
-            number,
-          };
-        })
+        .map(toPokemonIndex)
         .sort((a: PokemonIndex, b: PokemonIndex) => a.number - b.number);
 
       PokemonAPI.isIndexLoaded = true;
@@ -92,6 +86,43 @@ export class PokemonAPI extends RESTDataSource {
     });
   }
 
+  getPokemonSpecies(id: string): Promise<PokemonSpecies> {
+    return this.get<PokemonSpecies>(`pokemon-species/${id}`);
+  }
+
+  // Build a single evolution node (id, name, image + how it evolves), then
+  // recurse into its branches. Uses getPokemon so node images reuse the same
+  // sprite/fallback logic as the rest of the app.
+  private async buildEvolutionNode(link: ChainLink): Promise<EvolutionNode> {
+    const speciesId = getIdFromUrl(link.species.url);
+    const [pokemon, evolvesTo] = await Promise.all([
+      this.getPokemon(speciesId),
+      Promise.all(link.evolves_to.map((next) => this.buildEvolutionNode(next))),
+    ]);
+
+    return {
+      id: pokemon.id,
+      name: pokemon.name,
+      image: pokemon.image,
+      ...getEvolutionDetail(link.evolution_details),
+      evolvesTo,
+    };
+  }
+
+  // Resolve a Pokemon's full evolution chain: pokemon -> species ->
+  // evolution chain -> a tree of nodes with links back to each Pokemon.
+  async getEvolutionForPokemon(id: string): Promise<EvolutionChain> {
+    const species = await this.getPokemonSpecies(id);
+    const chainResponse = await this.get<EvolutionChainResponse>(
+      species.evolution_chain.url
+    );
+
+    return {
+      id: chainResponse.id.toString(),
+      chain: await this.buildEvolutionNode(chainResponse.chain),
+    };
+  }
+
   // Fast partial string search on name
   getPokemonByName(
     query: string,
@@ -126,14 +157,9 @@ export class PokemonAPI extends RESTDataSource {
     logger.info(`Fetching Pokemon from pokedex: ${pokedex}`);
     return this.get<Pokedex>(`pokedex/${pokedex}`)
       .then((data) => {
-        const results = data.pokemon_entries.map((entry) => {
-          const number = this.getIndexFromUrl(entry.pokemon_species);
-          return {
-            name: entry.pokemon_species.name,
-            id: number.toString(),
-            number,
-          };
-        });
+        const results = data.pokemon_entries.map((entry) =>
+          toPokemonIndex(entry.pokemon_species)
+        );
         return results;
       })
       .catch((error) => {
@@ -192,14 +218,9 @@ export class PokemonAPI extends RESTDataSource {
     logger.info(`Fetching Pokemon of type: ${type}`);
     return this.get<TypeResponse>(`type/${type}`)
       .then((data) => {
-        const results = data.pokemon.map((result) => {
-          const number = this.getIndexFromUrl(result.pokemon);
-          return {
-            name: result.pokemon.name,
-            id: number.toString(),
-            number,
-          };
-        });
+        const results = data.pokemon.map((result) =>
+          toPokemonIndex(result.pokemon)
+        );
         return results;
       })
       .catch((error) => {

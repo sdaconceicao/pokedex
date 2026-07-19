@@ -1,3 +1,8 @@
+import type {
+  EvolutionChainResponse,
+  PokemonSpecies,
+} from "../datasources/pokemon-api.types.js";
+
 export const pokemonList: {
   count: number;
   next: string | null;
@@ -377,6 +382,65 @@ export const pokemonEntity: {
       },
     },
   ],
+};
+
+export const pokemonSpecies: PokemonSpecies = {
+  id: 1,
+  name: "bulbasaur",
+  evolution_chain: {
+    url: "https://pokeapi.co/api/v2/evolution-chain/1/",
+  },
+};
+
+export const evolutionChain: EvolutionChainResponse = {
+  id: 1,
+  chain: {
+    is_baby: false,
+    species: {
+      name: "bulbasaur",
+      url: "https://pokeapi.co/api/v2/pokemon-species/1/",
+    },
+    evolution_details: [],
+    evolves_to: [
+      {
+        is_baby: false,
+        species: {
+          name: "ivysaur",
+          url: "https://pokeapi.co/api/v2/pokemon-species/2/",
+        },
+        evolution_details: [
+          {
+            min_level: 16,
+            item: null,
+            trigger: {
+              name: "level-up",
+              url: "https://pokeapi.co/api/v2/evolution-trigger/1/",
+            },
+          },
+        ],
+        evolves_to: [
+          {
+            is_baby: false,
+            species: {
+              name: "venusaur",
+              url: "https://pokeapi.co/api/v2/pokemon-species/3/",
+            },
+            evolution_details: [
+              {
+                min_level: 32,
+                item: null,
+                trigger: {
+                  name: "level-up",
+                  url: "https://pokeapi.co/api/v2/evolution-trigger/1/",
+                },
+              },
+            ],
+            evolves_to: [],
+          },
+        ],
+      },
+    ],
+  },
 };
 
 export const pokemonAbility = {
