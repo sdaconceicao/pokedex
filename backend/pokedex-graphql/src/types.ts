@@ -31,10 +31,28 @@ export type AbilityLite = {
   url: Scalars['String']['output'];
 };
 
+export type EvolutionChain = {
+  __typename?: 'EvolutionChain';
+  chain: EvolutionNode;
+  id: Scalars['ID']['output'];
+};
+
+export type EvolutionNode = {
+  __typename?: 'EvolutionNode';
+  evolvesTo: Array<EvolutionNode>;
+  id: Scalars['ID']['output'];
+  image: Scalars['String']['output'];
+  item?: Maybe<Scalars['String']['output']>;
+  minLevel?: Maybe<Scalars['Int']['output']>;
+  name: Scalars['String']['output'];
+  trigger?: Maybe<Scalars['String']['output']>;
+};
+
 export type Pokemon = {
   __typename?: 'Pokemon';
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
+  evolution?: Maybe<EvolutionChain>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
@@ -202,6 +220,8 @@ export type ResolversTypes = {
   Ability: ResolverTypeWrapper<Ability>;
   AbilityLite: ResolverTypeWrapper<AbilityLite>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  EvolutionChain: ResolverTypeWrapper<EvolutionChain>;
+  EvolutionNode: ResolverTypeWrapper<EvolutionNode>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
@@ -219,6 +239,8 @@ export type ResolversParentTypes = {
   Ability: Ability;
   AbilityLite: AbilityLite;
   Boolean: Scalars['Boolean']['output'];
+  EvolutionChain: EvolutionChain;
+  EvolutionNode: EvolutionNode;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Pokemon: Pokemon;
@@ -250,9 +272,27 @@ export type AbilityLiteResolvers<ContextType = DataSourceContext, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type EvolutionChainResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['EvolutionChain'] = ResolversParentTypes['EvolutionChain']> = {
+  chain?: Resolver<ResolversTypes['EvolutionNode'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EvolutionNodeResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['EvolutionNode'] = ResolversParentTypes['EvolutionNode']> = {
+  evolvesTo?: Resolver<Array<ResolversTypes['EvolutionNode']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  minLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  trigger?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
   abilities?: Resolver<Maybe<Array<ResolversTypes['Ability']>>, ParentType, ContextType>;
   abilitiesLite?: Resolver<Array<ResolversTypes['AbilityLite']>, ParentType, ContextType>;
+  evolution?: Resolver<Maybe<ResolversTypes['EvolutionChain']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -311,6 +351,8 @@ export type StatsResolvers<ContextType = DataSourceContext, ParentType extends R
 export type Resolvers<ContextType = DataSourceContext> = {
   Ability?: AbilityResolvers<ContextType>;
   AbilityLite?: AbilityLiteResolvers<ContextType>;
+  EvolutionChain?: EvolutionChainResolvers<ContextType>;
+  EvolutionNode?: EvolutionNodeResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   PokemonList?: PokemonListResolvers<ContextType>;
   PokemonPokedex?: PokemonPokedexResolvers<ContextType>;

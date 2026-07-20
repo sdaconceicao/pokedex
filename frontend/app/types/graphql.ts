@@ -26,9 +26,25 @@ export type AbilityLite = {
   url: Scalars['String']['output'];
 };
 
+export type EvolutionChain = {
+  chain: EvolutionNode;
+  id: Scalars['ID']['output'];
+};
+
+export type EvolutionNode = {
+  evolvesTo: Array<EvolutionNode>;
+  id: Scalars['ID']['output'];
+  image: Scalars['String']['output'];
+  item?: Maybe<Scalars['String']['output']>;
+  minLevel?: Maybe<Scalars['Int']['output']>;
+  name: Scalars['String']['output'];
+  trigger?: Maybe<Scalars['String']['output']>;
+};
+
 export type Pokemon = {
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
+  evolution?: Maybe<EvolutionChain>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];

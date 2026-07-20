@@ -1,0 +1,122 @@
+.chain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem;
+}
+
+/* A node plus everything it evolves into */
+.branch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* A single Pokemon card / link */
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--foreground);
+  min-width: 120px;
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+a.stage:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -8px var(--type-shadow, rgba(0, 0, 0, 0.2));
+  border-color: var(--type-accent, var(--layout-primary-background));
+}
+
+/* The Pokemon currently being viewed */
+.current {
+  border-color: var(--type-accent, var(--layout-primary-background));
+  background: color-mix(
+    in srgb,
+    var(--type-accent, var(--layout-primary-background)) 10%,
+    var(--surface)
+  );
+}
+
+.stageImageWrap {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--type-accent, #888) 8%, transparent);
+}
+
+.stageImage {
+  width: 80px !important;
+  height: 80px !important;
+  object-fit: contain;
+}
+
+.stageName {
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+}
+
+.stageNumber {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Column holding one or more evolution transitions (stacks when branching) */
+.transitions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transition {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Arrow + condition label between two stages. */
+.arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  width: 96px;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+
+.arrowCondition {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--type-accent, var(--foreground));
+  text-align: center;
+  line-height: 1.2;
+}
+
+.arrowLine {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .chain {
+    justify-content: flex-start;
+  }
+}
