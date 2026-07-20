@@ -24,6 +24,22 @@ type Pokemon {
   stats: Stats!
   abilitiesLite: [AbilityLite!]!
   abilities: [Ability!]
+  evolution: EvolutionChain
+}
+
+type EvolutionChain {
+  id: ID!
+  chain: EvolutionNode!
+}
+
+type EvolutionNode {
+  id: ID!
+  name: String!
+  image: String!
+  minLevel: Int
+  trigger: String
+  item: String
+  evolvesTo: [EvolutionNode!]!
 }
 
 type Stats {

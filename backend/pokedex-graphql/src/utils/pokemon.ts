@@ -1,13 +1,36 @@
 import {
+  EvolutionDetail,
+  NamedAPIResource,
   PokemonAbility,
   PokemonEntity,
+  PokemonIndex,
   PokemonStat,
 } from "../datasources/pokemon-api.types.js";
 import { AbilityLite, Pokemon, Stats } from "../types.js";
 
+export const getIdFromUrl = (url: string): string => {
+  return url.split("/").filter(Boolean).pop() ?? "";
+};
+
+// Build a PokemonIndex from a NamedAPIResource, deriving the string id and the
+// numeric dex number (used for sorting) from the resource url.
+export const toPokemonIndex = (resource: NamedAPIResource): PokemonIndex => {
+  const id = getIdFromUrl(resource.url);
+  return { id, name: resource.name, number: Number(id) };
+};
+
+export const getEvolutionDetail = (details: EvolutionDetail[]) => {
+  const detail = details[0];
+  return {
+    minLevel: detail?.min_level ?? null,
+    trigger: detail?.trigger?.name ?? null,
+    item: detail?.item?.name ?? null,
+  };
+};
+
 export const getPokemonAbilitiesLite = (pokemon: PokemonEntity) => {
   return pokemon.abilities.map((ability) => ({
-    id: ability.ability.url.split("/").filter(Boolean).pop(),
+    id: getIdFromUrl(ability.ability.url),
     name: ability.ability.name,
     url: ability.ability.url,
     isHidden: ability.is_hidden,

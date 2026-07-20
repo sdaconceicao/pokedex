@@ -154,6 +154,34 @@ export type PokemonResponse = {
   results: PokemonEntity[];
 };
 
+// Species-related types (used to reach the evolution chain from a Pokemon)
+export type PokemonSpecies = {
+  id: number;
+  name: string;
+  evolution_chain: {
+    url: string;
+  };
+};
+
+// Evolution-related types
+export type EvolutionDetail = {
+  min_level: number | null;
+  trigger: NamedAPIResource | null;
+  item: NamedAPIResource | null;
+};
+
+export type ChainLink = {
+  is_baby: boolean;
+  species: NamedAPIResource;
+  evolution_details: EvolutionDetail[];
+  evolves_to: ChainLink[];
+};
+
+export type EvolutionChainResponse = {
+  id: number;
+  chain: ChainLink;
+};
+
 export type PokemonListResponse = {
   results: NamedAPIResource[];
 };

@@ -32,6 +32,33 @@ const GET_POKEMON_BY_ID = gql`
         generation
         slot
       }
+      evolution {
+        id
+        chain {
+          id
+          name
+          image
+          minLevel
+          trigger
+          item
+          evolvesTo {
+            id
+            name
+            image
+            minLevel
+            trigger
+            item
+            evolvesTo {
+              id
+              name
+              image
+              minLevel
+              trigger
+              item
+            }
+          }
+        }
+      }
     }
   }
 `;

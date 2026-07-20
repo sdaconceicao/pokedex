@@ -3,6 +3,8 @@ import { URL } from "url";
 import {
   pokemonList,
   pokemonEntity,
+  pokemonSpecies,
+  evolutionChain,
   pokemonAbility,
   typeResponse,
   pokedex,
@@ -31,6 +33,18 @@ export const handlers = [
   http.get("https://pokeapi.co/api/v2/pokemon/:id", () => {
     // Return mock data for any Pokemon ID
     return HttpResponse.json(pokemonEntity);
+  }),
+
+  // Pokemon species endpoint - used by getPokemonSpecies()
+  http.get("https://pokeapi.co/api/v2/pokemon-species/:id", () => {
+    // Return mock data for any species ID
+    return HttpResponse.json(pokemonSpecies);
+  }),
+
+  // Evolution chain endpoint - used by getEvolutionForPokemon()
+  http.get("https://pokeapi.co/api/v2/evolution-chain/:id", () => {
+    // Return mock data for any evolution chain ID
+    return HttpResponse.json(evolutionChain);
   }),
 
   // Ability endpoint - used by getAbility()
