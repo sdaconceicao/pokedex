@@ -51,7 +51,7 @@
     "@vitest/expect": "^4.1.10",
     "concurrently": "^8.2.2",
     "husky": "^9.1.7",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "typescript": "^5",
     "vite": "^8.1.4",
     "vitest": "^4.1.10"
