@@ -19,18 +19,18 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.2.6",
+    "@apollo/client": "^4.2.9",
     "@pokemonle/icons-react": "^0.0.3",
-    "@tanstack/react-query": "^5.101.2",
+    "@tanstack/react-query": "^5.101.4",
     "@untitled-ui/icons-react": "^0.1.4",
     "@vercel/related-projects": "^1.1.0",
     "clsx": "^2.1.1",
     "graphql": "^17.0.2",
     "nanoid": "^6.0.0",
-    "next": "16.2.10",
+    "next": "16.2.12",
     "picocolors": "^1.1.1",
-    "react": "19.2.7",
-    "react-dom": "19.2.7",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "source-map-js": "^1.2.1"
   },
   "devDependencies": {
