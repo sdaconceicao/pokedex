@@ -4,6 +4,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+packageExtensionsChecksum: sha256-p9jzJmFLT56n3pFKNcUzs1Y8beG2/ilX4d6H8sc8hag=
+
 importers:
 
   .:
@@ -259,9 +261,6 @@ importers:
       '@apollo/client':
         specifier: ^4.2.9
         version: 4.2.9(graphql-ws@6.0.8(graphql@17.0.2)(ws@8.21.0))(graphql@17.0.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rxjs@7.8.2)
-      '@babel/runtime':
-        specifier: ^7.29.7
-        version: 7.29.7
       '@pokemonle/icons-react':
         specifier: ^0.0.3
         version: 0.0.3(react@19.2.8)
@@ -8731,6 +8730,7 @@ snapshots:
 
   '@untitled-ui/icons-react@0.1.4(@types/react@19.2.17)(react@19.2.8)':
     dependencies:
+      '@babel/runtime': 7.29.7
       react: 19.2.8
     optionalDependencies:
       '@types/react': 19.2.17

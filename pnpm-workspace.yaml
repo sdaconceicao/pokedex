@@ -12,3 +12,13 @@ allowBuilds:
   msw: true
   sharp: true
   unrs-resolver: true
+
+# @untitled-ui/icons-react imports @babel/runtime/helpers/esm/extends but fails
+# to declare @babel/runtime as a dependency (upstream bug). Declaring it here
+# makes pnpm link @babel/runtime inside the package's own virtual store so the
+# import resolves deterministically on any layout (including Vercel's fresh
+# frozen-lockfile install), regardless of hoisting.
+packageExtensions:
+  "@untitled-ui/icons-react@*":
+    dependencies:
+      "@babel/runtime": "^7.29.7"
