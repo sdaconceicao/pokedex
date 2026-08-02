@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.2.9",
+    "@babel/runtime": "^7.29.7",
     "@pokemonle/icons-react": "^0.0.3",
     "@tanstack/react-query": "^5.101.4",
     "@untitled-ui/icons-react": "^0.1.4",
@@ -55,5 +56,8 @@
     "typescript": "^5",
     "vite": "^8.2.0",
     "vitest": "^4.1.10"
+  },
+  "comments": {
+    "babel/runtime": "This dependency is required by untitled-ui/icons-react, and without it hositing from pnpm will cause the build to fail."
   }
 }
