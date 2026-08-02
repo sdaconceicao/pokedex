@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-graphql-v0.2.0...pokedex-graphql-v0.3.0) (2026-08-02)
+
+
+### Features
+
+* Added Evolution chains ([#78](https://github.com/sdaconceicao/pokedex/issues/78)) ([2e4fea5](https://github.com/sdaconceicao/pokedex/commit/2e4fea5a3c44d25ecf9ea1b8b2443f6f17203af2))
+
 ## [0.2.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-graphql-v0.1.1...pokedex-graphql-v0.2.0) (2026-07-10)
 
 
