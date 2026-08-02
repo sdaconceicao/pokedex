@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.3.0...pokedex-frontend-v0.4.0) (2026-08-02)
+
+
+### Features
+
+* Added Evolution chains ([#78](https://github.com/sdaconceicao/pokedex/issues/78)) ([2e4fea5](https://github.com/sdaconceicao/pokedex/commit/2e4fea5a3c44d25ecf9ea1b8b2443f6f17203af2))
+* Updated homepage ([#76](https://github.com/sdaconceicao/pokedex/issues/76)) ([59394c8](https://github.com/sdaconceicao/pokedex/commit/59394c81f8493dd8322d24518e4c1b6d80e03f33))
+
 ## [0.3.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.2.0...pokedex-frontend-v0.3.0) (2026-07-10)
 
 
