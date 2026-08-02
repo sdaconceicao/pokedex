@@ -43,7 +43,7 @@
     "@typescript-eslint/parser": "^8.62.1",
     "@vitest/coverage-v8": "^4.1.10",
     "concurrently": "^8.2.2",
-    "eslint": "^9.33.0",
+    "eslint": "^10.8.0",
     "eslint-plugin-import": "^2.32.0",
     "graphql-eslint": "^1.5.2",
     "msw": "^2.10.5",
