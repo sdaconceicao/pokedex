@@ -50,4 +50,18 @@ describe("PokemonTypePill", () => {
     const pill = screen.getByText("fire");
     expect(pill.tagName).toBe("SPAN");
   });
+
+  it("renders an icon inside the pill when provided", () => {
+    const { container } = render(
+      <PokemonTypePill {...defaultProps} icon={<svg data-testid="icon" />} />,
+    );
+    const pill = container.querySelector(".pokemonTypePill");
+    expect(pill?.querySelector("[data-testid='icon']")).toBeInTheDocument();
+  });
+
+  it("renders without an icon wrapper when no icon is provided", () => {
+    render(<PokemonTypePill {...defaultProps} />);
+    const pill = screen.getByText("fire");
+    expect(pill.querySelector("svg")).not.toBeInTheDocument();
+  });
 });

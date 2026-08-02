@@ -272,5 +272,18 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    evolution: async ({ id }, _, { dataSources }) => {
+      logger.info(`Resolving evolution chain for Pokemon ${id}`);
+      try {
+        const result = await dataSources.pokemonAPI.getEvolutionForPokemon(id);
+        logger.info(`Evolution chain for Pokemon ${id} resolved successfully`);
+        return result;
+      } catch (error) {
+        // Evolution data is supplementary — a failure here should not break
+        // the whole Pokemon query, so log it and omit the section.
+        logger.error(`Error resolving evolution for Pokemon ${id}:`, error);
+        return null;
+      }
+    },
   },
 };

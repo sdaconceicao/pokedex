@@ -1,0 +1,258 @@
+/* The home screen always renders on a light surface — even in dark mode
+   (matching how Pokemon cards stay light) — so colors are fixed, not themed. */
+.home {
+  --home-foreground: #1f2937;
+  --home-muted: #5f6673;
+  --home-border: #e9eaf0;
+  --home-surface: #f7f8fa;
+  --home-red: #d32b2b;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: #ffffff;
+  color: var(--home-foreground);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.5rem;
+  padding: clamp(1.5rem, 4vw, 4rem);
+  box-shadow: 0 12px 48px rgba(28, 31, 38, 0.08);
+}
+
+/* ── Hero ────────────────────────────────────────── */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: clamp(1rem, 3vw, 2rem) 0 clamp(2rem, 4vw, 3rem);
+}
+
+.heroPokeball {
+  position: absolute;
+  top: -3rem;
+  right: -5rem;
+  width: clamp(220px, 30vw, 340px);
+  color: var(--home-red);
+  opacity: 0.05;
+  transform: rotate(-14deg);
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  background: #fdeceb;
+  color: #b32424;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #d32b2b 0 45%, #ffffff 45% 58%, #f6f6f8 58% 100%);
+  box-shadow: inset 0 0 0 1px rgba(179, 36, 36, 0.45);
+}
+
+.heroTitle {
+  margin: 1.25rem 0 1rem;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.heroTitleAccent {
+  display: block;
+  background: linear-gradient(90deg, #e23a3a, #a01d1d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heroSubtitle {
+  max-width: 40rem;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.65;
+  color: var(--home-muted);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.875rem;
+  margin-top: 2rem;
+}
+
+/* Sized to match the design-system Button lg; colors are fixed-light
+   because Button's outline/secondary variants flip in dark mode. */
+.heroSecondaryCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-size: 1.125rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  border: 1px solid #d9dbe3;
+  background: #ffffff;
+  color: var(--home-foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ctaIcon {
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+}
+
+.heroSecondaryCta:hover {
+  border-color: var(--home-red);
+  color: #b32424;
+  box-shadow: 0 4px 12px rgba(211, 43, 43, 0.12);
+}
+
+/* ── Sections ────────────────────────────────────── */
+.section {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--home-border);
+}
+
+.sectionEyebrow {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--home-red);
+}
+
+.sectionTitle {
+  margin: 0.375rem 0 1.75rem;
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ── Features ────────────────────────────────────── */
+.featureGrid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ── Types ───────────────────────────────────────── */
+.typeGrid {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.typeLink {
+  display: inline-block;
+  border-radius: 0.75rem;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.typeLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(31, 41, 55, 0.18);
+}
+
+/* ── Updates ─────────────────────────────────────── */
+.updateList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.updateRow {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 1rem;
+  padding: 1.125rem 0;
+  border-top: 1px solid var(--home-border);
+}
+
+.updateRow:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.updateDate {
+  font-size: 0.8rem;
+  color: var(--home-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding-top: 0.2rem;
+}
+
+.updateHeader {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.updateTitle {
+  font-size: 0.975rem;
+  font-weight: 700;
+}
+
+.updateTag {
+  display: inline-flex;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.updateTagNew {
+  background: #fdeceb;
+  color: #b32424;
+}
+
+.updateTagImproved {
+  background: #e8f1fd;
+  color: #1e6fd9;
+}
+
+.updateBody {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--home-muted);
+}
+
+/* ── Mobile ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .home {
+    border-radius: 1rem;
+  }
+
+  .heroPokeball {
+    top: -2rem;
+    right: -4rem;
+  }
+
+  .updateRow {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}

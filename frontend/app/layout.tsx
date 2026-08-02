@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ApolloWrapper from "@/layout/ApolloWrapper";
 import AppShell from "@/layout/AppShellLayout";
+import AuthModalProvider from "./providers/AuthModalProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
 import QueryProvider from "./providers/QueryProvider";
 import "./globals.css";
@@ -33,7 +34,9 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <QueryProvider>
           <ApolloWrapper>
-            <AppShell navigationData={navigationData}>{children}</AppShell>
+            <AuthModalProvider>
+              <AppShell navigationData={navigationData}>{children}</AppShell>
+            </AuthModalProvider>
           </ApolloWrapper>
         </QueryProvider>
       </body>
