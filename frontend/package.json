@@ -26,7 +26,7 @@
     "@vercel/related-projects": "^1.1.0",
     "clsx": "^2.1.1",
     "graphql": "^17.0.2",
-    "nanoid": "^5.1.16",
+    "nanoid": "^6.0.0",
     "next": "16.2.10",
     "picocolors": "^1.1.1",
     "react": "19.2.7",
