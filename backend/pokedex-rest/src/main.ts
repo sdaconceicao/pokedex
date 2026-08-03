@@ -13,6 +13,7 @@ import { AppModule } from './app.module';
 import { UserEntity } from './users/users.entity';
 import { WinstonModule } from 'nest-winston';
 import { createWinstonLogger } from './config/logging.config';
+import { postgresDriver } from './config/postgres-driver';
 
 async function bootstrap() {
   const winstonLogger = createWinstonLogger({
@@ -86,6 +87,7 @@ async function bootstrap() {
 
       const dataSource = new DataSource({
         type: 'postgres',
+        driver: postgresDriver,
         host: configService.get<string>('database.host')!,
         port: configService.get<number>('database.port')!,
         username: configService.get<string>('database.username')!,
