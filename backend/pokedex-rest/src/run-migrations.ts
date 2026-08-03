@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 
 import { UserEntity } from './users/users.entity';
+import { postgresDriver } from './config/postgres-driver';
 
 config();
 
@@ -10,6 +11,7 @@ async function runMigrations() {
   const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
   const dataSource = new DataSource({
     type: 'postgres',
+    driver: postgresDriver,
     ...(url
       ? { url }
       : {
