@@ -18,7 +18,18 @@ allowBuilds:
 # makes pnpm link @babel/runtime inside the package's own virtual store so the
 # import resolves deterministically on any layout (including Vercel's fresh
 # frozen-lockfile install), regardless of hoisting.
+#
+# typeorm lists pg as an optional peer dependency, but its PostgresDriver does a
+# dynamic require('pg') at runtime. pnpm's strict node_modules doesn't link
+# optional peers into the package's virtual store, so the require fails on
+# Vercel's serverless bundle ("Postgres package has not been found installed").
+# Declaring pg as a regular dependency here makes pnpm link it inside typeorm's
+# own virtual store so the dynamic require resolves. Same pattern as the
+# @babel/runtime fix above.
 packageExtensions:
   "@untitled-ui/icons-react@*":
     dependencies:
       "@babel/runtime": "^7.29.7"
+  "typeorm@*":
+    dependencies:
+      "pg": "^8.22.0"
