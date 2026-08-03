@@ -12,6 +12,7 @@ import { JwtGuard } from './auth/guards/jwt.guard';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 
 import databaseConfig from './config/database.config';
+import { postgresDriver } from './config/postgres-driver';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import databaseConfig from './config/database.config';
         const url = configService.get<string>('database.url');
         return {
           type: 'postgres',
+          driver: postgresDriver,
           ...(url
             ? { url }
             : {
