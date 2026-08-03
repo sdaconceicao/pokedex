@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.2.0...pokedex-rest-v0.2.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* Fix missing optional peer dep pg in rest api ([#98](https://github.com/sdaconceicao/pokedex/issues/98)) ([f90ff1c](https://github.com/sdaconceicao/pokedex/commit/f90ff1c4a1a45b188592d58a1fefb9e0b1226d2a))
+
 ## [0.2.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.1.1...pokedex-rest-v0.2.0) (2026-07-10)
 
 
