@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import PokemonHeroSkeleton from "../PokemonHero/PokemonHeroSkeleton";
 import styles from "./PokemonDetailSkeleton.module.css";
 
 export default function PokemonDetailSkeleton() {
@@ -7,24 +8,7 @@ export default function PokemonDetailSkeleton() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.backButton}>
-        <div className={styles.backButtonSkeleton}></div>
-      </div>
-
-      {/* Hero skeleton */}
-      <div className={styles.hero}>
-        <div className={styles.heroInfo}>
-          <div className={styles.numberSkeleton}></div>
-          <div className={styles.nameSkeleton}></div>
-          <div className={styles.typesContainer}>
-            <div className={styles.typeSkeleton}></div>
-            <div className={styles.typeSkeleton}></div>
-          </div>
-        </div>
-        <div className={styles.heroImage}>
-          <div className={styles.imageSkeleton}></div>
-        </div>
-      </div>
+      <PokemonHeroSkeleton />
 
       {/* Stats skeleton */}
       <div className={styles.statsSection}>

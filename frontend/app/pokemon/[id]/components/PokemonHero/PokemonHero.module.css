@@ -1,0 +1,162 @@
+/* Consumes the --type-* palette set by the caller's type class,
+   same as PokemonStat / PokemonAbility / PokemonEvolution. */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(150deg, var(--type-grad-1, #9da0aa), var(--type-grad-2, #7c7f8a));
+  border-radius: 1.5rem;
+  color: #fff;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 16px 32px -12px var(--type-shadow, rgba(0, 0, 0, 0.35));
+}
+
+/* ── Toolbar: darkened strip across the top of the hero ── */
+.heroToolbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* ── Body: info + artwork ────────────────────────── */
+.heroBody {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem 3rem;
+  max-height: 310px;
+  /* Clips the bleeding artwork at the toolbar edge so it can't
+     show through the toolbar's translucent band */
+  overflow: hidden;
+}
+
+/* Pokéball watermark */
+.heroBody::before {
+  content: "";
+  position: absolute;
+  top: -3.5rem;
+  right: -3.5rem;
+  width: 18rem;
+  height: 18rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='white' stroke-width='10'/%3E%3Cpath d='M6 50h33M61 50h33' stroke='white' stroke-width='10'/%3E%3Ccircle cx='50' cy='50' r='14' fill='white'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.13;
+  transform: rotate(18deg);
+  pointer-events: none;
+}
+
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.pokemonNumber {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 0 0.75rem;
+}
+
+.pokemonName {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+  text-transform: capitalize;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.typesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.typesContainer .heroPill {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+  backdrop-filter: blur(4px);
+}
+
+.heroImage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* Pull the artwork past the hero's padding so it bleeds off
+     the rounded edge and gets clipped by overflow: hidden */
+  margin: -3rem -6.5rem -3.5rem 0;
+}
+
+.pokemonImage {
+  width: 340px !important;
+  height: 340px !important;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.3));
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.25s ease;
+}
+
+.pokemonImage:hover {
+  transform: scale(1.04) rotate(-2deg);
+  filter: drop-shadow(0 24px 32px rgba(0, 0, 0, 0.35));
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .heroToolbar {
+    padding: 0.625rem 1rem;
+  }
+
+  .heroBody {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  .heroInfo {
+    align-items: center;
+  }
+
+  .pokemonName {
+    font-size: 2.25rem;
+  }
+
+  .heroImage {
+    order: -1;
+    justify-content: center;
+    margin: -2.5rem 0 0;
+  }
+
+  .pokemonImage {
+    width: 240px !important;
+    height: 240px !important;
+  }
+}
