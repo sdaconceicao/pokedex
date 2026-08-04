@@ -18,9 +18,7 @@ const sharedCache = new InMemoryLRUCache();
 const fetcher: NonNullable<DataSourceConfig["fetch"]> = (url, init) =>
   fetch(url, init as RequestInit);
 
-export async function createContext(
-  config?: DataSourceConfig
-): Promise<DataSourceContext> {
+export async function createContext(config?: DataSourceConfig): Promise<DataSourceContext> {
   const pokemonAPI = new PokemonAPI({
     cache: sharedCache,
     fetch: fetcher,

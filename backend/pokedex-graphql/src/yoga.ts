@@ -1,8 +1,7 @@
-import { createYoga, createSchema, type CORSOptions } from "graphql-yoga";
-
-import { typeDefs } from "./schema.generated.js";
-import { resolvers } from "./resolvers.js";
+import { type CORSOptions, createSchema, createYoga } from "graphql-yoga";
 import { createContext, type DataSourceContext } from "./context.js";
+import { resolvers } from "./resolvers.js";
+import { typeDefs } from "./schema.generated.js";
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
@@ -11,8 +10,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
 function cors(request: Request): CORSOptions {
   const requestOrigin = request.headers.get("origin") ?? undefined;
   const origin =
-    ALLOWED_ORIGINS.includes("*") ||
-    (requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin))
+    ALLOWED_ORIGINS.includes("*") || (requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin))
       ? (requestOrigin ?? "*")
       : ALLOWED_ORIGINS[0];
 

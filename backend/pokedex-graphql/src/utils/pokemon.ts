@@ -1,4 +1,4 @@
-import {
+import type {
   EvolutionDetail,
   NamedAPIResource,
   PokemonAbility,
@@ -6,7 +6,7 @@ import {
   PokemonIndex,
   PokemonStat,
 } from "../datasources/pokemon-api.types.js";
-import { AbilityLite, Pokemon, Stats } from "../types.js";
+import type { AbilityLite, Pokemon, Stats } from "../types.js";
 
 export const getIdFromUrl = (url: string): string => {
   return url.split("/").filter(Boolean).pop() ?? "";
@@ -55,15 +55,13 @@ export const getPokemonDefaultImageUrl = (pokemon: PokemonEntity) => {
       pokemon.sprites.other?.showdown?.front_default,
     ];
 
-    imageUrl = fallbackSprites.find(
-      (sprite) => sprite !== null && sprite !== undefined
-    );
+    imageUrl = fallbackSprites.find((sprite) => sprite !== null && sprite !== undefined);
   }
 
   // If still no image, use a placeholder or throw an error
   if (!imageUrl) {
     imageUrl = `https://dummyimage.com/96x96/f0f0f0/666666.png&text=${encodeURIComponent(
-      pokemon.name
+      pokemon.name,
     )}`;
   }
   return imageUrl;
@@ -108,27 +106,19 @@ export const getPokemonStats = (pokemon: PokemonEntity) => {
   return statsObj;
 };
 
-export const convertAbilityLiteToAbility = (
-  data: PokemonAbility,
-  abilityLite: AbilityLite
-) => {
+export const convertAbilityLiteToAbility = (data: PokemonAbility, abilityLite: AbilityLite) => {
   return {
     id: data.id.toString(),
     name: data.name,
     description:
-      data.flavor_text_entries.find((entry) => entry.language.name === "en")
-        ?.flavor_text || "",
-    effect:
-      data.effect_entries.find((entry) => entry.language.name === "en")
-        ?.effect || "",
+      data.flavor_text_entries.find((entry) => entry.language.name === "en")?.flavor_text || "",
+    effect: data.effect_entries.find((entry) => entry.language.name === "en")?.effect || "",
     generation: data.generation.name,
     slot: abilityLite.slot,
   };
 };
 
-export const convertPokemonEntityToPokemon = (
-  pokemon: PokemonEntity
-): Pokemon => {
+export const convertPokemonEntityToPokemon = (pokemon: PokemonEntity): Pokemon => {
   return {
     id: pokemon.id.toString(),
     name: pokemon.name,

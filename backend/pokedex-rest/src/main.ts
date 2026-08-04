@@ -1,19 +1,18 @@
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { runSeeders, SeederOptions } from 'typeorm-extension';
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
-
-import { AppModule } from './app.module';
-import { UserEntity } from './users/users.entity';
 import { WinstonModule } from 'nest-winston';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { runSeeders, SeederOptions } from 'typeorm-extension';
+import { AppModule } from './app.module';
 import { createWinstonLogger } from './config/logging.config';
 import { postgresDriver } from './config/postgres-driver';
+import { UserEntity } from './users/users.entity';
 
 async function bootstrap() {
   const winstonLogger = createWinstonLogger({
