@@ -160,14 +160,7 @@ describe("getPaginatedResults", () => {
   });
 
   it("should work with different data types", () => {
-    const mixedArray = [
-      "string",
-      42,
-      { key: "value" },
-      [1, 2, 3],
-      null,
-      undefined,
-    ];
+    const mixedArray = ["string", 42, { key: "value" }, [1, 2, 3], null, undefined];
     const result = getPaginatedResults(mixedArray, 3, 1);
 
     expect(result).toHaveLength(3);

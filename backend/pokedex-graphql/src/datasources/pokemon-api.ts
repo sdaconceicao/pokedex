@@ -1,5 +1,6 @@
 import { RESTDataSource } from "@apollo/datasource-rest";
-import {
+import { logger } from "../logger.js";
+import type {
   Ability,
   AbilityLite,
   EvolutionChain,
@@ -10,28 +11,27 @@ import {
   PokemonType,
 } from "../types.js";
 import {
-  NamedAPIResource,
-  PokemonListResponse,
-  PokemonIndex,
-  PokemonAbility,
-  PokemonEntity,
-  PokemonSpecies,
-  EvolutionChainResponse,
-  ChainLink,
-  TypeResponse,
-  Region,
-  Pokedex,
-  PokedexListResponse,
-  RegionListResponse,
-} from "./pokemon-api.types.js";
-import {
   convertAbilityLiteToAbility,
   convertPokemonEntityToPokemon,
   getEvolutionDetail,
   getIdFromUrl,
   toPokemonIndex,
 } from "../utils/pokemon.js";
-import { logger } from "../logger.js";
+import type {
+  ChainLink,
+  EvolutionChainResponse,
+  NamedAPIResource,
+  Pokedex,
+  PokedexListResponse,
+  PokemonAbility,
+  PokemonEntity,
+  PokemonIndex,
+  PokemonListResponse,
+  PokemonSpecies,
+  Region,
+  RegionListResponse,
+  TypeResponse,
+} from "./pokemon-api.types.js";
 
 export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
@@ -43,8 +43,7 @@ export class PokemonAPI extends RESTDataSource {
     if (PokemonAPI.isIndexLoaded) return;
 
     try {
-      const response =
-        await this.get<PokemonListResponse>("pokemon?limit=1500");
+      const response = await this.get<PokemonListResponse>("pokemon?limit=1500");
       const entries = response.results;
 
       PokemonAPI.pokemonIndex = entries
@@ -52,9 +51,7 @@ export class PokemonAPI extends RESTDataSource {
         .sort((a: PokemonIndex, b: PokemonIndex) => a.number - b.number);
 
       PokemonAPI.isIndexLoaded = true;
-      logger.info(
-        `Loaded ${PokemonAPI.pokemonIndex.length} Pokémon into index`
-      );
+      logger.info(`Loaded ${PokemonAPI.pokemonIndex.length} Pokémon into index`);
     } catch (error) {
       logger.error("Failed to load Pokémon index:", error);
       throw error;
@@ -74,9 +71,9 @@ export class PokemonAPI extends RESTDataSource {
     return Promise.all(
       abilitiesLite.map((abilityLite) =>
         this.get<PokemonAbility>(abilityLite.url).then((data) =>
-          convertAbilityLiteToAbility(data, abilityLite)
-        )
-      )
+          convertAbilityLiteToAbility(data, abilityLite),
+        ),
+      ),
     );
   }
 
@@ -113,9 +110,7 @@ export class PokemonAPI extends RESTDataSource {
   // evolution chain -> a tree of nodes with links back to each Pokemon.
   async getEvolutionForPokemon(id: string): Promise<EvolutionChain> {
     const species = await this.getPokemonSpecies(id);
-    const chainResponse = await this.get<EvolutionChainResponse>(
-      species.evolution_chain.url
-    );
+    const chainResponse = await this.get<EvolutionChainResponse>(species.evolution_chain.url);
 
     return {
       id: chainResponse.id.toString(),
@@ -127,12 +122,10 @@ export class PokemonAPI extends RESTDataSource {
   getPokemonByName(
     query: string,
     offset: number = 0,
-    limit: number = 20
+    limit: number = 20,
   ): { pokemon: PokemonIndex[]; total: number } {
     if (!PokemonAPI.isIndexLoaded) {
-      throw new Error(
-        "Pokemon index not loaded. Call loadPokemonIndex() first."
-      );
+      throw new Error("Pokemon index not loaded. Call loadPokemonIndex() first.");
     }
 
     const lowerQuery = query.toLowerCase();
@@ -157,9 +150,7 @@ export class PokemonAPI extends RESTDataSource {
     logger.info(`Fetching Pokemon from pokedex: ${pokedex}`);
     return this.get<Pokedex>(`pokedex/${pokedex}`)
       .then((data) => {
-        const results = data.pokemon_entries.map((entry) =>
-          toPokemonIndex(entry.pokemon_species)
-        );
+        const results = data.pokemon_entries.map((entry) => toPokemonIndex(entry.pokemon_species));
         return results;
       })
       .catch((error) => {
@@ -179,13 +170,10 @@ export class PokemonAPI extends RESTDataSource {
         return urlParts[urlParts.length - 2];
       });
 
-      logger.info(
-        `Found ${pokedexNames.length} pokedexes in region ${region}:`,
-        pokedexNames
-      );
+      logger.info(`Found ${pokedexNames.length} pokedexes in region ${region}:`, pokedexNames);
 
       const allPokemonPromises = pokedexNames.map((pokedexName) =>
-        this.getPokemonByPokedex(pokedexName)
+        this.getPokemonByPokedex(pokedexName),
       );
 
       const allPokemonResults = await Promise.all(allPokemonPromises);
@@ -201,12 +189,10 @@ export class PokemonAPI extends RESTDataSource {
       });
 
       const mergedPokemon = Array.from(pokemonMap.values()).sort((a, b) =>
-        a.name.localeCompare(b.name)
+        a.name.localeCompare(b.name),
       );
 
-      logger.info(
-        `Total unique Pokemon in region ${region}: ${mergedPokemon.length}`
-      );
+      logger.info(`Total unique Pokemon in region ${region}: ${mergedPokemon.length}`);
       return mergedPokemon;
     } catch (error) {
       logger.error(`Error fetching Pokemon from region ${region}:`, error);
@@ -214,13 +200,11 @@ export class PokemonAPI extends RESTDataSource {
     }
   }
 
-  getPokemonByType(type: String): Promise<PokemonIndex[]> {
+  getPokemonByType(type: string): Promise<PokemonIndex[]> {
     logger.info(`Fetching Pokemon of type: ${type}`);
     return this.get<TypeResponse>(`type/${type}`)
       .then((data) => {
-        const results = data.pokemon.map((result) =>
-          toPokemonIndex(result.pokemon)
-        );
+        const results = data.pokemon.map((result) => toPokemonIndex(result.pokemon));
         return results;
       })
       .catch((error) => {
@@ -230,65 +214,55 @@ export class PokemonAPI extends RESTDataSource {
   }
 
   getPokedexes(): Promise<PokemonPokedex[]> {
-    return this.get<PokedexListResponse>("pokedex?limit=50").then(
-      async (data) => {
-        const pokedexesWithCounts = await Promise.all(
-          data.results.map(async (entry: NamedAPIResource) => {
-            try {
-              const count = await this.getPokemonByPokedex(entry.name).then(
-                (pokemon) => pokemon.length
-              );
-              return {
-                name: entry.name,
-                count,
-              };
-            } catch (error) {
-              logger.error(
-                `Error getting count for pokedex ${entry.name}:`,
-                error
-              );
-              return {
-                name: entry.name,
-                count: 0,
-              };
-            }
-          })
-        );
+    return this.get<PokedexListResponse>("pokedex?limit=50").then(async (data) => {
+      const pokedexesWithCounts = await Promise.all(
+        data.results.map(async (entry: NamedAPIResource) => {
+          try {
+            const count = await this.getPokemonByPokedex(entry.name).then(
+              (pokemon) => pokemon.length,
+            );
+            return {
+              name: entry.name,
+              count,
+            };
+          } catch (error) {
+            logger.error(`Error getting count for pokedex ${entry.name}:`, error);
+            return {
+              name: entry.name,
+              count: 0,
+            };
+          }
+        }),
+      );
 
-        return pokedexesWithCounts.sort((a, b) => a.name.localeCompare(b.name));
-      }
-    );
+      return pokedexesWithCounts.sort((a, b) => a.name.localeCompare(b.name));
+    });
   }
 
   getRegions(): Promise<PokemonRegion[]> {
-    return this.get<RegionListResponse>("region?limit=50").then(
-      async (data) => {
-        const regionsWithCounts = await Promise.all(
-          data.results.map(async (entry: NamedAPIResource) => {
-            try {
-              const count = await this.getPokemonByRegion(entry.name).then(
-                (pokemon) => pokemon.length
-              );
-              return {
-                name: entry.name,
-                count,
-              };
-            } catch (error) {
-              logger.error(
-                `Error getting count for region ${entry.name}:`,
-                error
-              );
-              return {
-                name: entry.name,
-                count: 0,
-              };
-            }
-          })
-        );
+    return this.get<RegionListResponse>("region?limit=50").then(async (data) => {
+      const regionsWithCounts = await Promise.all(
+        data.results.map(async (entry: NamedAPIResource) => {
+          try {
+            const count = await this.getPokemonByRegion(entry.name).then(
+              (pokemon) => pokemon.length,
+            );
+            return {
+              name: entry.name,
+              count,
+            };
+          } catch (error) {
+            logger.error(`Error getting count for region ${entry.name}:`, error);
+            return {
+              name: entry.name,
+              count: 0,
+            };
+          }
+        }),
+      );
 
-        return regionsWithCounts.sort((a, b) => a.name.localeCompare(b.name));
-      }
-    );
+      return regionsWithCounts.sort((a, b) => a.name.localeCompare(b.name));
+    });
   }
 
   getTypes(): Promise<PokemonType[]> {
@@ -296,9 +270,7 @@ export class PokemonAPI extends RESTDataSource {
       const typesWithCounts = await Promise.all(
         data.results.map(async (entry: NamedAPIResource) => {
           try {
-            const count = await this.getPokemonByType(entry.name).then(
-              (pokemon) => pokemon.length
-            );
+            const count = await this.getPokemonByType(entry.name).then((pokemon) => pokemon.length);
             return {
               name: entry.name,
               count,
@@ -310,7 +282,7 @@ export class PokemonAPI extends RESTDataSource {
               count: 0,
             };
           }
-        })
+        }),
       );
 
       return typesWithCounts.sort((a, b) => a.name.localeCompare(b.name));

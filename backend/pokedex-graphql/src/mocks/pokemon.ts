@@ -1,7 +1,4 @@
-import type {
-  EvolutionChainResponse,
-  PokemonSpecies,
-} from "../datasources/pokemon-api.types.js";
+import type { EvolutionChainResponse, PokemonSpecies } from "../datasources/pokemon-api.types.js";
 
 export const pokemonList: {
   count: number;
@@ -250,8 +247,7 @@ export const pokemonEntity: {
     back_shiny:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/1.png",
     back_shiny_female: null,
-    front_default:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
     front_female: null,
     front_shiny:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/1.png",
@@ -311,10 +307,8 @@ export const pokemonEntity: {
     },
   },
   cries: {
-    latest:
-      "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/1.ogg",
-    legacy:
-      "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/1.ogg",
+    latest: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/1.ogg",
+    legacy: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/1.ogg",
   },
   stats: [
     {
@@ -464,8 +458,7 @@ export const pokemonAbility = {
     {
       effect:
         "When this Pokémon has 1/3 or less of its HP remaining, its grass-type moves inflict 1.5× as much regular damage.",
-      short_effect:
-        "Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.",
+      short_effect: "Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.",
       language: {
         name: "en",
         url: "https://pokeapi.co/api/v2/language/9/",

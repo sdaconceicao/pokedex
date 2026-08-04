@@ -1,8 +1,7 @@
-import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
-
-import { UserEntity } from './users/users.entity';
+import { DataSource } from 'typeorm';
 import { postgresDriver } from './config/postgres-driver';
+import { UserEntity } from './users/users.entity';
 
 config();
 
@@ -24,7 +23,7 @@ async function runMigrations() {
     ssl: process.env.DB_SSL === 'true' || !!url,
     schema: 'public',
     entities: [UserEntity],
-    migrations: [__dirname + '/migrations/*{.ts,.js}'],
+    migrations: [`${__dirname}/migrations/*{.ts,.js}`],
     migrationsTableName: 'migrations',
   });
 

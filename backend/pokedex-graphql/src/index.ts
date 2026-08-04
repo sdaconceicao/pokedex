@@ -4,8 +4,7 @@ import { logger } from "./logger.js";
 import { startMockServer } from "./mocks/server.js";
 import { yoga } from "./yoga.js";
 
-const useMockAPI =
-  process.env.USE_MOCK_API === "true" || process.argv.includes("--mock");
+const useMockAPI = process.env.USE_MOCK_API === "true" || process.argv.includes("--mock");
 
 if (useMockAPI) {
   startMockServer();

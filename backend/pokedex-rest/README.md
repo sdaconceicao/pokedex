@@ -73,6 +73,26 @@ $ pn  test:e2e
 $ pn  test:coverage
 ```
 
+## Lint and format
+
+Linting and formatting are handled by [Biome](https://biomejs.dev/). The version
+is pinned once for the whole monorepo in the `catalog:` block of
+`pnpm-workspace.yaml`, and each package keeps its own `biome.json`.
+
+```bash
+# check for lint and formatting errors
+$ pn  lint
+
+# fix lint and formatting errors
+$ pn  lint:fix
+
+# check in CI mode (no writes)
+$ pn  lint:check
+
+# format only
+$ pn  format
+```
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
