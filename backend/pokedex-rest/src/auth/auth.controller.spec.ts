@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Mocked } from 'vitest';
+import { UserEntity } from '../users/users.entity';
 import { AuthController, AuthenticatedRequest } from './auth.controller';
 import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dtos/register-request.dto';
-import { UserEntity } from '../users/users.entity';
 import { AccessToken } from './types/AccessToken';
+
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: Mocked<AuthService>;

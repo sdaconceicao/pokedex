@@ -25,7 +25,7 @@ export default registerAs<DatabaseConfig>('database', () => ({
   username: process.env.DB_USERNAME || 'pokedex_user',
   password: process.env.DB_PASSWORD || 'pokedex_password',
   database: process.env.DB_DATABASE || 'pokedex',
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
   synchronize: false,
   logging: process.env.NODE_ENV !== 'production',
   migrationsRun:

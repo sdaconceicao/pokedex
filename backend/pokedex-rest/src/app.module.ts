@@ -7,12 +7,11 @@ import { PostgresDataSourceOptions } from 'typeorm/driver/postgres/PostgresDataS
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
-
 import databaseConfig from './config/database.config';
 import { postgresDriver } from './config/postgres-driver';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -39,10 +38,10 @@ import { postgresDriver } from './config/postgres-driver';
               }),
           ssl: configService.get('database.ssl')!,
           schema: 'public', // Start with public schema so migrations can run
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           synchronize: false, // Disable when using migrations
           logging: configService.get('database.logging')!,
-          migrations: [__dirname + '/migrations/*{.ts,.js}'],
+          migrations: [`${__dirname}/migrations/*{.ts,.js}`],
           migrationsRun: configService.get('database.migrationsRun')!,
           migrationsTableName: 'migrations', // Name of the migrations table
         };

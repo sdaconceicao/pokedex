@@ -1,17 +1,17 @@
-import { http, HttpResponse } from "msw";
-import { URL } from "url";
+import { URL } from "node:url";
+import { HttpResponse, http } from "msw";
 import {
-  pokemonList,
-  pokemonEntity,
-  pokemonSpecies,
   evolutionChain,
-  pokemonAbility,
-  typeResponse,
   pokedex,
-  region,
   pokedexListResponse,
+  pokemonAbility,
+  pokemonEntity,
+  pokemonList,
+  pokemonSpecies,
+  region,
   regionListResponse,
   typeListResponse,
+  typeResponse,
 } from "./pokemon.js";
 
 export const handlers = [
