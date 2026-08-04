@@ -1,7 +1,15 @@
 import { useMemo } from "react";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
 import styles from "./Navbar.module.css";
-import { getPokedexItems, getRegionItems, getSpecialItems, getTypeItems } from "./Navbar.util";
+import {
+  getPokedexItems,
+  getRegionItems,
+  getSpecialItems,
+  getTypeItems,
+  NAV_SECTIONS,
+  type NavSectionKey,
+} from "./Navbar.util";
+import type { NavItem } from "./NavbarItem";
 import NavbarSection from "./NavbarSection";
 
 interface NavbarProps {
@@ -16,12 +24,23 @@ export default function Navbar({ navigationData }: NavbarProps) {
   const regionItems = useMemo(() => getRegionItems(regions), [regions]);
   const pokedexItems = useMemo(() => getPokedexItems(pokedexes), [pokedexes]);
 
+  const itemsByKey: Record<NavSectionKey, NavItem[]> = {
+    types: typeItems,
+    special: specialItems,
+    regions: regionItems,
+    pokedexes: pokedexItems,
+  };
+
   return (
     <nav className={styles.navbar}>
-      <NavbarSection title="Types" items={typeItems} />
-      <NavbarSection title="Special" items={specialItems} />
-      <NavbarSection title="Regions" items={regionItems} />
-      <NavbarSection title="Pokedexes" items={pokedexItems} />
+      {NAV_SECTIONS.map(({ key, title, icon }) => (
+        <NavbarSection
+          key={key}
+          title={title}
+          icon={icon}
+          items={itemsByKey[key]}
+        />
+      ))}
     </nav>
   );
 }

@@ -1,17 +1,23 @@
 "use client";
 
 import { ChevronDown } from "@untitled-ui/icons-react";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import styles from "./Navbar.module.css";
 import NavbarItem, { type NavItem } from "./NavbarItem";
 
 interface NavbarSectionProps {
   title: string;
   items: NavItem[];
+  icon?: ReactNode;
   defaultOpen?: boolean;
 }
 
-export default function NavbarSection({ title, items, defaultOpen = true }: NavbarSectionProps) {
+export default function NavbarSection({
+  title,
+  items,
+  icon,
+  defaultOpen = true,
+}: NavbarSectionProps) {
   const [open, setOpen] = useState<boolean>(defaultOpen);
 
   return (
@@ -24,6 +30,11 @@ export default function NavbarSection({ title, items, defaultOpen = true }: Navb
         aria-controls={`section-${title}`}
       >
         <span className={styles.sectionHeaderLeft}>
+          {icon && (
+            <span className={styles.sectionIcon} aria-hidden="true">
+              {icon}
+            </span>
+          )}
           <span className={styles.sectionTitle}>{title}</span>
         </span>
         <ChevronDown className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`} />
