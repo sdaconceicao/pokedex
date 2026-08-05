@@ -26,6 +26,17 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    region: async (_, { name }, { dataSources }) => {
+      logger.info(`Resolving region query for: ${name}`);
+      try {
+        const result = await dataSources.pokemonAPI.getRegion(name);
+        logger.info(`Region ${name} resolved successfully`);
+        return result;
+      } catch (error) {
+        logger.error(`Error resolving region ${name}:`, error);
+        throw error;
+      }
+    },
     types: async (_, __, { dataSources }) => {
       logger.info("Resolving types query");
       try {

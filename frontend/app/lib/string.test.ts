@@ -1,4 +1,4 @@
-import { capitalize } from "./string";
+import { capitalize, titleCase } from "./string";
 
 describe("capitalize", () => {
   it("should capitalize the first character of a string", () => {
@@ -25,5 +25,20 @@ describe("capitalize", () => {
     expect(capitalize("hello-world")).toBe("Hello-world");
     expect(capitalize("123abc")).toBe("123abc");
     expect(capitalize("!hello")).toBe("!hello");
+  });
+});
+
+describe("titleCase", () => {
+  it("should capitalize every hyphen-separated word", () => {
+    expect(titleCase("letsgo-kanto")).toBe("Letsgo Kanto");
+    expect(titleCase("ultra-sun-ultra-moon")).toBe("Ultra Sun Ultra Moon");
+  });
+
+  it("should capitalize a single word", () => {
+    expect(titleCase("yellow")).toBe("Yellow");
+  });
+
+  it("should handle empty string", () => {
+    expect(titleCase("")).toBe("");
   });
 });

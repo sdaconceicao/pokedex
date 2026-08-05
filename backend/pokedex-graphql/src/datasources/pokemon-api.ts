@@ -9,6 +9,7 @@ import type {
   PokemonPokedex,
   PokemonRegion,
   PokemonType,
+  RegionDetail,
 } from "../types.js";
 import {
   convertAbilityLiteToAbility,
@@ -17,6 +18,7 @@ import {
   getIdFromUrl,
   toPokemonIndex,
 } from "../utils/pokemon.js";
+import { convertRegionToRegionDetail } from "../utils/region.js";
 import type {
   ChainLink,
   EvolutionChainResponse,
@@ -196,6 +198,25 @@ export class PokemonAPI extends RESTDataSource {
       return mergedPokemon;
     } catch (error) {
       logger.error(`Error fetching Pokemon from region ${region}:`, error);
+      throw error;
+    }
+  }
+
+  // The region profile shown above the list on the region page. The Pokemon
+  // count comes from the same walk the list uses, so the header and the list
+  // can never disagree; the duplicate region/pokedex GETs are deduplicated
+  // for the lifetime of the request.
+  async getRegion(name: string): Promise<RegionDetail> {
+    logger.info(`Fetching region: ${name}`);
+    try {
+      const [regionData, pokemon] = await Promise.all([
+        this.get<Region>(`region/${name}`),
+        this.getPokemonByRegion(name),
+      ]);
+
+      return convertRegionToRegionDetail(regionData, pokemon.length);
+    } catch (error) {
+      logger.error(`Error fetching region ${name}:`, error);
       throw error;
     }
   }
