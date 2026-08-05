@@ -1,0 +1,12 @@
+.backButton {
+  gap: 0.375rem;
+}
+
+.backButton svg {
+  flex-shrink: 0;
+  transition: transform 0.18s ease;
+}
+
+.backButton:hover:not(:disabled) svg {
+  transform: translateX(-2px);
+}

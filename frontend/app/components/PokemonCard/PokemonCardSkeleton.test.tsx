@@ -21,6 +21,14 @@ describe("PokemonCardSkeleton", () => {
     const nameSkeleton = skeleton.querySelector(".pokemonName.skeletonName");
     expect(nameSkeleton).toBeInTheDocument();
 
+    // Header row and dex pill mirror the real card's geometry
+    const cardHeader = skeleton.querySelector(".cardHeader");
+    expect(cardHeader).toBeInTheDocument();
+    expect(cardHeader).toContainElement(nameSkeleton as HTMLElement);
+
+    const idSkeleton = skeleton.querySelector(".skeletonId");
+    expect(idSkeleton).toBeInTheDocument();
+
     const typeList = skeleton.querySelector(".typeList");
     expect(typeList).toBeInTheDocument();
 

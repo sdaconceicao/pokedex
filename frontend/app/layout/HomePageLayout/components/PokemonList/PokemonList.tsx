@@ -4,25 +4,13 @@ import { Suspense } from "react";
 import PokemonCard, { PokemonCardSkeleton } from "@/components/PokemonCard";
 import type { Pokemon } from "@/types";
 import styles from "./PokemonList.module.css";
-import PokemonListSkeleton from "./PokemonListSkeleton";
 
 interface PokemonListProps {
   pokemon: Pokemon[];
-  loading?: boolean;
   error?: string | null;
-  itemsPerPage: number;
 }
 
-export default function PokemonList({
-  pokemon,
-  loading = false,
-  error = null,
-  itemsPerPage,
-}: PokemonListProps) {
-  if (loading) {
-    return <PokemonListSkeleton count={itemsPerPage} />;
-  }
-
+export default function PokemonList({ pokemon, error = null }: PokemonListProps) {
   if (error) {
     return (
       <div className={styles.error}>
