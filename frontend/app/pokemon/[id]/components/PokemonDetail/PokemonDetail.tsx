@@ -1,11 +1,11 @@
 import type { Ability, Pokemon } from "@/types";
+import PokemonAbility from "../PokemonAbility";
+import PokemonEvolution from "../PokemonEvolution";
+import { hasEvolutions } from "../PokemonEvolution/PokemonEvolution.utils";
 import PokemonHero from "../PokemonHero";
 import PokemonSection from "../PokemonSection";
 import PokemonStat from "../PokemonStat";
-import PokemonAbility from "../PokemonAbility";
 import styles from "./PokemonDetail.module.css";
-import PokemonEvolution from "../PokemonEvolution";
-import { hasEvolutions } from "../PokemonEvolution/PokemonEvolution.utils";
 
 interface PokemonDetailProps {
   pokemon: Pokemon;

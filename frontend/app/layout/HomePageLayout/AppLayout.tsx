@@ -61,11 +61,7 @@ export default function AppLayout({
       <h2 className={styles.heading} ref={headerRef}>
         {title}
       </h2>
-      {loading ? (
-        <PokemonListSkeleton count={itemsPerPage} />
-      ) : (
-        <PokemonList pokemon={pokemon} loading={loading} itemsPerPage={itemsPerPage} />
-      )}
+      {loading ? <PokemonListSkeleton count={itemsPerPage} /> : <PokemonList pokemon={pokemon} />}
 
       <Pagination
         currentPage={page}
