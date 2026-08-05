@@ -40,6 +40,12 @@
   gap: 0.5rem;
 }
 
+.sectionIcon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .sectionTitle {
   font-size: 0.75rem;
   font-weight: 700;

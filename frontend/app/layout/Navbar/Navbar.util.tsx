@@ -1,7 +1,34 @@
+import { BookOpen01, MarkerPin01, Star01, Tag01 } from "@untitled-ui/icons-react";
+import type { ReactNode } from "react";
 import { getPokemonTypeIcon } from "@/lib/pokemonTypeIcons";
 import { capitalize } from "@/lib/string";
 import type { PokemonPokedex, PokemonRegion, PokemonType } from "@/types";
 import type { NavItem } from "./NavbarItem";
+
+export type NavSectionKey = "types" | "special" | "regions" | "pokedexes";
+
+export interface NavSection {
+  key: NavSectionKey;
+  title: string;
+  icon: ReactNode;
+}
+
+/** The sections of the sidebar, in order. Shared by the expanded navbar and the
+ *  collapsed icon rail so both stay in step. */
+export const NAV_SECTIONS: NavSection[] = [
+  { key: "types", title: "Types", icon: <Tag01 width={18} height={18} /> },
+  { key: "special", title: "Special", icon: <Star01 width={18} height={18} /> },
+  {
+    key: "regions",
+    title: "Regions",
+    icon: <MarkerPin01 width={18} height={18} />,
+  },
+  {
+    key: "pokedexes",
+    title: "Pokedexes",
+    icon: <BookOpen01 width={18} height={18} />,
+  },
+];
 
 export const getTypeItems = (types: PokemonType[]): NavItem[] =>
   types.map((type) => ({

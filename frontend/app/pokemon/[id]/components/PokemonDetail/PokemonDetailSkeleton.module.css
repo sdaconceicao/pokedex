@@ -1,86 +1,8 @@
 .container {
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-}
-
-.backButton {
-  align-self: flex-start;
-}
-
-.backButtonSkeleton {
-  width: 150px;
-  height: 38px;
-  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 0.5rem;
-}
-
-/* ── Hero skeleton (neutral gradient) ────────────── */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 2rem;
-  background: linear-gradient(150deg, #d4d6dc, #b8bac2);
-  border-radius: 1.5rem;
-  padding: 1.5rem 3rem;
-  overflow: hidden;
-  min-height: 210px;
-}
-
-.heroInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.numberSkeleton {
-  width: 64px;
-  height: 26px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
-.nameSkeleton {
-  width: 240px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 0.75rem;
-}
-
-.typesContainer {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.typeSkeleton {
-  width: 80px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
-.heroImage {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin: -3rem -6.5rem -3.5rem 0;
-}
-
-.imageSkeleton {
-  width: 340px;
-  height: 340px;
-  background: rgba(255, 255, 255, 0.3);
-  animation: pulse 1.5s infinite;
-  border-radius: 50%;
 }
 
 /* ── Section cards ───────────────────────────────── */
@@ -237,38 +159,8 @@
   }
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 768px) {
-  .hero {
-    grid-template-columns: 1fr;
-    padding: 2rem 1.5rem;
-  }
-
-  .heroInfo {
-    align-items: center;
-  }
-
-  .heroImage {
-    order: -1;
-    justify-content: center;
-    margin: -2.5rem 0 0;
-  }
-
-  .imageSkeleton {
-    width: 240px;
-    height: 240px;
-  }
-
   .statsGrid {
     grid-template-columns: 1fr;
   }

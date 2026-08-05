@@ -1,0 +1,36 @@
+.section {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  padding: 1.75rem 2rem;
+}
+
+.sectionTitle {
+  margin: 0 0 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  padding-left: 0.75rem;
+  position: relative;
+}
+
+/* Accent bar picks up the --type-* palette from the caller's type class */
+.sectionTitle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  bottom: 0.1em;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--type-accent, var(--layout-primary-background));
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .section {
+    padding: 1.25rem;
+  }
+}
