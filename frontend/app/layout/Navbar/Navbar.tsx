@@ -34,12 +34,7 @@ export default function Navbar({ navigationData }: NavbarProps) {
   return (
     <nav className={styles.navbar}>
       {NAV_SECTIONS.map(({ key, title, icon }) => (
-        <NavbarSection
-          key={key}
-          title={title}
-          icon={icon}
-          items={itemsByKey[key]}
-        />
+        <NavbarSection key={key} title={title} icon={icon} items={itemsByKey[key]} />
       ))}
     </nav>
   );

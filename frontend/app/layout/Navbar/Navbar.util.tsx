@@ -1,9 +1,4 @@
-import {
-  BookOpen01,
-  MarkerPin01,
-  Star01,
-  Tag01,
-} from "@untitled-ui/icons-react";
+import { BookOpen01, MarkerPin01, Star01, Tag01 } from "@untitled-ui/icons-react";
 import type { ReactNode } from "react";
 import { getPokemonTypeIcon } from "@/lib/pokemonTypeIcons";
 import { capitalize } from "@/lib/string";

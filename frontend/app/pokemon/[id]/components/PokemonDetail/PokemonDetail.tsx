@@ -32,21 +32,14 @@ export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
       <PokemonSection title="Abilities" className={typeClass}>
         <div className={styles.abilitiesGrid}>
           {pokemon.abilities?.map((ability: Ability) => (
-            <PokemonAbility
-              key={ability.id}
-              ability={ability}
-              type={primaryType}
-            />
+            <PokemonAbility key={ability.id} ability={ability} type={primaryType} />
           ))}
         </div>
       </PokemonSection>
       {pokemon.evolution && hasEvolutions(pokemon.evolution) && (
         <PokemonSection title="Evolution" className={typeClass}>
           <div className={styles.evolutionGrid}>
-            <PokemonEvolution
-              evolution={pokemon.evolution}
-              currentId={String(pokemon.id)}
-            />
+            <PokemonEvolution evolution={pokemon.evolution} currentId={String(pokemon.id)} />
           </div>
         </PokemonSection>
       )}
