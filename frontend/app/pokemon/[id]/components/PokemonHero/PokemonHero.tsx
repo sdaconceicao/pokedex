@@ -23,7 +23,7 @@ export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
         <HeroToolbar
           className={className}
           title={pokemon.name}
-          actions={<BackButton size="sm">Back</BackButton>}
+          aside={<BackButton size="sm">Back</BackButton>}
           icon={
             <Image
               src={pokemon.image}

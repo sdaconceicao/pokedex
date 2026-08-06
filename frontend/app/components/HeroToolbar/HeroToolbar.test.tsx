@@ -1,6 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { HeroToolbar } from "./HeroToolbar";
 
+const groups = (container: HTMLElement) => {
+  const bar = container.querySelector(".bar");
+  return { first: bar?.firstElementChild, last: bar?.lastElementChild };
+};
+
 describe("HeroToolbar", () => {
   it("renders the hero's title", () => {
     render(<HeroToolbar title="Kanto" />);
@@ -9,19 +14,29 @@ describe("HeroToolbar", () => {
   });
 
   it("keeps the hero's actions reachable", () => {
-    render(<HeroToolbar title="Bulbasaur" actions={<button type="button">Back</button>} />);
+    render(<HeroToolbar title="Bulbasaur" aside={<button type="button">Back</button>} />);
 
     expect(screen.getByRole("button", { name: "Back" })).toBeInTheDocument();
   });
 
-  it("puts the actions before the title, so they sit on opposite sides", () => {
+  it("puts the title on the right by default, the aside opposite it", () => {
     const { container } = render(
-      <HeroToolbar title="Bulbasaur" actions={<button type="button">Back</button>} />,
+      <HeroToolbar title="Bulbasaur" aside={<button type="button">Back</button>} />,
     );
 
-    const bar = container.querySelector(".bar");
-    expect(bar?.firstElementChild).toContainElement(screen.getByRole("button", { name: "Back" }));
-    expect(bar?.lastElementChild).toContainElement(screen.getByText("Bulbasaur"));
+    const { first, last } = groups(container);
+    expect(first).toContainElement(screen.getByRole("button", { name: "Back" }));
+    expect(last).toContainElement(screen.getByText("Bulbasaur"));
+  });
+
+  it("moves the title to the left when asked, pushing the aside right", () => {
+    const { container } = render(
+      <HeroToolbar title="Kanto" titleSide="left" aside={<span>153 Pokemon</span>} />,
+    );
+
+    const { first, last } = groups(container);
+    expect(first).toContainElement(screen.getByText("Kanto"));
+    expect(last).toContainElement(screen.getByText("153 Pokemon"));
   });
 
   it("renders the artwork beside the title when there is any", () => {
@@ -30,7 +45,7 @@ describe("HeroToolbar", () => {
     expect(screen.getByText("Bulbasaur").nextElementSibling).toBe(screen.getByTestId("sprite"));
   });
 
-  it("renders without actions or artwork, as the region uses it", () => {
+  it("renders with neither an aside nor artwork", () => {
     render(<HeroToolbar title="Johto" />);
 
     expect(screen.getByText("Johto")).toBeInTheDocument();

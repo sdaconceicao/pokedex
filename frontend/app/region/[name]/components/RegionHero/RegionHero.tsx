@@ -1,34 +1,17 @@
 "use client";
 
 import HeroToolbar from "@/components/HeroToolbar";
+import StatTile from "@/components/StatTile";
 import { useScrolledPast } from "@/hooks";
-import { titleCase } from "@/lib/string";
 import type { RegionDetail } from "@/types";
+import RegionCount from "./RegionCount";
+import RegionFacts from "./RegionFacts";
 import styles from "./RegionHero.module.css";
 import { formatGeneration } from "./RegionHero.utils";
 
 interface RegionHeroProps {
   region: RegionDetail;
 }
-
-/** The chip rows along the bottom of the hero. Rendered only when the API
- *  actually returned entries, so an empty region shows no bare label. */
-const RegionFacts = ({ label, items }: { label: string; items: string[] }) => {
-  if (items.length === 0) return null;
-
-  return (
-    <div className={styles.factRow}>
-      <span className={styles.factLabel}>{label}</span>
-      <ul className={styles.chips}>
-        {items.map((item) => (
-          <li key={item} className={styles.chip}>
-            {titleCase(item)}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
 
 /** The region profile above the Pokemon list: what the region is called, when
  *  it debuted, and what it holds. Every value comes from the API. */
@@ -40,9 +23,20 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
     <>
       {/* Ahead of the hero in the flow, so it is already pinned to the top of
           the scroll area when it appears and lands over the hero's last sliver
-          instead of stacking under it. The region has no hero actions, so the
-          bar carries just its name. */}
-      {scrolledPast && <HeroToolbar title={region.displayName} />}
+          instead of stacking under it. The region has no hero actions, so its
+          counts take the side opposite the name. */}
+      {scrolledPast && (
+        <HeroToolbar
+          title={region.displayName}
+          titleSide="left"
+          aside={
+            <>
+              <RegionCount value={region.pokemonCount} label="Pokemon" />
+              <RegionCount value={region.locations.length} label="Locations" />
+            </>
+          }
+        />
+      )}
 
       <section ref={ref} className={styles.hero}>
         <div className={styles.heroBody}>
@@ -55,14 +49,8 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
           {/* Counts for what the footer doesn't list out: the region's Pokemon,
               and its locations, of which there are far too many to name. */}
           <dl className={styles.stats}>
-            <div className={styles.stat}>
-              <dt className={styles.statLabel}>Pokemon</dt>
-              <dd className={styles.statValue}>{region.pokemonCount}</dd>
-            </div>
-            <div className={styles.stat}>
-              <dt className={styles.statLabel}>Locations</dt>
-              <dd className={styles.statValue}>{region.locations.length}</dd>
-            </div>
+            <StatTile label="Pokemon" value={region.pokemonCount} />
+            <StatTile label="Locations" value={region.locations.length} />
           </dl>
         </div>
 

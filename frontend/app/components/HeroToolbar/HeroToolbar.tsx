@@ -4,32 +4,56 @@ import styles from "./HeroToolbar.module.css";
 interface HeroToolbarProps {
   /** What the hero was titled — the region's or the Pokemon's name */
   title: string;
-  /** The hero's actions, kept reachable while it is scrolled away */
-  actions?: ReactNode;
-  /** A small stand-in for the hero's artwork, where there is any */
+  /** Which end the title sits at. The aside takes the other. */
+  titleSide?: "left" | "right";
+  /** A small stand-in for the hero's artwork, beside the title */
   icon?: ReactNode;
+  /** The group opposite the title: the hero's actions, or a fact or two off it */
+  aside?: ReactNode;
   /** Carries the caller's palette class so --type-* cascades in */
   className?: string;
 }
 
 /**
  * The condensed form of a hero: it sticks to the top of whatever is scrolling
- * the page — the app shell's main, or a modal's body — once the hero itself has
- * gone. Actions stay on the left, the title and artwork move to the right.
+ * the page — the app shell's main, or a modal's body — and lands over the hero
+ * as it leaves.
  *
  * Mounted only while it is wanted, so it leaves no duplicate buttons or names
  * behind it in the accessibility tree.
  */
-export const HeroToolbar = ({ title, actions, icon, className }: HeroToolbarProps) => (
-  <div className={`${styles.slot} ${className || ""}`}>
-    <div className={styles.bar}>
-      <div className={styles.actions}>{actions}</div>
-      <div className={styles.identity}>
-        <span className={styles.title}>{title}</span>
-        {icon}
+export const HeroToolbar = ({
+  title,
+  titleSide = "right",
+  icon,
+  aside,
+  className,
+}: HeroToolbarProps) => {
+  const identity = (
+    <div className={styles.identity}>
+      <span className={styles.title}>{title}</span>
+      {icon}
+    </div>
+  );
+  const asideGroup = <div className={styles.aside}>{aside}</div>;
+
+  return (
+    <div className={`${styles.slot} ${className || ""}`}>
+      <div className={styles.bar}>
+        {titleSide === "left" ? (
+          <>
+            {identity}
+            {asideGroup}
+          </>
+        ) : (
+          <>
+            {asideGroup}
+            {identity}
+          </>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default HeroToolbar;
