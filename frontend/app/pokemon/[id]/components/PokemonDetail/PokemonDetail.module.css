@@ -152,3 +152,15 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
 }
+
+/* ── Responsive ──────────────────────────────────────
+   Two stat columns leave each row too narrow for its bar once the viewport
+   reaches tablet width — the bar collapses to nothing and the row overflows
+   the card. One stat per row gives every bar its full width back. */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 0.875rem;
+  }
+}
