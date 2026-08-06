@@ -1,3 +1,7 @@
+"use client";
+
+import HeroToolbar from "@/components/HeroToolbar";
+import { useScrolledPast } from "@/hooks";
 import { titleCase } from "@/lib/string";
 import type { RegionDetail } from "@/types";
 import styles from "./RegionHero.module.css";
@@ -30,34 +34,43 @@ const RegionFacts = ({ label, items }: { label: string; items: string[] }) => {
  *  it debuted, and what it holds. Every value comes from the API. */
 export const RegionHero = ({ region }: RegionHeroProps) => {
   const generation = formatGeneration(region.generation);
+  const { ref, scrolledPast } = useScrolledPast<HTMLElement>();
 
   return (
-    <section className={styles.hero}>
-      <div className={styles.heroBody}>
-        <div className={styles.heroInfo}>
-          <span className={styles.eyebrow}>Region</span>
-          <h1 className={styles.regionName}>{region.displayName}</h1>
-          {generation && <span className={styles.generation}>{generation}</span>}
+    <>
+      {/* Ahead of the hero in the flow, so it is already pinned to the top of
+          the scroll area when it appears and lands over the hero's last sliver
+          instead of stacking under it. The region has no hero actions, so the
+          bar carries just its name. */}
+      {scrolledPast && <HeroToolbar title={region.displayName} />}
+
+      <section ref={ref} className={styles.hero}>
+        <div className={styles.heroBody}>
+          <div className={styles.heroInfo}>
+            <span className={styles.eyebrow}>Region</span>
+            <h1 className={styles.regionName}>{region.displayName}</h1>
+            {generation && <span className={styles.generation}>{generation}</span>}
+          </div>
+
+          {/* Counts for what the footer doesn't list out: the region's Pokemon,
+              and its locations, of which there are far too many to name. */}
+          <dl className={styles.stats}>
+            <div className={styles.stat}>
+              <dt className={styles.statLabel}>Pokemon</dt>
+              <dd className={styles.statValue}>{region.pokemonCount}</dd>
+            </div>
+            <div className={styles.stat}>
+              <dt className={styles.statLabel}>Locations</dt>
+              <dd className={styles.statValue}>{region.locations.length}</dd>
+            </div>
+          </dl>
         </div>
 
-        {/* Counts for what the footer doesn't list out: the region's Pokemon,
-            and its locations, of which there are far too many to name. */}
-        <dl className={styles.stats}>
-          <div className={styles.stat}>
-            <dt className={styles.statLabel}>Pokemon</dt>
-            <dd className={styles.statValue}>{region.pokemonCount}</dd>
-          </div>
-          <div className={styles.stat}>
-            <dt className={styles.statLabel}>Locations</dt>
-            <dd className={styles.statValue}>{region.locations.length}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div className={styles.heroFooter}>
-        <RegionFacts label="Pokedexes" items={region.pokedexes} />
-        <RegionFacts label="Games" items={region.versionGroups} />
-      </div>
-    </section>
+        <div className={styles.heroFooter}>
+          <RegionFacts label="Pokedexes" items={region.pokedexes} />
+          <RegionFacts label="Games" items={region.versionGroups} />
+        </div>
+      </section>
+    </>
   );
 };

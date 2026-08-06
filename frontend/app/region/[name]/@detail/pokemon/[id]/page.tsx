@@ -22,9 +22,9 @@ export default async function Page(props: {
   const [{ name, id }, { page }] = await Promise.all([props.params, props.searchParams]);
   const closeHref = buildRegionUrl(decodeURIComponent(name), parsePage(page));
 
-  // No header: PokemonDetail opens with its own "Back to Results" button, and a
-  // header bar with a second dismiss on top of it reads as chrome, especially
-  // on mobile where the modal is a full-screen sheet.
+  // No header: PokemonDetail opens with its own "Back" button, and a header bar
+  // with a second dismiss on top of it reads as chrome, especially on mobile
+  // where the modal is a full-screen sheet.
   return (
     <RouteModal closeHref={closeHref} showCloseButton={false}>
       <Suspense fallback={<PokemonDetailSkeleton />}>

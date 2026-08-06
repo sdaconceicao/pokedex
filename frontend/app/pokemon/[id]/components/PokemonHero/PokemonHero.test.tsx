@@ -57,7 +57,7 @@ describe("PokemonHero", () => {
     const user = userEvent.setup();
     render(<PokemonHero pokemon={charmander} />);
 
-    await user.click(screen.getByRole("button", { name: /back to results/i }));
+    await user.click(screen.getByRole("button", { name: /back/i }));
 
     expect(back).toHaveBeenCalledTimes(1);
   });
