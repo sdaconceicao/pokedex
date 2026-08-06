@@ -7,9 +7,6 @@
   padding: 0;
 }
 
-/* Tinted from currentColor rather than a fixed white, so the chips work on a
-   hero's coloured gradient (where the text is white) and on a plain surface
-   alike, without the caller choosing a variant. */
 .chip {
   font-size: 0.8125rem;
   font-weight: 600;
