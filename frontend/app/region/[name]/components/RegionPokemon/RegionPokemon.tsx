@@ -6,9 +6,9 @@ import { useCallback, useRef } from "react";
 import Pagination from "@/components/Pagination";
 import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
 import { GET_POKEMON_BY_REGION } from "@/lib/queries";
+import { buildRegionPokemonUrl, buildRegionUrl, parsePage } from "@/lib/regionUrls";
 import type { Pokemon } from "@/types";
 import styles from "./RegionPokemon.module.css";
-import { buildRegionPokemonUrl, buildRegionUrl, parsePage } from "./RegionPokemon.utils";
 
 interface RegionPokemonProps {
   /** The region slug from the route — what the API keys off */

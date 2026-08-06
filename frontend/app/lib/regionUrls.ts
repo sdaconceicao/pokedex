@@ -1,6 +1,9 @@
+/** The region page's URLs. Shared by the list, which writes them, and the
+ *  Pokemon slot route, which needs to know the page it was opened from. */
+
 /** Page 1 is the bare URL, so a missing, malformed or out-of-range `page`
  *  param all mean the first page rather than an error. */
-export const parsePage = (value: string | null): number => {
+export const parsePage = (value: string | null | undefined): number => {
   const page = Number(value);
   return Number.isInteger(page) && page > 0 ? page : 1;
 };

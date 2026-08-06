@@ -1,4 +1,4 @@
-import { buildRegionPokemonUrl, buildRegionUrl, parsePage } from "./RegionPokemon.utils";
+import { buildRegionPokemonUrl, buildRegionUrl, parsePage } from "./regionUrls";
 
 describe("parsePage", () => {
   it("reads a valid page number", () => {
@@ -8,6 +8,7 @@ describe("parsePage", () => {
 
   it("falls back to the first page for anything unusable", () => {
     expect(parsePage(null)).toBe(1);
+    expect(parsePage(undefined)).toBe(1);
     expect(parsePage("")).toBe(1);
     expect(parsePage("0")).toBe(1);
     expect(parsePage("-3")).toBe(1);
