@@ -202,10 +202,6 @@ export class PokemonAPI extends RESTDataSource {
     }
   }
 
-  // The region profile shown above the list on the region page. The Pokemon
-  // count comes from the same walk the list uses, so the header and the list
-  // can never disagree; the duplicate region/pokedex GETs are deduplicated
-  // for the lifetime of the request.
   async getRegion(name: string): Promise<RegionDetail> {
     logger.info(`Fetching region: ${name}`);
     try {

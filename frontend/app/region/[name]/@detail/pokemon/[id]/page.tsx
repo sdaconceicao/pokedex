@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import RouteModal from "@/components/RouteModal";
-import { buildRegionUrl, parsePage } from "@/lib/regionUrls";
+import { buildRegionUrl, parsePage } from "@/region/[name]/utils/regionUrls";
 import { getPokemonById } from "@/lib/server-queries";
 import PokemonDetail from "@/pokemon/[id]/components/PokemonDetail";
 import PokemonDetailSkeleton from "@/pokemon/[id]/components/PokemonDetail/PokemonDetailSkeleton";
@@ -19,7 +19,10 @@ export default async function Page(props: {
   params: Promise<{ name: string; id: string }>;
   searchParams: Promise<{ page?: string }>;
 }) {
-  const [{ name, id }, { page }] = await Promise.all([props.params, props.searchParams]);
+  const [{ name, id }, { page }] = await Promise.all([
+    props.params,
+    props.searchParams,
+  ]);
   const closeHref = buildRegionUrl(decodeURIComponent(name), parsePage(page));
 
   // No header: PokemonDetail opens with its own "Back" button, and a header bar
