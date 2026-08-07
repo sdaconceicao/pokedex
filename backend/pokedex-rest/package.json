@@ -60,7 +60,6 @@
     "@nestjs/testing": "^11.1.28",
     "@swc/core": "^1.15.47",
     "@types/bcrypt": "^6.0.0",
-    "@types/dotenv": "^8.2.3",
     "@types/node": "^26.1.2",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
