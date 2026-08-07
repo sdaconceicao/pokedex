@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import type { Pokemon } from "../types";
+import type { Pokemon, RegionDetail } from "../types";
 import { client } from "./apollo-client";
 
 const GET_POKEMON_BY_ID = gql`
@@ -63,6 +63,21 @@ const GET_POKEMON_BY_ID = gql`
   }
 `;
 
+const GET_REGION = gql`
+  query GetRegion($name: String!) {
+    region(name: $name) {
+      id
+      name
+      displayName
+      generation
+      pokemonCount
+      locations
+      pokedexes
+      versionGroups
+    }
+  }
+`;
+
 export async function getPokemonById(id: string): Promise<Pokemon> {
   try {
     console.log("Attempting to fetch Pokemon with ID:", id);
@@ -85,5 +100,21 @@ export async function getPokemonById(id: string): Promise<Pokemon> {
   } catch (error) {
     console.error("Failed to fetch Pokemon:", error);
     throw error;
+  }
+}
+
+/** Returns null for a region the API doesn't know, so the page can 404 on a
+ *  bad slug rather than surface an error boundary. */
+export async function getRegionByName(name: string): Promise<RegionDetail | null> {
+  try {
+    const { data } = await client.query<{ region: RegionDetail | null }>({
+      query: GET_REGION,
+      variables: { name },
+    });
+
+    return data?.region ?? null;
+  } catch (error) {
+    console.error(`Failed to fetch region ${name}:`, error);
+    return null;
   }
 }

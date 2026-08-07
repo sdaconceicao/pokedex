@@ -9,6 +9,7 @@ import type {
   PokemonPokedex,
   PokemonRegion,
   PokemonType,
+  RegionDetail,
 } from "../types.js";
 import {
   convertAbilityLiteToAbility,
@@ -17,6 +18,7 @@ import {
   getIdFromUrl,
   toPokemonIndex,
 } from "../utils/pokemon.js";
+import { convertRegionToRegionDetail } from "../utils/region.js";
 import type {
   ChainLink,
   EvolutionChainResponse,
@@ -196,6 +198,21 @@ export class PokemonAPI extends RESTDataSource {
       return mergedPokemon;
     } catch (error) {
       logger.error(`Error fetching Pokemon from region ${region}:`, error);
+      throw error;
+    }
+  }
+
+  async getRegion(name: string): Promise<RegionDetail> {
+    logger.info(`Fetching region: ${name}`);
+    try {
+      const [regionData, pokemon] = await Promise.all([
+        this.get<Region>(`region/${name}`),
+        this.getPokemonByRegion(name),
+      ]);
+
+      return convertRegionToRegionDetail(regionData, pokemon.length);
+    } catch (error) {
+      logger.error(`Error fetching region ${name}:`, error);
       throw error;
     }
   }

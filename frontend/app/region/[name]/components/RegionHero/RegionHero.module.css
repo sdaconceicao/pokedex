@@ -1,0 +1,123 @@
+/* Same card language as PokemonHero, but a region has no type palette, so the
+   gradient is the app's primary accent instead of --type-*. */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(150deg, var(--layout-primary-background), #f08030);
+  border-radius: 1.5rem;
+  color: #fff;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 16px 32px -12px rgba(211, 43, 43, 0.45);
+}
+
+/* ── Body: name + counts ─────────────────────────── */
+.heroBody {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+}
+
+/* Pokéball watermark, matching the Pokemon hero */
+.heroBody::before {
+  content: "";
+  position: absolute;
+  top: -4.5rem;
+  right: -4.5rem;
+  width: 18rem;
+  height: 18rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='white' stroke-width='10'/%3E%3Cpath d='M6 50h33M61 50h33' stroke='white' stroke-width='10'/%3E%3Ccircle cx='50' cy='50' r='14' fill='white'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.13;
+  transform: rotate(18deg);
+  pointer-events: none;
+}
+
+.heroInfo {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.regionName {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+  text-transform: capitalize;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.generation {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 0 0.75rem;
+}
+
+/* ── Stat tiles ──────────────────────────────────── */
+.stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(6.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+/* ── Footer: pokedex + game chips ────────────────── */
+.heroFooter {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1rem 2.5rem 1.25rem;
+  background: rgba(0, 0, 0, 0.16);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .heroBody {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+
+  .regionName {
+    font-size: 2.25rem;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .heroFooter {
+    padding: 1rem 1.5rem 1.25rem;
+  }
+}

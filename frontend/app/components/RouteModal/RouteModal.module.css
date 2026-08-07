@@ -1,0 +1,11 @@
+/* A route's content is page-sized, so it has to scroll inside the dialog.
+   Modal's body is already `overflow-y: auto`, but the dialog itself only caps
+   at `max-height`, leaving its `height: 100%` content box nothing to resolve
+   against — the overflow was clipped rather than scrolled. A definite height
+   completes the chain. Desktop only: below the breakpoint Modal makes the
+   dialog full screen, which is definite already. Width is left to `size`. */
+@media (min-width: 641px) {
+  .modal {
+    height: 90vh;
+  }
+}

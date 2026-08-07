@@ -81,6 +81,7 @@ export type Query = {
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
   pokemonSearch?: Maybe<PokemonList>;
+  region?: Maybe<RegionDetail>;
   regions: Array<PokemonRegion>;
   types: Array<PokemonType>;
 };
@@ -121,6 +122,22 @@ export type QueryPokemonSearchArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   query: Scalars['String']['input'];
+};
+
+
+export type QueryRegionArgs = {
+  name: Scalars['String']['input'];
+};
+
+export type RegionDetail = {
+  displayName: Scalars['String']['output'];
+  generation?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  locations: Array<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  pokedexes: Array<Scalars['String']['output']>;
+  pokemonCount: Scalars['Int']['output'];
+  versionGroups: Array<Scalars['String']['output']>;
 };
 
 export type Stats = {

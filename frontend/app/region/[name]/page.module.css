@@ -1,0 +1,10 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* Published so HeroToolbar's zero-height rail can cancel the gap it would
+     otherwise add between the hero and the list under it */
+  --stack-gap: 2rem;
+  gap: var(--stack-gap);
+  padding-bottom: 120px; /* Room for the floating pagination */
+}

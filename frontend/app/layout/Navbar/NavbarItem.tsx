@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 
 import styles from "./NavbarItem.module.css";
@@ -13,6 +13,9 @@ export interface NavItem {
     key: string;
     value: string;
   };
+  /** For items that navigate to a page of their own rather than filtering the
+   *  results on the home page */
+  activeWhenPathnameEquals?: string;
   icon?: ReactNode;
 }
 
@@ -22,10 +25,14 @@ interface NavbarItemProps {
 
 export default function NavbarItem({ item }: NavbarItemProps) {
   const searchParams = useSearchParams();
-  const isActive = item.activeWhenQueryParamEquals
-    ? searchParams.get(item.activeWhenQueryParamEquals.key) ===
-      item.activeWhenQueryParamEquals.value
-    : false;
+  const pathname = usePathname();
+
+  const isActive = item.activeWhenPathnameEquals
+    ? pathname === item.activeWhenPathnameEquals
+    : item.activeWhenQueryParamEquals
+      ? searchParams.get(item.activeWhenQueryParamEquals.key) ===
+        item.activeWhenQueryParamEquals.value
+      : false;
 
   // Clear search parameter when navigating to type links
   const handleTypeClick = () => {

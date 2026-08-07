@@ -7,10 +7,11 @@ import styles from "./BackButton.module.css";
 
 interface BackButtonProps {
   href?: string;
+  size?: "sm" | "md" | "lg";
   children: React.ReactNode;
 }
 
-export default function BackButton({ href, children }: BackButtonProps) {
+export default function BackButton({ href, size = "md", children }: BackButtonProps) {
   const router = useRouter();
 
   const content = (
@@ -22,14 +23,19 @@ export default function BackButton({ href, children }: BackButtonProps) {
 
   if (href) {
     return (
-      <Button as="link" href={href} variant="primary" className={styles.backButton}>
+      <Button as="link" href={href} variant="primary" size={size} className={styles.backButton}>
         {content}
       </Button>
     );
   }
 
   return (
-    <Button variant="primary" onClick={() => router.back()} className={styles.backButton}>
+    <Button
+      variant="primary"
+      size={size}
+      onClick={() => router.back()}
+      className={styles.backButton}
+    >
       {content}
     </Button>
   );
