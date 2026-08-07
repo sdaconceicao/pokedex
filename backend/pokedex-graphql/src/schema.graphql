@@ -9,6 +9,7 @@ type Query {
   pokedexes: [PokemonPokedex!]!
   regions: [PokemonRegion!]!
   region(name: String!): RegionDetail
+  type(name: String!): TypeDetail
 }
 
 type PokemonList {
@@ -93,4 +94,31 @@ type PokemonPokedex {
 type PokemonType {
   name: String!
   count: Int!
+}
+
+type TypeDetail {
+  id: ID!
+  name: String!
+  displayName: String!
+  generation: String
+  """
+  The type's own icon, newest generation first.
+  """
+  sprite: String
+  pokemonCount: Int!
+  moveCount: Int!
+  damageRelations: TypeDamageRelations!
+}
+
+"""
+How this type fares in battle, as type names. The `*To` fields are what its own
+attacks do; the `*From` fields are what it takes.
+"""
+type TypeDamageRelations {
+  doubleDamageTo: [String!]!
+  halfDamageTo: [String!]!
+  noDamageTo: [String!]!
+  doubleDamageFrom: [String!]!
+  halfDamageFrom: [String!]!
+  noDamageFrom: [String!]!
 }

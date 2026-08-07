@@ -96,6 +96,7 @@ export type Query = {
   pokemonSearch?: Maybe<PokemonList>;
   region?: Maybe<RegionDetail>;
   regions: Array<PokemonRegion>;
+  type?: Maybe<TypeDetail>;
   types: Array<PokemonType>;
 };
 
@@ -142,6 +143,11 @@ export type QueryRegionArgs = {
   name: Scalars['String']['input'];
 };
 
+
+export type QueryTypeArgs = {
+  name: Scalars['String']['input'];
+};
+
 export type RegionDetail = {
   __typename?: 'RegionDetail';
   displayName: Scalars['String']['output'];
@@ -162,6 +168,33 @@ export type Stats = {
   specialAttack: Scalars['Int']['output'];
   specialDefense: Scalars['Int']['output'];
   speed: Scalars['Int']['output'];
+};
+
+/**
+ * How this type fares in battle, as type names. The `*To` fields are what its own
+ * attacks do; the `*From` fields are what it takes.
+ */
+export type TypeDamageRelations = {
+  __typename?: 'TypeDamageRelations';
+  doubleDamageFrom: Array<Scalars['String']['output']>;
+  doubleDamageTo: Array<Scalars['String']['output']>;
+  halfDamageFrom: Array<Scalars['String']['output']>;
+  halfDamageTo: Array<Scalars['String']['output']>;
+  noDamageFrom: Array<Scalars['String']['output']>;
+  noDamageTo: Array<Scalars['String']['output']>;
+};
+
+export type TypeDetail = {
+  __typename?: 'TypeDetail';
+  damageRelations: TypeDamageRelations;
+  displayName: Scalars['String']['output'];
+  generation?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  moveCount: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  pokemonCount: Scalars['Int']['output'];
+  /** The type's own icon, newest generation first. */
+  sprite?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -251,6 +284,8 @@ export type ResolversTypes = {
   RegionDetail: ResolverTypeWrapper<RegionDetail>;
   Stats: ResolverTypeWrapper<Stats>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  TypeDamageRelations: ResolverTypeWrapper<TypeDamageRelations>;
+  TypeDetail: ResolverTypeWrapper<TypeDetail>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -271,6 +306,8 @@ export type ResolversParentTypes = {
   RegionDetail: RegionDetail;
   Stats: Stats;
   String: Scalars['String']['output'];
+  TypeDamageRelations: TypeDamageRelations;
+  TypeDetail: TypeDetail;
 };
 
 export type AbilityResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Ability'] = ResolversParentTypes['Ability']> = {
@@ -356,6 +393,7 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   pokemonSearch?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query'>>;
   region?: Resolver<Maybe<ResolversTypes['RegionDetail']>, ParentType, ContextType, RequireFields<QueryRegionArgs, 'name'>>;
   regions?: Resolver<Array<ResolversTypes['PokemonRegion']>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes['TypeDetail']>, ParentType, ContextType, RequireFields<QueryTypeArgs, 'name'>>;
   types?: Resolver<Array<ResolversTypes['PokemonType']>, ParentType, ContextType>;
 };
 
@@ -381,6 +419,28 @@ export type StatsResolvers<ContextType = DataSourceContext, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TypeDamageRelationsResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['TypeDamageRelations'] = ResolversParentTypes['TypeDamageRelations']> = {
+  doubleDamageFrom?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  doubleDamageTo?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  halfDamageFrom?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  halfDamageTo?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  noDamageFrom?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  noDamageTo?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TypeDetailResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['TypeDetail'] = ResolversParentTypes['TypeDetail']> = {
+  damageRelations?: Resolver<ResolversTypes['TypeDamageRelations'], ParentType, ContextType>;
+  displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  generation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  moveCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pokemonCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  sprite?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = DataSourceContext> = {
   Ability?: AbilityResolvers<ContextType>;
   AbilityLite?: AbilityLiteResolvers<ContextType>;
@@ -394,5 +454,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   Query?: QueryResolvers<ContextType>;
   RegionDetail?: RegionDetailResolvers<ContextType>;
   Stats?: StatsResolvers<ContextType>;
+  TypeDamageRelations?: TypeDamageRelationsResolvers<ContextType>;
+  TypeDetail?: TypeDetailResolvers<ContextType>;
 };
 

@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import type { Pokemon, RegionDetail } from "../types";
+import type { Pokemon, RegionDetail, TypeDetail } from "../types";
 import { client } from "./apollo-client";
 
 const GET_POKEMON_BY_ID = gql`
@@ -78,6 +78,28 @@ const GET_REGION = gql`
   }
 `;
 
+const GET_TYPE = gql`
+  query GetType($name: String!) {
+    type(name: $name) {
+      id
+      name
+      displayName
+      generation
+      sprite
+      pokemonCount
+      moveCount
+      damageRelations {
+        doubleDamageTo
+        halfDamageTo
+        noDamageTo
+        doubleDamageFrom
+        halfDamageFrom
+        noDamageFrom
+      }
+    }
+  }
+`;
+
 export async function getPokemonById(id: string): Promise<Pokemon> {
   try {
     console.log("Attempting to fetch Pokemon with ID:", id);
@@ -115,6 +137,22 @@ export async function getRegionByName(name: string): Promise<RegionDetail | null
     return data?.region ?? null;
   } catch (error) {
     console.error(`Failed to fetch region ${name}:`, error);
+    return null;
+  }
+}
+
+/** Returns null for a type the API doesn't know, so the page can 404 on a bad
+ *  slug rather than surface an error boundary. */
+export async function getTypeByName(name: string): Promise<TypeDetail | null> {
+  try {
+    const { data } = await client.query<{ type: TypeDetail | null }>({
+      query: GET_TYPE,
+      variables: { name },
+    });
+
+    return data?.type ?? null;
+  } catch (error) {
+    console.error(`Failed to fetch type ${name}:`, error);
     return null;
   }
 }

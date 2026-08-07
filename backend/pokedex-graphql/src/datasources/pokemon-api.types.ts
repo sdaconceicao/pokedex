@@ -220,7 +220,15 @@ export type TypeResponse = {
   names: NameEntry[];
   pokemon: TypePokemon[];
   moves: NamedAPIResource[];
+  sprites: TypeSprites;
 };
+
+/** Type icons, keyed by generation and then by game. Only the newest
+ *  generations carry a `symbol_icon`; every one has a `name_icon`. */
+export type TypeSprites = Record<
+  string,
+  Record<string, { name_icon: string | null; symbol_icon: string | null }>
+>;
 
 // Location-related types
 export type Location = {

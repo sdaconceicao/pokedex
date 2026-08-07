@@ -1,0 +1,161 @@
+/* Consumes the --type-* palette set by the type class the component applies,
+   the same palette the Pokemon detail page tints itself with. */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(150deg, var(--type-grad-1, #9da0aa), var(--type-grad-2, #7c7f8a));
+  border-radius: 1.5rem;
+  color: #fff;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 16px 32px -12px var(--type-shadow, rgba(0, 0, 0, 0.35));
+}
+
+/* ── Body: name, counts, sprite ──────────────────── */
+.heroBody {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+}
+
+/* Pokéball watermark, matching the other heroes */
+.heroBody::before {
+  content: "";
+  position: absolute;
+  top: -4.5rem;
+  right: -4.5rem;
+  width: 18rem;
+  height: 18rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='white' stroke-width='10'/%3E%3Cpath d='M6 50h33M61 50h33' stroke='white' stroke-width='10'/%3E%3Ccircle cx='50' cy='50' r='14' fill='white'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.13;
+  transform: rotate(18deg);
+  pointer-events: none;
+}
+
+.heroInfo {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.typeName {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+  text-transform: capitalize;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.generation {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 0 0.75rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(6.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0.5rem 0 0;
+  width: 100%;
+  max-width: 22rem;
+}
+
+/* ── Sprite: the type's own icon ─────────────────── */
+.heroSprite {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9.5rem;
+  height: 9.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(4px);
+}
+
+/* The API ships these at 60px, so they are held near that size to stay crisp */
+.sprite {
+  width: 76px !important;
+  height: 76px !important;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
+}
+
+.toolbarSprite {
+  width: 26px !important;
+  height: 26px !important;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ── Footer: the matchup chart ───────────────────── */
+.heroFooter {
+  position: relative;
+  z-index: 2;
+  padding: 1.125rem 2.5rem 1.375rem;
+  background: rgba(0, 0, 0, 0.16);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .heroBody {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+
+  .typeName {
+    font-size: 2.25rem;
+  }
+
+  .stats {
+    max-width: none;
+  }
+
+  .heroSprite {
+    order: -1;
+    align-self: center;
+    width: 7rem;
+    height: 7rem;
+  }
+
+  .sprite {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .heroFooter {
+    padding: 1rem 1.5rem 1.25rem;
+  }
+}

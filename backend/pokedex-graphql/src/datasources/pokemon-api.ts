@@ -10,6 +10,7 @@ import type {
   PokemonRegion,
   PokemonType,
   RegionDetail,
+  TypeDetail,
 } from "../types.js";
 import {
   convertAbilityLiteToAbility,
@@ -19,6 +20,7 @@ import {
   toPokemonIndex,
 } from "../utils/pokemon.js";
 import { convertRegionToRegionDetail } from "../utils/region.js";
+import { convertTypeToTypeDetail } from "../utils/type.js";
 import type {
   ChainLink,
   EvolutionChainResponse,
@@ -215,6 +217,18 @@ export class PokemonAPI extends RESTDataSource {
       logger.error(`Error fetching region ${name}:`, error);
       throw error;
     }
+  }
+
+  // The type profile shown above the list on the type page: its icon, its
+  // counts and how it fares against every other type.
+  getType(name: string): Promise<TypeDetail> {
+    logger.info(`Fetching type: ${name}`);
+    return this.get<TypeResponse>(`type/${name}`)
+      .then(convertTypeToTypeDetail)
+      .catch((error) => {
+        logger.error(`Error fetching type ${name}:`, error);
+        throw error;
+      });
   }
 
   getPokemonByType(type: string): Promise<PokemonIndex[]> {

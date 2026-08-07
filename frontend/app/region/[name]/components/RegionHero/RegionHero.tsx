@@ -1,13 +1,13 @@
 "use client";
 
+import CountPill from "@/components/CountPill";
 import HeroToolbar from "@/components/HeroToolbar";
 import StatTile from "@/components/StatTile";
 import { useScrolledPast } from "@/hooks";
+import { formatGeneration } from "@/lib/string";
 import type { RegionDetail } from "@/types";
-import RegionCount from "./RegionCount";
 import RegionFacts from "./RegionFacts";
 import styles from "./RegionHero.module.css";
-import { formatGeneration } from "./RegionHero.utils";
 
 interface RegionHeroProps {
   region: RegionDetail;
@@ -31,8 +31,8 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
           titleSide="left"
           aside={
             <>
-              <RegionCount value={region.pokemonCount} label="Pokemon" />
-              <RegionCount value={region.locations.length} label="Locations" />
+              <CountPill value={region.pokemonCount} label="Pokemon" />
+              <CountPill value={region.locations.length} label="Locations" />
             </>
           }
         />

@@ -37,6 +37,17 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    type: async (_, { name }, { dataSources }) => {
+      logger.info(`Resolving type query for: ${name}`);
+      try {
+        const result = await dataSources.pokemonAPI.getType(name);
+        logger.info(`Type ${name} resolved successfully`);
+        return result;
+      } catch (error) {
+        logger.error(`Error resolving type ${name}:`, error);
+        throw error;
+      }
+    },
     types: async (_, __, { dataSources }) => {
       logger.info("Resolving types query");
       try {

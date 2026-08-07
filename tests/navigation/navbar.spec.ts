@@ -11,11 +11,18 @@ test.describe("Navbar", () => {
     await expect(grassTypeLink).toBeVisible();
     await grassTypeLink.click();
 
+    // Types have a page of their own, with the type's profile above its Pokemon
     await page.waitForLoadState("networkidle");
-    await expect(page).toHaveURL(/\?type=grass/);
+    await expect(page).toHaveURL(/\/type\/grass/);
+    await expect(grassTypeLink).toHaveClass(/active/);
 
     await expect(
-      page.getByRole("heading", { level: 2 }).filter({ hasText: /grass/i }),
+      page.getByRole("heading", { level: 1 }).filter({ hasText: /^grass$/i }),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole("heading", { level: 2 })
+        .filter({ hasText: /Pokemon of this type/i }),
     ).toBeVisible();
 
     const bulbasaurLink = page
@@ -25,19 +32,25 @@ test.describe("Navbar", () => {
     await expect(bulbasaurLink).toBeVisible();
     await bulbasaurLink.click();
 
+    // Opened from a type, the detail comes up over the list it came from
     await page.waitForLoadState("networkidle");
+    await expect(page).toHaveURL(/\/type\/grass\/pokemon\/1/);
 
+    const detail = page.getByRole("dialog");
     await expect(
-      page.getByRole("heading", { level: 1 }).filter({ hasText: /bulbasaur/i }),
+      detail.getByRole("heading", { level: 1 }).filter({ hasText: /bulbasaur/i }),
     ).toBeVisible();
     await expect(
-      page
-        .getByRole("heading", { level: 2 })
-        .filter({ hasText: /Base Stats/i }),
+      detail.getByRole("heading", { level: 2 }).filter({ hasText: /Base Stats/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { level: 2 }).filter({ hasText: /Abilities/i }),
+      detail.getByRole("heading", { level: 2 }).filter({ hasText: /Abilities/i }),
     ).toBeVisible();
+
+    // Back drops the detail and leaves the type's list as it was
+    await page.goBack();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page).toHaveURL(/\/type\/grass$/);
   });
 
   test("should navigate to gigantamax special type and verify nav highlighting with empty search", async ({

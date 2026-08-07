@@ -30,12 +30,14 @@ export const NAV_SECTIONS: NavSection[] = [
   },
 ];
 
+// Types get a page of their own — the type's profile and matchups above its
+// Pokemon — rather than filtering the results on the home page.
 export const getTypeItems = (types: PokemonType[]): NavItem[] =>
   types.map((type) => ({
     label: `${capitalize(type.name)} (${type.count})`,
-    href: `/?type=${encodeURIComponent(type.name)}`,
+    href: `/type/${encodeURIComponent(type.name)}`,
     icon: getPokemonTypeIcon(type.name),
-    activeWhenQueryParamEquals: { key: "type", value: type.name },
+    activeWhenPathnameEquals: `/type/${type.name}`,
   }));
 
 export const getPokedexItems = (pokedexes: PokemonPokedex[]): NavItem[] =>
