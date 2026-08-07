@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "private": true,
   "scripts": {
-    "prebuild": "pn  codegen",
+    "prebuild": "pn codegen",
     "build": "next build",
     "start": "next start",
     "start:dev": "concurrently \"next dev --turbopack --port 3010\" \"pn  codegen:watch\"",

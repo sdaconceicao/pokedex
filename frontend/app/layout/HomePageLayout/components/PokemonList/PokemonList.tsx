@@ -8,9 +8,11 @@ import styles from "./PokemonList.module.css";
 interface PokemonListProps {
   pokemon: Pokemon[];
   error?: string | null;
+  /** Overrides where each card links. Defaults to the top-level detail page. */
+  getHref?: (pokemon: Pokemon) => string;
 }
 
-export default function PokemonList({ pokemon, error = null }: PokemonListProps) {
+export default function PokemonList({ pokemon, error = null, getHref }: PokemonListProps) {
   if (error) {
     return (
       <div className={styles.error}>
@@ -31,7 +33,7 @@ export default function PokemonList({ pokemon, error = null }: PokemonListProps)
     <div className={styles.grid}>
       {pokemon.map((pokemon: Pokemon) => (
         <Suspense key={pokemon.id} fallback={<PokemonCardSkeleton />}>
-          <PokemonCard pokemon={pokemon} />
+          <PokemonCard pokemon={pokemon} href={getHref?.(pokemon)} />
         </Suspense>
       ))}
     </div>

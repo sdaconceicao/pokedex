@@ -8,6 +8,7 @@ type Query {
   types: [PokemonType!]!
   pokedexes: [PokemonPokedex!]!
   regions: [PokemonRegion!]!
+  region(name: String!): RegionDetail
 }
 
 type PokemonList {
@@ -71,6 +72,17 @@ type Ability {
 type PokemonRegion {
   name: String!
   count: Int!
+}
+
+type RegionDetail {
+  id: ID!
+  name: String!
+  displayName: String!
+  generation: String
+  pokemonCount: Int!
+  locations: [String!]!
+  pokedexes: [String!]!
+  versionGroups: [String!]!
 }
 
 type PokemonPokedex {

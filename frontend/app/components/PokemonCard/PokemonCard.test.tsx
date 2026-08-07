@@ -78,7 +78,7 @@ describe("PokemonCard", () => {
 
     const nameLink = screen.getByText("Bulbasaur");
     expect(nameLink).toBeInTheDocument();
-    expect(nameLink.closest("a")).toHaveAttribute("href", "pokemon/1");
+    expect(nameLink.closest("a")).toHaveAttribute("href", "/pokemon/1");
   });
 
   it("displays all Pokemon types", () => {

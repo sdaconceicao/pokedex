@@ -78,7 +78,10 @@
 /* Body */
 .body {
   flex: 1;
-  padding: 1.5rem;
+  /* Published because this is a scroll container: anything sticking to its top
+     (HeroToolbar) has to know how far in its content starts */
+  --scroll-pad-top: 1.5rem;
+  padding: var(--scroll-pad-top);
   overflow-y: auto;
   min-height: 0;
 }
@@ -145,7 +148,8 @@
   }
 
   .body {
-    padding: 1rem;
+    --scroll-pad-top: 1rem;
+    padding: var(--scroll-pad-top);
   }
 
   .footer {

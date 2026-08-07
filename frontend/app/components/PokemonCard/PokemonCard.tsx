@@ -11,17 +11,22 @@ import { formatPokemonName, getPokemonTypeClass, getPrimaryType } from "./Pokemo
 
 interface PokemonCardProps {
   pokemon: Pokemon;
+  /** Where the card links, for lists that scope the detail to their own route
+   *  (the region page opens it at /region/[name]/pokemon/[id]) */
+  href?: string;
 }
 
-export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon }) => {
+export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href }) => {
   const primaryType = getPrimaryType(pokemon.type);
   const typeClass = getPokemonTypeClass(primaryType);
   const formattedName = formatPokemonName(pokemon.name);
   const dexNumber = `#${String(pokemon.id).padStart(3, "0")}`;
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  // Absolute by default: the card also renders from nested routes like
+  // /region/kanto, where a relative href would resolve under the current path
   return (
-    <Link href={`pokemon/${pokemon.id}`}>
+    <Link href={href ?? `/pokemon/${pokemon.id}`}>
       <div
         className={`${css.pokemonCard} ${css[typeClass as keyof typeof css]}`}
         data-testid="pokemon-card"
