@@ -1,23 +1,13 @@
+/* Columns follow the container rather than the viewport. This grid sits inside
+   `main`, which is a sidebar and two paddings narrower than the window, so
+   counting columns off the viewport squeezed cards below the ~254px they need
+   and pushed the row out of `main` — a 1280px window asked for four columns in
+   944px. auto-fill takes the count from the space actually available, and the
+   min() keeps a single card from overflowing a container narrower than one. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
   gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (min-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (min-width: 1280px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }
 
 .error {

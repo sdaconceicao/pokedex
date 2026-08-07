@@ -19,7 +19,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 2rem;
+  gap: 2rem 2.5rem;
   padding: 2rem 2.5rem;
 }
 
@@ -89,29 +89,6 @@
   max-width: 22rem;
 }
 
-/* ── Sprite: the type's own icon ─────────────────── */
-.heroSprite {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 9.5rem;
-  height: 9.5rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(4px);
-}
-
-/* The API ships these at 60px, so they are held near that size to stay crisp */
-.sprite {
-  width: 76px !important;
-  height: 76px !important;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
-}
-
 .toolbarSprite {
   width: 26px !important;
   height: 26px !important;
@@ -128,8 +105,10 @@
   border-top: 1px solid rgba(255, 255, 255, 0.16);
 }
 
-/* ── Responsive ──────────────────────────────────── */
-@media (max-width: 768px) {
+/* ── Responsive ──────────────────────────────────────
+   Stacks at 900 rather than 768: the wheel holds a fixed width so its spokes
+   stay tappable, and below this there isn't room for it beside the name. */
+@media (max-width: 900px) {
   .heroBody {
     grid-template-columns: 1fr;
     padding: 1.5rem;
@@ -141,18 +120,6 @@
 
   .stats {
     max-width: none;
-  }
-
-  .heroSprite {
-    order: -1;
-    align-self: center;
-    width: 7rem;
-    height: 7rem;
-  }
-
-  .sprite {
-    width: 60px !important;
-    height: 60px !important;
   }
 
   .heroFooter {

@@ -9,6 +9,7 @@ import { formatGeneration } from "@/lib/string";
 import type { TypeDetail } from "@/types";
 import styles from "./TypeHero.module.css";
 import TypeMatchups from "./TypeMatchups";
+import TypeWheel from "./TypeWheel";
 
 interface TypeHeroProps {
   type: TypeDetail;
@@ -62,18 +63,13 @@ export const TypeHero = ({ type }: TypeHeroProps) => {
             </dl>
           </div>
 
-          {type.sprite && (
-            <div className={styles.heroSprite}>
-              <Image
-                src={type.sprite}
-                alt={`${type.displayName} type`}
-                className={styles.sprite}
-                width={128}
-                height={128}
-                priority
-              />
-            </div>
-          )}
+          {/* The sprite's slot, now the advantage wheel — the sprite sits at
+              its centre */}
+          <TypeWheel
+            name={type.name}
+            displayName={type.displayName}
+            relations={type.damageRelations}
+          />
         </div>
 
         <div className={styles.heroFooter}>

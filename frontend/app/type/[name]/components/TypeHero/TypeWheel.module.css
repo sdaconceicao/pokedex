@@ -1,0 +1,338 @@
+/* Sits on the hero's tinted gradient, so the rings' own colours have to carry
+   over it — hence solid-ish tints rather than the translucent treatment the
+   chips and tiles use elsewhere. */
+.wheel {
+  --wheel-size: 16.25rem;
+  --attack-width: 2.625rem;
+  --defense-width: 1.25rem;
+  --chip: 1.875rem;
+
+  /* Green where the matchup falls this type's way, whichever ring it is on,
+     and black where no damage gets through at all */
+  --wheel-good: rgba(76, 196, 90, 0.95);
+  --wheel-neutral: rgba(255, 255, 255, 0.22);
+  --wheel-bad: rgba(240, 78, 70, 0.95);
+  --wheel-none: rgba(10, 10, 12, 0.92);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: var(--wheel-size);
+}
+
+.ring {
+  position: relative;
+  width: var(--wheel-size);
+  height: var(--wheel-size);
+  flex-shrink: 0;
+}
+
+/* The hero behind this is tinted by the very type being charted, so a red type
+   would swallow the red slices. A dark disc under the rings keeps every tint
+   reading the same whichever type you are on. */
+.ring::before {
+  content: "";
+  position: absolute;
+  inset: -0.25rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.34);
+}
+
+/* ── The two rings ───────────────────────────────────
+   Each is a full disc masked back to a band. The inner one is inset by the
+   outer one's width, so the same mask formula serves both. */
+.trackAttack,
+.trackDefense {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.trackAttack {
+  inset: 0;
+  mask: radial-gradient(
+    circle farthest-side,
+    transparent calc(100% - var(--attack-width)),
+    #000 calc(100% - var(--attack-width) + 1px)
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.trackDefense {
+  inset: var(--attack-width);
+  mask: radial-gradient(
+    circle farthest-side,
+    transparent calc(100% - var(--defense-width)),
+    #000 calc(100% - var(--defense-width) + 1px)
+  );
+  /* A hairline either side, so the two rings never read as one thick band */
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* ── The type at the centre ──────────────────────── */
+.core {
+  position: absolute;
+  inset: calc(var(--attack-width) + var(--defense-width));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+/* The sidebar's icons are circular badges in the type's own colour, so the
+   badge is the centre circle */
+.coreIcon {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4));
+}
+
+/* The icons size themselves in em, so they need telling to fill the middle */
+.coreIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── One button per type, laid around the outer ring ── */
+.segments {
+  position: absolute;
+  inset: 0;
+  /* A fieldset for the grouping, with its own furniture stripped */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.segmentsLegend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.segment {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--chip);
+  height: var(--chip);
+  margin: calc(var(--chip) / -2);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  /* Out to the middle of the outer ring, then the icon straightened back up */
+  transform: rotate(calc(var(--index) * var(--slice)))
+    translateY(calc((var(--wheel-size) - var(--attack-width)) / -2))
+    rotate(calc(var(--index) * var(--slice) * -1));
+  transition:
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+/* Types this one trades evenly with stay quiet, so the advantages stand out */
+.segment.neutral {
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 0.75;
+}
+
+.segment:hover,
+.segment.active {
+  background: #fff;
+  opacity: 1;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55);
+}
+
+.segment:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* The icons carry a <title> of their own, which would win the native tooltip
+   over the button's fuller one, and the button wants the hover anyway */
+.icon {
+  display: flex;
+  width: 68%;
+  height: 68%;
+  pointer-events: none;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Readout: both halves of the hovered, focused or tapped matchup ── */
+/* Its height is reserved for the longest reading: letting it grow when one
+   arrives would shift the rings under the very pointer that asked for it. */
+.readout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  margin: 0;
+  min-height: 4rem;
+  max-width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.readings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.0625rem;
+}
+
+.readoutType {
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-transform: capitalize;
+  color: #fff;
+}
+
+.reading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  white-space: nowrap;
+}
+
+.direction {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.multiplier {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.0625rem 0.3125rem;
+  border-radius: 0.3125rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+/* The multiplier badges and the legend swatches take the ring colours */
+.multiplier.good,
+.swatch.good {
+  background: var(--wheel-good);
+}
+
+.multiplier.neutral,
+.swatch.neutral {
+  background: var(--wheel-neutral);
+}
+
+.multiplier.bad,
+.swatch.bad {
+  background: var(--wheel-bad);
+}
+
+.multiplier.none,
+.swatch.none {
+  background: var(--wheel-none);
+}
+
+/* ── Key ─────────────────────────────────────────── */
+.key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Which ring is which has to survive even where the legend doesn't */
+.rings {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 100%;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+/* ── Responsive ──────────────────────────────────────
+   The rings stay large enough for the spokes to be tappable: shrinking much
+   below this puts the chips closer together than a fingertip can pick out. */
+@media (max-width: 900px) {
+  .wheel {
+    --wheel-size: 15.25rem;
+    --attack-width: 2.5rem;
+    --defense-width: 1.125rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .wheel {
+    --wheel-size: 14.5rem;
+    --attack-width: 2.375rem;
+    --defense-width: 1rem;
+    --chip: 1.75rem;
+  }
+
+  /* Tapping a spoke names the effect, which covers what the colours meant */
+  .legend {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .wheel {
+    --wheel-size: 13.25rem;
+    --attack-width: 2.25rem;
+    --defense-width: 0.875rem;
+    --chip: 1.625rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment {
+    transition: none;
+  }
+}

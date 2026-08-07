@@ -46,17 +46,19 @@ describe("TypeHero", () => {
     expect(screen.getByText("Moves").nextSibling).toHaveTextContent("47");
   });
 
-  it("renders the type's own sprite", () => {
+  it("charts the type's advantages on a wheel, its icon at the centre", () => {
     render(<TypeHero type={fire} />);
 
-    expect(screen.getByAltText("Fire type")).toHaveAttribute("src", fire.sprite);
+    expect(screen.getByTestId("type-wheel-core").querySelector("svg")).toBeInTheDocument();
+    // One slice per type, whether or not the API had a sprite
+    expect(screen.getAllByRole("button")).toHaveLength(18);
   });
 
-  it("renders without a sprite when the API has none", () => {
+  it("renders when the API has no sprite for the type", () => {
     render(<TypeHero type={{ ...fire, sprite: null }} />);
 
-    expect(screen.queryByAltText("Fire type")).toBeNull();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Fire");
+    expect(screen.getAllByRole("button")).toHaveLength(18);
   });
 
   it("tints itself with the type's palette", () => {
@@ -70,8 +72,8 @@ describe("TypeHero", () => {
 
     expect(screen.getByText("Strong against")).toBeInTheDocument();
     expect(screen.getByText("Weak to")).toBeInTheDocument();
-    expect(screen.getByText("grass")).toBeInTheDocument();
-    expect(screen.getByText("ground")).toBeInTheDocument();
+    expect(screen.getByText("grass", { selector: "span" })).toBeInTheDocument();
+    expect(screen.getByText("ground", { selector: "span" })).toBeInTheDocument();
   });
 
   it("leaves out matchup rows the API returned empty", () => {
