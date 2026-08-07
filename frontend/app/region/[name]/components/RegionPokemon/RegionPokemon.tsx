@@ -5,9 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useRef } from "react";
 import Pagination from "@/components/Pagination";
 import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
+import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
 import { GET_POKEMON_BY_REGION } from "@/lib/queries";
-import { buildRegionPokemonUrl, buildRegionUrl } from "@/region/[name]/utils/regionUrls";
 import type { Pokemon } from "@/types";
 import styles from "./RegionPokemon.module.css";
 
@@ -47,13 +47,13 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildRegionUrl(region, nextPage));
+      window.history.pushState(null, "", buildBrowseUrl("region", region, nextPage));
     },
     [region],
   );
 
   const getPokemonHref = useCallback(
-    (pokemon: Pokemon) => buildRegionPokemonUrl(region, pokemon.id, page),
+    (pokemon: Pokemon) => buildBrowseUrl("region", region, page, pokemon.id),
     [region, page],
   );
 

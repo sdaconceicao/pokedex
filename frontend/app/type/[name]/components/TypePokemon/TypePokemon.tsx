@@ -5,9 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useRef } from "react";
 import Pagination from "@/components/Pagination";
 import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
+import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
 import { GET_POKEMON_BY_TYPE } from "@/lib/queries";
-import { buildTypePokemonUrl, buildTypeUrl } from "@/type/[name]/utils/typeUrls";
 import type { Pokemon } from "@/types";
 import styles from "./TypePokemon.module.css";
 
@@ -47,13 +47,13 @@ export default function TypePokemon({ type }: TypePokemonProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildTypeUrl(type, nextPage));
+      window.history.pushState(null, "", buildBrowseUrl("type", type, nextPage));
     },
     [type],
   );
 
   const getPokemonHref = useCallback(
-    (pokemon: Pokemon) => buildTypePokemonUrl(type, pokemon.id, page),
+    (pokemon: Pokemon) => buildBrowseUrl("type", type, page, pokemon.id),
     [type, page],
   );
 

@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import RouteModal from "@/components/RouteModal";
+import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
 import { getPokemonById } from "@/lib/server-queries";
 import PokemonDetail from "@/pokemon/[id]/components/PokemonDetail";
 import PokemonDetailSkeleton from "@/pokemon/[id]/components/PokemonDetail/PokemonDetailSkeleton";
-import { buildRegionUrl } from "@/region/[name]/utils/regionUrls";
 
 async function PokemonDetailContent({ id }: { id: string }) {
   const pokemon = await getPokemonById(id);
@@ -21,7 +21,7 @@ export default async function Page(props: {
   searchParams: Promise<{ page?: string }>;
 }) {
   const [{ name, id }, { page }] = await Promise.all([props.params, props.searchParams]);
-  const closeHref = buildRegionUrl(decodeURIComponent(name), parsePage(page));
+  const closeHref = buildBrowseUrl("region", decodeURIComponent(name), parsePage(page));
 
   // No header: PokemonDetail opens with its own "Back" button, and a header bar
   // with a second dismiss on top of it reads as chrome, especially on mobile
