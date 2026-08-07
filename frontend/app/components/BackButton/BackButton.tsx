@@ -11,11 +11,7 @@ interface BackButtonProps {
   children: React.ReactNode;
 }
 
-export default function BackButton({
-  href,
-  size = "md",
-  children,
-}: BackButtonProps) {
+export default function BackButton({ href, size = "md", children }: BackButtonProps) {
   const router = useRouter();
 
   const content = (
@@ -27,13 +23,7 @@ export default function BackButton({
 
   if (href) {
     return (
-      <Button
-        as="link"
-        href={href}
-        variant="primary"
-        size={size}
-        className={styles.backButton}
-      >
+      <Button as="link" href={href} variant="primary" size={size} className={styles.backButton}>
         {content}
       </Button>
     );

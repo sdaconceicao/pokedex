@@ -19,10 +19,7 @@ export default async function Page(props: {
   params: Promise<{ name: string; id: string }>;
   searchParams: Promise<{ page?: string }>;
 }) {
-  const [{ name, id }, { page }] = await Promise.all([
-    props.params,
-    props.searchParams,
-  ]);
+  const [{ name, id }, { page }] = await Promise.all([props.params, props.searchParams]);
   const closeHref = buildRegionUrl(decodeURIComponent(name), parsePage(page));
 
   // No header: PokemonDetail opens with its own "Back" button, and a header bar

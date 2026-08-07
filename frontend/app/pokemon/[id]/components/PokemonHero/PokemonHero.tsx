@@ -39,9 +39,7 @@ export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
       <section ref={ref} className={`${styles.hero} ${className || ""}`}>
         <div className={styles.heroToolbar}>
           <BackButton>Back</BackButton>
-          <span className={styles.pokemonNumber}>
-            {getDexNumber(pokemon.id)}
-          </span>
+          <span className={styles.pokemonNumber}>{getDexNumber(pokemon.id)}</span>
         </div>
 
         <div className={styles.heroBody}>
@@ -49,11 +47,7 @@ export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
             <h1 className={styles.pokemonName}>{pokemon.name}</h1>
             <div className={styles.typesContainer}>
               {pokemon.type.map((type: string) => (
-                <PokemonTypePill
-                  key={type}
-                  type={type}
-                  className={styles.heroPill}
-                />
+                <PokemonTypePill key={type} type={type} className={styles.heroPill} />
               ))}
             </div>
           </div>

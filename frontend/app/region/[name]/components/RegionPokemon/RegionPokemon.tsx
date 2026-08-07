@@ -4,15 +4,9 @@ import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useRef } from "react";
 import Pagination from "@/components/Pagination";
-import PokemonList, {
-  PokemonListSkeleton,
-} from "@/layout/HomePageLayout/components/PokemonList";
+import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
 import { GET_POKEMON_BY_REGION } from "@/lib/queries";
-import {
-  buildRegionPokemonUrl,
-  buildRegionUrl,
-  parsePage,
-} from "@/region/[name]/utils/regionUrls";
+import { buildRegionPokemonUrl, buildRegionUrl, parsePage } from "@/region/[name]/utils/regionUrls";
 import type { Pokemon } from "@/types";
 import styles from "./RegionPokemon.module.css";
 
@@ -54,12 +48,12 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
       window.history.pushState(null, "", buildRegionUrl(region, nextPage));
     },
-    [region]
+    [region],
   );
 
   const getPokemonHref = useCallback(
     (pokemon: Pokemon) => buildRegionPokemonUrl(region, pokemon.id, page),
-    [region, page]
+    [region, page],
   );
 
   return (
@@ -71,10 +65,7 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
       {loading ? (
         <PokemonListSkeleton count={ITEMS_PER_PAGE} />
       ) : (
-        <PokemonList
-          pokemon={results?.pokemon ?? []}
-          getHref={getPokemonHref}
-        />
+        <PokemonList pokemon={results?.pokemon ?? []} getHref={getPokemonHref} />
       )}
 
       <Pagination
