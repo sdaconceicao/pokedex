@@ -6,7 +6,7 @@ import StatTile from "@/components/StatTile";
 import { useScrolledPast } from "@/hooks";
 import { formatGeneration } from "@/lib/string";
 import type { RegionDetail } from "@/types";
-import RegionFacts from "./RegionFacts";
+import RegionFacts from "../RegionFacts/RegionFacts";
 import styles from "./RegionHero.module.css";
 
 interface RegionHeroProps {
@@ -43,7 +43,9 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
           <div className={styles.heroInfo}>
             <span className={styles.eyebrow}>Region</span>
             <h1 className={styles.regionName}>{region.displayName}</h1>
-            {generation && <span className={styles.generation}>{generation}</span>}
+            {generation && (
+              <span className={styles.generation}>{generation}</span>
+            )}
           </div>
 
           {/* Counts for what the footer doesn't list out: the region's Pokemon,
