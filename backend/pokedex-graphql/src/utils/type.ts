@@ -2,8 +2,7 @@ import type { TypeResponse, TypeSprites } from "../datasources/pokemon-api.types
 import type { TypeDetail } from "../types.js";
 import { getEnglishName } from "./region.js";
 
-/** The newest generation PokeAPI ships type icons for. Its games are the only
- *  ones with a round `symbol_icon`, which is what the pages want. */
+/** The newest generation PokeAPI ships type icons for. */
 const PREFERRED_GENERATION = "generation-ix";
 
 /** The type's own icon: the preferred generation's symbol if there is one, then
@@ -21,8 +20,7 @@ export const getTypeSprite = (sprites?: TypeSprites): string | null => {
 };
 
 /** Flattens the type response into the shape the schema exposes: the nested
- *  NamedAPIResource lists become plain type names, since the chart only shows
- *  names, and the long move and Pokemon lists become counts. */
+ *  NamedAPIResource lists become plain type names */
 export const convertTypeToTypeDetail = (type: TypeResponse): TypeDetail => {
   const relations = type.damage_relations;
   const names = (resources: { name: string }[]) => resources.map(({ name }) => name);

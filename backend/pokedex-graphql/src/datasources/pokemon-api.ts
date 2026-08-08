@@ -219,8 +219,6 @@ export class PokemonAPI extends RESTDataSource {
     }
   }
 
-  // The type profile shown above the list on the type page: its icon, its
-  // counts and how it fares against every other type.
   getType(name: string): Promise<TypeDetail> {
     logger.info(`Fetching type: ${name}`);
     return this.get<TypeResponse>(`type/${name}`)

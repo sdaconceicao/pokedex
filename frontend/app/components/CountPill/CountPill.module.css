@@ -1,5 +1,3 @@
-/* A hero's stat tile, shrunk to fit a 44px toolbar. Tinted from currentColor so
-   it works on a coloured bar and on a plain surface alike. */
 .count {
   display: inline-flex;
   align-items: baseline;
@@ -21,8 +19,6 @@
   color: currentColor;
 }
 
-/* On a narrow phone a second pill crowds the title out of its own bar, and the
-   title matters more, so the extras go. */
 @media (max-width: 480px) {
   .count + .count {
     display: none;

@@ -8,7 +8,7 @@ import { useScrolledPast } from "@/hooks";
 import { formatGeneration } from "@/lib/string";
 import type { TypeDetail } from "@/types";
 import styles from "./TypeHero.module.css";
-import TypeWheel from "./TypeWheel";
+import TypeWheel from "../TypeWheel/TypeWheel";
 
 interface TypeHeroProps {
   type: TypeDetail;
@@ -54,7 +54,9 @@ export const TypeHero = ({ type }: TypeHeroProps) => {
           <div className={styles.heroInfo}>
             <span className={styles.eyebrow}>Type</span>
             <h1 className={styles.typeName}>{type.displayName}</h1>
-            {generation && <span className={styles.generation}>{generation}</span>}
+            {generation && (
+              <span className={styles.generation}>{generation}</span>
+            )}
           </div>
 
           {/* Its own cell, so stacking can place it between the name and the

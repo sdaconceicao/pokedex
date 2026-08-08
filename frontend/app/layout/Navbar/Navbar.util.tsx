@@ -30,8 +30,6 @@ export const NAV_SECTIONS: NavSection[] = [
   },
 ];
 
-// Types get a page of their own — the type's profile and matchups above its
-// Pokemon — rather than filtering the results on the home page.
 export const getTypeItems = (types: PokemonType[]): NavItem[] =>
   types.map((type) => ({
     label: `${capitalize(type.name)} (${type.count})`,
@@ -47,8 +45,6 @@ export const getPokedexItems = (pokedexes: PokemonPokedex[]): NavItem[] =>
     activeWhenQueryParamEquals: { key: "pokedex", value: pokedex.name },
   }));
 
-// Regions get a page of their own — the region's profile above its Pokemon —
-// rather than filtering the results on the home page.
 export const getRegionItems = (regions: PokemonRegion[]): NavItem[] =>
   regions.map((region) => ({
     label: `${capitalize(region.name)} (${region.count})`,
