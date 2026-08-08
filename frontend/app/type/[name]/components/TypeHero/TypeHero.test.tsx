@@ -66,20 +66,4 @@ describe("TypeHero", () => {
 
     expect(container.querySelector("section")).toHaveClass("type-fire");
   });
-
-  it("charts what the type is strong and weak against", () => {
-    render(<TypeHero type={fire} />);
-
-    expect(screen.getByText("Strong against")).toBeInTheDocument();
-    expect(screen.getByText("Weak to")).toBeInTheDocument();
-    expect(screen.getByText("grass", { selector: "span" })).toBeInTheDocument();
-    expect(screen.getByText("ground", { selector: "span" })).toBeInTheDocument();
-  });
-
-  it("leaves out matchup rows the API returned empty", () => {
-    render(<TypeHero type={fire} />);
-
-    expect(screen.queryByText("No effect on")).toBeNull();
-    expect(screen.queryByText("Immune to")).toBeNull();
-  });
 });

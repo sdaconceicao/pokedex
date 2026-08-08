@@ -104,14 +104,17 @@ describe("getMatchups", () => {
 });
 
 describe("summariseMatchups", () => {
-  it("counts one thing from each ring", () => {
-    expect(summariseMatchups(getMatchups(relations))).toBe("4 super effective · 3 weaknesses");
+  it("counts one thing from each ring, a line apiece", () => {
+    expect(summariseMatchups(getMatchups(relations))).toEqual([
+      "4 super effective",
+      "3 weaknesses",
+    ]);
   });
 
   it("keeps a single weakness singular", () => {
     const one = { ...relations, doubleDamageFrom: ["ground"] };
 
-    expect(summariseMatchups(getMatchups(one))).toBe("4 super effective · 1 weakness");
+    expect(summariseMatchups(getMatchups(one))).toEqual(["4 super effective", "1 weakness"]);
   });
 });
 

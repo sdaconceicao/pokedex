@@ -45,16 +45,20 @@ describe("TypeWheel", () => {
     expect(core).toHaveTextContent("fire");
   });
 
-  it("says which ring is which, since the two carry different halves", () => {
+  it("says which ring is which, a line each so neither phrase breaks up", () => {
     renderWheel();
 
-    expect(screen.getByText(/Outer ring attacking · inner ring defending/i)).toBeInTheDocument();
+    expect(screen.getByText("Outer ring attacking")).toBeInTheDocument();
+    expect(screen.getByText("Inner ring defending")).toBeInTheDocument();
   });
 
-  it("summarises both rings until a spoke is picked", () => {
+  it("summarises both rings until a spoke is picked, a count to a line", () => {
     renderWheel();
 
-    expect(readout()).toHaveTextContent("4 super effective · 3 weaknesses");
+    expect(readout()).toHaveTextContent("4 super effective");
+    expect(readout()).toHaveTextContent("3 weaknesses");
+    // A line each, as the picked reading has
+    expect(readout().querySelectorAll("span > span")).toHaveLength(2);
   });
 
   it("reads out both directions for the spoke a touch taps", async () => {

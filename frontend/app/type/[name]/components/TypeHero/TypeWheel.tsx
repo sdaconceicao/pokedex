@@ -30,7 +30,9 @@ const LEGEND: Tint[] = ["good", "neutral", "bad", "none"];
 const Reading = ({ direction, side }: { direction: string; side: Side }) => (
   <span className={styles.reading}>
     <span className={styles.direction}>{direction}</span>
-    <span className={`${styles.multiplier} ${styles[side.tint]}`}>{side.symbol}</span>
+    <span className={`${styles.multiplier} ${styles[side.tint]}`}>
+      {side.symbol}
+    </span>
     {side.label}
   </span>
 );
@@ -45,10 +47,20 @@ const Reading = ({ direction, side }: { direction: string; side: Side }) => (
  * touch: hovering or focusing one reads it out, and on a touchscreen — where
  * there is no hover — a tap does the same and the reading stays put.
  */
-export default function TypeWheel({ name, displayName, relations }: TypeWheelProps) {
+export default function TypeWheel({
+  name,
+  displayName,
+  relations,
+}: TypeWheelProps) {
   const matchups = useMemo(() => getMatchups(relations), [relations]);
-  const attackGradient = useMemo(() => buildTrackGradient(matchups, "attack"), [matchups]);
-  const defenseGradient = useMemo(() => buildTrackGradient(matchups, "defense"), [matchups]);
+  const attackGradient = useMemo(
+    () => buildTrackGradient(matchups, "attack"),
+    [matchups]
+  );
+  const defenseGradient = useMemo(
+    () => buildTrackGradient(matchups, "defense"),
+    [matchups]
+  );
   const summary = useMemo(() => summariseMatchups(matchups), [matchups]);
   const [activeType, setActiveType] = useState<string | null>(null);
 
@@ -60,8 +72,14 @@ export default function TypeWheel({ name, displayName, relations }: TypeWheelPro
         className={styles.ring}
         style={{ "--slice": `${360 / matchups.length}deg` } as CSSProperties}
       >
-        <div className={styles.trackAttack} style={{ background: attackGradient }} />
-        <div className={styles.trackDefense} style={{ background: defenseGradient }} />
+        <div
+          className={styles.trackAttack}
+          style={{ background: attackGradient }}
+        />
+        <div
+          className={styles.trackDefense}
+          style={{ background: defenseGradient }}
+        />
 
         {/* The same icon the types sidebar uses, filling the rings' middle */}
         <div className={styles.core} data-testid="type-wheel-core">
@@ -71,7 +89,9 @@ export default function TypeWheel({ name, displayName, relations }: TypeWheelPro
         {/* A fieldset, so the eighteen buttons announce as one group. Each sits
             on the outer ring but speaks for both. */}
         <fieldset className={styles.segments}>
-          <legend className={styles.segmentsLegend}>{displayName} type matchups</legend>
+          <legend className={styles.segmentsLegend}>
+            {displayName} type matchups
+          </legend>
           {matchups.map((matchup, index) => {
             const description = capitalize(describeMatchup(matchup));
 
@@ -106,31 +126,51 @@ export default function TypeWheel({ name, displayName, relations }: TypeWheelPro
         </fieldset>
       </div>
 
-      {/* Visual only: each spoke already carries the same words in its label */}
-      <p className={styles.readout} data-testid="type-wheel-readout" aria-hidden="true">
-        {active ? (
-          <>
-            <span className={styles.readoutType}>{capitalize(active.type)}</span>
+      {/* One block, so wide layouts can set it beside the rings and narrow ones
+          drop it underneath */}
+      <div className={styles.meta}>
+        {/* Visual only: each spoke already carries the same words in its label */}
+        <p
+          className={styles.readout}
+          data-testid="type-wheel-readout"
+          aria-hidden="true"
+        >
+          {active ? (
+            <>
+              <span className={styles.readoutType}>
+                {capitalize(active.type)}
+              </span>
+              <span className={styles.readings}>
+                <Reading direction="Atk" side={active.attack} />
+                <Reading direction="Def" side={active.defense} />
+              </span>
+            </>
+          ) : (
             <span className={styles.readings}>
-              <Reading direction="Atk" side={active.attack} />
-              <Reading direction="Def" side={active.defense} />
+              <span className={styles.readoutType}>{capitalize(name)}</span>
+              {summary.map((line) => (
+                <span key={line} className={styles.reading}>
+                  {line}
+                </span>
+              ))}
             </span>
-          </>
-        ) : (
-          summary
-        )}
-      </p>
+          )}
+        </p>
 
-      <div className={styles.key} aria-hidden="true">
-        <p className={styles.rings}>Outer ring attacking · inner ring defending</p>
-        <ul className={styles.legend}>
-          {LEGEND.map((tint) => (
-            <li key={tint} className={styles.legendItem}>
-              <span className={`${styles.swatch} ${styles[tint]}`} />
-              {TINT_LABELS[tint]}
-            </li>
-          ))}
-        </ul>
+        <div className={styles.key} aria-hidden="true">
+          <p className={styles.rings}>
+            <span>Outer ring attacking</span>
+            <span>Inner ring defending</span>
+          </p>
+          <ul className={styles.legend}>
+            {LEGEND.map((tint) => (
+              <li key={tint} className={styles.legendItem}>
+                <span className={`${styles.swatch} ${styles[tint]}`} />
+                {TINT_LABELS[tint]}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

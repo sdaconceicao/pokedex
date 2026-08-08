@@ -8,7 +8,6 @@ import { useScrolledPast } from "@/hooks";
 import { formatGeneration } from "@/lib/string";
 import type { TypeDetail } from "@/types";
 import styles from "./TypeHero.module.css";
-import TypeMatchups from "./TypeMatchups";
 import TypeWheel from "./TypeWheel";
 
 interface TypeHeroProps {
@@ -56,24 +55,22 @@ export const TypeHero = ({ type }: TypeHeroProps) => {
             <span className={styles.eyebrow}>Type</span>
             <h1 className={styles.typeName}>{type.displayName}</h1>
             {generation && <span className={styles.generation}>{generation}</span>}
-
-            <dl className={styles.stats}>
-              <StatTile label="Pokemon" value={type.pokemonCount} />
-              <StatTile label="Moves" value={type.moveCount} />
-            </dl>
           </div>
 
-          {/* The sprite's slot, now the advantage wheel — the sprite sits at
-              its centre */}
-          <TypeWheel
-            name={type.name}
-            displayName={type.displayName}
-            relations={type.damageRelations}
-          />
-        </div>
+          {/* Its own cell, so stacking can place it between the name and the
+              counts rather than after both */}
+          <div className={styles.heroWheel}>
+            <TypeWheel
+              name={type.name}
+              displayName={type.displayName}
+              relations={type.damageRelations}
+            />
+          </div>
 
-        <div className={styles.heroFooter}>
-          <TypeMatchups relations={type.damageRelations} />
+          <dl className={styles.stats}>
+            <StatTile label="Pokemon" value={type.pokemonCount} />
+            <StatTile label="Moves" value={type.moveCount} />
+          </dl>
         </div>
       </section>
     </>

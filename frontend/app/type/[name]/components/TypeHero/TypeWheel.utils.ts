@@ -111,14 +111,18 @@ export const getMatchups = (relations: TypeDamageRelations): Matchup[] => {
   }));
 };
 
-/** What the readout says when nothing is picked: one count from each ring. */
-export const summariseMatchups = (matchups: Matchup[]): string => {
+/**
+ * What the readout says when nothing is picked: one count from each ring, a line
+ * apiece so it sits the same way a picked matchup does.
+ */
+export const summariseMatchups = (matchups: Matchup[]): string[] => {
   const superEffective = matchups.filter((m) => m.attack.multiplier === "double").length;
   const weaknesses = matchups.filter((m) => m.defense.multiplier === "double").length;
 
-  return `${superEffective} super effective · ${weaknesses} ${
-    weaknesses === 1 ? "weakness" : "weaknesses"
-  }`;
+  return [
+    `${superEffective} super effective`,
+    `${weaknesses} ${weaknesses === 1 ? "weakness" : "weaknesses"}`,
+  ];
 };
 
 /**

@@ -197,6 +197,16 @@
   gap: 0.0625rem;
 }
 
+/* The readout and the key travel together: below the rings here, and beside
+   them on a wide screen (see the min-width rule at the end). */
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .readoutType {
   font-size: 0.875rem;
   font-weight: 800;
@@ -259,8 +269,12 @@
   gap: 0.25rem;
 }
 
-/* Which ring is which has to survive even where the legend doesn't */
+/* Which ring is which has to survive even where the legend doesn't. A line each,
+   so neither phrase breaks across two. */
 .rings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0;
   font-size: 0.625rem;
   font-weight: 700;
@@ -334,5 +348,47 @@
 @media (prefers-reduced-motion: reduce) {
   .segment {
     transition: none;
+  }
+}
+
+/* ── Wide screens: the key and readout move alongside ──
+   Below this there isn't room for a column beside the rings *and* the type's
+   name, so they stay stacked underneath — which is also where they belong on a
+   tablet or a phone. */
+@media (min-width: 1200px) {
+  .wheel {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
+    width: auto;
+  }
+
+  .meta {
+    /* Ahead of the rings, and right aligned so it reads into them */
+    order: -1;
+    align-items: flex-end;
+    text-align: right;
+    /* Fixed, so a longer reading can't widen the column and shift the rings */
+    width: 12.5rem;
+  }
+
+  .readout,
+  .readings,
+  .key,
+  .rings {
+    align-items: flex-end;
+  }
+
+  /* The element's own value would otherwise beat the block's inherited one */
+  .readout,
+  .rings {
+    text-align: right;
+  }
+
+  /* A standing list beside the rings, as the chart it came from has it */
+  .legend {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
   }
 }
