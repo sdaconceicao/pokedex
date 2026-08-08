@@ -43,9 +43,7 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
           <div className={styles.heroInfo}>
             <span className={styles.eyebrow}>Region</span>
             <h1 className={styles.regionName}>{region.displayName}</h1>
-            {generation && (
-              <span className={styles.generation}>{generation}</span>
-            )}
+            {generation && <span className={styles.generation}>{generation}</span>}
           </div>
 
           {/* Counts for what the footer doesn't list out: the region's Pokemon,
