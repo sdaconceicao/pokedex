@@ -7,8 +7,8 @@ import StatTile from "@/components/StatTile";
 import { useScrolledPast } from "@/hooks";
 import { formatGeneration } from "@/lib/string";
 import type { TypeDetail } from "@/types";
-import styles from "./TypeHero.module.css";
 import TypeWheel from "../TypeWheel/TypeWheel";
+import styles from "./TypeHero.module.css";
 
 interface TypeHeroProps {
   type: TypeDetail;
