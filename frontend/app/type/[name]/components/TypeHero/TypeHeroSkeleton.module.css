@@ -1,0 +1,126 @@
+/* Neutral gradient stand-in: which type tints the real hero isn't known until
+   the data resolves. */
+.hero {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(150deg, #d4d6dc, #b8bac2);
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+.heroBody {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+}
+
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.eyebrowSkeleton {
+  width: 56px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.35);
+  animation: pulse 1.5s infinite;
+  border-radius: 999px;
+}
+
+.nameSkeleton {
+  width: 200px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.35);
+  animation: pulse 1.5s infinite;
+  border-radius: 0.75rem;
+}
+
+.generationSkeleton {
+  width: 132px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.35);
+  animation: pulse 1.5s infinite;
+  border-radius: 999px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(6.5rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.statSkeleton {
+  height: 74px;
+  background: rgba(255, 255, 255, 0.3);
+  animation: pulse 1.5s infinite;
+  border-radius: 0.875rem;
+}
+
+.spriteSkeleton {
+  width: 9.5rem;
+  height: 9.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  animation: pulse 1.5s infinite;
+  border-radius: 50%;
+}
+
+.heroFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.125rem 2.5rem 1.375rem;
+  background: rgba(0, 0, 0, 0.16);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.rowSkeleton {
+  width: 70%;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.3);
+  animation: pulse 1.5s infinite;
+  border-radius: 999px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .heroBody {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+
+  .stats {
+    max-width: none;
+  }
+
+  .spriteSkeleton {
+    order: -1;
+    align-self: center;
+    width: 7rem;
+    height: 7rem;
+  }
+
+  .heroFooter {
+    padding: 1rem 1.5rem 1.25rem;
+  }
+
+  .rowSkeleton {
+    width: 100%;
+  }
+}

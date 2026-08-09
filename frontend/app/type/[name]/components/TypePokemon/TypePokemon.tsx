@@ -7,30 +7,30 @@ import Pagination from "@/components/Pagination";
 import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
 import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
-import { GET_POKEMON_BY_REGION } from "@/lib/queries";
+import { GET_POKEMON_BY_TYPE } from "@/lib/queries";
 import type { Pokemon } from "@/types";
-import styles from "./RegionPokemon.module.css";
+import styles from "./TypePokemon.module.css";
 
-interface RegionPokemonProps {
-  /** The region slug from the route — what the API keys off */
-  region: string;
+interface TypePokemonProps {
+  /** The type slug from the route — what the API keys off */
+  type: string;
 }
 
 const ITEMS_PER_PAGE = 20;
 
-/** The paginated Pokemon list below the region profile. The page lives in the
+/** The paginated Pokemon list below the type profile. The page lives in the
  *  URL, so a page is linkable, survives a reload, and is where Back returns
  *  you to from a Pokemon. */
-export default function RegionPokemon({ region }: RegionPokemonProps) {
+export default function TypePokemon({ type }: TypePokemonProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const searchParams = useSearchParams();
   const page = parsePage(searchParams.get("page"));
 
   const { loading, data, previousData } = useQuery<{
-    pokemonByRegion: { pokemon: Pokemon[]; total: number };
-  }>(GET_POKEMON_BY_REGION, {
+    pokemonByType: { pokemon: Pokemon[]; total: number };
+  }>(GET_POKEMON_BY_TYPE, {
     variables: {
-      region,
+      type,
       limit: ITEMS_PER_PAGE,
       offset: (page - 1) * ITEMS_PER_PAGE,
     },
@@ -39,7 +39,7 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
   // A page change swaps the variables, which empties `data` until the next
   // page lands. Falling back to the last result keeps the pagination bar in
   // place instead of letting it vanish and reappear on every click.
-  const results = data?.pokemonByRegion ?? previousData?.pokemonByRegion;
+  const results = data?.pokemonByType ?? previousData?.pokemonByType;
 
   // pushState rather than router.push: the page belongs to this list, and a
   // real navigation would re-run the server page and re-fetch the profile
@@ -47,20 +47,20 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildBrowseUrl("region", region, nextPage));
+      window.history.pushState(null, "", buildBrowseUrl("type", type, nextPage));
     },
-    [region],
+    [type],
   );
 
   const getPokemonHref = useCallback(
-    (pokemon: Pokemon) => buildBrowseUrl("region", region, page, pokemon.id),
-    [region, page],
+    (pokemon: Pokemon) => buildBrowseUrl("type", type, page, pokemon.id),
+    [type, page],
   );
 
   return (
     <section className={styles.container}>
       <h2 className={styles.heading} ref={headingRef}>
-        Pokemon from this region
+        Pokemon of this type
       </h2>
 
       {loading ? (

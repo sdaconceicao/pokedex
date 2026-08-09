@@ -1,4 +1,4 @@
-import { capitalize, titleCase } from "./string";
+import { capitalize, formatGeneration, titleCase } from "./string";
 
 describe("capitalize", () => {
   it("should capitalize the first character of a string", () => {
@@ -40,5 +40,22 @@ describe("titleCase", () => {
 
   it("should handle empty string", () => {
     expect(titleCase("")).toBe("");
+  });
+});
+
+describe("formatGeneration", () => {
+  it("upper cases the Roman numeral", () => {
+    expect(formatGeneration("generation-i")).toBe("Generation I");
+    expect(formatGeneration("generation-vii")).toBe("Generation VII");
+  });
+
+  it("title cases a value that isn't shaped like a generation slug", () => {
+    expect(formatGeneration("unknown-era")).toBe("Unknown Era");
+  });
+
+  it("returns null when there is no generation", () => {
+    expect(formatGeneration(null)).toBeNull();
+    expect(formatGeneration(undefined)).toBeNull();
+    expect(formatGeneration("")).toBeNull();
   });
 });

@@ -83,6 +83,7 @@ export type Query = {
   pokemonSearch?: Maybe<PokemonList>;
   region?: Maybe<RegionDetail>;
   regions: Array<PokemonRegion>;
+  type?: Maybe<TypeDetail>;
   types: Array<PokemonType>;
 };
 
@@ -129,6 +130,11 @@ export type QueryRegionArgs = {
   name: Scalars['String']['input'];
 };
 
+
+export type QueryTypeArgs = {
+  name: Scalars['String']['input'];
+};
+
 export type RegionDetail = {
   displayName: Scalars['String']['output'];
   generation?: Maybe<Scalars['String']['output']>;
@@ -147,4 +153,29 @@ export type Stats = {
   specialAttack: Scalars['Int']['output'];
   specialDefense: Scalars['Int']['output'];
   speed: Scalars['Int']['output'];
+};
+
+/**
+ * How this type fares in battle, as type names. The `*To` fields are what its own
+ * attacks do; the `*From` fields are what it takes.
+ */
+export type TypeDamageRelations = {
+  doubleDamageFrom: Array<Scalars['String']['output']>;
+  doubleDamageTo: Array<Scalars['String']['output']>;
+  halfDamageFrom: Array<Scalars['String']['output']>;
+  halfDamageTo: Array<Scalars['String']['output']>;
+  noDamageFrom: Array<Scalars['String']['output']>;
+  noDamageTo: Array<Scalars['String']['output']>;
+};
+
+export type TypeDetail = {
+  damageRelations: TypeDamageRelations;
+  displayName: Scalars['String']['output'];
+  generation?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  moveCount: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  pokemonCount: Scalars['Int']['output'];
+  /** The type's own icon, newest generation first. */
+  sprite?: Maybe<Scalars['String']['output']>;
 };
