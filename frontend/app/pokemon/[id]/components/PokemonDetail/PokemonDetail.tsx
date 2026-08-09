@@ -13,8 +13,9 @@ interface PokemonDetailProps {
 
 export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
   const primaryType = pokemon.type[0].toLowerCase();
-  // Sets the --type-* palette every section reads from
-  const typeClass = styles[`type-${primaryType}`];
+  // Sets the --type-* palette every section reads from. Global class, from
+  // typePalette.css, so the type page can tint itself the same way.
+  const typeClass = `type-${primaryType}`;
 
   return (
     <div className={styles.container}>

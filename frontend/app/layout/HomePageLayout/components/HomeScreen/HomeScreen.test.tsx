@@ -101,7 +101,7 @@ describe("HomeScreen", () => {
     render(<HomeScreen types={MOCK_TYPES} />);
 
     const fireLink = screen.getByRole("link", { name: "Browse fire Pokémon" });
-    expect(fireLink).toHaveAttribute("href", "/?type=fire");
+    expect(fireLink).toHaveAttribute("href", "/type/fire");
 
     const typeLinks = screen.getAllByRole("link", {
       name: /Browse .+ Pokémon/,

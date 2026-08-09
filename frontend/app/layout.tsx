@@ -6,6 +6,7 @@ import AuthModalProvider from "./providers/AuthModalProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
 import QueryProvider from "./providers/QueryProvider";
 import "./globals.css";
+import "./typePalette.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -95,7 +95,7 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
           {types.map((type) => (
             <li key={type.name}>
               <Link
-                href={`/?type=${type.name}`}
+                href={`/type/${type.name}`}
                 className={styles.typeLink}
                 aria-label={`Browse ${type.name} Pokémon`}
               >

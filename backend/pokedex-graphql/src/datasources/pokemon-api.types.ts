@@ -220,7 +220,13 @@ export type TypeResponse = {
   names: NameEntry[];
   pokemon: TypePokemon[];
   moves: NamedAPIResource[];
+  sprites: TypeSprites;
 };
+
+export type TypeSprites = Record<
+  string,
+  Record<string, { name_icon: string | null; symbol_icon: string | null }>
+>;
 
 // Location-related types
 export type Location = {

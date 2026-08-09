@@ -552,6 +552,7 @@ export const typeResponse: {
     name: string;
     url: string;
   }>;
+  sprites: Record<string, Record<string, { name_icon: string | null; symbol_icon: string | null }>>;
 } = {
   id: 12,
   name: "grass",
@@ -695,6 +696,16 @@ export const typeResponse: {
       url: "https://pokeapi.co/api/v2/move/71/",
     },
   ],
+  sprites: {
+    "generation-ix": {
+      "scarlet-violet": {
+        name_icon:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/12.png",
+        symbol_icon:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/small/12.png",
+      },
+    },
+  },
 };
 
 export const pokedex = {
