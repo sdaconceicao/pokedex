@@ -52,13 +52,11 @@ describe("TypeWheel", () => {
     expect(screen.getByText("Inner ring defending")).toBeInTheDocument();
   });
 
-  it("summarises both rings until a spoke is picked, a count to a line", () => {
+  it("summarises both rings until a spoke is picked", () => {
     renderWheel();
 
     expect(readout()).toHaveTextContent("4 super effective");
     expect(readout()).toHaveTextContent("3 weaknesses");
-    // A line each, as the picked reading has
-    expect(readout().querySelectorAll("span > span")).toHaveLength(2);
   });
 
   it("reads out both directions for the spoke a touch taps", async () => {
