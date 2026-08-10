@@ -12,6 +12,7 @@ import type {
   RegionDetail,
   TypeDetail,
 } from "../types.js";
+import { sortByNumber } from "../utils/filter.js";
 import {
   convertAbilityLiteToAbility,
   convertPokemonEntityToPokemon,
@@ -122,32 +123,36 @@ export class PokemonAPI extends RESTDataSource {
     };
   }
 
+  // The whole index, already in dex order. Backs an unfiltered pokemonFilter.
+  getPokemonIndex(): PokemonIndex[] {
+    if (!PokemonAPI.isIndexLoaded) {
+      throw new Error("Pokemon index not loaded. Call loadPokemonIndex() first.");
+    }
+
+    return PokemonAPI.pokemonIndex;
+  }
+
+  // Every name match, unpaginated, so it can be composed with other facets.
+  searchPokemonIndex(query: string): PokemonIndex[] {
+    const lowerQuery = query.toLowerCase();
+
+    return this.getPokemonIndex().filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(lowerQuery),
+    );
+  }
+
   // Fast partial string search on name
   getPokemonByName(
     query: string,
     offset: number = 0,
     limit: number = 20,
   ): { pokemon: PokemonIndex[]; total: number } {
-    if (!PokemonAPI.isIndexLoaded) {
-      throw new Error("Pokemon index not loaded. Call loadPokemonIndex() first.");
-    }
+    const allMatches = this.searchPokemonIndex(query);
 
-    const lowerQuery = query.toLowerCase();
-    const allMatches: PokemonIndex[] = [];
-    let totalMatches = 0;
-
-    for (const pokemon of PokemonAPI.pokemonIndex) {
-      if (pokemon.name.toLowerCase().includes(lowerQuery)) {
-        allMatches.push(pokemon);
-        totalMatches++;
-      }
-    }
-
-    const startIndex = offset;
-    const endIndex = offset + limit;
-    const paginatedResults = allMatches.slice(startIndex, endIndex);
-
-    return { pokemon: paginatedResults, total: totalMatches };
+    return {
+      pokemon: allMatches.slice(offset, offset + limit),
+      total: allMatches.length,
+    };
   }
 
   getPokemonByPokedex(pokedex: string): Promise<PokemonIndex[]> {
@@ -155,7 +160,7 @@ export class PokemonAPI extends RESTDataSource {
     return this.get<Pokedex>(`pokedex/${pokedex}`)
       .then((data) => {
         const results = data.pokemon_entries.map((entry) => toPokemonIndex(entry.pokemon_species));
-        return results;
+        return sortByNumber(results);
       })
       .catch((error) => {
         logger.error(`Error fetching Pokemon from pokedex ${pokedex}:`, error);
@@ -192,9 +197,7 @@ export class PokemonAPI extends RESTDataSource {
         });
       });
 
-      const mergedPokemon = Array.from(pokemonMap.values()).sort((a, b) =>
-        a.name.localeCompare(b.name),
-      );
+      const mergedPokemon = sortByNumber(Array.from(pokemonMap.values()));
 
       logger.info(`Total unique Pokemon in region ${region}: ${mergedPokemon.length}`);
       return mergedPokemon;
@@ -234,7 +237,7 @@ export class PokemonAPI extends RESTDataSource {
     return this.get<TypeResponse>(`type/${type}`)
       .then((data) => {
         const results = data.pokemon.map((result) => toPokemonIndex(result.pokemon));
-        return results;
+        return sortByNumber(results);
       })
       .catch((error) => {
         logger.error(`Error fetching Pokemon of type ${type}:`, error);
