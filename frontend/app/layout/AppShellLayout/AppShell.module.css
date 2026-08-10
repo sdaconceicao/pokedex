@@ -3,8 +3,13 @@
   --sidebar-width: 17rem;
   --sidebar-width-collapsed: 4.5rem;
   --drawer-width: 18.5rem;
-  --bar-gradient: linear-gradient(180deg, #e23a3a, var(--layout-primary-background));
-  --bar-shadow: 0 2px 12px rgba(211, 43, 43, 0.35);
+  /* Both derived from the tint scale (relative `oklch(from …)`) rather than
+     pinned to the Pokédex red directly, so a rebrand that swaps `--tint`
+     carries the header band along with it. `--tint-800` is lago's own
+     "one step lighter" rung above the base tint; the shadow reuses the
+     tint's hue/lightness/chroma verbatim at low alpha. */
+  --bar-gradient: linear-gradient(180deg, var(--tint-800), var(--tint));
+  --bar-shadow: 0 2px 12px oklch(from var(--tint) l c h / 35%);
 
   display: flex;
   height: 100vh;
@@ -37,7 +42,7 @@
   gap: 0.5rem;
   padding: 0 0.75rem 0 1rem;
   background: var(--bar-gradient);
-  color: #fff;
+  color: var(--highlight-foreground);
   box-shadow: var(--bar-shadow);
 }
 
@@ -65,8 +70,13 @@
 }
 
 /* Drawer-only dismiss: on mobile the open drawer sits over the header,
-   putting the toggle out of reach */
-.drawerClose {
+   putting the toggle out of reach.
+   This, `.sidebarToggle` and `.railButton` below are now lago `Button`s.
+   lago's own sizing rule (`._button_*`, real specificity, not the
+   zero-specificity `:where()` colour rules) would otherwise fight a size
+   this bespoke, so each is qualified by its actual parent — a true
+   ancestor relationship, not a specificity hack — to outrank it. */
+.brand .drawerClose {
   display: none;
   align-items: center;
   justify-content: center;
@@ -77,12 +87,12 @@
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.16);
-  color: #fff;
+  color: var(--highlight-foreground);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
-.drawerClose:hover {
+.brand .drawerClose:hover {
   background: rgba(255, 255, 255, 0.28);
 }
 
@@ -99,7 +109,7 @@
   display: none;
 }
 
-.railButton {
+.rail .railButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +117,7 @@
   height: 40px;
   padding: 0;
   border: none;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-xl);
   background: transparent;
   color: var(--muted-foreground);
   cursor: pointer;
@@ -116,9 +126,9 @@
     color 0.15s ease;
 }
 
-.railButton:hover {
+.rail .railButton:hover {
   background: var(--layout-secondary-background);
-  color: var(--layout-primary-background);
+  color: var(--tint);
 }
 
 /* ── Content column: header + page ───────────────── */
@@ -142,11 +152,11 @@
   /* Left padding clears the half-circle straddling the edge */
   padding: 0 1rem 0 1.75rem;
   background: var(--bar-gradient);
-  color: #fff;
+  color: var(--highlight-foreground);
   box-shadow: var(--bar-shadow);
 }
 
-.sidebarToggle {
+.header .sidebarToggle {
   position: absolute;
   left: 0;
   top: 50%;
@@ -158,17 +168,17 @@
   width: 26px;
   height: 26px;
   padding: 0;
-  background: var(--layout-primary-background);
+  background: var(--tint);
   border: 1px solid var(--border-subtle);
   border-radius: 50%;
-  color: #fff;
+  color: var(--highlight-foreground);
   cursor: pointer;
   transition:
     background 0.15s ease,
     border-color 0.15s ease;
 }
 
-.sidebarToggle:hover {
+.header .sidebarToggle:hover {
   background: var(--layout-primary-background-hover);
   border-color: var(--border);
 }
@@ -202,12 +212,16 @@
   flex-shrink: 0;
 }
 
-/* Only top-level header buttons (e.g. Sign In) — not buttons
-   nested in dropdown menus */
-.headerRight > button {
+/* Only the top-level Sign In button — not buttons nested in dropdown menus,
+   and, now that `UserAvatar` renders its `MenuTrigger` Button as a direct
+   child here too (no more wrapper div), not the avatar trigger either.
+   React Aria stamps `aria-haspopup` on a MenuTrigger's button, so excluding
+   it is enough to tell the two apart without needing a class from a file
+   this component doesn't own. */
+.headerRight > button:not([aria-haspopup]) {
   background: rgba(255, 255, 255, 0.14);
   border-color: rgba(255, 255, 255, 0.45);
-  color: #fff;
+  color: var(--highlight-foreground);
   border-radius: 999px;
   font-weight: 600;
 }
@@ -303,7 +317,7 @@
     display: block;
   }
 
-  .drawerClose,
+  .brand .drawerClose,
   .headerLogo {
     display: flex;
   }
@@ -319,7 +333,7 @@
   /* There is no seam to straddle here — the drawer is an overlay — and the
      header wraps to two rows, so the button sits in the flow instead, as a
      rounded box sized for touch rather than a seam-mounted circle. */
-  .sidebarToggle {
+  .header .sidebarToggle {
     position: static;
     transform: none;
     width: 40px;
@@ -332,7 +346,7 @@
     border-color: rgba(255, 255, 255, 0.45);
   }
 
-  .sidebarToggle:hover {
+  .header .sidebarToggle:hover {
     background: rgba(255, 255, 255, 0.28);
     border-color: rgba(255, 255, 255, 0.65);
   }

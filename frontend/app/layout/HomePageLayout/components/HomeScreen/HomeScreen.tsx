@@ -3,11 +3,11 @@
 import { Bell01, Compass01, UserPlus01 } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { useCallback, useRef } from "react";
-import Button from "@/components/Button";
 import PokeballMark from "@/components/PokeballMark";
 import TypeTag from "@/components/TypeTag";
 import { useIsAuthenticated } from "@/hooks/useAuth";
 import FeatureTile from "@/layout/HomePageLayout/components/FeatureTile";
+import { Button, Heading } from "@/lib/lago";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import type { PokemonType } from "@/types";
 import { FEATURES } from "./features";
@@ -43,22 +43,22 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
       <section className={styles.hero}>
         <PokeballMark className={styles.heroPokeball} />
         <p className={styles.eyebrow}>Your Pokémon companion</p>
-        <h1 className={styles.heroTitle}>
+        <Heading level={1} className={styles.heroTitle}>
           Every Pokémon.
           <span className={styles.heroTitleAccent}>The Poképendium.</span>
-        </h1>
+        </Heading>
         <p className={styles.heroSubtitle}>
           Search for every Pokémon by name, browse by type, region, or regional Pokedex, and see
           there full stats, abilities, and special forms.
         </p>
         <div className={styles.heroActions}>
           {isAuthenticated ? (
-            <Button size="lg" onClick={scrollToTypes}>
+            <Button size="lg" onPress={scrollToTypes}>
               <Compass01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
               Start exploring
             </Button>
           ) : (
-            <Button size="lg" onClick={openSignUp}>
+            <Button size="lg" onPress={openSignUp}>
               <UserPlus01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
               Sign Up today
             </Button>
@@ -72,9 +72,9 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
 
       <section className={styles.section} aria-labelledby="home-features-heading">
         <p className={styles.sectionEyebrow}>How it works</p>
-        <h2 id="home-features-heading" className={styles.sectionTitle}>
+        <Heading level={2} id="home-features-heading" className={styles.sectionTitle}>
           Find your Pokémon
-        </h2>
+        </Heading>
         <ul className={styles.featureGrid}>
           {FEATURES.map((feature) => (
             <FeatureTile key={feature.title} {...feature} />
@@ -88,9 +88,9 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
         aria-labelledby="home-types-heading"
       >
         <p className={styles.sectionEyebrow}>Start exploring</p>
-        <h2 id="home-types-heading" className={styles.sectionTitle}>
+        <Heading level={2} id="home-types-heading" className={styles.sectionTitle}>
           Start with a type
-        </h2>
+        </Heading>
         <ul className={styles.typeGrid}>
           {types.map((type) => (
             <li key={type.name}>
@@ -112,9 +112,9 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
         aria-labelledby="home-updates-heading"
       >
         <p className={styles.sectionEyebrow}>What&apos;s new</p>
-        <h2 id="home-updates-heading" className={styles.sectionTitle}>
+        <Heading level={2} id="home-updates-heading" className={styles.sectionTitle}>
           Latest updates
-        </h2>
+        </Heading>
         <ul className={styles.updateList}>
           {UPDATES.map((update) => (
             <li key={update.title} className={styles.updateRow}>
@@ -123,7 +123,9 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
               </time>
               <div>
                 <div className={styles.updateHeader}>
-                  <h3 className={styles.updateTitle}>{update.title}</h3>
+                  <Heading level={3} className={styles.updateTitle}>
+                    {update.title}
+                  </Heading>
                   <span
                     className={`${styles.updateTag} ${
                       update.tag === "New" ? styles.updateTagNew : styles.updateTagImproved

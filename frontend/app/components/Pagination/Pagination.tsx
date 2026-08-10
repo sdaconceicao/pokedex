@@ -1,8 +1,7 @@
-import { ChevronLeft, ChevronRight } from "@untitled-ui/icons-react";
-import { useCallback, useMemo } from "react";
-import Button from "@/components/Button";
+import { useMemo } from "react";
+import { Pagination as LagoPagination } from "@/lib/lago";
 import styles from "./Pagination.module.css";
-import { getEndItem, getPageNumbers, getStartItem, getTotalPages } from "./Pagination.util";
+import { getEndItem, getStartItem, getTotalPages } from "./Pagination.util";
 
 interface PaginationProps {
   currentPage: number;
@@ -11,6 +10,9 @@ interface PaginationProps {
   itemsPerPage: number;
 }
 
+/** The floating bar under a Pokemon list. Keeps the app's own page/items
+ *  props so its call sites don't change, and hands the truncation — which
+ *  page numbers to show, where the ellipsis goes — to lago's Pagination. */
 export default function Pagination({
   currentPage,
   onPageChange,
@@ -29,29 +31,6 @@ export default function Pagination({
     () => getTotalPages(totalItems, itemsPerPage),
     [totalItems, itemsPerPage],
   );
-  const pageNumbers = useMemo(
-    () => getPageNumbers(currentPage, totalPages),
-    [currentPage, totalPages],
-  );
-
-  const handlePrevious = useCallback(() => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
-    }
-  }, [currentPage, onPageChange]);
-
-  const handleNext = useCallback(() => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
-    }
-  }, [onPageChange, currentPage, totalPages]);
-
-  const handlePageClick = useCallback(
-    (page: number) => {
-      onPageChange(page);
-    },
-    [onPageChange],
-  );
 
   if (totalPages <= 1) {
     return null;
@@ -63,44 +42,13 @@ export default function Pagination({
         Showing {startItem}-{endItem} of {totalItems} Pokemon
       </div>
 
-      <div className={styles.controls}>
-        <Button
-          onClick={handlePrevious}
-          disabled={currentPage === 1}
-          variant="primary"
-          size="sm"
-          className={styles.previousNext}
-          aria-label="Previous page"
-        >
-          <ChevronLeft width={18} height={18} />
-        </Button>
-
-        <div className={styles.pageNumbers}>
-          {pageNumbers.map((page) => (
-            <Button
-              key={page}
-              onClick={() => typeof page === "number" && handlePageClick(page)}
-              variant={page === currentPage ? "primary" : "outline"}
-              size="sm"
-              disabled={typeof page === "string"}
-              className={`${typeof page === "string" ? styles.ellipsis : ""}`}
-            >
-              {page}
-            </Button>
-          ))}
-        </div>
-
-        <Button
-          onClick={handleNext}
-          disabled={currentPage === totalPages}
-          variant="primary"
-          size="sm"
-          className={styles.previousNext}
-          aria-label="Next page"
-        >
-          <ChevronRight width={18} height={18} />
-        </Button>
-      </div>
+      <LagoPagination
+        page={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+        aria-label="Pokemon pagination"
+        className={styles.nav}
+      />
     </div>
   );
 }

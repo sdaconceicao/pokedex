@@ -5,6 +5,7 @@ import Link from "next/link";
 import { type FunctionComponent, useState } from "react";
 import PokeballMark from "@/components/PokeballMark";
 import PokemonTypePill from "@/components/PokemonTypePill";
+import { Heading } from "@/lib/lago";
 import type { Pokemon } from "@/types/graphql";
 import css from "./PokemonCard.module.css";
 import { formatPokemonName, getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";
@@ -33,7 +34,9 @@ export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href
       >
         <PokeballMark className={css.cardWatermark} />
         <div className={css.cardHeader}>
-          <h3 className={css.pokemonName}>{formattedName}</h3>
+          <Heading level={3} className={css.pokemonName}>
+            {formattedName}
+          </Heading>
           <span className={css.pokemonId}>{dexNumber}</span>
         </div>
         <div className={css.typeList}>

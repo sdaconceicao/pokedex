@@ -23,30 +23,6 @@
   gap: 0.5rem;
 }
 
-.eyebrowSkeleton {
-  width: 56px;
-  height: 14px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
-.nameSkeleton {
-  width: 200px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 0.75rem;
-}
-
-.generationSkeleton {
-  width: 132px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
 .stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(6.5rem, 1fr));
@@ -56,19 +32,20 @@
   max-width: 22rem;
 }
 
-.statSkeleton {
-  height: 74px;
-  background: rgba(255, 255, 255, 0.3);
-  animation: pulse 1.5s infinite;
+/* The corner and size lago's Skeleton doesn't take a prop for. Compounded
+   with the parent class, not just the leaf alone, so it outweighs Skeleton's
+   own same-specificity default regardless of which stylesheet loads first. */
+.heroInfo .nameSkeleton {
+  border-radius: 0.75rem;
+}
+
+.stats .statSkeleton {
   border-radius: 0.875rem;
 }
 
-.spriteSkeleton {
+.heroBody .spriteSkeleton {
   width: 9.5rem;
   height: 9.5rem;
-  background: rgba(255, 255, 255, 0.3);
-  animation: pulse 1.5s infinite;
-  border-radius: 50%;
 }
 
 .heroFooter {
@@ -78,24 +55,6 @@
   padding: 1.125rem 2.5rem 1.375rem;
   background: rgba(0, 0, 0, 0.16);
   border-top: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.rowSkeleton {
-  width: 70%;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.3);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
 }
 
 /* ── Responsive ──────────────────────────────────── */
@@ -109,7 +68,7 @@
     max-width: none;
   }
 
-  .spriteSkeleton {
+  .heroBody .spriteSkeleton {
     order: -1;
     align-self: center;
     width: 7rem;
@@ -120,7 +79,9 @@
     padding: 1rem 1.5rem 1.25rem;
   }
 
-  .rowSkeleton {
-    width: 100%;
+  /* Skeleton's width is inline (a prop, not a class), so overriding it at
+     this breakpoint needs !important to win over that inline style. */
+  .heroFooter .rowSkeleton {
+    width: 100% !important;
   }
 }

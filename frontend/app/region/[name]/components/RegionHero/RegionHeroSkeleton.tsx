@@ -1,3 +1,4 @@
+import { Skeleton } from "@/lib/lago";
 import styles from "./RegionHeroSkeleton.module.css";
 
 const STAT_KEYS = ["pokemon", "locations"];
@@ -8,19 +9,33 @@ export default function RegionHeroSkeleton() {
     <div className={styles.hero}>
       <div className={styles.heroBody}>
         <div className={styles.heroInfo}>
-          <div className={styles.eyebrowSkeleton}></div>
-          <div className={styles.nameSkeleton}></div>
-          <div className={styles.generationSkeleton}></div>
+          <Skeleton variant="line" width={72} height={14} />
+          {/* The one labelled shape — lago's convention for a region built
+              from several — so the hero announces a single loading status. */}
+          <Skeleton
+            variant="box"
+            width={240}
+            height={52}
+            className={styles.nameSkeleton}
+            label="Loading region"
+          />
+          <Skeleton variant="line" width={132} height={30} />
         </div>
         <div className={styles.stats}>
           {STAT_KEYS.map((key) => (
-            <div key={key} className={styles.statSkeleton}></div>
+            <Skeleton key={key} variant="box" height={74} className={styles.statSkeleton} />
           ))}
         </div>
       </div>
       <div className={styles.heroFooter}>
         {CHIP_ROW_KEYS.map((key) => (
-          <div key={key} className={styles.factRowSkeleton}></div>
+          <Skeleton
+            key={key}
+            variant="line"
+            width="60%"
+            height={24}
+            className={styles.rowSkeleton}
+          />
         ))}
       </div>
     </div>

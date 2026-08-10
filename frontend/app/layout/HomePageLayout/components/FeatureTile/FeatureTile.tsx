@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Heading } from "@/lib/lago";
 import styles from "./FeatureTile.module.css";
 
 export type FeatureTileAccent = "red" | "blue" | "purple" | "green";
@@ -20,7 +21,9 @@ export const FeatureTile: React.FunctionComponent<FeatureTileProps> = ({
     <li className={styles.featureCard}>
       <div className={styles.featureHeader}>
         <span className={`${styles.featureIcon} ${styles[accent]}`}>{icon}</span>
-        <h3 className={styles.featureTitle}>{title}</h3>
+        <Heading level={3} className={styles.featureTitle}>
+          {title}
+        </Heading>
       </div>
       <p className={styles.featureBody}>{body}</p>
     </li>

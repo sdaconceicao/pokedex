@@ -2,10 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import Label from "@/components/Label";
-import Password from "@/components/Password";
+import { Button, Form, Password, TextField } from "@/lib/lago";
 import styles from "./AuthButtons.module.css";
 
 interface LoginFormProps {
@@ -53,55 +50,50 @@ export default function LoginForm({
     }
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
     if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
     if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.loginForm}>
+    // `validationBehavior="aria"` keeps the browser's native constraint-validation
+    // popups out of the way so the manual checks above stay the single source of
+    // truth for errors, same as the hand-rolled form before it.
+    <Form onSubmit={handleSubmit} validationBehavior="aria">
       {submitError && <div className={styles.submitError}>{submitError}</div>}
 
-      <div className={styles.formGroup}>
-        <Label htmlFor="email" required>
-          Email
-        </Label>
-        <Input
-          id="email"
-          type="email"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="Enter your email"
-          autoComplete="email"
-          error={!!errors.email}
-          errorMessage={errors.email}
-          disabled={isLoading}
-        />
-      </div>
+      <TextField
+        type="email"
+        label="Email"
+        isRequired
+        value={email}
+        onChange={handleEmailChange}
+        placeholder="Enter your email"
+        autoComplete="email"
+        isInvalid={!!errors.email}
+        errorMessage={errors.email}
+        isDisabled={isLoading}
+      />
 
-      <div className={styles.formGroup}>
-        <Label htmlFor="password" required>
-          Password
-        </Label>
-        <Password
-          id="password"
-          value={password}
-          onChange={handlePasswordChange}
-          placeholder="Enter your password"
-          autoComplete="current-password"
-          error={!!errors.password}
-          errorMessage={errors.password}
-          disabled={isLoading}
-        />
-      </div>
+      <Password
+        label="Password"
+        isRequired
+        value={password}
+        onChange={handlePasswordChange}
+        placeholder="Enter your password"
+        autoComplete="current-password"
+        isInvalid={!!errors.password}
+        errorMessage={errors.password}
+        isDisabled={isLoading}
+      />
 
       <div className={styles.formActions}>
-        <Button type="submit" variant="primary" disabled={isLoading}>
+        <Button type="submit" variant="primary" isDisabled={isLoading}>
           {isLoading ? "Signing in…" : "Sign In"}
         </Button>
       </div>
@@ -117,6 +109,6 @@ export default function LoginForm({
           Sign up
         </button>
       </p>
-    </form>
+    </Form>
   );
 }

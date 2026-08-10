@@ -2,7 +2,7 @@
 
 import { ArrowLeft } from "@untitled-ui/icons-react";
 import { useRouter } from "next/navigation";
-import Button from "@/components/Button";
+import { Button, Link } from "@/lib/lago";
 import styles from "./BackButton.module.css";
 
 interface BackButtonProps {
@@ -22,19 +22,34 @@ export default function BackButton({ href, size = "md", children }: BackButtonPr
   );
 
   if (href) {
+    // Link, not Button: react-aria's `useButton` never talks to a router, so
+    // a Button here could only fake navigation from `onPress`, losing the
+    // modifier-click handling — open in a new tab, new window — a real
+    // anchor gets for free. The app's RouterProvider gives a Link's `href` a
+    // client-side transition automatically. Link carries no variant styling
+    // of its own, though, so the primary-button look is restated below from
+    // lago's public tokens rather than the private, size-scoped classes a
+    // real Button reads its own geometry from.
     return (
-      <Button as="link" href={href} variant="primary" size={size} className={styles.backButton}>
+      <Link href={href} className={`${styles.backButton} ${styles.linkButton} ${styles[size]}`}>
         {content}
-      </Button>
+      </Link>
     );
   }
 
+  // No fixed destination to point at, so this is a real action, not a link:
+  // a Button driven by `onPress`. `render` swaps in the gap and hover-arrow
+  // classes below — passing `className` to Button directly doesn't merge it
+  // with Button's own classes the way every other lago component does, so
+  // this reaches into the DOM props `render` is handed instead.
   return (
     <Button
       variant="primary"
       size={size}
-      onClick={() => router.back()}
-      className={styles.backButton}
+      onPress={() => router.back()}
+      render={(props) => (
+        <button {...props} className={`${props.className} ${styles.backButton}`} />
+      )}
     >
       {content}
     </Button>

@@ -8,15 +8,24 @@
   overflow-y: auto;
 }
 
-.section {
+/* Boosted past a plain `.section`: lago's own Disclosure root carries a
+   fixed 200px width (`._disclosure_*`, real specificity, not the
+   zero-specificity `:where()` colour rules), which would otherwise clip the
+   sidebar's actual width. */
+.navbar .section {
+  width: 100%;
   margin-bottom: 0.5rem;
 }
 
-.sectionHeader {
+/* Same tie-breaking concern for the header: it's now a lago `Button` (on
+   Disclosure's `trigger` slot) rather than a native `<button>`, and lago's
+   own button base rule sits at the same one-class specificity. */
+.section .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: calc(100% - 1rem);
+  height: auto;
   background: transparent;
   border: 0;
   border-radius: 0.5rem;
@@ -29,9 +38,9 @@
     color 0.15s ease;
 }
 
-.sectionHeader:hover {
+.section .sectionHeader:hover {
   background-color: var(--layout-tertiary-background);
-  color: var(--layout-primary-background);
+  color: var(--tint);
 }
 
 .sectionHeaderLeft {
@@ -57,8 +66,18 @@
   transition: transform 0.15s ease-in-out;
 }
 
-.chevronOpen {
+/* `data-expanded` is Disclosure's own reflection of its (uncontrolled) open
+   state, landing on the same root `.section` is merged onto — no more
+   `open ? styles.chevronOpen : ""` ternary needed. */
+.section[data-expanded] .chevron {
   transform: rotate(180deg);
+}
+
+/* lago's DisclosurePanel wraps whatever it's given in its own unclassed
+   `<div>`, which its stylesheet pads — reset that back to flush so `.list`'s
+   own spacing (matching `.listItem`/`.navItem` below) is the only inset. */
+.section :global(.react-aria-DisclosurePanel) > div {
+  padding: 0;
 }
 
 .list {
@@ -69,27 +88,4 @@
 
 .listItem {
   margin-bottom: 0.125rem;
-}
-
-.link {
-  display: block;
-  padding: 0.4rem 0.75rem;
-  margin: 0 0.5rem;
-  border-radius: 0.5rem;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-  text-decoration: none;
-  color: inherit;
-}
-
-.link:hover {
-  background-color: var(--layout-secondary-background);
-  color: var(--layout-primary-background);
-}
-
-.active {
-  background-color: var(--layout-primary-background);
-  color: var(--layout-primary-foreground);
-  font-weight: 600;
 }

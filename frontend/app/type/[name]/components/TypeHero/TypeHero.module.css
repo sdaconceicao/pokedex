@@ -6,7 +6,7 @@
   flex-direction: column;
   background: linear-gradient(150deg, var(--type-grad-1, #9da0aa), var(--type-grad-2, #7c7f8a));
   border-radius: 1.5rem;
-  color: #fff;
+  color: var(--highlight-foreground);
   overflow: hidden;
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.06),

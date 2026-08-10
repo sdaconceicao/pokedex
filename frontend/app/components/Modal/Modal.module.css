@@ -1,171 +1,79 @@
-/* Backdrop */
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+/* lago's Modal only forwards a custom className to react-aria's ModalOverlay
+   (the full-viewport positioning layer) — the actual panel underneath it
+   (`.react-aria-Modal`) is rendered with a fixed class list that props can't
+   reach. Everything below that needs to size the panel itself therefore has
+   to come in as a descendant rule through that stable, unhashed class rather
+   than through a hashed module class the way lago's own CSS does it. */
+
+.overlay {
   backdrop-filter: blur(4px);
 }
 
-/* Dialog element */
-.dialog {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
-  padding: 0;
-  border: none;
-  border-radius: 0.75rem;
-  background: var(--background);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  z-index: 1000;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow: hidden;
-  animation: modalFadeIn 0.2s ease-out;
-  isolation: isolate;
-}
-
-/* Remove default dialog styling */
-.dialog::backdrop {
-  background: transparent;
-}
-
-/* Focus management */
-.dialog:focus {
-  outline: none;
-}
-
-/* Content container */
-.content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-}
-
-/* Header */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--layout-quaternary-background);
-  flex-shrink: 0;
-}
-
-.title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.25;
-  color: var(--foreground);
-}
-
-.closeButton {
-  flex-shrink: 0;
-  margin-left: auto;
-  padding: 0.5rem;
-  min-width: auto;
-  height: auto;
-}
-
-/* Body */
-.body {
-  flex: 1;
-  /* Published because this is a scroll container: anything sticking to its top
-     (HeroToolbar) has to know how far in its content starts */
-  --scroll-pad-top: 1.5rem;
-  padding: var(--scroll-pad-top);
-  overflow-y: auto;
-  min-height: 0;
-}
-
-/* Footer */
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 0 1.5rem 1.5rem 1.5rem;
-  border-top: 1px solid var(--layout-quaternary-background);
-  flex-shrink: 0;
-}
-
-/* Size variants */
-.sm {
+/* Size variants. `max-width` is restated per size because lago's own default
+   (`min(500px, 90vw)`) would otherwise clip lg/xl down to 500px. */
+.sm :global(.react-aria-Modal) {
   width: 400px;
+  max-width: min(400px, 90vw);
   min-height: 200px;
 }
 
-.md {
+.md :global(.react-aria-Modal) {
   width: 600px;
+  max-width: min(600px, 90vw);
   min-height: 300px;
 }
 
-.lg {
+.lg :global(.react-aria-Modal) {
   width: 800px;
+  max-width: min(800px, 90vw);
   min-height: 400px;
 }
 
-.xl {
+.xl :global(.react-aria-Modal) {
   width: 1000px;
+  max-width: min(1000px, 90vw);
   min-height: 500px;
 }
 
-/* Responsive adjustments */
+/* Published because Dialog is a scroll container: anything sticking to its
+   top (HeroToolbar) has to know how far in its content starts. The value
+   matches Dialog's own padding (lago's --spacing-6) so it stays true if that
+   ever changes. */
+.body {
+  --scroll-pad-top: var(--spacing-6);
+}
+
+/* Below the breakpoint the modal fills the viewport instead of floating
+   centered, same as the panel it replaces. */
 @media (max-width: 640px) {
-  .dialog {
+  .sm :global(.react-aria-Modal),
+  .md :global(.react-aria-Modal),
+  .lg :global(.react-aria-Modal),
+  .xl :global(.react-aria-Modal) {
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    transform: none;
+    margin: 0;
+    translate: none;
     width: 100vw;
     height: 100vh;
     max-width: none;
     max-height: none;
+    min-height: 100vh;
     border-radius: 0;
+  }
+
+  .sm :global(.react-aria-Modal[data-entering]),
+  .md :global(.react-aria-Modal[data-entering]),
+  .lg :global(.react-aria-Modal[data-entering]),
+  .xl :global(.react-aria-Modal[data-entering]) {
     animation: modalSlideIn 0.3s ease-out;
   }
 
-  .sm,
-  .md,
-  .lg,
-  .xl {
-    width: 100vw;
-    height: 100vh;
-    min-height: 100vh;
-  }
-
-  .header {
-    padding: 1rem;
-  }
-
   .body {
-    --scroll-pad-top: 1rem;
-    padding: var(--scroll-pad-top);
-  }
-
-  .footer {
-    padding: 0 1rem 1rem 1rem;
-  }
-}
-
-/* Animation for modal appearance */
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    --scroll-pad-top: var(--spacing-4);
   }
 }
 

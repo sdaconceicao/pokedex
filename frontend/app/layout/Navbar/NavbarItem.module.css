@@ -1,9 +1,13 @@
-.navItem {
+/* Doubled: lago's own `._link_*` rule sets color/text-decoration/radius at
+   the same (one-class) specificity, and NavbarItem has no wrapping element
+   of its own to qualify through instead — repeating the class is the usual
+   way to out-rank a tied selector without one. */
+.navItem.navItem {
   display: block;
   padding: 0.4rem 0.75rem;
   margin: 0 0.5rem;
   border-radius: 0.5rem;
-  color: var(--layout-tertiary-foreground);
+  color: var(--gray-1100);
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 500;
@@ -14,16 +18,19 @@
 
 .navItem:hover {
   background-color: var(--layout-secondary-background);
-  color: var(--layout-primary-background);
+  color: var(--tint);
 }
 
-.navItem.active {
-  background-color: var(--layout-primary-background);
-  color: var(--layout-primary-foreground);
+/* `data-current` is lago's own reflection of the `aria-current` NavbarItem
+   sets on the active link — see NavbarItem.tsx — rather than a plain class,
+   so screen readers get the same "current page" signal the styling does. */
+.navItem[data-current] {
+  background-color: var(--tint);
+  color: var(--highlight-foreground);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(211, 43, 43, 0.3);
+  box-shadow: 0 2px 8px oklch(from var(--tint) l c h / 30%);
 }
 
-.navItem.active:hover {
+.navItem[data-current]:hover {
   background-color: var(--layout-primary-background-hover);
 }

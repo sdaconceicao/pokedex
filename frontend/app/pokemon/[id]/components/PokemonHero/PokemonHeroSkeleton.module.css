@@ -28,22 +28,6 @@
   overflow: hidden;
 }
 
-.backButtonSkeleton {
-  width: 175px;
-  height: 38px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 0.375rem;
-}
-
-.numberSkeleton {
-  width: 64px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
 .heroInfo {
   display: flex;
   flex-direction: column;
@@ -51,25 +35,9 @@
   gap: 0.75rem;
 }
 
-.nameSkeleton {
-  width: 240px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 0.75rem;
-}
-
 .typesContainer {
   display: flex;
   gap: 0.5rem;
-}
-
-.typeSkeleton {
-  width: 80px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
 }
 
 .heroImage {
@@ -79,22 +47,13 @@
   margin: -3rem -6.5rem -3.5rem 0;
 }
 
-.imageSkeleton {
-  width: 340px;
-  height: 340px;
-  background: rgba(255, 255, 255, 0.3);
-  animation: pulse 1.5s infinite;
-  border-radius: 50%;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
+/* lago's Skeleton shimmers in --gray tones, sized for placement on a plain
+   surface. This hero is its own tinted gradient, so every placeholder here
+   is retinted to the same translucent white the rest of the hero chrome
+   uses, rather than blending into the background. */
+.onGradient {
+  --skeleton-surface-color: rgb(255 255 255 / 0.35);
+  --skeleton-shimmer-color: rgb(255 255 255 / 0.6);
 }
 
 /* ── Responsive ──────────────────────────────────── */
@@ -116,10 +75,5 @@
     order: -1;
     justify-content: center;
     margin: -2.5rem 0 0;
-  }
-
-  .imageSkeleton {
-    width: 240px;
-    height: 240px;
   }
 }

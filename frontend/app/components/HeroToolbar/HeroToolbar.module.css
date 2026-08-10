@@ -25,8 +25,8 @@
   height: 44px;
   padding: 0 0.625rem 0 0.75rem;
   border-radius: 0 0 0.875rem 0.875rem;
-  background: var(--type-accent, var(--layout-primary-background));
-  color: #fff;
+  background: var(--type-accent, var(--tint));
+  color: var(--highlight-foreground);
   box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.45);
   animation: dropIn 0.18s ease-out;
 }

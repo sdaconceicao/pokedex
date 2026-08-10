@@ -15,7 +15,9 @@ export default function PokemonListSkeleton({ count = 20 }: PokemonListSkeletonP
   return (
     <div className={styles.grid}>
       {keys.map((key) => (
-        <PokemonCardSkeleton key={key} />
+        // Only the first card gets a label — lago's Skeleton convention —
+        // so the grid announces one "loading" status, not one per card.
+        <PokemonCardSkeleton key={key} label={key === 0 ? "Loading Pokémon" : undefined} />
       ))}
     </div>
   );

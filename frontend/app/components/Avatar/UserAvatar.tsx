@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Avatar, Button, Heading, Menu, MenuItem, MenuSection, MenuTrigger } from "@/lib/lago";
+import { withButtonClass } from "@/lib/lagoButton";
 import styles from "./UserAvatar.module.css";
 
 interface UserAvatarProps {
@@ -9,60 +10,31 @@ interface UserAvatarProps {
   isLogoutLoading?: boolean;
 }
 
-function getInitials(email: string): string {
-  const prefix = email.split("@")[0];
-  const parts = prefix.split(/[._-]/).filter(Boolean);
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return parts[0].slice(0, 2).toUpperCase();
-}
+const LOGOUT_KEY = "logout";
 
+// `Avatar`'s initials fallback already splits an email on "._-" the same way
+// the old hand-rolled `getInitials` did (see its "Initials" story), so there's
+// nothing left for a local helper to do.
 export default function UserAvatar({ email, onLogout, isLogoutLoading = false }: UserAvatarProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [isOpen]);
-
   return (
-    <div className={styles.wrapper} ref={wrapperRef}>
-      <button
-        type="button"
-        className={styles.avatar}
-        onClick={() => setIsOpen((v) => !v)}
-        aria-label="Account menu"
-        aria-expanded={isOpen}
-        aria-haspopup="true"
+    <MenuTrigger>
+      {/* react-aria wires aria-haspopup/aria-expanded onto this trigger itself,
+          so the aria-label is the only accessibility prop left to supply. */}
+      {/* Styled through `render` rather than `className` — see withButtonClass */}
+      <Button aria-label="Account menu" variant="quiet" render={withButtonClass(styles.trigger)}>
+        <Avatar name={email} className={styles.avatar} />
+      </Button>
+      <Menu
+        onAction={(key) => {
+          if (key === LOGOUT_KEY) onLogout();
+        }}
+        disabledKeys={isLogoutLoading ? [LOGOUT_KEY] : []}
       >
-        <span className={styles.initials}>{getInitials(email)}</span>
-      </button>
-      {isOpen && (
-        <div className={styles.dropdown} role="menu">
-          <span className={styles.email}>{email}</span>
-          <hr className={styles.divider} />
-          <button
-            type="button"
-            className={styles.logoutItem}
-            role="menuitem"
-            onClick={() => {
-              onLogout();
-              setIsOpen(false);
-            }}
-            disabled={isLogoutLoading}
-          >
-            {isLogoutLoading ? "Logging out…" : "Log out"}
-          </button>
-        </div>
-      )}
-    </div>
+        <MenuSection>
+          <Heading>{email}</Heading>
+          <MenuItem id={LOGOUT_KEY}>{isLogoutLoading ? "Logging out…" : "Log out"}</MenuItem>
+        </MenuSection>
+      </Menu>
+    </MenuTrigger>
   );
 }

@@ -1,14 +1,10 @@
 "use client";
 
-import { X } from "@untitled-ui/icons-react";
 import clsx from "clsx";
 import type React from "react";
-import { useCallback, useMemo } from "react";
-
-import Button from "@/components/Button";
-import { useModal } from "./Modal.hooks";
+import { useCallback } from "react";
+import { Dialog, DialogBody, DialogFooter, DialogHeader, Modal as LagoModal } from "@/lib/lago";
 import styles from "./Modal.module.css";
-import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 
 interface ModalProps {
   isOpen: boolean;
@@ -17,7 +13,6 @@ interface ModalProps {
   title?: string;
   header?: React.ReactNode;
   footer?: React.ReactNode;
-  showBackdrop?: boolean;
   showCloseButton?: boolean;
   closeOnBackdropClick?: boolean;
   className?: string;
@@ -31,74 +26,46 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   header,
   footer,
-  showBackdrop = true,
   showCloseButton = true,
   closeOnBackdropClick = true,
   className = "",
   size = "md",
 }: ModalProps) => {
-  const { dialogRef } = useModal(isOpen, onClose);
-
-  // Memoized computed values
-  const dialogClassName = useMemo(() => {
-    return clsx(styles.dialog, styles[size], className);
-  }, [size, className]);
-
-  const shouldShowHeader = useMemo(() => {
-    return !!(header || title || showCloseButton);
-  }, [header, title, showCloseButton]);
-
-  const shouldShowFooter = useMemo(() => {
-    return !!footer;
-  }, [footer]);
-
-  // Memoized callbacks
-  const handleBackdropClick = useCallback(
-    (e: React.MouseEvent<HTMLDialogElement>) => {
-      if (!closeOnBackdropClick) return;
-
-      if (isBackdropClick(e)) {
-        onClose();
-      }
+  // This modal is always externally controlled (isOpen/onClose), so the only
+  // half of react-aria's open/close callback that matters is the close one —
+  // opening happens by a parent flipping `isOpen`, never by the overlay itself.
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) onClose();
     },
-    [closeOnBackdropClick, onClose],
+    [onClose],
   );
 
-  // Early return if modal should not be rendered
-  if (!shouldRenderModal(isOpen)) return null;
+  // A custom header overrides the title, same as the old hand-rolled header did.
+  const shouldShowHeader = !!(header || title || showCloseButton);
 
   return (
-    <>
-      {showBackdrop && <div className={styles.backdrop} />}
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop dismiss is a mouse-only interaction on the native dialog element */}
-      <dialog ref={dialogRef} className={dialogClassName} onClick={handleBackdropClick}>
-        <div className={styles.content}>
-          {/* Header */}
-          {shouldShowHeader && (
-            <div className={styles.header}>
-              {header || (title && <h2 className={styles.title}>{title}</h2>)}
-              {showCloseButton && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  className={styles.closeButton}
-                  aria-label="Close modal"
-                >
-                  <X width={20} height={20} />
-                </Button>
-              )}
-            </div>
-          )}
-
-          {/* Body */}
-          <div className={styles.body}>{children}</div>
-
-          {/* Footer */}
-          {shouldShowFooter && <div className={styles.footer}>{footer}</div>}
-        </div>
-      </dialog>
-    </>
+    <LagoModal
+      isOpen={isOpen}
+      onOpenChange={handleOpenChange}
+      isDismissable={closeOnBackdropClick}
+      isKeyboardDismissDisabled={false}
+      className={clsx(styles.overlay, styles[size], className)}
+    >
+      {/* No className here: lago's Dialog replaces its default class list
+          wholesale when one is passed, dropping the padding/scroll styling
+          that makes it a working dialog rather than merging like its
+          Header/Body/Footer siblings do. */}
+      <Dialog>
+        {shouldShowHeader && (
+          <DialogHeader hideCloseButton={!showCloseButton} title={header ? undefined : title}>
+            {header}
+          </DialogHeader>
+        )}
+        <DialogBody className={styles.body}>{children}</DialogBody>
+        {footer && <DialogFooter>{footer}</DialogFooter>}
+      </Dialog>
+    </LagoModal>
   );
 };
 

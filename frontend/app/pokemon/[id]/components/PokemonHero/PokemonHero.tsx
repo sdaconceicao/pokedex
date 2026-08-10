@@ -5,6 +5,7 @@ import BackButton from "@/components/BackButton";
 import HeroToolbar from "@/components/HeroToolbar";
 import PokemonTypePill from "@/components/PokemonTypePill";
 import { useScrolledPast } from "@/hooks";
+import { Heading } from "@/lib/lago";
 import type { Pokemon } from "@/types";
 import styles from "./PokemonHero.module.css";
 import { getDexNumber } from "./PokemonHero.utils";
@@ -44,7 +45,9 @@ export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
 
         <div className={styles.heroBody}>
           <div className={styles.heroInfo}>
-            <h1 className={styles.pokemonName}>{pokemon.name}</h1>
+            <Heading level={1} className={styles.pokemonName}>
+              {pokemon.name}
+            </Heading>
             <div className={styles.typesContainer}>
               {pokemon.type.map((type: string) => (
                 <PokemonTypePill key={type} type={type} className={styles.heroPill} />

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Heading } from "@/lib/lago";
 import styles from "./PokemonSection.module.css";
 
 interface PokemonSectionProps {
@@ -12,7 +13,9 @@ interface PokemonSectionProps {
 export const PokemonSection = ({ title, className, children }: PokemonSectionProps) => {
   return (
     <section className={`${styles.section} ${className || ""}`}>
-      <h2 className={styles.sectionTitle}>{title}</h2>
+      <Heading level={2} className={styles.sectionTitle}>
+        {title}
+      </Heading>
       {children}
     </section>
   );

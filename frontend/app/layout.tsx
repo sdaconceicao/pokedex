@@ -3,8 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import ApolloWrapper from "@/layout/ApolloWrapper";
 import AppShell from "@/layout/AppShellLayout";
 import AuthModalProvider from "./providers/AuthModalProvider";
+import LagoProvider from "./providers/LagoProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
 import QueryProvider from "./providers/QueryProvider";
+// The design system first, then our own sheets: the Pokédex theme in
+// globals.css is a set of overrides on lago's tokens, so it has to cascade last.
+import "@code-x/lago/styles";
 import "./globals.css";
 import "./typePalette.css";
 
@@ -33,13 +37,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <QueryProvider>
-          <ApolloWrapper>
-            <AuthModalProvider>
-              <AppShell navigationData={navigationData}>{children}</AppShell>
-            </AuthModalProvider>
-          </ApolloWrapper>
-        </QueryProvider>
+        <LagoProvider>
+          <QueryProvider>
+            <ApolloWrapper>
+              <AuthModalProvider>
+                <AppShell navigationData={navigationData}>{children}</AppShell>
+              </AuthModalProvider>
+            </ApolloWrapper>
+          </QueryProvider>
+        </LagoProvider>
       </body>
     </html>
   );

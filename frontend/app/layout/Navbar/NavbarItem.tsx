@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import NextLink from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
+import { Link } from "@/lib/lago";
 import styles from "./NavbarItem.module.css";
 
 export interface NavItem {
@@ -34,19 +35,25 @@ export default function NavbarItem({ item }: NavbarItemProps) {
         item.activeWhenQueryParamEquals.value
       : false;
 
-  // Clear search parameter when navigating to type links
-  const handleTypeClick = () => {
-    // The href will navigate to the type, clearing search
-    // This is handled by the router navigation
-  };
-
   return (
+    // lago's Link supplies the interaction/state contract (hover, focus-visible
+    // and, via `aria-current` below, a `data-current` hook for styling) while
+    // delegating the actual anchor to Next's own Link through `render`, so
+    // clicks still get Next's client-side transition *and* prefetching — a
+    // plain `href` on lago's Link would navigate through the app router too
+    // (see LagoProvider's RouterProvider), but without Next's prefetch.
     <Link
       href={item.href}
-      className={`${styles.navItem} ${isActive ? styles.active : ""}`}
-      onClick={handleTypeClick}
-    >
-      {item.label} {item.icon}
-    </Link>
+      aria-current={isActive ? "page" : undefined}
+      className={styles.navItem}
+      render={(props) => (
+        // lago types `render`'s props as anchor-or-span, because Link drops to
+        // a <span> when it has no href. This one always has one, so the anchor
+        // branch is the only reachable case and the narrowing is sound.
+        <NextLink {...(props as ComponentPropsWithoutRef<"a">)} href={item.href}>
+          {item.label} {item.icon}
+        </NextLink>
+      )}
+    />
   );
 }

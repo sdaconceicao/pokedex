@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Skeleton, SkeletonParagraph } from "@/lib/lago";
 import PokemonHeroSkeleton from "../PokemonHero/PokemonHeroSkeleton";
 import styles from "./PokemonDetailSkeleton.module.css";
 
@@ -8,19 +9,25 @@ export default function PokemonDetailSkeleton() {
 
   return (
     <div className={styles.container}>
+      {/* PokemonHeroSkeleton carries the one labeled placeholder for the whole
+       *  page; every skeleton below stays decorative so a screen reader
+       *  announces the loading state once, not once per shape. */}
       <PokemonHeroSkeleton />
 
       {/* Stats skeleton */}
       <div className={styles.statsSection}>
-        <div className={styles.titleSkeleton}></div>
+        <Skeleton variant="line" width={130} height={24} className={styles.titleSkeleton} />
         <div className={styles.statsGrid}>
           {statKeys.map((key) => (
             <div key={key} className={styles.statItem}>
-              <div className={styles.statLabelSkeleton}></div>
-              <div className={styles.statBarSkeleton}>
-                <div className={styles.statFillSkeleton}></div>
-              </div>
-              <div className={styles.statValueSkeleton}></div>
+              <Skeleton variant="line" width={70} height={14} />
+              <Skeleton variant="line" height={8} />
+              <Skeleton
+                variant="line"
+                width={30}
+                height={16}
+                className={styles.statValueSkeleton}
+              />
             </div>
           ))}
         </div>
@@ -28,18 +35,16 @@ export default function PokemonDetailSkeleton() {
 
       {/* Abilities skeleton */}
       <div className={styles.abilitiesSection}>
-        <div className={styles.titleSkeleton}></div>
+        <Skeleton variant="line" width={130} height={24} className={styles.titleSkeleton} />
         <div className={styles.abilitiesGrid}>
           {abilityKeys.map((key) => (
             <div key={key} className={styles.abilityCard}>
               <div className={styles.abilityHeader}>
-                <div className={styles.abilityNameSkeleton}></div>
-                <div className={styles.abilitySlotSkeleton}></div>
+                <Skeleton variant="line" width={120} height={22} />
+                <Skeleton variant="line" width={64} height={22} />
               </div>
               <div className={styles.abilityDetails}>
-                <div className={styles.abilityDescriptionSkeleton}></div>
-                <div className={styles.abilityEffectSkeleton}></div>
-                <div className={styles.abilityGenerationSkeleton}></div>
+                <SkeletonParagraph lines={3} />
               </div>
             </div>
           ))}
