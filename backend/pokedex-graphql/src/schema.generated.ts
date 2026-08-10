@@ -6,6 +6,7 @@ type Query {
   pokemonByType(type: String, limit: Int, offset: Int): PokemonList
   pokemonByPokedex(pokedex: String, limit: Int, offset: Int): PokemonList
   pokemonByRegion(region: String, limit: Int, offset: Int): PokemonList
+  pokemonFilter(filter: PokemonFilter!, limit: Int, offset: Int): PokemonList
   ability(id: ID!): Ability
   types: [PokemonType!]!
   pokedexes: [PokemonPokedex!]!
@@ -14,6 +15,43 @@ type Query {
   type(name: String!): TypeDetail
 }
 
+"""
+A pair of types that must BOTH be present. Requires two types by construction,
+and matching ignores slot order — \`fire\` + \`flying\` and \`flying\` + \`fire\` select
+the same Pokemon.
+"""
+input DualTypeFilter {
+  primary: String!
+  secondary: String!
+}
+
+"""
+Every facet is OR internally and AND against the others. The one exception is
+\`dualType\`, which is AND internally and is then OR'd into the type facet:
+
+    (types ANY  OR  dualType BOTH)  AND  pokedexes ANY  AND  regions ANY  AND  query
+
+So \`types: [fire, grass, ground]\` with \`dualType: {fire, flying}\` matches anything
+that is fire, grass or ground, plus anything that is a fire/flying dual — and then
+narrows that to the given pokedexes and regions.
+
+Omitted facets are skipped rather than matching nothing; a filter with no facets
+at all returns the full dex.
+"""
+input PokemonFilter {
+  """
+  Case-insensitive substring match on the Pokemon name.
+  """
+  query: String
+  types: [String!]
+  dualType: DualTypeFilter
+  pokedexes: [String!]
+  regions: [String!]
+}
+
+"""
+Results are ordered by national dex number.
+"""
 type PokemonList {
   total: Int!
   offset: Int!

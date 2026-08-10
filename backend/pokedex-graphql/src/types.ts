@@ -31,6 +31,16 @@ export type AbilityLite = {
   url: Scalars['String']['output'];
 };
 
+/**
+ * A pair of types that must BOTH be present. Requires two types by construction,
+ * and matching ignores slot order — `fire` + `flying` and `flying` + `fire` select
+ * the same Pokemon.
+ */
+export type DualTypeFilter = {
+  primary: Scalars['String']['input'];
+  secondary: Scalars['String']['input'];
+};
+
 export type EvolutionChain = {
   __typename?: 'EvolutionChain';
   chain: EvolutionNode;
@@ -60,6 +70,29 @@ export type Pokemon = {
   type: Array<Scalars['String']['output']>;
 };
 
+/**
+ * Every facet is OR internally and AND against the others. The one exception is
+ * `dualType`, which is AND internally and is then OR'd into the type facet:
+ *
+ *     (types ANY  OR  dualType BOTH)  AND  pokedexes ANY  AND  regions ANY  AND  query
+ *
+ * So `types: [fire, grass, ground]` with `dualType: {fire, flying}` matches anything
+ * that is fire, grass or ground, plus anything that is a fire/flying dual — and then
+ * narrows that to the given pokedexes and regions.
+ *
+ * Omitted facets are skipped rather than matching nothing; a filter with no facets
+ * at all returns the full dex.
+ */
+export type PokemonFilter = {
+  dualType?: InputMaybe<DualTypeFilter>;
+  pokedexes?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Case-insensitive substring match on the Pokemon name. */
+  query?: InputMaybe<Scalars['String']['input']>;
+  regions?: InputMaybe<Array<Scalars['String']['input']>>;
+  types?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** Results are ordered by national dex number. */
 export type PokemonList = {
   __typename?: 'PokemonList';
   offset: Scalars['Int']['output'];
@@ -93,6 +126,7 @@ export type Query = {
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
+  pokemonFilter?: Maybe<PokemonList>;
   pokemonSearch?: Maybe<PokemonList>;
   region?: Maybe<RegionDetail>;
   regions: Array<PokemonRegion>;
@@ -129,6 +163,13 @@ export type QueryPokemonByTypeArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryPokemonFilterArgs = {
+  filter: PokemonFilter;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -271,11 +312,13 @@ export type ResolversTypes = {
   Ability: ResolverTypeWrapper<Ability>;
   AbilityLite: ResolverTypeWrapper<AbilityLite>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  DualTypeFilter: DualTypeFilter;
   EvolutionChain: ResolverTypeWrapper<EvolutionChain>;
   EvolutionNode: ResolverTypeWrapper<EvolutionNode>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
+  PokemonFilter: PokemonFilter;
   PokemonList: ResolverTypeWrapper<PokemonList>;
   PokemonPokedex: ResolverTypeWrapper<PokemonPokedex>;
   PokemonRegion: ResolverTypeWrapper<PokemonRegion>;
@@ -293,11 +336,13 @@ export type ResolversParentTypes = {
   Ability: Ability;
   AbilityLite: AbilityLite;
   Boolean: Scalars['Boolean']['output'];
+  DualTypeFilter: DualTypeFilter;
   EvolutionChain: EvolutionChain;
   EvolutionNode: EvolutionNode;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Pokemon: Pokemon;
+  PokemonFilter: PokemonFilter;
   PokemonList: PokemonList;
   PokemonPokedex: PokemonPokedex;
   PokemonRegion: PokemonRegion;
@@ -390,6 +435,7 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   pokemonByPokedex?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByPokedexArgs>>;
   pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByRegionArgs>>;
   pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByTypeArgs>>;
+  pokemonFilter?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonFilterArgs, 'filter'>>;
   pokemonSearch?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query'>>;
   region?: Resolver<Maybe<ResolversTypes['RegionDetail']>, ParentType, ContextType, RequireFields<QueryRegionArgs, 'name'>>;
   regions?: Resolver<Array<ResolversTypes['PokemonRegion']>, ParentType, ContextType>;

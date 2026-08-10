@@ -1,6 +1,58 @@
+import type { DataSourceContext } from "./context.js";
+import type { PokemonIndex } from "./datasources/pokemon-api.types.js";
 import { logger } from "./logger.js";
-import type { Resolvers } from "./types.js";
+import type { PokemonFilter, Resolvers } from "./types.js";
+import { intersect, sortByNumber, union } from "./utils/filter.js";
 import { getPaginatedResults } from "./utils/pagination.js";
+
+/**
+ * Reduce a filter to one candidate list per facet. Every facet is dispatched
+ * before any is awaited, so the slow one (regions, which fans out over each of
+ * its pokedexes) overlaps the rest instead of following them.
+ *
+ * Facets are OR internally and the caller ANDs them together. `dualType` is the
+ * sole exception: its two type lists are intersected, and that pair is then
+ * OR'd back into the type facet alongside the plain `types` list.
+ */
+const resolveFacets = (
+  { dataSources }: DataSourceContext,
+  { query, types, dualType, pokedexes, regions }: PokemonFilter,
+): Promise<PokemonIndex[]>[] => {
+  const { pokemonAPI } = dataSources;
+  const facets: Promise<PokemonIndex[]>[] = [];
+
+  if (types?.length || dualType) {
+    facets.push(
+      Promise.all([
+        Promise.all((types ?? []).map((type) => pokemonAPI.getPokemonByType(type))),
+        dualType
+          ? Promise.all([
+              pokemonAPI.getPokemonByType(dualType.primary),
+              pokemonAPI.getPokemonByType(dualType.secondary),
+            ])
+          : Promise.resolve([]),
+      ]).then(([anyOf, bothOf]) => union([...anyOf, intersect(bothOf)])),
+    );
+  }
+
+  if (pokedexes?.length) {
+    facets.push(
+      Promise.all(pokedexes.map((pokedex) => pokemonAPI.getPokemonByPokedex(pokedex))).then(union),
+    );
+  }
+
+  if (regions?.length) {
+    facets.push(
+      Promise.all(regions.map((region) => pokemonAPI.getPokemonByRegion(region))).then(union),
+    );
+  }
+
+  if (query) {
+    facets.push(Promise.resolve(pokemonAPI.searchPokemonIndex(query)));
+  }
+
+  return facets;
+};
 
 export const resolvers: Resolvers = {
   Query: {
@@ -218,6 +270,39 @@ export const resolvers: Resolvers = {
         };
       } catch (error) {
         logger.error(`Error resolving pokemonByRegion for region ${region}:`, error);
+        throw error;
+      }
+    },
+
+    pokemonFilter: async (_, { filter, limit = 20, offset = 0 }, context) => {
+      logger.info(
+        `Resolving pokemonFilter query: ${JSON.stringify(filter)}, limit=${limit}, offset=${offset}`,
+      );
+
+      try {
+        const facets = await Promise.all(resolveFacets(context, filter));
+
+        // An empty filter narrows nothing, so browse the whole dex rather than
+        // return nothing. The index is already in dex order and is shared state,
+        // so it is sliced rather than re-sorted.
+        const matches = facets.length
+          ? sortByNumber(intersect(facets))
+          : context.dataSources.pokemonAPI.getPokemonIndex();
+
+        const total = matches.length;
+        const page = getPaginatedResults(matches, limit, offset);
+
+        logger.info(`pokemonFilter matched ${total} Pokemon, hydrating ${page.length}`);
+
+        // Hydration is the only per-row network cost, so it happens after the
+        // set algebra has narrowed things down to a single page.
+        const pokemon = await Promise.all(
+          page.map(({ id }) => context.dataSources.pokemonAPI.getPokemon(id)),
+        );
+
+        return { total, offset, pokemon };
+      } catch (error) {
+        logger.error("Error resolving pokemonFilter:", error);
         throw error;
       }
     },
