@@ -1,7 +1,6 @@
 "use client";
 
-import { Avatar, Button, Heading, Menu, MenuItem, MenuSection, MenuTrigger } from "@/lib/lago";
-import { withButtonClass } from "@/lib/lagoButton";
+import { Avatar, Button, Heading, Menu, MenuItem, MenuSection, MenuTrigger } from "@code-x/lago";
 import styles from "./UserAvatar.module.css";
 
 interface UserAvatarProps {
@@ -20,8 +19,7 @@ export default function UserAvatar({ email, onLogout, isLogoutLoading = false }:
     <MenuTrigger>
       {/* react-aria wires aria-haspopup/aria-expanded onto this trigger itself,
           so the aria-label is the only accessibility prop left to supply. */}
-      {/* Styled through `render` rather than `className` — see withButtonClass */}
-      <Button aria-label="Account menu" variant="quiet" render={withButtonClass(styles.trigger)}>
+      <Button aria-label="Account menu" variant="quiet" className={styles.trigger}>
         <Avatar name={email} className={styles.avatar} />
       </Button>
       <Menu

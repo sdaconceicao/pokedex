@@ -1,7 +1,7 @@
 "use client";
 
+import { Button, Form, Password, TextField } from "@code-x/lago";
 import { useState } from "react";
-import { Button, Form, Password, TextField } from "@/lib/lago";
 import { validateEmail, validatePassword } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 

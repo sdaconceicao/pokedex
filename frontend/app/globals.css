@@ -128,12 +128,17 @@ a {
   text-decoration: none;
 }
 
-/* Only tells the browser which form controls and scrollbars to draw — the
-   palette itself is switched by the `dark-mode` class, not by this. */
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* Only tells the browser which form controls, scrollbars and — before any of
+   our own paint — canvas to draw. Keyed off the same `dark-mode` class as the
+   palette rather than off `prefers-color-scheme`, so that a theme the user has
+   explicitly forced against their OS setting doesn't leave the browser's own
+   chrome on the other theme. */
+html {
+  color-scheme: light;
+}
+
+html.dark-mode {
+  color-scheme: dark;
 }
 
 /* ── Component overrides ───────────────────────────────────────────────────
@@ -151,18 +156,14 @@ a {
  * dark-mode shadow inversion all keep working untouched.
  *
  * The `:not([data-disabled])` guard is load-bearing, and not for the reason it
- * looks like. lago wraps its button *colour* rules — the soft primary, the
- * filled tones, and the disabled state — in `@layer utilities`; its structural
- * rules (sizing, radius, the `:has(> svg:only-child)` auto-circle) are left
- * unlayered. An unlayered declaration beats a layered one outright, whatever
- * the specificity, so the rules below would silently win against the disabled
- * state too and leave dead buttons looking live. Specificity never enters into
- * it; the guard is what keeps disabled buttons falling through to lago.
- *
- * The same asymmetry cuts the other way for anyone styling lago elsewhere: to
- * override a lago *colour* you need no specificity at all, but to override its
- * *sizing* you are in an ordinary specificity fight and usually need a real
- * ancestor selector.
+ * looks like. Since 0.4.1 lago emits everything it ships into cascade layers
+ * (`@layer lago.tokens, lago.base, lago.components`), and this stylesheet is
+ * unlayered — so these rules outrank every lago rule at any specificity, which
+ * is exactly what makes retheming easy. The catch is that they outrank lago's
+ * *disabled* rule too, so without the guard a disabled primary button would
+ * still paint solid red and read as clickable. Lowering specificity would not
+ * help: nothing is low enough to lose to a layered rule. Excluding the state is
+ * the only lever.
  */
 .react-aria-Button[data-variant="primary"]:not([data-disabled]) {
   --button-background: var(--tint);

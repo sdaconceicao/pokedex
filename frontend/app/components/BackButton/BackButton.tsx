@@ -1,8 +1,8 @@
 "use client";
 
+import { Button, Link } from "@code-x/lago";
 import { ArrowLeft } from "@untitled-ui/icons-react";
 import { useRouter } from "next/navigation";
-import { Button, Link } from "@/lib/lago";
 import styles from "./BackButton.module.css";
 
 interface BackButtonProps {

@@ -1,9 +1,8 @@
 "use client";
 
+import { SearchField } from "@code-x/lago";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-
-import { SearchField } from "@/lib/lago";
 import styles from "./SearchBar.module.css";
 
 export default function SearchBar() {

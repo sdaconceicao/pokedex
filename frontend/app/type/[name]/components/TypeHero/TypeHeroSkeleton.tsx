@@ -1,4 +1,4 @@
-import { Skeleton } from "@/lib/lago";
+import { Skeleton } from "@code-x/lago";
 import styles from "./TypeHeroSkeleton.module.css";
 
 const STAT_KEYS = ["pokemon", "moves"];

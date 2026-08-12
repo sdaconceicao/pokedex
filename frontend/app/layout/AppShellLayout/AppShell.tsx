@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, Toolbar } from "@code-x/lago";
 import { ChevronLeft, ChevronRight, Menu01, XClose } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
@@ -8,8 +9,6 @@ import Logo from "@/components/Logo";
 import Pokeball from "@/components/Pokeball";
 import { SearchBar } from "@/components/Search";
 import Navbar, { NAV_SECTIONS } from "@/layout/Navbar";
-import { Button, Toolbar } from "@/lib/lago";
-import { withButtonClass } from "@/lib/lagoButton";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
 import styles from "./AppShell.module.css";
 
@@ -84,7 +83,7 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
               fight the bespoke 32px size below. */}
           <Button
             variant="quiet"
-            render={withButtonClass(styles.drawerClose)}
+            className={styles.drawerClose}
             onPress={() => setDrawerOpen(false)}
             aria-label="Close menu"
           >
@@ -114,11 +113,17 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
               <Button
                 key={key}
                 variant="quiet"
-                render={withButtonClass(styles.railButton, { title })}
+                className={styles.railButton}
                 onPress={() => setCollapsed(false)}
                 aria-label={`Expand sidebar to browse ${title}`}
               >
-                <span aria-hidden="true">{icon}</span>
+                {/* The hover tooltip hangs off the span rather than the Button:
+                    lago's ButtonProps models react-aria's surface, which has no
+                    `title`. The span is here anyway, to keep the icon out of
+                    Button's direct-child svg sizing rule. */}
+                <span title={title} aria-hidden="true">
+                  {icon}
+                </span>
               </Button>
             ))}
           </Toolbar>
@@ -136,7 +141,7 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
               which would clobber the mobile glyph's own 18px. */}
           <Button
             variant="quiet"
-            render={withButtonClass(styles.sidebarToggle)}
+            className={styles.sidebarToggle}
             onPress={toggle}
             aria-label={expanded ? "Hide navigation" : "Show navigation"}
             aria-expanded={expanded}

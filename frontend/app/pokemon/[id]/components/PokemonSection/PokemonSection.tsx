@@ -1,5 +1,5 @@
+import { Heading } from "@code-x/lago";
 import type { ReactNode } from "react";
-import { Heading } from "@/lib/lago";
 import styles from "./PokemonSection.module.css";
 
 interface PokemonSectionProps {

@@ -1,8 +1,8 @@
 "use client";
 
+import { Button, Form, Password, TextField } from "@code-x/lago";
 import type React from "react";
 import { useState } from "react";
-import { Button, Form, Password, TextField } from "@/lib/lago";
 import styles from "./AuthButtons.module.css";
 
 interface LoginFormProps {

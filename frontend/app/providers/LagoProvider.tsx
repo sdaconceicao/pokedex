@@ -1,9 +1,9 @@
 "use client";
 
+import { ThemeProvider } from "@code-x/lago";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { RouterProvider } from "react-aria-components";
-import { ThemeProvider } from "@/lib/lago";
 
 declare module "react-aria-components" {
   interface RouterConfig {

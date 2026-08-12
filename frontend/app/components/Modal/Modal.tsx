@@ -1,9 +1,9 @@
 "use client";
 
+import { Dialog, DialogBody, DialogFooter, DialogHeader, Modal as LagoModal } from "@code-x/lago";
 import clsx from "clsx";
 import type React from "react";
 import { useCallback } from "react";
-import { Dialog, DialogBody, DialogFooter, DialogHeader, Modal as LagoModal } from "@/lib/lago";
 import styles from "./Modal.module.css";
 
 interface ModalProps {

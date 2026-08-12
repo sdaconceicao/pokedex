@@ -1,11 +1,11 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
 import Image from "next/image";
 import BackButton from "@/components/BackButton";
 import HeroToolbar from "@/components/HeroToolbar";
 import PokemonTypePill from "@/components/PokemonTypePill";
 import { useScrolledPast } from "@/hooks";
-import { Heading } from "@/lib/lago";
 import type { Pokemon } from "@/types";
 import styles from "./PokemonHero.module.css";
 import { getDexNumber } from "./PokemonHero.utils";

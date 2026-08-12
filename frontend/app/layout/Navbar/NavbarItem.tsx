@@ -1,10 +1,9 @@
 "use client";
 
+import { Link } from "@code-x/lago";
 import NextLink from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
-
-import { Link } from "@/lib/lago";
 import styles from "./NavbarItem.module.css";
 
 export interface NavItem {

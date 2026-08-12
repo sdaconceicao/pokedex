@@ -1,5 +1,5 @@
+import { Skeleton, SkeletonParagraph } from "@code-x/lago";
 import { useMemo } from "react";
-import { Skeleton, SkeletonParagraph } from "@/lib/lago";
 import PokemonHeroSkeleton from "../PokemonHero/PokemonHeroSkeleton";
 import styles from "./PokemonDetailSkeleton.module.css";
 

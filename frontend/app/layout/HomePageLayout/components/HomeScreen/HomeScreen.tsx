@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, Heading } from "@code-x/lago";
 import { Bell01, Compass01, UserPlus01 } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { useCallback, useRef } from "react";
@@ -7,7 +8,6 @@ import PokeballMark from "@/components/PokeballMark";
 import TypeTag from "@/components/TypeTag";
 import { useIsAuthenticated } from "@/hooks/useAuth";
 import FeatureTile from "@/layout/HomePageLayout/components/FeatureTile";
-import { Button, Heading } from "@/lib/lago";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import type { PokemonType } from "@/types";
 import { FEATURES } from "./features";

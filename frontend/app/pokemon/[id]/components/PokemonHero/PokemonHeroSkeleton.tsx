@@ -1,4 +1,4 @@
-import { Skeleton } from "@/lib/lago";
+import { Skeleton } from "@code-x/lago";
 import styles from "./PokemonHeroSkeleton.module.css";
 
 export default function PokemonHeroSkeleton() {

@@ -1,11 +1,11 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
 import Image from "next/image";
 import Link from "next/link";
 import { type FunctionComponent, useState } from "react";
 import PokeballMark from "@/components/PokeballMark";
 import PokemonTypePill from "@/components/PokemonTypePill";
-import { Heading } from "@/lib/lago";
 import type { Pokemon } from "@/types/graphql";
 import css from "./PokemonCard.module.css";
 import { formatPokemonName, getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";

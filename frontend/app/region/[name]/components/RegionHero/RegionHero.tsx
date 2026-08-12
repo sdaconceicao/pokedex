@@ -1,10 +1,10 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
 import CountPill from "@/components/CountPill";
 import HeroToolbar from "@/components/HeroToolbar";
 import StatTile from "@/components/StatTile";
 import { useScrolledPast } from "@/hooks";
-import { Heading } from "@/lib/lago";
 import { formatGeneration } from "@/lib/string";
 import type { RegionDetail } from "@/types";
 import RegionFacts from "../RegionFacts/RegionFacts";

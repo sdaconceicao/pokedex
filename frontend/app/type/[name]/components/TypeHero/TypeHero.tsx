@@ -1,11 +1,11 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
 import Image from "next/image";
 import CountPill from "@/components/CountPill";
 import HeroToolbar from "@/components/HeroToolbar";
 import StatTile from "@/components/StatTile";
 import { useScrolledPast } from "@/hooks";
-import { Heading } from "@/lib/lago";
 import { formatGeneration } from "@/lib/string";
 import type { TypeDetail } from "@/types";
 import TypeWheel from "../TypeWheel/TypeWheel";

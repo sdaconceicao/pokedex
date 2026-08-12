@@ -1,4 +1,4 @@
-import { Heading } from "@/lib/lago";
+import { Heading } from "@code-x/lago";
 import type { Ability } from "@/types";
 import styles from "./PokemonAbility.module.css";
 

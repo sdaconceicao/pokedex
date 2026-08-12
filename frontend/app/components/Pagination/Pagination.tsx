@@ -1,5 +1,5 @@
+import { Pagination as LagoPagination } from "@code-x/lago";
 import { useMemo } from "react";
-import { Pagination as LagoPagination } from "@/lib/lago";
 import styles from "./Pagination.module.css";
 import { getEndItem, getStartItem, getTotalPages } from "./Pagination.util";
 

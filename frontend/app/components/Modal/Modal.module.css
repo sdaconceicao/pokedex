@@ -5,8 +5,48 @@
    to come in as a descendant rule through that stable, unhashed class rather
    than through a hashed module class the way lago's own CSS does it. */
 
-.overlay {
+/* Two corrections to how lago positions the panel.
+ *
+ * Both are written against a doubled selector — the module class *and* lago's
+ * own `.react-aria-ModalOverlay`, which sit on the same element — to get
+ * specificity (0,2,0) against lago's (0,1,0) `.modalOverlay`. Equal
+ * specificity is not enough here: lago's stylesheet rides a lazily loaded
+ * chunk and is injected after the app's, so at a tie source order hands it the
+ * win. That is exactly what happened to `z-index` on the first attempt — the
+ * `display: flex` beside it landed, because lago declares nothing to tie
+ * against, while the `z-index` silently lost.
+ *
+ * 1. Centring. lago centres the panel with `position: sticky`, `top: 50% of
+ *    the visual viewport` and `translate: -50% -50%`. A sticky offset is
+ *    clamped so the box can never leave its containing block, so the moment
+ *    the panel grows past two thirds of the viewport height the clamp caps the
+ *    offset at `overlayHeight - panelHeight` and the -50% translate then drags
+ *    the panel that much further up — off the top edge, with dead space left
+ *    below. Measured on the register dialog at 1280x620: top -53px, bottom
+ *    396px in a 620px viewport. Flex centring has no such clamp and holds at
+ *    every height; lago's `max-height` still caps the panel, and Dialog is
+ *    `overflow: auto`, so tall content scrolls inside the panel as before.
+ *
+ * 2. Stacking. lago's overlay sits at `z-index: 100`, which is below this
+ *    app's own chrome — the header is 400, the mobile backdrop 450, the drawer
+ *    460 and the sidebar toggle 500 — so all of it painted straight through
+ *    the scrim. 600 clears that scale with room to spare.
+ */
+.overlay:global(.react-aria-ModalOverlay) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 600;
   backdrop-filter: blur(4px);
+}
+
+.overlay :global(.react-aria-Modal) {
+  position: relative;
+  top: auto;
+  margin-left: 0;
+  /* lago's entry animation drives `transform`, which composes with this
+     separate property — clearing `translate` doesn't disturb it. */
+  translate: none;
 }
 
 /* Size variants. `max-width` is restated per size because lago's own default

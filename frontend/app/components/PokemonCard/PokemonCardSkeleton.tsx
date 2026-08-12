@@ -1,6 +1,6 @@
+import { Heading } from "@code-x/lago";
 import type { FunctionComponent } from "react";
 import PokemonTypePill from "@/components/PokemonTypePill";
-import { Heading } from "@/lib/lago";
 import css from "./PokemonCard.module.css";
 
 interface PokemonCardSkeletonProps {

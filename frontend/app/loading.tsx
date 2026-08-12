@@ -1,4 +1,4 @@
-import { SkeletonCard } from "@/lib/lago";
+import { SkeletonCard } from "@code-x/lago";
 
 // Mirrors PokemonList's own card grid so the top-level route fallback reads
 // as "the Pokemon list is loading" rather than a generic spinner — the

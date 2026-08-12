@@ -1,5 +1,5 @@
+import { Heading } from "@code-x/lago";
 import type { ReactNode } from "react";
-import { Heading } from "@/lib/lago";
 import styles from "./FeatureTile.module.css";
 
 export type FeatureTileAccent = "red" | "blue" | "purple" | "green";

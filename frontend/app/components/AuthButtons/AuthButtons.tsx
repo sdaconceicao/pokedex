@@ -1,7 +1,7 @@
 "use client";
 
+import { Button } from "@code-x/lago";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/lib/lago";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import UserAvatar from "../Avatar/UserAvatar";
 

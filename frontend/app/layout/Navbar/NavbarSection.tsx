@@ -1,8 +1,6 @@
+import { Button, Disclosure, DisclosurePanel } from "@code-x/lago";
 import { ChevronDown } from "@untitled-ui/icons-react";
 import type { ReactNode } from "react";
-
-import { Button, Disclosure, DisclosurePanel } from "@/lib/lago";
-import { withButtonClass } from "@/lib/lagoButton";
 import styles from "./Navbar.module.css";
 import NavbarItem, { type NavItem } from "./NavbarItem";
 
@@ -36,7 +34,7 @@ export default function NavbarSection({
     // its chevron *before* the label with no leading-icon slot, a different
     // layout than this sidebar uses.
     <Disclosure defaultExpanded={defaultOpen} className={styles.section}>
-      <Button slot="trigger" render={withButtonClass(styles.sectionHeader)}>
+      <Button slot="trigger" className={styles.sectionHeader}>
         <span className={styles.sectionHeaderLeft}>
           {icon && (
             <span className={styles.sectionIcon} aria-hidden="true">

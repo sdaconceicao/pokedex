@@ -43,4 +43,4 @@ overrides:
   "shell-quote": "^1.8.5"
 
 minimumReleaseAgeExclude:
-  - '@code-x/lago@0.4.0'
+  - '@code-x/lago@0.4.2'
