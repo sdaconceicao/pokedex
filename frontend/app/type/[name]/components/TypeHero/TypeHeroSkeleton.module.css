@@ -8,6 +8,13 @@
   overflow: hidden;
 }
 
+/* Same wash as the other tinted hero placeholders — see RegionHeroSkeleton for
+   why this is scoped here rather than applied to every lago Skeleton. */
+.hero :global(.skeleton) {
+  --skeleton-surface-color: var(--skeleton-wash);
+  --skeleton-shimmer-color: var(--skeleton-wash);
+}
+
 .heroBody {
   display: grid;
   grid-template-columns: 1fr auto;

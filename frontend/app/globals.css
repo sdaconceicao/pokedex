@@ -77,6 +77,13 @@
   /* Controls take their height from lago's field scale so the search field,
      the buttons beside it and the auth inputs all line up. */
   --input-height: var(--field-height);
+
+  /* PokemonCardSkeleton's shimmer, lifted out so lago's Skeleton can wear the
+     same treatment on the tinted hero panels — see the note by the heroes'
+     `.skeleton` rules. Both stops are the same alpha on purpose: lago paints
+     the shimmer *over* the surface rather than replacing it, so two passes of
+     0.18 composite to ~0.33, which is the card's 0.32 highlight. */
+  --skeleton-wash: rgb(255 255 255 / 0.18);
 }
 
 :root.dark-mode {
@@ -162,7 +169,22 @@ html.dark-mode {
  * help: nothing is low enough to lose to a layered rule. Excluding the state is
  * the only lever.
  */
-.react-aria-Button[data-variant="primary"]:not([data-disabled]) {
+/* The pager's Previous/Next controls join the rule below rather than restating
+ * it, so "the app's red button" stays defined in exactly one place.
+ *
+ * lago renders them as `quiet` buttons, so they never match on their own. They
+ * are picked out by being the only controls in the pager whose content is an
+ * icon rather than a page number: `:has(svg)`. The two obvious alternatives are
+ * both worse — position (`li:first-child`) breaks under `hidePrevNext`, and an
+ * aria-label prefix would catch "Go to page 3" as readily as "Go to previous
+ * page". `.pagination` is lago's own stable class on the <nav>, not a hashed
+ * one, so it survives a release.
+ *
+ * `:not([data-disabled])` matters more here than anywhere else in this file:
+ * Previous is disabled on page one and Next on the last page, and a red fill on
+ * a dead control reads as clickable. */
+.react-aria-Button[data-variant="primary"]:not([data-disabled]),
+.pagination .react-aria-Button:has(svg):not([data-disabled]) {
   --button-background: var(--tint);
   --button-border: oklch(from var(--tint) 50% c h);
   --button-gradient: var(--button-border);
@@ -178,17 +200,20 @@ html.dark-mode {
      border and raised edge. */
 }
 
-.react-aria-Button[data-variant="primary"]:not([data-disabled])[data-hovered] {
+.react-aria-Button[data-variant="primary"]:not([data-disabled])[data-hovered],
+.pagination .react-aria-Button:has(svg):not([data-disabled])[data-hovered] {
   --button-background: var(--layout-primary-background-hover);
 }
 
-.react-aria-Button[data-variant="primary"]:not([data-disabled])[data-pressed] {
+.react-aria-Button[data-variant="primary"]:not([data-disabled])[data-pressed],
+.pagination .react-aria-Button:has(svg):not([data-disabled])[data-pressed] {
   --button-background: oklch(from var(--tint) 40% calc(c * 0.75) h);
 }
 
 /* Dark mode wants the specular highlight along the top rather than the bottom.
    Tokens again — lago already inverts the geometry for dark mode itself. */
-:root.dark-mode .react-aria-Button[data-variant="primary"]:not([data-disabled]) {
+:root.dark-mode .react-aria-Button[data-variant="primary"]:not([data-disabled]),
+:root.dark-mode .pagination .react-aria-Button:has(svg):not([data-disabled]) {
   --button-highlight: rgb(255 255 255 / 0.4);
   --button-gradient: rgb(255 255 255 / 0.2);
   --button-shadow: var(--button-border);

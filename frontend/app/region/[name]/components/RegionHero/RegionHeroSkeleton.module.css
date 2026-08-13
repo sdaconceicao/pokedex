@@ -7,6 +7,22 @@
   overflow: hidden;
 }
 
+/* lago's Skeleton defaults to an opaque near-white block (--gray-200 surface,
+   --gray-100 shimmer), which on this mid-slate panel reads as a stark cutout
+   next to PokemonCardSkeleton's soft translucent wash. These two tokens are
+   lago's public inputs, so the card's treatment drops straight in.
+
+   Scoped here rather than set globally: the wash needs a mid-tone behind it to
+   be visible at all, and lago's Skeleton is also used on the white panels in
+   PokemonDetailSkeleton, where it would disappear. It also has to target
+   `.skeleton` itself — lago declares these outright rather than reading them
+   with a var() fallback, so setting them on `.hero` would lose to lago's own
+   declaration on the element. */
+.hero :global(.skeleton) {
+  --skeleton-surface-color: var(--skeleton-wash);
+  --skeleton-shimmer-color: var(--skeleton-wash);
+}
+
 .heroBody {
   display: grid;
   grid-template-columns: 1fr auto;

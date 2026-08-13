@@ -76,7 +76,11 @@
    zero-specificity `:where()` colour rules) would otherwise fight a size
    this bespoke, so each is qualified by its actual parent — a true
    ancestor relationship, not a specificity hack — to outrank it. */
+
 .brand .drawerClose {
+  /* 18px rather than lago's default 14px. Set through lago's own token, which
+     is why this button no longer wraps its icon in a span — see AppShell.tsx. */
+  --button-icon-size: 18px;
   display: none;
   align-items: center;
   justify-content: center;
@@ -276,8 +280,14 @@
     display: none;
   }
 
+  /* `width` is load-bearing: lago's Toolbar is `width: fit-content`, so the
+     rail shrank to the width of one 40px button and parked against the sidebar's
+     left edge. `align-items: center` was applying the whole time — it was just
+     centring the buttons inside a box exactly their own width. Filling the rail
+     gives that centring the 72px it needs to act on. */
   .sidebarCollapsed .rail {
     display: flex;
+    width: 100%;
     flex-direction: column;
     align-items: center;
     gap: 0.375rem;
@@ -344,6 +354,9 @@
     height: 40px;
     border-radius: 0.625rem;
     flex-shrink: 0;
+    /* The mobile glyph is the 18px hamburger; the desktop chevron it replaces
+       is 14px, which is lago's default, so only this breakpoint restates it. */
+    --button-icon-size: 18px;
     /* Clear here — no divider behind it to match or hide, so it takes the
        Sign In button's translucent treatment instead */
     background: rgba(255, 255, 255, 0.14);

@@ -14,15 +14,12 @@ interface BackButtonProps {
 export default function BackButton({ href, size = "md", children }: BackButtonProps) {
   const router = useRouter();
 
-  // The arrow is wrapped so it keeps its 16px: lago sizes a Button's
-  // direct-child svg to 14px. (It used to also stop the button collapsing to a
-  // circle — lago 0.5.0 replaced that guess with the explicit `IconButton`, so
-  // sizing is the only reason left.)
+  // No wrapper: since lago 0.6.0 stopped needing one to escape its icon sizing,
+  // the arrow carries `.icon` directly, which sets both its size and the hover
+  // nudge. One element fewer on each branch.
   const content = (
     <>
-      <span className={styles.icon} aria-hidden="true">
-        <ArrowLeft width={16} height={16} />
-      </span>
+      <ArrowLeft className={styles.icon} aria-hidden="true" />
       {children}
     </>
   );

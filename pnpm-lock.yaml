@@ -236,8 +236,8 @@ importers:
         specifier: ^4.2.9
         version: 4.2.9(graphql-ws@6.0.8(graphql@17.0.2)(ws@8.21.0))(graphql@17.0.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rxjs@7.8.2)
       '@code-x/lago':
-        specifier: ^0.5.0
-        version: 0.5.0(react-aria-components@1.20.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: ^0.6.0
+        version: 0.6.0(react-aria-components@1.20.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@pokemonle/icons-react':
         specifier: ^0.0.3
         version: 0.0.3(react@19.2.8)
@@ -590,8 +590,8 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@code-x/lago@0.5.0':
-    resolution: {integrity: sha512-rh8dC6XgVGbc2CoXQ1RknaREAa8dOxHS0ufl2K5tA14Y+Y+2DrXW38Yx9m7zYQqc8D6+RXPpb1fVD9MQKTthvg==}
+  '@code-x/lago@0.6.0':
+    resolution: {integrity: sha512-gSdVgDq8Qe5T+j0xQ2EyCe7Fki3UFXfhBQBXHnF7vIbC+aNfUO/5w7rezIEM1lyA0xAG30o4YE+WCHjvmsVDbg==}
     peerDependencies:
       react: ^19
       react-aria-components: ^1
@@ -5758,7 +5758,7 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@code-x/lago@0.5.0(react-aria-components@1.20.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@code-x/lago@0.6.0(react-aria-components@1.20.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       clsx: 2.1.1
       lucide-react: 1.31.0(react@19.2.8)
