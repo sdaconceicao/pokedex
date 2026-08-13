@@ -77,10 +77,8 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
           <span className={styles.drawerTitle}>Browse</span>
           {/* The drawer covers the header toggle while open, so it needs its
               own dismiss. Hidden on desktop, where the toggle stays reachable.
-              The icon is wrapped in a span rather than passed as Button's lone
-              child: lago's Button auto-rounds to a 36px circle whenever its
-              only child is a bare svg (`:has(>svg:only-child)`), which would
-              fight the bespoke 32px size below. */}
+              The icon is wrapped in a span so it keeps its 18px: lago sizes a
+              Button's direct-child svg to 14px (`._button_* > svg`). */}
           <Button
             variant="quiet"
             className={styles.drawerClose}

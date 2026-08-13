@@ -6,8 +6,10 @@ import AuthModalProvider from "./providers/AuthModalProvider";
 import LagoProvider from "./providers/LagoProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
 import QueryProvider from "./providers/QueryProvider";
-// The design system first, then our own sheets: the Pokédex theme in
-// globals.css is a set of overrides on lago's tokens, so it has to cascade last.
+// reset.css writes into the `reset` layer lago declares, so it sits below the
+// design system wherever it is imported. globals.css and typePalette.css are
+// unlayered and so cascade last, which is what makes the theme overrides win.
+import "./reset.css";
 import "@code-x/lago/styles";
 import "./globals.css";
 import "./typePalette.css";
