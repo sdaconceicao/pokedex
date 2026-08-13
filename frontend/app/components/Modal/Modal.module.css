@@ -47,6 +47,7 @@
   /* lago's entry animation drives `transform`, which composes with this
      separate property — clearing `translate` doesn't disturb it. */
   translate: none;
+  background: var(--background);
 }
 
 /* Size variants. `max-width` is restated per size because lago's own default
@@ -84,7 +85,10 @@
 }
 
 /* Below the breakpoint the modal fills the viewport instead of floating
-   centered, same as the panel it replaces. */
+   centered, same as the panel it replaces.
+   `dvh`, not `vh`: on mobile browsers `vh` is the *large* viewport, measured
+   with the URL bar collapsed, so a `100vh` sheet runs its last rows underneath
+   the chrome that is actually on screen. `dvh` tracks the visible height. */
 @media (max-width: 640px) {
   .sm :global(.react-aria-Modal),
   .md :global(.react-aria-Modal),
@@ -98,11 +102,24 @@
     margin: 0;
     translate: none;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     max-width: none;
     max-height: none;
-    min-height: 100vh;
+    min-height: 100dvh;
     border-radius: 0;
+  }
+
+  /* Dialog is the scroll container — it is already `overflow: auto` — but it
+     takes its size from `max-height: inherit`, and the rule above has just
+     cleared the panel's `max-height` to make the sheet full screen. Inheriting
+     `none` leaves the Dialog free to grow to its content's full height, at
+     which point nothing scrolls and the overflow is simply clipped away by the
+     overlay's `overflow: clip`. `100%` restores a definite cap, resolved
+     against the panel's now-definite height.
+     Two classes deep to outrank lago's own single-class `.dialog`, which rides
+     a later-injected chunk and would win a specificity tie on source order. */
+  .overlay :global(.react-aria-Dialog) {
+    max-height: 100%;
   }
 
   .sm :global(.react-aria-Modal[data-entering]),
