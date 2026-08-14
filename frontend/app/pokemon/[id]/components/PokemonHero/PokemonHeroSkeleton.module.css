@@ -8,6 +8,16 @@
   overflow: hidden;
 }
 
+/* Mirrors .hero.flush in PokemonHero.module.css so the placeholder sits in the
+   same band as the hero that replaces it. */
+.hero.flush {
+  margin-top: calc(-1 * var(--panel-inset, 0px));
+  margin-left: calc(-1 * var(--panel-inset, 0px));
+  margin-right: calc(-1 * (var(--panel-inset, 0px) + var(--panel-scrollbar, 0px)));
+  margin-bottom: 0;
+  border-radius: var(--panel-radius, 0px) var(--panel-radius, 0px) 0 0;
+}
+
 /* Same wash as the other tinted hero placeholders — see RegionHeroSkeleton for
    why this is scoped here rather than applied to every lago Skeleton. */
 .hero :global(.skeleton) {

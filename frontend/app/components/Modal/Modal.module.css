@@ -50,6 +50,17 @@
   background: var(--background);
 }
 
+/* The flush header crosses the scrollbar lane to the panel's trailing edge, creating
+    horizontal overflow. Pinning x prevents a horizontal scrollbar while y
+    remains scrollable, matching lago's Table. The panel clips the overshoot.
+    `hidden` is intentional: CSS Overflow 3 coerces `clip` to `hidden` when
+    the other axis scrolls. The overshoot contains only header background, so
+    programmatic scrolling has nothing to expose. The transparent scrollbar
+    track now comes from lago's Dialog. */
+.overlay :global(.react-aria-Dialog) {
+  overflow-x: hidden;
+}
+
 /* Size variants. `max-width` is restated per size because lago's own default
    (`min(500px, 90vw)`) would otherwise clip lg/xl down to 500px. */
 .sm :global(.react-aria-Modal) {
@@ -79,9 +90,29 @@
 /* Published because Dialog is a scroll container: anything sticking to its
    top (HeroToolbar) has to know how far in its content starts. The value
    matches Dialog's own padding (lago's --spacing-6) so it stays true if that
-   ever changes. */
+   ever changes — including on mobile, where lago keeps the same padding
+   rather than tightening it.
+
+   --panel-inset is that same padding named for the other thing it is used
+   for: a section that wants to be the modal's header pulls back out by it to
+   reach the panel edge. --panel-radius is what that section then has to round
+   its top corners to so it meets the panel's own corners cleanly. Both are
+   read with fallbacks, so the same components stay inset cards on a page
+   that publishes neither.
+
+   --panel-scrollbar is the lane the scrollbar occupies at the trailing edge.
+   Pulling back by --panel-inset alone lands on the *content* edge, which a
+   classic space-taking scrollbar has already pushed inwards — leaving the
+   header short of the panel by the scrollbar's width. Its exact width is
+   platform-dependent (15px on macOS, 17px on Windows) and CSS cannot read it,
+   so this is deliberately wider than any of them: the overshoot is trimmed
+   back to the panel edge by the clip below, making one value correct whether
+   the platform reserves a lane or draws the scrollbar as an overlay. */
 .body {
   --scroll-pad-top: var(--spacing-6);
+  --panel-inset: var(--spacing-6);
+  --panel-radius: var(--radius-xl);
+  --panel-scrollbar: 20px;
 }
 
 /* Below the breakpoint the modal fills the viewport instead of floating
@@ -129,8 +160,13 @@
     animation: modalSlideIn 0.3s ease-out;
   }
 
+  /* The panel squares off below the breakpoint, so anything rounding itself to
+     its corners has to square off with it. --scroll-pad-top is deliberately
+     not restated: Dialog's padding does not change here, and the smaller value
+     this used to carry left the sticky bar hanging 8px below the panel's top
+     edge instead of flush against it. */
   .body {
-    --scroll-pad-top: var(--spacing-4);
+    --panel-radius: 0px;
   }
 }
 

@@ -9,9 +9,12 @@ import styles from "./PokemonDetail.module.css";
 
 interface PokemonDetailProps {
   pokemon: Pokemon;
+  /** Let the hero run out to the container's edges and serve as its header.
+   *  Set by the modal routes; the standalone page leaves the hero a card. */
+  flush?: boolean;
 }
 
-export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
+export default function PokemonDetail({ pokemon, flush }: PokemonDetailProps) {
   const primaryType = pokemon.type[0].toLowerCase();
   // Sets the --type-* palette every section reads from. Global class, from
   // typePalette.css, so the type page can tint itself the same way.
@@ -19,7 +22,7 @@ export default function PokemonDetail({ pokemon }: PokemonDetailProps) {
 
   return (
     <div className={styles.container}>
-      <PokemonHero pokemon={pokemon} className={typeClass} />
+      <PokemonHero pokemon={pokemon} className={typeClass} flush={flush} />
       <PokemonSection title="Base Stats" className={typeClass}>
         <div className={styles.statsGrid}>
           <PokemonStat name="HP" value={pokemon.stats.hp} />

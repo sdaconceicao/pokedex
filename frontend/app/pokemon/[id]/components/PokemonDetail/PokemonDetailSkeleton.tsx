@@ -3,7 +3,13 @@ import { useMemo } from "react";
 import PokemonHeroSkeleton from "../PokemonHero/PokemonHeroSkeleton";
 import styles from "./PokemonDetailSkeleton.module.css";
 
-export default function PokemonDetailSkeleton() {
+interface PokemonDetailSkeletonProps {
+  /** Passed through to the hero placeholder so the loading state matches the
+   *  flush detail it stands in for. */
+  flush?: boolean;
+}
+
+export default function PokemonDetailSkeleton({ flush }: PokemonDetailSkeletonProps) {
   const statKeys = useMemo(() => Array.from({ length: 6 }, (_, i) => i), []);
   const abilityKeys = useMemo(() => Array.from({ length: 3 }, (_, i) => i), []);
 
@@ -12,7 +18,7 @@ export default function PokemonDetailSkeleton() {
       {/* PokemonHeroSkeleton carries the one labeled placeholder for the whole
        *  page; every skeleton below stays decorative so a screen reader
        *  announces the loading state once, not once per shape. */}
-      <PokemonHeroSkeleton />
+      <PokemonHeroSkeleton flush={flush} />
 
       {/* Stats skeleton */}
       <div className={styles.statsSection}>

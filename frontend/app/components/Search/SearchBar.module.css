@@ -20,6 +20,8 @@
   align-items: stretch;
   height: var(--field-height);
   border-radius: 999px;
+  padding: 0;
+  gap: 0;
   /* Deliberately theme-invariant, like the Pokémon card surfaces in
      globals.css: the pill sits on the always-red header band in both
      themes, so it stays light rather than following dark mode. */

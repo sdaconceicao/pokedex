@@ -57,4 +57,16 @@ describe("HeroToolbar", () => {
 
     expect(container.firstChild).toHaveClass("type-grass");
   });
+
+  it("keeps the bar inset by default", () => {
+    const { container } = render(<HeroToolbar title="Kanto" />);
+
+    expect(container.querySelector(".bar")).not.toHaveClass("flush");
+  });
+
+  it("spans the container's full width when flush", () => {
+    const { container } = render(<HeroToolbar title="Kanto" flush />);
+
+    expect(container.querySelector(".bar")).toHaveClass("flush");
+  });
 });

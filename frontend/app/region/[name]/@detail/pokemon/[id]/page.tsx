@@ -8,7 +8,7 @@ import PokemonDetailSkeleton from "@/pokemon/[id]/components/PokemonDetail/Pokem
 
 async function PokemonDetailContent({ id }: { id: string }) {
   const pokemon = await getPokemonById(id);
-  return <PokemonDetail pokemon={pokemon} />;
+  return <PokemonDetail pokemon={pokemon} flush />;
 }
 
 /**
@@ -28,7 +28,7 @@ export default async function Page(props: {
   // where the modal is a full-screen sheet.
   return (
     <RouteModal closeHref={closeHref} showCloseButton={false}>
-      <Suspense fallback={<PokemonDetailSkeleton />}>
+      <Suspense fallback={<PokemonDetailSkeleton flush />}>
         <PokemonDetailContent id={id} />
       </Suspense>
     </RouteModal>

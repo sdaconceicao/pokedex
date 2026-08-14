@@ -1,9 +1,16 @@
 import { Skeleton } from "@code-x/lago";
+import clsx from "clsx";
 import styles from "./PokemonHeroSkeleton.module.css";
 
-export default function PokemonHeroSkeleton() {
+interface PokemonHeroSkeletonProps {
+  /** Matches the real hero's flush variant, so the placeholder occupies the
+   *  same band and the modal doesn't jump when the data lands. */
+  flush?: boolean;
+}
+
+export default function PokemonHeroSkeleton({ flush }: PokemonHeroSkeletonProps) {
   return (
-    <div className={styles.hero}>
+    <div className={clsx(styles.hero, flush && styles.flush)}>
       <div className={styles.heroToolbar}>
         <Skeleton variant="box" width={175} height={38} className={styles.onGradient} />
         <Skeleton variant="line" width={64} height={30} className={styles.onGradient} />
