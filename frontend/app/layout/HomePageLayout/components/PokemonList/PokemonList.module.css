@@ -7,7 +7,7 @@
 .error {
   text-align: center;
   padding: 2rem;
-  color: #dc2626;
+  color: var(--red);
 }
 
 .centerText {

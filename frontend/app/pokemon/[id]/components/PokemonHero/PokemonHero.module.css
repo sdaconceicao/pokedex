@@ -13,6 +13,22 @@
     0 16px 32px -12px var(--type-shadow, rgba(0, 0, 0, 0.35));
 }
 
+/* The hero as its container's header rather than a card inside it: out to the
+   panel's edges, and square along the bottom so the sections below read as
+   continuing from it. It rounds its top corners to the panel's own so the two
+   meet cleanly. Inert wherever --panel-inset and --panel-radius aren't
+   published, which is how the standalone page keeps its floating card. */
+.hero.flush {
+  margin-top: calc(-1 * var(--panel-inset, 0px));
+  margin-left: calc(-1 * var(--panel-inset, 0px));
+  /* Trailing edge also has to clear the scrollbar lane, which has already
+     pushed the content edge inwards — see --panel-scrollbar on Modal's body.
+     The overshoot is trimmed by the panel. */
+  margin-right: calc(-1 * (var(--panel-inset, 0px) + var(--panel-scrollbar, 0px)));
+  margin-bottom: 0;
+  border-radius: var(--panel-radius, 0px) var(--panel-radius, 0px) 0 0;
+}
+
 /* ── Toolbar: darkened strip across the top of the hero ── */
 .heroToolbar {
   position: relative;
@@ -21,9 +37,20 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1.5rem;
+  /* Named because the flush variant restates it with the scrollbar lane added
+     on, and the two must stay in step across breakpoints. */
+  --strip-pad-x: 1.5rem;
+  padding: 0.75rem var(--strip-pad-x);
   background: rgba(0, 0, 0, 0.16);
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* Flush, the hero runs under the scrollbar lane so its background can reach
+   the panel edge — but the dex number rides the strip's trailing edge and
+   would end up beneath the scrollbar, which always paints on top. Padding back
+   by the same overshoot keeps it clear of wherever the lane actually starts. */
+.hero.flush .heroToolbar {
+  padding-right: calc(var(--strip-pad-x) + var(--panel-scrollbar, 0px));
 }
 
 /* ── Body: info + artwork ────────────────────────── */
@@ -140,7 +167,8 @@
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 768px) {
   .heroToolbar {
-    padding: 0.625rem 1rem;
+    --strip-pad-x: 1rem;
+    padding: 0.625rem var(--strip-pad-x);
   }
 
   .toolbarSprite {

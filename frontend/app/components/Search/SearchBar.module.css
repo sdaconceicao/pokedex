@@ -1,80 +1,84 @@
-.searchBar {
-  flex: 1;
+/* lago's <SearchField> merges this class onto its own root
+   ("react-aria-SearchField"), which is just a column wrapper — no label or
+   description are passed here, so in practice it wraps a single child, the
+   inset field Group. Everything below reaches into lago's stable internal
+   classes (`react-aria-Group`, `react-aria-Input`, `field-Button`) rather
+   than any hashed module class, per lago's own styling contract. */
+.searchField {
+  display: block;
+  width: 100%;
 }
 
-.searchBar .searchForm {
+/* The inset field surface — lago's own white/gray field skin — becomes the
+   red header band's white pill. Structural properties (radius, height,
+   overflow) are lago's normal, specificity-bearing rules, so this needs a
+   real selector to win; the surface color/shadow lago applies here lives in
+   its zero-specificity `@layer utilities`, so it would lose to this even
+   without the descendant selector's help. */
+.searchField :global(.react-aria-Group) {
   display: flex;
+  align-items: stretch;
+  height: var(--field-height);
+  border-radius: 999px;
+  padding: 0;
   gap: 0;
-  align-items: center;
-  position: relative;
-  height: var(--input-height);
-}
-
-.searchBar .searchField {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-.searchBar .searchInput {
-  flex: 1;
-  height: 100%;
-  border: none;
-  border-radius: 999px 0 0 999px;
-  padding: 0 1rem;
-  line-height: 1;
-  background: #ffffff;
-  color: #2d2d2d;
+  /* Deliberately theme-invariant, like the Pokémon card surfaces in
+     globals.css: the pill sits on the always-red header band in both
+     themes, so it stays light rather than following dark mode. */
+  background: var(--card-bg-default);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
-.searchBar .searchInput::placeholder {
-  color: #9a9aa2;
-}
-
-.searchBar .searchInput:focus,
-.searchBar .searchInput:focus-visible {
+.searchField :global(.react-aria-Group[data-focus-within]) {
   outline: none;
-  border: none;
   box-shadow:
     inset 0 1px 3px rgba(0, 0, 0, 0.08),
     0 0 0 3px rgba(255, 255, 255, 0.35);
 }
 
-.searchBar .searchButton {
-  flex-shrink: 0;
+.searchField :global(.react-aria-Input) {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
   border: none;
+  background: transparent;
+  padding: 0 var(--spacing-4);
+  line-height: 1;
+  color: var(--card-foreground);
+}
+
+.searchField :global(.react-aria-Input)::placeholder {
+  color: var(--card-muted-foreground);
+}
+
+/* The clear (when present) and search buttons lago renders inside the Group.
+   Both are `field-Button`s, not `react-aria-Button`s — FieldButton supplies
+   its own class rather than the generic one. Reset lago's default (a small
+   tinted chip sized to `--field-inner-height`) into a full-height segment of
+   the pill, fused to its neighbour behind a hairline divider. */
+.searchField :global(.field-Button) {
+  flex-shrink: 0;
+  height: 100%;
+  width: calc(var(--field-height) + 6px);
+  aspect-ratio: auto;
+  border: none;
+  /* Fixed, not `--border-color`: the divider sits on the theme-invariant
+     white pill above, so it must stay theme-invariant too. */
   border-left: 1px solid #ececf0;
-  border-radius: 0 999px 999px 0;
-  height: var(--input-height);
-  width: calc(var(--input-height) + 6px);
-  min-width: calc(var(--input-height) + 6px);
-  padding: 0;
-  background: #ffffff;
+  border-radius: 0;
+  background: transparent;
   color: var(--layout-primary-background);
 }
 
-.searchBar .searchButton:hover:not(:disabled) {
+/* The trailing-most control (the always-present search button, or the clear
+   button when it isn't showing) caps the pill's right end. */
+.searchField :global(.field-Button:last-child) {
+  border-radius: 0 999px 999px 0;
+}
+
+.searchField :global(.field-Button[data-hovered]),
+.searchField :global(.field-Button:hover) {
   background: var(--layout-secondary-background);
   color: var(--layout-primary-background);
-  box-shadow: none;
-  border-color: #ececf0;
-}
-
-.searchBar .clearButton {
-  position: absolute;
-  right: calc(var(--input-height) + 10px);
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0.25rem;
-  color: #9a9aa2;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.searchBar .clearButton:hover {
-  color: var(--layout-primary-background);
-  background: none;
 }

@@ -67,4 +67,16 @@ describe("PokemonHero", () => {
 
     expect(container.firstChild).toHaveClass("type-fire");
   });
+
+  it("stays an inset card by default", () => {
+    const { container } = render(<PokemonHero pokemon={charmander} />);
+
+    expect(container.querySelector("section")).not.toHaveClass("flush");
+  });
+
+  it("runs out to the container's edges when flush", () => {
+    const { container } = render(<PokemonHero pokemon={charmander} flush />);
+
+    expect(container.querySelector("section")).toHaveClass("flush");
+  });
 });

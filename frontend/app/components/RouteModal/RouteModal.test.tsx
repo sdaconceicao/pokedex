@@ -9,14 +9,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace, back }),
 }));
 
-// jsdom has no dialog.showModal, so the open/close effects are stubbed the way
-// Modal's own tests do it. The dialog therefore never gets its `open`
-// attribute, which is why the query below has to look at hidden nodes.
-vi.mock("@/components/Modal/Modal.hooks", () => ({
-  useModal: () => ({ dialogRef: { current: null }, handleClose: vi.fn() }),
-}));
-
-const closeButton = () => screen.getByRole("button", { name: /close modal/i, hidden: true });
+const closeButton = () => screen.getByRole("button", { name: /close/i });
 
 describe("RouteModal", () => {
   beforeEach(() => {
@@ -55,7 +48,7 @@ describe("RouteModal", () => {
       </RouteModal>,
     );
 
-    expect(screen.queryByRole("button", { name: /close modal/i, hidden: true })).toBeNull();
+    expect(screen.queryByRole("button", { name: /close/i })).toBeNull();
     expect(screen.getByText("Charmander")).toBeInTheDocument();
   });
 

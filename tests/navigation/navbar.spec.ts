@@ -14,7 +14,9 @@ test.describe("Navbar", () => {
     // Types have a page of their own, with the type's profile above its Pokemon
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/type\/grass/);
-    await expect(grassTypeLink).toHaveClass(/active/);
+    // The active item marks itself with aria-current rather than a class, so
+    // assistive tech gets the same "current page" signal the styling keys off.
+    await expect(grassTypeLink).toHaveAttribute("aria-current", "page");
 
     await expect(
       page.getByRole("heading", { level: 1 }).filter({ hasText: /^grass$/i }),
@@ -69,7 +71,7 @@ test.describe("Navbar", () => {
     await page.waitForLoadState("networkidle");
 
     await expect(page).toHaveURL(/\?special=gmax/);
-    await expect(gigantamaxLink).toHaveClass(/active/);
+    await expect(gigantamaxLink).toHaveAttribute("aria-current", "page");
     await expect(searchInput).toHaveValue("");
 
     await expect(

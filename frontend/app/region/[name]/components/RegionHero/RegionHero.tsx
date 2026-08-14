@@ -1,5 +1,6 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
 import CountPill from "@/components/CountPill";
 import HeroToolbar from "@/components/HeroToolbar";
 import StatTile from "@/components/StatTile";
@@ -42,7 +43,9 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
         <div className={styles.heroBody}>
           <div className={styles.heroInfo}>
             <span className={styles.eyebrow}>Region</span>
-            <h1 className={styles.regionName}>{region.displayName}</h1>
+            <Heading level={1} className={styles.regionName}>
+              {region.displayName}
+            </Heading>
             {generation && <span className={styles.generation}>{generation}</span>}
           </div>
 

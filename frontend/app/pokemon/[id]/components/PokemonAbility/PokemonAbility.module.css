@@ -18,7 +18,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: var(--type-accent, var(--layout-primary-background));
+  background: var(--type-accent, var(--tint));
 }
 
 .abilityCard:hover {
@@ -37,7 +37,7 @@
 
 .abilityName {
   margin: 0;
-  color: var(--foreground);
+  color: var(--text-color);
   font-size: 1.05rem;
   font-weight: 700;
   text-transform: capitalize;
@@ -45,12 +45,8 @@
 }
 
 .abilitySlot {
-  background: color-mix(
-    in srgb,
-    var(--type-accent, var(--layout-primary-background)) 14%,
-    transparent
-  );
-  color: var(--type-accent, var(--layout-primary-background));
+  background: color-mix(in srgb, var(--type-accent, var(--tint)) 14%, transparent);
+  color: var(--type-accent, var(--tint));
   padding: 0.2rem 0.625rem;
   border-radius: 999px;
   font-size: 0.7rem;
@@ -66,7 +62,7 @@
 
 .abilityDescription {
   margin: 0 0 0.625rem 0;
-  color: var(--foreground);
+  color: var(--text-color);
   line-height: 1.6;
   font-size: 0.875rem;
 }
@@ -74,13 +70,13 @@
 .abilityEffect,
 .abilityGeneration {
   margin: 0.3rem 0;
-  color: var(--muted-foreground);
+  color: var(--gray-1000);
   font-size: 0.825rem;
   line-height: 1.55;
 }
 
 .abilityEffect strong,
 .abilityGeneration strong {
-  color: var(--foreground);
+  color: var(--text-color);
   font-weight: 600;
 }

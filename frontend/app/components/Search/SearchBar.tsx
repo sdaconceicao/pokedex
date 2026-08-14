@@ -1,12 +1,8 @@
 "use client";
 
-import { SearchSm, XCircle } from "@untitled-ui/icons-react";
+import { SearchField } from "@code-x/lago";
 import { useRouter, useSearchParams } from "next/navigation";
-import type React from "react";
 import { useCallback, useEffect, useState } from "react";
-
-import Button from "@/components/Button";
-import Input from "@/components/Input";
 import styles from "./SearchBar.module.css";
 
 export default function SearchBar() {
@@ -20,53 +16,39 @@ export default function SearchBar() {
     setSearchQuery(query);
   }, [searchParams]);
 
-  const handleSearch = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-
+  // lago's SearchField calls onSubmit with the current value directly — no
+  // form event to preventDefault, and no need to read the input by ref.
+  const handleSubmit = useCallback(
+    (value: string) => {
       const params = new URLSearchParams();
+      const trimmed = value.trim();
 
-      if (searchQuery.trim()) {
-        params.set("q", searchQuery.trim());
+      if (trimmed) {
+        params.set("q", trimmed);
       }
 
       const newUrl = params.toString() ? `/?${params.toString()}` : "/";
       router.push(newUrl);
     },
-    [router, searchQuery],
+    [router],
   );
 
+  // Fired by the field's built-in clear button once it has reset the (locally
+  // controlled) value — see onChange below — so this only needs to handle the
+  // navigation side effect the old hand-rolled clear button used to do.
   const handleClear = useCallback(() => {
-    setSearchQuery("");
     router.push("/");
   }, [router]);
 
   return (
-    <div className={styles.searchBar}>
-      <form onSubmit={handleSearch} className={styles.searchForm}>
-        <Input
-          type="text"
-          size="md"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search Pokemon..."
-          wrapperClassName={styles.searchField}
-          className={styles.searchInput}
-        />
-        <Button type="submit" size="md" variant="primary" className={styles.searchButton}>
-          <SearchSm aria-label="Search" />
-        </Button>
-        {searchQuery && (
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={handleClear}
-            className={styles.clearButton}
-          >
-            <XCircle aria-label="Clear search" />
-          </Button>
-        )}
-      </form>
-    </div>
+    <SearchField
+      aria-label="Search Pokemon"
+      placeholder="Search Pokemon..."
+      value={searchQuery}
+      onChange={setSearchQuery}
+      onSubmit={handleSubmit}
+      onClear={handleClear}
+      className={styles.searchField}
+    />
   );
 }

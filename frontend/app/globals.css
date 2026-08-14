@@ -1,46 +1,112 @@
+/* Pokédex theme, expressed as overrides of the lago design tokens.
+ *
+ * Lago derives almost everything from three roots — `--tint` (brand), `--gray`
+ * (neutrals) and the `--lightness-*` ramp — so re-skinning the whole library is
+ * a matter of restating those, plus the handful of semantic tokens where the
+ * Pokédex design differs from lago's defaults.
+ *
+ * Dark values live under `:root.dark-mode`, the class `ThemeProvider` toggles,
+ * rather than a `prefers-color-scheme` block: the class follows the OS by
+ * default but can also be forced, which a media query can't be.
+ *
+ * The `--layout-*`, `--surface*` and `--border*` names below are the app's own
+ * older vocabulary, still referenced by the page-level CSS modules. They are
+ * kept as aliases onto lago tokens so both systems resolve to one palette.
+ */
+
 :root {
-  --layout-primary-background: #d32b2b;
-  --layout-primary-foreground: white;
-  --layout-primary-background-hover: #9a1c1c;
-  --layout-secondary-background: #fcdddc;
-  --layout-secondary-foreground: #3d3d3d;
-  --layout-tertiary-background: #f1f1f4;
-  --layout-tertiary-foreground: #6b6b6b;
-  --layout-quaternary-background: #e2e2e6;
-  --layout-quaternary-foreground: #888;
-  --foreground: #2d2d2d;
-  --background: #ffffff;
-  --surface: #fafafa;
-  --surface-elevated: #ffffff;
-  --border: #e2e2e6;
-  --border-subtle: #efeff2;
-  --muted-foreground: #6b6b6b;
+  /* ── Roots ─────────────────────────────────────── */
+  /* The Pokédex red. Every --tint-100…1600 step is derived from it. */
+  --tint: #d32b2b;
+  /* Neutrals carry a trace of blue, which is what gives the dark shell its
+     slate cast rather than a flat charcoal. */
+  --gray: oklch(0.5 0.008 264);
+
+  /* ── Type ──────────────────────────────────────── */
+  --font-family:
+    var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+
+  /* ── Shape ─────────────────────────────────────── */
+  /* Tighter than lago's default 8px: the Pokédex controls are 6px. */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+
+  /* ── Light palette ─────────────────────────────── */
+  --background-color: #ffffff;
+  --gray-50: #ffffff;
+  --text-color: var(--gray-1400);
+  --text-color-hover: var(--gray-1500);
+  --border-color: var(--gray-300);
+  --border-color-hover: var(--gray-400);
+  --border-color-disabled: var(--gray-200);
+  --overlay-background: #ffffff;
+  --overlay-border: rgb(0 0 0 / 0.08);
+
+  /* ── App aliases ───────────────────────────────── */
+  /* The brand fill is the tint itself rather than a step off the scale:
+     --tint-1000 sits at 51.9% lightness, two steps darker than the red the
+     design actually uses. The hover is the design's #9a1c1c restated in the
+     tint's own hue, so it follows a rebrand instead of pinning it to red. */
+  --layout-primary-background: var(--tint);
+  --layout-primary-foreground: var(--highlight-foreground);
+  --layout-primary-background-hover: oklch(from var(--tint) 44.6% calc(c * 0.79) h);
+  --layout-secondary-background: var(--tint-200);
+  --layout-secondary-foreground: var(--gray-1300);
+  --layout-tertiary-background: var(--gray-200);
+  --layout-tertiary-foreground: var(--gray-1100);
+  --layout-quaternary-background: var(--gray-300);
+  --layout-quaternary-foreground: var(--gray-900);
+
+  --foreground: var(--text-color);
+  --background: var(--background-color);
+  --surface: var(--gray-100);
+  --surface-elevated: var(--gray-50);
+  --border: var(--border-color);
+  --border-subtle: var(--gray-200);
+  --muted-foreground: var(--gray-1000);
+
+  /* Pokemon cards are printed artwork: they stay light on both themes so the
+     sprites keep the background they were drawn against. */
   --card-bg-default: #ffffff;
   --card-foreground: #1f2937;
   --card-muted-foreground: #4b5563;
-  --input-height: 38px;
+
+  /* Controls take their height from lago's field scale so the search field,
+     the buttons beside it and the auth inputs all line up. */
+  --input-height: var(--field-height);
+
+  /* PokemonCardSkeleton's shimmer, lifted out so lago's Skeleton can wear the
+     same treatment on the tinted hero panels — see the note by the heroes'
+     `.skeleton` rules. Both stops are the same alpha on purpose: lago paints
+     the shimmer *over* the surface rather than replacing it, so two passes of
+     0.18 composite to ~0.33, which is the card's 0.32 highlight. */
+  --skeleton-wash: rgb(255 255 255 / 0.18);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground: #e8e6e3;
-    --background: #1c1f26;
-    --surface: #252932;
-    --surface-elevated: #2d323d;
-    --border: #3d4451;
-    --border-subtle: #333842;
-    --muted-foreground: #a0a4ad;
-    --layout-secondary-background: #3d2a2a;
-    --layout-secondary-foreground: #e8e6e3;
-    --layout-tertiary-background: #252932;
-    --layout-tertiary-foreground: #a0a4ad;
-    --layout-quaternary-background: #3d4451;
-    --layout-quaternary-foreground: #888;
-    /* Pokemon cards stay light in dark mode */
-    --card-bg-default: #ffffff;
-    --card-foreground: #1f2937;
-    --card-muted-foreground: #4b5563;
-  }
+:root.dark-mode {
+  --background-color: #1c1f26;
+  --gray-50: #252932;
+  --text-color: var(--gray-1400);
+  --text-color-hover: var(--gray-1500);
+  --border-color: var(--gray-200);
+  --border-color-hover: var(--gray-300);
+  --border-color-disabled: var(--gray-100);
+  --overlay-background: #2d323d;
+  --overlay-border: rgb(255 255 255 / 0.12);
+
+  --layout-secondary-background: var(--tint-100);
+  --layout-secondary-foreground: var(--gray-1400);
+  --layout-tertiary-background: #1f232b;
+  --layout-tertiary-foreground: var(--gray-1100);
+  --layout-quaternary-background: var(--gray-200);
+  --layout-quaternary-foreground: var(--gray-900);
+
+  --surface: var(--gray-50);
+  --surface-elevated: #2d323d;
+  --border-subtle: #333842;
 }
 
 html,
@@ -50,26 +116,105 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  color: var(--text-color);
+  background: var(--background-color);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
+/* The universal reset lives in reset.css, inside the `reset` cascade layer lago
+   reserves, so it cannot outrank lago's own padding. */
 
 a {
   color: inherit;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* Only tells the browser which form controls, scrollbars and — before any of
+   our own paint — canvas to draw. Keyed off the same `dark-mode` class as the
+   palette rather than off `prefers-color-scheme`, so that a theme the user has
+   explicitly forced against their OS setting doesn't leave the browser's own
+   chrome on the other theme. */
+html {
+  color-scheme: light;
+}
+
+html.dark-mode {
+  color-scheme: dark;
+}
+
+/* ── Component overrides ───────────────────────────────────────────────────
+ *
+ * lago's `primary` button is a soft raised tint: near-white, with dark tinted
+ * text. That ranks emphasis nicely in a neutral app, but the Pokédex's primary
+ * action is the opposite — a solid brand-red fill with white text — and it is
+ * the most recognisable element of the design, so the variant is restated here
+ * rather than adopted.
+ *
+ * This is not a hand-rolled button: it reuses lago's own *filled* treatment,
+ * the one its semantic tones (`error`, `success`, …) already use, pointed at
+ * the brand tint. Everything goes through lago's `--button-*` custom
+ * properties, so sizing, transitions, focus rings, the pressed scale and the
+ * dark-mode shadow inversion all keep working untouched.
+ *
+ * The `:not([data-disabled])` guard is load-bearing, and not for the reason it
+ * looks like. Since 0.4.1 lago emits everything it ships into cascade layers
+ * (`@layer lago.tokens, lago.base, lago.components`), and this stylesheet is
+ * unlayered — so these rules outrank every lago rule at any specificity, which
+ * is exactly what makes retheming easy. The catch is that they outrank lago's
+ * *disabled* rule too, so without the guard a disabled primary button would
+ * still paint solid red and read as clickable. Lowering specificity would not
+ * help: nothing is low enough to lose to a layered rule. Excluding the state is
+ * the only lever.
+ */
+/* The pager's Previous/Next controls join the rule below rather than restating
+ * it, so "the app's red button" stays defined in exactly one place.
+ *
+ * lago renders them as `quiet` buttons, so they never match on their own. They
+ * are picked out by being the only controls in the pager whose content is an
+ * icon rather than a page number: `:has(svg)`. The two obvious alternatives are
+ * both worse — position (`li:first-child`) breaks under `hidePrevNext`, and an
+ * aria-label prefix would catch "Go to page 3" as readily as "Go to previous
+ * page". `.pagination` is lago's own stable class on the <nav>, not a hashed
+ * one, so it survives a release.
+ *
+ * `:not([data-disabled])` matters more here than anywhere else in this file:
+ * Previous is disabled on page one and Next on the last page, and a red fill on
+ * a dead control reads as clickable. */
+.react-aria-Button[data-variant="primary"]:not([data-disabled]),
+.pagination .react-aria-Button:has(svg):not([data-disabled]) {
+  --button-background: var(--tint);
+  --button-border: oklch(from var(--tint) 50% c h);
+  --button-gradient: var(--button-border);
+  --button-highlight: rgb(255 255 255 / 0.2);
+  --button-shadow: oklch(from var(--tint) 30% c h);
+  --button-text: var(--highlight-foreground);
+  /* Tokens only, no box-shadow of our own. lago builds its edge out of these
+     same `--button-*` inputs, so setting them is enough — and it avoids the
+     trap this rule used to sit in: it restated lago's box-shadow verbatim,
+     including `var(--button-gradient-size)`, which 0.4.2 stopped declaring when
+     those names became read-with-fallback inputs. One undefined var() made the
+     whole declaration invalid, which silently cost every primary button its
+     border and raised edge. */
+}
+
+.react-aria-Button[data-variant="primary"]:not([data-disabled])[data-hovered],
+.pagination .react-aria-Button:has(svg):not([data-disabled])[data-hovered] {
+  --button-background: var(--layout-primary-background-hover);
+}
+
+.react-aria-Button[data-variant="primary"]:not([data-disabled])[data-pressed],
+.pagination .react-aria-Button:has(svg):not([data-disabled])[data-pressed] {
+  --button-background: oklch(from var(--tint) 40% calc(c * 0.75) h);
+}
+
+/* Dark mode wants the specular highlight along the top rather than the bottom.
+   Tokens again — lago already inverts the geometry for dark mode itself. */
+:root.dark-mode .react-aria-Button[data-variant="primary"]:not([data-disabled]),
+:root.dark-mode .pagination .react-aria-Button:has(svg):not([data-disabled]) {
+  --button-highlight: rgb(255 255 255 / 0.4);
+  --button-gradient: rgb(255 255 255 / 0.2);
+  --button-shadow: var(--button-border);
 }

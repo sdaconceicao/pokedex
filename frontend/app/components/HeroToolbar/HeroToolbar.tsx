@@ -12,6 +12,10 @@ interface HeroToolbarProps {
   aside?: ReactNode;
   /** Carries the caller's palette class so --type-* cascades in */
   className?: string;
+  /** Span the container's full width and square the bar's bottom, matching a
+   *  flush hero as it takes over from it. Needs --panel-inset and
+   *  --panel-radius from the container — see Modal's body. */
+  flush?: boolean;
 }
 
 /**
@@ -28,6 +32,7 @@ export const HeroToolbar = ({
   icon,
   aside,
   className,
+  flush,
 }: HeroToolbarProps) => {
   const identity = (
     <div className={styles.identity}>
@@ -39,7 +44,7 @@ export const HeroToolbar = ({
 
   return (
     <div className={`${styles.slot} ${className || ""}`}>
-      <div className={styles.bar}>
+      <div className={`${styles.bar} ${flush ? styles.flush : ""}`}>
         {titleSide === "left" ? (
           <>
             {identity}

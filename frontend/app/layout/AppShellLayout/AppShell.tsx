@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, Toolbar } from "@code-x/lago";
 import { ChevronLeft, ChevronRight, Menu01, XClose } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
@@ -75,15 +76,18 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
           </Link>
           <span className={styles.drawerTitle}>Browse</span>
           {/* The drawer covers the header toggle while open, so it needs its
-              own dismiss. Hidden on desktop, where the toggle stays reachable. */}
-          <button
+              own dismiss. Hidden on desktop, where the toggle stays reachable.
+              Its 18px comes from `--button-icon-size` in the stylesheet — lago
+              0.6.0 made that a public input, so the icon no longer needs a
+              wrapper element to escape the default. */}
+          <Button
+            variant="quiet"
             className={styles.drawerClose}
-            onClick={() => setDrawerOpen(false)}
+            onPress={() => setDrawerOpen(false)}
             aria-label="Close menu"
-            type="button"
           >
-            <XClose width={18} height={18} />
-          </button>
+            <XClose aria-hidden="true" />
+          </Button>
         </div>
 
         <div className={styles.sidebarBody}>
@@ -93,21 +97,33 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
             </Suspense>
           </div>
 
-          {/* Collapsed rail — icons stand in for the sections */}
-          <div className={styles.rail}>
+          {/* Collapsed rail — icons stand in for the sections. A Toolbar
+              rather than a plain div: it's a set of same-purpose icon
+              buttons, so roving-tabindex arrow-key navigation between them
+              is exactly what lago's Toolbar is for. */}
+          <Toolbar
+            orientation="vertical"
+            aria-label="Expand sidebar sections"
+            className={styles.rail}
+          >
             {NAV_SECTIONS.map(({ key, title, icon }) => (
-              <button
+              <Button
                 key={key}
+                variant="quiet"
                 className={styles.railButton}
-                onClick={() => setCollapsed(false)}
+                onPress={() => setCollapsed(false)}
                 aria-label={`Expand sidebar to browse ${title}`}
-                title={title}
-                type="button"
               >
-                {icon}
-              </button>
+                {/* The hover tooltip hangs off the span rather than the Button:
+                    lago's ButtonProps models react-aria's surface, which has no
+                    `title`. That is the only reason left for the wrapper — and
+                    lago flexes it, so the glyph still centres. */}
+                <span title={title} aria-hidden="true">
+                  {icon}
+                </span>
+              </Button>
             ))}
-          </div>
+          </Toolbar>
         </div>
       </aside>
 
@@ -116,22 +132,24 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
         <header className={styles.header}>
           {/* The one place the sidebar is opened and closed, at every size.
               Both icons render and CSS picks one, so neither the glyph nor the
-              position depends on JS resolving the viewport first. */}
-          <button
+              position depends on JS resolving the viewport first. Sizing is
+              `--button-icon-size` per breakpoint, so the two glyphs can differ
+              without a wrapper — see `.drawerClose` above. */}
+          <Button
+            variant="quiet"
             className={styles.sidebarToggle}
-            onClick={toggle}
+            onPress={toggle}
             aria-label={expanded ? "Hide navigation" : "Show navigation"}
             aria-expanded={expanded}
             aria-controls="app-sidebar"
-            type="button"
           >
-            <Menu01 className={styles.toggleIconMobile} width={18} height={18} />
+            <Menu01 className={styles.toggleIconMobile} aria-hidden="true" />
             {collapsed ? (
-              <ChevronRight className={styles.toggleIconDesktop} width={14} height={14} />
+              <ChevronRight className={styles.toggleIconDesktop} aria-hidden="true" />
             ) : (
-              <ChevronLeft className={styles.toggleIconDesktop} width={14} height={14} />
+              <ChevronLeft className={styles.toggleIconDesktop} aria-hidden="true" />
             )}
-          </button>
+          </Button>
 
           {/* Mobile only — on desktop the brand lives in the sidebar */}
           <Link href="/" className={styles.headerLogo} aria-label="Poképendium home">
