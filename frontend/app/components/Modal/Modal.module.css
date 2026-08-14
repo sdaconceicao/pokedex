@@ -1,171 +1,172 @@
-/* Backdrop */
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+/* lago's Modal only forwards a custom className to react-aria's ModalOverlay
+   (the full-viewport positioning layer) — the actual panel underneath it
+   (`.react-aria-Modal`) is rendered with a fixed class list that props can't
+   reach. Everything below that needs to size the panel itself therefore has
+   to come in as a descendant rule through that stable, unhashed class rather
+   than through a hashed module class the way lago's own CSS does it. */
+
+/* Two corrections to how lago positions the panel.
+ *
+ * Both are written against a doubled selector — the module class *and* lago's
+ * own `.react-aria-ModalOverlay`, which sit on the same element — to get
+ * specificity (0,2,0) against lago's (0,1,0) `.modalOverlay`. Equal
+ * specificity is not enough here: lago's stylesheet rides a lazily loaded
+ * chunk and is injected after the app's, so at a tie source order hands it the
+ * win. That is exactly what happened to `z-index` on the first attempt — the
+ * `display: flex` beside it landed, because lago declares nothing to tie
+ * against, while the `z-index` silently lost.
+ *
+ * 1. Centring. lago centres the panel with `position: sticky`, `top: 50% of
+ *    the visual viewport` and `translate: -50% -50%`. A sticky offset is
+ *    clamped so the box can never leave its containing block, so the moment
+ *    the panel grows past two thirds of the viewport height the clamp caps the
+ *    offset at `overlayHeight - panelHeight` and the -50% translate then drags
+ *    the panel that much further up — off the top edge, with dead space left
+ *    below. Measured on the register dialog at 1280x620: top -53px, bottom
+ *    396px in a 620px viewport. Flex centring has no such clamp and holds at
+ *    every height; lago's `max-height` still caps the panel, and Dialog is
+ *    `overflow: auto`, so tall content scrolls inside the panel as before.
+ *
+ * 2. Stacking. lago's overlay sits at `z-index: 100`, which is below this
+ *    app's own chrome — the header is 400, the mobile backdrop 450, the drawer
+ *    460 and the sidebar toggle 500 — so all of it painted straight through
+ *    the scrim. 600 clears that scale with room to spare.
+ */
+.overlay:global(.react-aria-ModalOverlay) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 600;
   backdrop-filter: blur(4px);
 }
 
-/* Dialog element */
-.dialog {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
-  padding: 0;
-  border: none;
-  border-radius: 0.75rem;
+.overlay :global(.react-aria-Modal) {
+  position: relative;
+  top: auto;
+  margin-left: 0;
+  /* lago's entry animation drives `transform`, which composes with this
+     separate property — clearing `translate` doesn't disturb it. */
+  translate: none;
   background: var(--background);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  z-index: 1000;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow: hidden;
-  animation: modalFadeIn 0.2s ease-out;
-  isolation: isolate;
 }
 
-/* Remove default dialog styling */
-.dialog::backdrop {
-  background: transparent;
+/* The flush header crosses the scrollbar lane to the panel's trailing edge, creating
+    horizontal overflow. Pinning x prevents a horizontal scrollbar while y
+    remains scrollable, matching lago's Table. The panel clips the overshoot.
+    `hidden` is intentional: CSS Overflow 3 coerces `clip` to `hidden` when
+    the other axis scrolls. The overshoot contains only header background, so
+    programmatic scrolling has nothing to expose. The transparent scrollbar
+    track now comes from lago's Dialog. */
+.overlay :global(.react-aria-Dialog) {
+  overflow-x: hidden;
 }
 
-/* Focus management */
-.dialog:focus {
-  outline: none;
-}
-
-/* Content container */
-.content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-}
-
-/* Header */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--layout-quaternary-background);
-  flex-shrink: 0;
-}
-
-.title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.25;
-  color: var(--foreground);
-}
-
-.closeButton {
-  flex-shrink: 0;
-  margin-left: auto;
-  padding: 0.5rem;
-  min-width: auto;
-  height: auto;
-}
-
-/* Body */
-.body {
-  flex: 1;
-  /* Published because this is a scroll container: anything sticking to its top
-     (HeroToolbar) has to know how far in its content starts */
-  --scroll-pad-top: 1.5rem;
-  padding: var(--scroll-pad-top);
-  overflow-y: auto;
-  min-height: 0;
-}
-
-/* Footer */
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 0 1.5rem 1.5rem 1.5rem;
-  border-top: 1px solid var(--layout-quaternary-background);
-  flex-shrink: 0;
-}
-
-/* Size variants */
-.sm {
+/* Size variants. `max-width` is restated per size because lago's own default
+   (`min(500px, 90vw)`) would otherwise clip lg/xl down to 500px. */
+.sm :global(.react-aria-Modal) {
   width: 400px;
+  max-width: min(400px, 90vw);
   min-height: 200px;
 }
 
-.md {
+.md :global(.react-aria-Modal) {
   width: 600px;
+  max-width: min(600px, 90vw);
   min-height: 300px;
 }
 
-.lg {
+.lg :global(.react-aria-Modal) {
   width: 800px;
+  max-width: min(800px, 90vw);
   min-height: 400px;
 }
 
-.xl {
+.xl :global(.react-aria-Modal) {
   width: 1000px;
+  max-width: min(1000px, 90vw);
   min-height: 500px;
 }
 
-/* Responsive adjustments */
+/* Published because Dialog is a scroll container: anything sticking to its
+   top (HeroToolbar) has to know how far in its content starts. The value
+   matches Dialog's own padding (lago's --spacing-6) so it stays true if that
+   ever changes — including on mobile, where lago keeps the same padding
+   rather than tightening it.
+
+   --panel-inset is that same padding named for the other thing it is used
+   for: a section that wants to be the modal's header pulls back out by it to
+   reach the panel edge. --panel-radius is what that section then has to round
+   its top corners to so it meets the panel's own corners cleanly. Both are
+   read with fallbacks, so the same components stay inset cards on a page
+   that publishes neither.
+
+   --panel-scrollbar is the lane the scrollbar occupies at the trailing edge.
+   Pulling back by --panel-inset alone lands on the *content* edge, which a
+   classic space-taking scrollbar has already pushed inwards — leaving the
+   header short of the panel by the scrollbar's width. Its exact width is
+   platform-dependent (15px on macOS, 17px on Windows) and CSS cannot read it,
+   so this is deliberately wider than any of them: the overshoot is trimmed
+   back to the panel edge by the clip below, making one value correct whether
+   the platform reserves a lane or draws the scrollbar as an overlay. */
+.body {
+  --scroll-pad-top: var(--spacing-6);
+  --panel-inset: var(--spacing-6);
+  --panel-radius: var(--radius-xl);
+  --panel-scrollbar: 20px;
+}
+
+/* Below the breakpoint the modal fills the viewport instead of floating
+   centered, same as the panel it replaces.
+   `dvh`, not `vh`: on mobile browsers `vh` is the *large* viewport, measured
+   with the URL bar collapsed, so a `100vh` sheet runs its last rows underneath
+   the chrome that is actually on screen. `dvh` tracks the visible height. */
 @media (max-width: 640px) {
-  .dialog {
+  .sm :global(.react-aria-Modal),
+  .md :global(.react-aria-Modal),
+  .lg :global(.react-aria-Modal),
+  .xl :global(.react-aria-Modal) {
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    transform: none;
+    margin: 0;
+    translate: none;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     max-width: none;
     max-height: none;
+    min-height: 100dvh;
     border-radius: 0;
+  }
+
+  /* Dialog is the scroll container — it is already `overflow: auto` — but it
+     takes its size from `max-height: inherit`, and the rule above has just
+     cleared the panel's `max-height` to make the sheet full screen. Inheriting
+     `none` leaves the Dialog free to grow to its content's full height, at
+     which point nothing scrolls and the overflow is simply clipped away by the
+     overlay's `overflow: clip`. `100%` restores a definite cap, resolved
+     against the panel's now-definite height.
+     Two classes deep to outrank lago's own single-class `.dialog`, which rides
+     a later-injected chunk and would win a specificity tie on source order. */
+  .overlay :global(.react-aria-Dialog) {
+    max-height: 100%;
+  }
+
+  .sm :global(.react-aria-Modal[data-entering]),
+  .md :global(.react-aria-Modal[data-entering]),
+  .lg :global(.react-aria-Modal[data-entering]),
+  .xl :global(.react-aria-Modal[data-entering]) {
     animation: modalSlideIn 0.3s ease-out;
   }
 
-  .sm,
-  .md,
-  .lg,
-  .xl {
-    width: 100vw;
-    height: 100vh;
-    min-height: 100vh;
-  }
-
-  .header {
-    padding: 1rem;
-  }
-
+  /* The panel squares off below the breakpoint, so anything rounding itself to
+     its corners has to square off with it. --scroll-pad-top is deliberately
+     not restated: Dialog's padding does not change here, and the smaller value
+     this used to carry left the sticky bar hanging 8px below the panel's top
+     edge instead of flush against it. */
   .body {
-    --scroll-pad-top: 1rem;
-    padding: var(--scroll-pad-top);
-  }
-
-  .footer {
-    padding: 0 1rem 1rem 1rem;
-  }
-}
-
-/* Animation for modal appearance */
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    --panel-radius: 0px;
   }
 }
 

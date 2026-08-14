@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
+import clsx from "clsx";
 import Image from "next/image";
 import BackButton from "@/components/BackButton";
 import HeroToolbar from "@/components/HeroToolbar";
@@ -12,9 +14,14 @@ import { getDexNumber } from "./PokemonHero.utils";
 interface PokemonHeroProps {
   pokemon: Pokemon;
   className?: string;
+  /** Run the hero out to its container's edges and square off its bottom so it
+   *  reads as that container's header rather than a card sitting inside it.
+   *  The container has to publish --panel-inset and --panel-radius for this to
+   *  have anything to measure against — see Modal's body. */
+  flush?: boolean;
 }
 
-export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
+export const PokemonHero = ({ pokemon, className, flush }: PokemonHeroProps) => {
   const { ref, scrolledPast } = useScrolledPast<HTMLElement>();
 
   return (
@@ -22,6 +29,7 @@ export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
       {scrolledPast && (
         <HeroToolbar
           className={className}
+          flush={flush}
           title={pokemon.name}
           aside={<BackButton size="sm">Back</BackButton>}
           icon={
@@ -36,7 +44,7 @@ export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
         />
       )}
 
-      <section ref={ref} className={`${styles.hero} ${className || ""}`}>
+      <section ref={ref} className={clsx(styles.hero, flush && styles.flush, className)}>
         <div className={styles.heroToolbar}>
           <BackButton>Back</BackButton>
           <span className={styles.pokemonNumber}>{getDexNumber(pokemon.id)}</span>
@@ -44,7 +52,9 @@ export const PokemonHero = ({ pokemon, className }: PokemonHeroProps) => {
 
         <div className={styles.heroBody}>
           <div className={styles.heroInfo}>
-            <h1 className={styles.pokemonName}>{pokemon.name}</h1>
+            <Heading level={1} className={styles.pokemonName}>
+              {pokemon.name}
+            </Heading>
             <div className={styles.typesContainer}>
               {pokemon.type.map((type: string) => (
                 <PokemonTypePill key={type} type={type} className={styles.heroPill} />

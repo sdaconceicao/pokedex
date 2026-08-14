@@ -1,5 +1,6 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
 import Image from "next/image";
 import CountPill from "@/components/CountPill";
 import HeroToolbar from "@/components/HeroToolbar";
@@ -53,7 +54,9 @@ export const TypeHero = ({ type }: TypeHeroProps) => {
         <div className={styles.heroBody}>
           <div className={styles.heroInfo}>
             <span className={styles.eyebrow}>Type</span>
-            <h1 className={styles.typeName}>{type.displayName}</h1>
+            <Heading level={1} className={styles.typeName}>
+              {type.displayName}
+            </Heading>
             {generation && <span className={styles.generation}>{generation}</span>}
           </div>
 

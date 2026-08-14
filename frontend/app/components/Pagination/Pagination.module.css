@@ -28,36 +28,30 @@
   letter-spacing: 0.01em;
 }
 
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.controls button {
-  border-radius: 999px;
-}
-
-.previousNext {
-  min-width: 32px;
-  width: 32px;
-  padding: 0;
-}
-
-.pageNumbers {
-  display: flex;
+/* lago's Pagination emits its react-aria buttons under stable `pagination-list`
+ * / `pagination-ellipsis` classes alongside its own hashed ones, so those —
+ * plus the `react-aria-Button` class every control carries — are targeted via
+ * :global() rather than a module class. Nesting every rule under `.nav`
+ * (applied as this component's own `className` on <Pagination>) gives each
+ * selector two classes' worth of specificity, which outranks lago's own
+ * single-class rules regardless of which stylesheet loads first — restoring
+ * the pill-shaped buttons the floating bar has always used.
+ */
+.nav :global(.pagination-list) {
   gap: 0.25rem;
 }
 
-.ellipsis {
-  cursor: default;
-  border: none;
-  background: transparent;
+.nav :global(.react-aria-Button) {
+  width: 2rem;
   min-width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 999px;
 }
 
-.ellipsis:hover {
-  background: transparent;
+.nav :global(.pagination-ellipsis) {
+  min-width: 2rem;
+  cursor: default;
 }
 
 /* Mobile: drawer overlays content, so center on the viewport */
@@ -78,9 +72,9 @@
     display: none;
   }
 
-  /* Button sm shrinks to 28px tall on mobile — keep chevrons square */
-  .previousNext {
-    width: 28px;
-    min-width: 28px;
+  .nav :global(.react-aria-Button) {
+    width: 1.75rem;
+    min-width: 1.75rem;
+    height: 1.75rem;
   }
 }

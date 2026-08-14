@@ -1,5 +1,6 @@
 "use client";
 
+import { Heading } from "@code-x/lago";
 import Image from "next/image";
 import Link from "next/link";
 import { type FunctionComponent, useState } from "react";
@@ -33,7 +34,9 @@ export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href
       >
         <PokeballMark className={css.cardWatermark} />
         <div className={css.cardHeader}>
-          <h3 className={css.pokemonName}>{formattedName}</h3>
+          <Heading level={3} className={css.pokemonName}>
+            {formattedName}
+          </Heading>
           <span className={css.pokemonId}>{dexNumber}</span>
         </div>
         <div className={css.typeList}>

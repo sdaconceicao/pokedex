@@ -1,19 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type React from "react";
 
 import { Modal } from "./Modal";
-import { isBackdropClick, shouldRenderModal } from "./Modal.utils";
 
-// Mock the custom hook
-vi.mock("./Modal.hooks", () => ({
-  useModal: vi.fn(),
-}));
-
-import { useModal } from "./Modal.hooks";
-
-const mockUseModal = vi.mocked(useModal);
-
+// react-aria portals the dialog straight onto document.body, and there's no
+// <dialog> element backing it any more, so every query below goes through
+// role/name rather than a tag or a hand-rolled class the way the old
+// hand-rolled <dialog> could be queried.
 describe("Modal", () => {
   const defaultProps = {
     isOpen: true,
@@ -21,52 +14,41 @@ describe("Modal", () => {
     children: <div>Modal content</div>,
   };
 
-  const mockDialogRef = {
-    current: {
-      showModal: vi.fn(),
-      close: vi.fn(),
-    } as Partial<HTMLDialogElement>,
-  };
-
-  beforeEach(() => {
-    mockUseModal.mockReturnValue({
-      dialogRef: mockDialogRef as React.RefObject<HTMLDialogElement>,
-      handleClose: vi.fn(),
-    });
-    vi.clearAllMocks();
-  });
-
   it("renders when open", () => {
     render(<Modal {...defaultProps} />);
 
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText("Modal content")).toBeInTheDocument();
-    expect(document.querySelector("dialog")).toBeInTheDocument();
   });
 
   it("does not render when closed", () => {
     render(<Modal {...defaultProps} isOpen={false} />);
 
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.queryByText("Modal content")).not.toBeInTheDocument();
-    expect(document.querySelector("dialog")).not.toBeInTheDocument();
   });
 
   it("renders with title", () => {
     render(<Modal {...defaultProps} title="Test Modal" />);
 
-    expect(screen.getByText("Test Modal")).toBeInTheDocument();
-    expect(document.querySelector("h2")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Test Modal" })).toBeInTheDocument();
   });
 
-  it("renders with custom header", () => {
-    const customHeader = <div data-testid="custom-header">Custom Header</div>;
-    render(<Modal {...defaultProps} header={customHeader} />);
+  it("renders a custom header in place of the title", () => {
+    render(
+      <Modal
+        {...defaultProps}
+        title="Ignored"
+        header={<div data-testid="custom-header">Custom Header</div>}
+      />,
+    );
 
     expect(screen.getByTestId("custom-header")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Ignored" })).not.toBeInTheDocument();
   });
 
   it("renders with footer", () => {
-    const footer = <div data-testid="footer">Footer content</div>;
-    render(<Modal {...defaultProps} footer={footer} />);
+    render(<Modal {...defaultProps} footer={<div data-testid="footer">Footer content</div>} />);
 
     expect(screen.getByTestId("footer")).toBeInTheDocument();
   });
@@ -74,155 +56,79 @@ describe("Modal", () => {
   it("shows close button by default", () => {
     render(<Modal {...defaultProps} />);
 
-    // Debug: check what's actually rendered
-    const header = document.querySelector(".header");
-    expect(header).toBeInTheDocument();
-
-    const closeButton = document.querySelector('button[aria-label="Close modal"]');
-    expect(closeButton).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /close/i })).toBeInTheDocument();
   });
 
   it("hides close button when showCloseButton is false", () => {
     render(<Modal {...defaultProps} showCloseButton={false} />);
 
-    const closeButton = document.querySelector('button[aria-label="Close modal"]');
-    expect(closeButton).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /close/i })).not.toBeInTheDocument();
   });
 
-  it("shows backdrop by default", () => {
-    render(<Modal {...defaultProps} />);
-
-    const backdrop = document.querySelector(".backdrop");
-    expect(backdrop).toBeInTheDocument();
-  });
-
-  it("hides backdrop when showBackdrop is false", () => {
-    render(<Modal {...defaultProps} showBackdrop={false} />);
-
-    const backdrop = document.querySelector(".backdrop");
-    expect(backdrop).not.toBeInTheDocument();
-  });
-
-  it("applies correct size classes", () => {
-    const { rerender } = render(<Modal {...defaultProps} size="sm" />);
-
-    let dialog = document.querySelector("dialog");
-    expect(dialog).toHaveClass("sm");
-
-    rerender(<Modal {...defaultProps} size="lg" />);
-    dialog = document.querySelector("dialog");
-    expect(dialog).toHaveClass("lg");
-  });
-
-  it("applies custom className", () => {
-    render(<Modal {...defaultProps} className="custom-class" />);
-
-    const dialog = document.querySelector("dialog");
-    expect(dialog).toHaveClass("custom-class");
-  });
-
-  it("calls onClose when close button is clicked", async () => {
+  it("calls onClose when the close button is clicked", async () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
 
     render(<Modal {...defaultProps} onClose={onClose} />);
-
-    const closeButton = document.querySelector(
-      'button[aria-label="Close modal"]',
-    ) as HTMLButtonElement;
-    expect(closeButton).toBeInTheDocument();
-    await user.click(closeButton);
+    await user.click(screen.getByRole("button", { name: /close/i }));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("calls onClose when backdrop is clicked and closeOnBackdropClick is true", async () => {
+  it("calls onClose on Escape by default", async () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
 
-    render(<Modal {...defaultProps} onClose={onClose} closeOnBackdropClick={true} />);
+    render(<Modal {...defaultProps} onClose={onClose} />);
+    await user.keyboard("{Escape}");
 
-    const dialog = document.querySelector("dialog") as HTMLDialogElement;
-    expect(dialog).toBeInTheDocument();
-
-    // Simulate a click on the backdrop by clicking on the dialog element itself
-    // The isBackdropClick function will determine if it's actually a backdrop click
-    await user.click(dialog);
-
-    // Since we're clicking on the dialog element, it's not a backdrop click
-    // The onClose should not be called
-    expect(onClose).not.toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("does not call onClose when backdrop is clicked and closeOnBackdropClick is false", async () => {
+  it("closes on Escape even when closeOnBackdropClick is false — the two were never linked", async () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
 
     render(<Modal {...defaultProps} onClose={onClose} closeOnBackdropClick={false} />);
+    await user.keyboard("{Escape}");
 
-    const dialog = document.querySelector("dialog") as HTMLDialogElement;
-    expect(dialog).toBeInTheDocument();
-    await user.click(dialog);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onClose on an outside click by default (closeOnBackdropClick defaults to true)", async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+
+    render(<Modal {...defaultProps} onClose={onClose} />);
+    await user.click(document.body);
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onClose on an outside click when closeOnBackdropClick is false", async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+
+    render(<Modal {...defaultProps} onClose={onClose} closeOnBackdropClick={false} />);
+    await user.click(document.body);
 
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it("handles backdrop click correctly", () => {
-    const mockEvent = {
-      currentTarget: {
-        getBoundingClientRect: () => ({
-          left: 0,
-          right: 100,
-          top: 0,
-          bottom: 100,
-        }),
-      },
-      clientX: 150, // Outside the dialog
-      clientY: 150,
-    } as React.MouseEvent<HTMLDialogElement>;
+  it("applies the size class to the modal, and swaps it out on rerender", () => {
+    const { rerender } = render(<Modal {...defaultProps} size="sm" />);
 
-    const result = isBackdropClick(mockEvent);
-    expect(result).toBe(true);
+    expect(document.querySelector(".sm")).toBeInTheDocument();
+
+    rerender(<Modal {...defaultProps} size="lg" />);
+
+    expect(document.querySelector(".sm")).not.toBeInTheDocument();
+    expect(document.querySelector(".lg")).toBeInTheDocument();
   });
 
-  it("determines modal should render correctly", () => {
-    expect(shouldRenderModal(true)).toBe(true);
-    expect(shouldRenderModal(false)).toBe(false);
-  });
-});
+  it("applies a custom className alongside the size class", () => {
+    render(<Modal {...defaultProps} className="custom-class" />);
 
-describe("Modal accessibility", () => {
-  const defaultProps = {
-    isOpen: true,
-    onClose: vi.fn(),
-    children: <div>Modal content</div>,
-  };
-
-  const mockDialogRef = {
-    current: {
-      showModal: vi.fn(),
-      close: vi.fn(),
-    } as Partial<HTMLDialogElement>,
-  };
-
-  beforeEach(() => {
-    mockUseModal.mockReturnValue({
-      dialogRef: mockDialogRef as React.RefObject<HTMLDialogElement>,
-      handleClose: vi.fn(),
-    });
-  });
-
-  it("has proper ARIA label on close button", () => {
-    render(<Modal {...defaultProps} />);
-
-    const closeButton = document.querySelector('button[aria-label="Close modal"]');
-    expect(closeButton).toBeInTheDocument();
-  });
-
-  it("uses dialog element", () => {
-    render(<Modal {...defaultProps} />);
-
-    const dialog = document.querySelector("dialog");
-    expect(dialog).toBeInTheDocument();
+    expect(document.querySelector(".custom-class")).toBeInTheDocument();
   });
 });

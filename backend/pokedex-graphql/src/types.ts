@@ -246,7 +246,7 @@ export type ResolverTypeWrapper<T> = Promise<T> | T;
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> = ResolverFn<TResult, TParent, TContext, TArgs> | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
+export type Resolver<TResult, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>, TArgs = Record<PropertyKey, never>> = ResolverFn<TResult, TParent, TContext, TArgs> | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
 
 export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
@@ -283,27 +283,29 @@ export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, 
   | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
   | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
-export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
+export type SubscriptionResolver<TResult, TKey extends string, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>, TArgs = Record<PropertyKey, never>> =
   | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
-export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
+export type TypeResolveFn<TTypes, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>> = (
   parent: TParent,
   context: TContext,
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
-export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
+export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>, TArgs = Record<PropertyKey, never>> = (
   next: NextResolverFn<TResult>,
   parent: TParent,
   args: TArgs,
   context: TContext,
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
+
+
 
 
 
@@ -323,7 +325,7 @@ export type ResolversTypes = {
   PokemonPokedex: ResolverTypeWrapper<PokemonPokedex>;
   PokemonRegion: ResolverTypeWrapper<PokemonRegion>;
   PokemonType: ResolverTypeWrapper<PokemonType>;
-  Query: ResolverTypeWrapper<{}>;
+  Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   RegionDetail: ResolverTypeWrapper<RegionDetail>;
   Stats: ResolverTypeWrapper<Stats>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -347,7 +349,7 @@ export type ResolversParentTypes = {
   PokemonPokedex: PokemonPokedex;
   PokemonRegion: PokemonRegion;
   PokemonType: PokemonType;
-  Query: {};
+  Query: Record<PropertyKey, never>;
   RegionDetail: RegionDetail;
   Stats: Stats;
   String: Scalars['String']['output'];
@@ -362,7 +364,6 @@ export type AbilityResolvers<ContextType = DataSourceContext, ParentType extends
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type AbilityLiteResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['AbilityLite'] = ResolversParentTypes['AbilityLite']> = {
@@ -371,13 +372,11 @@ export type AbilityLiteResolvers<ContextType = DataSourceContext, ParentType ext
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type EvolutionChainResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['EvolutionChain'] = ResolversParentTypes['EvolutionChain']> = {
   chain?: Resolver<ResolversTypes['EvolutionNode'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type EvolutionNodeResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['EvolutionNode'] = ResolversParentTypes['EvolutionNode']> = {
@@ -388,7 +387,6 @@ export type EvolutionNodeResolvers<ContextType = DataSourceContext, ParentType e
   minLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   trigger?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
@@ -400,32 +398,27 @@ export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stats?: Resolver<ResolversTypes['Stats'], ParentType, ContextType>;
   type?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PokemonListResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonList'] = ResolversParentTypes['PokemonList']> = {
   offset?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   pokemon?: Resolver<Array<ResolversTypes['Pokemon']>, ParentType, ContextType>;
   total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PokemonPokedexResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonPokedex'] = ResolversParentTypes['PokemonPokedex']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PokemonRegionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonRegion'] = ResolversParentTypes['PokemonRegion']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PokemonTypeResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonType'] = ResolversParentTypes['PokemonType']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -452,7 +445,6 @@ export type RegionDetailResolvers<ContextType = DataSourceContext, ParentType ex
   pokedexes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   pokemonCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   versionGroups?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type StatsResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Stats'] = ResolversParentTypes['Stats']> = {
@@ -462,7 +454,6 @@ export type StatsResolvers<ContextType = DataSourceContext, ParentType extends R
   specialAttack?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   specialDefense?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   speed?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TypeDamageRelationsResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['TypeDamageRelations'] = ResolversParentTypes['TypeDamageRelations']> = {
@@ -472,7 +463,6 @@ export type TypeDamageRelationsResolvers<ContextType = DataSourceContext, Parent
   halfDamageTo?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   noDamageFrom?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   noDamageTo?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TypeDetailResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['TypeDetail'] = ResolversParentTypes['TypeDetail']> = {
@@ -484,7 +474,6 @@ export type TypeDetailResolvers<ContextType = DataSourceContext, ParentType exte
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pokemonCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sprite?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = DataSourceContext> = {

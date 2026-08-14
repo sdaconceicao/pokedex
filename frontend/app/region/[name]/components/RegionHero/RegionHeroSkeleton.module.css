@@ -7,6 +7,22 @@
   overflow: hidden;
 }
 
+/* lago's Skeleton defaults to an opaque near-white block (--gray-200 surface,
+   --gray-100 shimmer), which on this mid-slate panel reads as a stark cutout
+   next to PokemonCardSkeleton's soft translucent wash. These two tokens are
+   lago's public inputs, so the card's treatment drops straight in.
+
+   Scoped here rather than set globally: the wash needs a mid-tone behind it to
+   be visible at all, and lago's Skeleton is also used on the white panels in
+   PokemonDetailSkeleton, where it would disappear. It also has to target
+   `.skeleton` itself — lago declares these outright rather than reading them
+   with a var() fallback, so setting them on `.hero` would lose to lago's own
+   declaration on the element. */
+.hero :global(.skeleton) {
+  --skeleton-surface-color: var(--skeleton-wash);
+  --skeleton-shimmer-color: var(--skeleton-wash);
+}
+
 .heroBody {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -22,28 +38,13 @@
   gap: 0.5rem;
 }
 
-.eyebrowSkeleton {
-  width: 72px;
-  height: 14px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
-.nameSkeleton {
-  width: 240px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
+/* Only the shape lago's Skeleton doesn't take a prop for: the name box reads
+   a bigger corner than a plain box's theme radius, matching the real hero's
+   rounded heading block. Compounded with the parent class, not just
+   `.nameSkeleton` alone, so it outweighs Skeleton's own same-specificity
+   default regardless of which stylesheet loads first. */
+.heroInfo .nameSkeleton {
   border-radius: 0.75rem;
-}
-
-.generationSkeleton {
-  width: 132px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.35);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
 }
 
 .stats {
@@ -52,11 +53,7 @@
   gap: 0.75rem;
 }
 
-.statSkeleton {
-  width: 100%;
-  height: 74px;
-  background: rgba(255, 255, 255, 0.3);
-  animation: pulse 1.5s infinite;
+.stats .statSkeleton {
   border-radius: 0.875rem;
 }
 
@@ -67,24 +64,6 @@
   padding: 1rem 2.5rem 1.25rem;
   background: rgba(0, 0, 0, 0.16);
   border-top: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.factRowSkeleton {
-  width: 60%;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.3);
-  animation: pulse 1.5s infinite;
-  border-radius: 999px;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
 }
 
 /* ── Responsive ──────────────────────────────────── */
@@ -102,7 +81,9 @@
     padding: 1rem 1.5rem 1.25rem;
   }
 
-  .factRowSkeleton {
-    width: 100%;
+  /* Skeleton's width is inline (a prop, not a class), so overriding it at
+     this breakpoint needs !important to win over that inline style. */
+  .heroFooter .rowSkeleton {
+    width: 100% !important;
   }
 }

@@ -4,9 +4,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(150deg, var(--layout-primary-background), #f08030);
+  background: linear-gradient(150deg, var(--tint), #f08030);
   border-radius: 1.5rem;
-  color: #fff;
+  color: var(--highlight-foreground);
   overflow: hidden;
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.06),

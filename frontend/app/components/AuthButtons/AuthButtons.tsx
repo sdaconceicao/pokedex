@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/Button";
+import { Button } from "@code-x/lago";
 import { useAuth } from "@/hooks/useAuth";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import UserAvatar from "../Avatar/UserAvatar";
@@ -14,7 +14,7 @@ export default function AuthButtons() {
   }
 
   return (
-    <Button variant="primary" size="sm" onClick={openSignIn}>
+    <Button variant="primary" size="sm" onPress={openSignIn}>
       Sign In
     </Button>
   );

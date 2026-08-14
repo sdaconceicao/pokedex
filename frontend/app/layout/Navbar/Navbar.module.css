@@ -8,30 +8,57 @@
   overflow-y: auto;
 }
 
-.section {
-  margin-bottom: 0.5rem;
+/* Boosted past a plain `.section`: lago's own Disclosure root carries a
+   fixed 200px width (`._disclosure_*`, real specificity, not the
+   zero-specificity `:where()` colour rules), which would otherwise clip the
+   sidebar's actual width. */
+.navbar .section {
+  width: 100%;
 }
 
-.sectionHeader {
+/* Same tie-breaking concern for the header: it's now a lago `Button` (on
+   Disclosure's `trigger` slot) rather than a native `<button>`, and lago's
+   own button base rule sits at the same one-class specificity. */
+.section .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% - 1rem);
-  background: transparent;
-  border: 0;
-  border-radius: 0.5rem;
+  width: 100%;
+  height: auto;
+  /* The same token `AppShell`'s `.container` paints, which is what shows
+     through `.main` — so the header band reads as the content area's
+     background pulled into the sidebar, and follows the theme with it
+     (grey-200 in light, #1f232b in dark) instead of being pinned to black. */
+  background: var(--layout-tertiary-background);
+  border: 1px solid transparent;
+  /* Full-bleed, so no rounding: a radius here would notch the sidebar's own
+     background into the four corners of the band. */
+  border-radius: 0;
   color: var(--muted-foreground);
   padding: 0.45rem 0.75rem;
-  margin: 0 0.5rem;
+  margin: 0;
   cursor: pointer;
   transition:
     background 0.15s ease,
     color 0.15s ease;
+  /* lago draws a button's whole edge — the tinted 1px ring plus the raised
+     gradient wash — as inset box-shadows off `--button-*`, not as `border` or
+     `background`, so zeroing those two left the red ring and grey gradient
+     painted over the fill. It has a second, different box-shadow for dark
+     mode; this unlayered rule outranks both. */
+  box-shadow: none;
 }
 
-.sectionHeader:hover {
-  background-color: var(--layout-tertiary-background);
-  color: var(--layout-primary-background);
+.section .sectionHeader[data-pressed] {
+  scale: 1;
+}
+
+.section .sectionHeader:hover {
+  /* One rung along the same `--layout-*` scale the fill now sits on, so the
+     hover stays a consistent step in both themes — it can no longer reuse
+     tertiary, which is the resting state. */
+  background-color: var(--layout-quaternary-background);
+  color: var(--tint);
 }
 
 .sectionHeaderLeft {
@@ -57,8 +84,18 @@
   transition: transform 0.15s ease-in-out;
 }
 
-.chevronOpen {
+/* `data-expanded` is Disclosure's own reflection of its (uncontrolled) open
+   state, landing on the same root `.section` is merged onto — no more
+   `open ? styles.chevronOpen : ""` ternary needed. */
+.section[data-expanded] .chevron {
   transform: rotate(180deg);
+}
+
+/* lago's DisclosurePanel wraps whatever it's given in its own unclassed
+   `<div>`, which its stylesheet pads — reset that back to flush so `.list`'s
+   own spacing (matching `.listItem`/`.navItem` below) is the only inset. */
+.section :global(.react-aria-DisclosurePanel) > div {
+  padding: 0;
 }
 
 .list {
@@ -69,27 +106,4 @@
 
 .listItem {
   margin-bottom: 0.125rem;
-}
-
-.link {
-  display: block;
-  padding: 0.4rem 0.75rem;
-  margin: 0 0.5rem;
-  border-radius: 0.5rem;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-  text-decoration: none;
-  color: inherit;
-}
-
-.link:hover {
-  background-color: var(--layout-secondary-background);
-  color: var(--layout-primary-background);
-}
-
-.active {
-  background-color: var(--layout-primary-background);
-  color: var(--layout-primary-foreground);
-  font-weight: 600;
 }
