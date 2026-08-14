@@ -11,9 +11,25 @@
   flex-shrink: 0;
 }
 
+.trigger[data-pressed] {
+  scale: 1;
+}
+
 /* Avatar's initials fallback otherwise picks a hue by hashing `name`, which
    would make every signed-in user a different colour. Pin it to the brand
    tint so the avatar reads the same red circle it always has. */
 .avatar {
   --avatar-color: var(--tint);
+}
+
+.popover {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.popover :global(.react-aria-Header) {
+  font-size: var(--font-size);
+}
+
+.popover :global(.react-aria-MenuItem:not([data-disabled])) {
+  cursor: pointer;
 }

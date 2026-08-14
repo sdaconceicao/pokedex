@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
   LoginCredentials,
@@ -10,6 +11,11 @@ import type {
 // Custom hooks for authentication
 export function useAuth() {
   const queryClient = useQueryClient();
+
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Query for current token
   const {
@@ -66,7 +72,7 @@ export function useAuth() {
   });
 
   return {
-    user,
+    user: hasMounted ? user : undefined,
     isLoading: isTokenLoading || isUserLoading,
     error: tokenError || userError,
     login: loginMutation.mutate,
