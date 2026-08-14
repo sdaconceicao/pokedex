@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
+import SearchFilters from "./components/SearchFilters";
 import styles from "./Navbar.module.css";
 import {
   getPokedexItems,
@@ -9,6 +10,7 @@ import {
   NAV_SECTIONS,
   type NavSectionKey,
 } from "./Navbar.util";
+import NavbarGroup from "./NavbarGroup";
 import type { NavItem } from "./NavbarItem";
 import NavbarSection from "./NavbarSection";
 
@@ -33,9 +35,17 @@ export default function Navbar({ navigationData }: NavbarProps) {
 
   return (
     <nav className={styles.navbar}>
-      {NAV_SECTIONS.map(({ key, title, icon }) => (
-        <NavbarSection key={key} title={title} icon={icon} items={itemsByKey[key]} />
-      ))}
+      {/* Search first: it combines facets, so it is the more capable of the
+          two, and Browse below is the one-facet shortcut to the same results. */}
+      <NavbarGroup title="Search">
+        <SearchFilters types={types} regions={regions} pokedexes={pokedexes} />
+      </NavbarGroup>
+
+      <NavbarGroup title="Browse">
+        {NAV_SECTIONS.map(({ key, title, icon }) => (
+          <NavbarSection key={key} title={title} icon={icon} items={itemsByKey[key]} />
+        ))}
+      </NavbarGroup>
     </nav>
   );
 }

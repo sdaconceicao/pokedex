@@ -1,4 +1,6 @@
-import HomePage from "@/layout/HomePageLayout";
+import { redirect } from "next/navigation";
+import HomeScreen from "@/layout/HomeScreen";
+import { buildSearchUrl, parseLegacySearchParams } from "@/lib/searchFilters";
 import { getTypes } from "@/providers/NavigationDataProvider";
 
 export default async function Home({
@@ -13,16 +15,12 @@ export default async function Home({
   }>;
 }) {
   const [params, types] = await Promise.all([searchParams, getTypes()]);
-  // Keeps the page hydrated on the server, but allows the search params to be updated on the client
 
-  return (
-    <HomePage
-      searchQuery={params.q}
-      selectedType={params.type}
-      selectedPokedex={params.pokedex}
-      selectedRegion={params.region}
-      selectedSpecial={params.special}
-      types={types}
-    />
-  );
+  // Every filtered list now lives at /search. The home page keeps reading the
+  // params it used to answer only to forward them, so links and bookmarks from
+  // before the move still land on their results.
+  const legacy = parseLegacySearchParams(params);
+  if (legacy) redirect(buildSearchUrl(legacy));
+
+  return <HomeScreen types={types} />;
 }

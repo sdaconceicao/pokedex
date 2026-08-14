@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useRef } from "react";
 import Pagination from "@/components/Pagination";
-import PokemonList, { PokemonListSkeleton } from "@/layout/HomePageLayout/components/PokemonList";
+import PokemonList, { PokemonListSkeleton } from "@/components/PokemonList";
 import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
 import { GET_POKEMON_BY_TYPE } from "@/lib/queries";

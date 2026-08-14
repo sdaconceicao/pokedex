@@ -1,9 +1,14 @@
 import { SkeletonCard } from "@code-x/lago";
 
-// Mirrors PokemonList's own card grid so the top-level route fallback reads
-// as "the Pokemon list is loading" rather than a generic spinner — the
-// content's rough shape (a grid of cards) is already known even before any
-// particular page's data has.
+// Mirrors PokemonList's own card grid so the route fallback reads as "the
+// Pokemon list is loading" rather than a generic spinner — the content's rough
+// shape (a grid of cards) is known before any particular filter's results are.
+//
+// Scoped to /search rather than the app root on purpose. A loading.tsx covers
+// every route below it, so at the root this grid was the first thing shown on
+// the way to a Pokemon's own page too — a flash of list cards, then the detail
+// skeleton. Every other route already streams its own shaped fallback through
+// Suspense, so this is the only one that needs a file.
 const CARD_KEYS = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export default function Loading() {

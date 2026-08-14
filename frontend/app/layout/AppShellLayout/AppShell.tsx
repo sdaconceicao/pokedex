@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Toolbar } from "@code-x/lago";
-import { ChevronLeft, ChevronRight, Menu01, XClose } from "@untitled-ui/icons-react";
+import { ChevronLeft, ChevronRight, Menu01, SearchLg, XClose } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import AuthButtons from "@/components/AuthButtons";
@@ -74,7 +74,9 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
             <Logo className={styles.brandLogo} />
             <Pokeball size={28} className={styles.brandMark} />
           </Link>
-          <span className={styles.drawerTitle}>Browse</span>
+          {/* "Menu" rather than "Browse": the drawer now opens onto the search
+              form as well, and Browse is one of the two headings inside it. */}
+          <span className={styles.drawerTitle}>Menu</span>
           {/* The drawer covers the header toggle while open, so it needs its
               own dismiss. Hidden on desktop, where the toggle stays reachable.
               Its 18px comes from `--button-icon-size` in the stylesheet — lago
@@ -106,6 +108,20 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
             aria-label="Expand sidebar sections"
             className={styles.rail}
           >
+            {/* The search form has no NAV_SECTIONS entry — it isn't a list of
+                links — so its rail button is spelled out here, first, matching
+                the order inside the sidebar. */}
+            <Button
+              variant="quiet"
+              className={styles.railButton}
+              onPress={() => setCollapsed(false)}
+              aria-label="Expand sidebar to search"
+            >
+              <span title="Search" aria-hidden="true">
+                <SearchLg width={18} height={18} />
+              </span>
+            </Button>
+
             {NAV_SECTIONS.map(({ key, title, icon }) => (
               <Button
                 key={key}
