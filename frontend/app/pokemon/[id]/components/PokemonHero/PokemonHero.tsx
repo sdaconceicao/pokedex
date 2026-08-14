@@ -44,10 +44,7 @@ export const PokemonHero = ({ pokemon, className, flush }: PokemonHeroProps) => 
         />
       )}
 
-      <section
-        ref={ref}
-        className={clsx(styles.hero, flush && styles.flush, className)}
-      >
+      <section ref={ref} className={clsx(styles.hero, flush && styles.flush, className)}>
         <div className={styles.heroToolbar}>
           <BackButton>Back</BackButton>
           <span className={styles.pokemonNumber}>{getDexNumber(pokemon.id)}</span>

@@ -55,10 +55,7 @@ describe("AuthButtons", () => {
 
   it("shows the sign-in button when there is no user", () => {
     render(
-      wrap(
-        <AuthButtons />,
-        new QueryClient({ defaultOptions: { queries: { retry: false } } }),
-      ),
+      wrap(<AuthButtons />, new QueryClient({ defaultOptions: { queries: { retry: false } } })),
     );
 
     expect(screen.getByRole("button", { name: "Sign In" })).toBeInTheDocument();
