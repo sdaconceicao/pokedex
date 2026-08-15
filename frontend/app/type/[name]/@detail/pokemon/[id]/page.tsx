@@ -3,6 +3,7 @@ import RouteModal from "@/components/RouteModal";
 import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
 import { getPokemonById } from "@/lib/server-queries";
+import { parseSort } from "@/lib/sort";
 import PokemonDetail from "@/pokemon/[id]/components/PokemonDetail";
 import PokemonDetailSkeleton from "@/pokemon/[id]/components/PokemonDetail/PokemonDetailSkeleton";
 
@@ -18,10 +19,13 @@ async function PokemonDetailContent({ id }: { id: string }) {
  */
 export default async function Page(props: {
   params: Promise<{ name: string; id: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; sort?: string }>;
 }) {
-  const [{ name, id }, { page }] = await Promise.all([props.params, props.searchParams]);
-  const closeHref = buildBrowseUrl("type", decodeURIComponent(name), parsePage(page));
+  const [{ name, id }, { page, sort }] = await Promise.all([props.params, props.searchParams]);
+  const closeHref = buildBrowseUrl("type", decodeURIComponent(name), {
+    page: parsePage(page),
+    sort: parseSort(sort),
+  });
 
   // No header: PokemonDetail opens with its own "Back" button, and a header bar
   // with a second dismiss on top of it reads as chrome, especially on mobile

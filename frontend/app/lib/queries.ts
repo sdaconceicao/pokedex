@@ -10,8 +10,8 @@ export const GET_TYPES = gql`
 `;
 
 export const GET_POKEMON_BY_TYPE = gql`
-  query GetPokemonByType($type: String!, $limit: Int, $offset: Int) {
-    pokemonByType(type: $type, limit: $limit, offset: $offset) {
+  query GetPokemonByType($type: String!, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonByType(type: $type, limit: $limit, offset: $offset, sort: $sort) {
       total
       offset
       pokemon {
@@ -72,8 +72,8 @@ export const SEARCH_POKEMON = gql`
 /** The faceted search behind `/search`. Every facet is optional and an omitted
  *  one is skipped, so an empty filter browses the whole dex. */
 export const FILTER_POKEMON = gql`
-  query FilterPokemon($filter: PokemonFilter!, $limit: Int, $offset: Int) {
-    pokemonFilter(filter: $filter, limit: $limit, offset: $offset) {
+  query FilterPokemon($filter: PokemonFilter!, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonFilter(filter: $filter, limit: $limit, offset: $offset, sort: $sort) {
       total
       offset
       pokemon {
@@ -163,8 +163,8 @@ export const GET_REGIONS = gql`
 `;
 
 export const GET_POKEMON_BY_REGION = gql`
-  query GetPokemonByRegion($region: String!, $limit: Int, $offset: Int) {
-    pokemonByRegion(region: $region, limit: $limit, offset: $offset) {
+  query GetPokemonByRegion($region: String!, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonByRegion(region: $region, limit: $limit, offset: $offset, sort: $sort) {
       total
       offset
       pokemon {

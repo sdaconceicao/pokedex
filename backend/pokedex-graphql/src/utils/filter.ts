@@ -1,4 +1,5 @@
 import type { PokemonIndex } from "../datasources/pokemon-api.types.js";
+import { PokemonSort } from "../types.js";
 
 // National dex number is the canonical order for every list this API returns.
 // Facet sources disagree on their own natural order (the type endpoint returns
@@ -8,6 +9,24 @@ export const byNumber = (a: PokemonIndex, b: PokemonIndex): number => a.number -
 
 export const sortByNumber = (results: PokemonIndex[]): PokemonIndex[] =>
   [...results].sort(byNumber);
+
+const collator = new Intl.Collator("en");
+export const byName = (a: PokemonIndex, b: PokemonIndex): number =>
+  collator.compare(a.name, b.name);
+
+// getPokemonIndex() returns a static array shared across every request, and
+// pokemonFilter hands that exact array to this function whenever there's no
+// filter to narrow it. Sorting must copy rather than mutate in place, or an
+// unfiltered request would permanently reorder every other request's view of
+// the shared index.
+export const sortResults = (
+  results: PokemonIndex[],
+  sort: PokemonSort = PokemonSort.IdAsc,
+): PokemonIndex[] => {
+  const compare = sort === PokemonSort.NameAsc || sort === PokemonSort.NameDesc ? byName : byNumber;
+  const direction = sort.endsWith("_DESC") ? -1 : 1;
+  return [...results].sort((a, b) => compare(a, b) * direction);
+};
 
 /**
  * OR within a facet: every entry that appeared in at least one list, deduped by

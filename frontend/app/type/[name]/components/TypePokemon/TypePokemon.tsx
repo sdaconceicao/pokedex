@@ -3,12 +3,14 @@
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useRef } from "react";
+import ListHeader from "@/components/ListHeader";
 import Pagination from "@/components/Pagination";
 import PokemonList, { PokemonListSkeleton } from "@/components/PokemonList";
+import { useSortParam } from "@/hooks";
 import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
 import { GET_POKEMON_BY_TYPE } from "@/lib/queries";
-import type { Pokemon } from "@/types";
+import type { Pokemon, PokemonSort } from "@/types";
 import styles from "./TypePokemon.module.css";
 
 interface TypePokemonProps {
@@ -26,6 +28,12 @@ export default function TypePokemon({ type }: TypePokemonProps) {
   const searchParams = useSearchParams();
   const page = parsePage(searchParams.get("page"));
 
+  const buildSortUrl = useCallback(
+    (next: PokemonSort) => buildBrowseUrl("type", type, { page: 1, sort: next }),
+    [type],
+  );
+  const { sort, setSort } = useSortParam(buildSortUrl);
+
   const { loading, data, previousData } = useQuery<{
     pokemonByType: { pokemon: Pokemon[]; total: number };
   }>(GET_POKEMON_BY_TYPE, {
@@ -33,6 +41,7 @@ export default function TypePokemon({ type }: TypePokemonProps) {
       type,
       limit: ITEMS_PER_PAGE,
       offset: (page - 1) * ITEMS_PER_PAGE,
+      sort,
     },
   });
 
@@ -47,21 +56,24 @@ export default function TypePokemon({ type }: TypePokemonProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildBrowseUrl("type", type, nextPage));
+      window.history.pushState(null, "", buildBrowseUrl("type", type, { page: nextPage, sort }));
     },
-    [type],
+    [type, sort],
   );
 
   const getPokemonHref = useCallback(
-    (pokemon: Pokemon) => buildBrowseUrl("type", type, page, pokemon.id),
-    [type, page],
+    (pokemon: Pokemon) => buildBrowseUrl("type", type, { page, sort, pokemonId: pokemon.id }),
+    [type, page, sort],
   );
 
   return (
     <section className={styles.container}>
-      <h2 className={styles.heading} ref={headingRef}>
-        Pokemon of this type
-      </h2>
+      <ListHeader
+        title="Pokemon of this type"
+        sort={sort}
+        onSortChange={setSort}
+        ref={headingRef}
+      />
 
       {loading ? (
         <PokemonListSkeleton count={ITEMS_PER_PAGE} />

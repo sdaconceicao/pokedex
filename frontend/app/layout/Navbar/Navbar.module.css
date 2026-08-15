@@ -8,20 +8,14 @@
   overflow-y: auto;
 }
 
-/* The two bands of the sidebar — the search form, then the browse links. The
-   divider only sits between them, so the first one doesn't draw a line right
-   under the brand block. */
 .group + .group {
   border-top: 1px solid var(--border-subtle);
   margin-top: 0.5rem;
   padding-top: 0.5rem;
 }
 
-/* One step louder than `.sectionTitle` below — same uppercase treatment, but
-   full-strength foreground and wider tracking, so the group reads as the outer
-   level and the collapsible sections read as its contents. */
 .groupTitle {
-  margin: 0;
+  margin: 0.5rem 0;
   padding: 0.5rem 0.75rem 0.25rem;
   font-size: 0.6875rem;
   font-weight: 800;
@@ -30,17 +24,10 @@
   color: var(--foreground);
 }
 
-/* Boosted past a plain `.section`: lago's own Disclosure root carries a
-   fixed 200px width (`._disclosure_*`, real specificity, not the
-   zero-specificity `:where()` colour rules), which would otherwise clip the
-   sidebar's actual width. */
 .navbar .section {
   width: 100%;
 }
 
-/* Same tie-breaking concern for the header: it's now a lago `Button` (on
-   Disclosure's `trigger` slot) rather than a native `<button>`, and lago's
-   own button base rule sits at the same one-class specificity. */
 .section .sectionHeader {
   display: flex;
   align-items: center;

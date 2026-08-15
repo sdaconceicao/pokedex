@@ -3,12 +3,14 @@
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useRef } from "react";
+import ListHeader from "@/components/ListHeader";
 import Pagination from "@/components/Pagination";
 import PokemonList, { PokemonListSkeleton } from "@/components/PokemonList";
+import { useSortParam } from "@/hooks";
 import { buildBrowseUrl } from "@/lib/browseUrls";
 import { parsePage } from "@/lib/pagination";
 import { GET_POKEMON_BY_REGION } from "@/lib/queries";
-import type { Pokemon } from "@/types";
+import type { Pokemon, PokemonSort } from "@/types";
 import styles from "./RegionPokemon.module.css";
 
 interface RegionPokemonProps {
@@ -26,6 +28,12 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
   const searchParams = useSearchParams();
   const page = parsePage(searchParams.get("page"));
 
+  const buildSortUrl = useCallback(
+    (next: PokemonSort) => buildBrowseUrl("region", region, { page: 1, sort: next }),
+    [region],
+  );
+  const { sort, setSort } = useSortParam(buildSortUrl);
+
   const { loading, data, previousData } = useQuery<{
     pokemonByRegion: { pokemon: Pokemon[]; total: number };
   }>(GET_POKEMON_BY_REGION, {
@@ -33,6 +41,7 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
       region,
       limit: ITEMS_PER_PAGE,
       offset: (page - 1) * ITEMS_PER_PAGE,
+      sort,
     },
   });
 
@@ -47,21 +56,28 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildBrowseUrl("region", region, nextPage));
+      window.history.pushState(
+        null,
+        "",
+        buildBrowseUrl("region", region, { page: nextPage, sort }),
+      );
     },
-    [region],
+    [region, sort],
   );
 
   const getPokemonHref = useCallback(
-    (pokemon: Pokemon) => buildBrowseUrl("region", region, page, pokemon.id),
-    [region, page],
+    (pokemon: Pokemon) => buildBrowseUrl("region", region, { page, sort, pokemonId: pokemon.id }),
+    [region, page, sort],
   );
 
   return (
     <section className={styles.container}>
-      <h2 className={styles.heading} ref={headingRef}>
-        Pokemon from this region
-      </h2>
+      <ListHeader
+        title="Pokemon from this region"
+        sort={sort}
+        onSortChange={setSort}
+        ref={headingRef}
+      />
 
       {loading ? (
         <PokemonListSkeleton count={ITEMS_PER_PAGE} />

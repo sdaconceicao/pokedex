@@ -2,6 +2,11 @@ import { render, screen } from "@testing-library/react";
 import type { RegionDetail } from "@/types";
 import { RegionHero } from "./RegionHero";
 
+// useSortParam reads the sort out of the URL via this hook
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 const kanto: RegionDetail = {
   id: "1",
   name: "kanto",

@@ -2,10 +2,14 @@
 
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import HeroToolbar from "@/components/HeroToolbar";
+import ListHeader from "@/components/ListHeader";
 import Pagination from "@/components/Pagination";
 import { getTotalPages } from "@/components/Pagination/Pagination.util";
 import PokemonList, { PokemonListSkeleton } from "@/components/PokemonList";
+import SortToggle from "@/components/SortToggle";
+import { useScrolledPast, useSortParam } from "@/hooks";
 import { parsePage } from "@/lib/pagination";
 import { FILTER_POKEMON } from "@/lib/queries";
 import {
@@ -14,7 +18,7 @@ import {
   type SearchFilterState,
   toPokemonFilter,
 } from "@/lib/searchFilters";
-import type { Pokemon } from "@/types";
+import type { Pokemon, PokemonSort } from "@/types";
 import styles from "./SearchResults.module.css";
 
 interface SearchResultsProps {
@@ -30,7 +34,7 @@ const ITEMS_PER_PAGE = 20;
  * one per facet.
  */
 export default function SearchResults({ filters }: SearchResultsProps) {
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const { ref: headingRef, scrolledPast } = useScrolledPast<HTMLHeadingElement>();
   const searchParams = useSearchParams();
 
   // The page lives in the URL rather than in state, so it survives a reload and
@@ -38,12 +42,22 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   // server, already parsed.
   const page = parsePage(searchParams.get("page"));
 
+  // Sort changes go through pushState (see useSortParam), which never re-runs
+  // this component's server parent — so `filters.sort` would freeze at
+  // whatever it was on first load. Read it from the URL here instead, and use
+  // this value everywhere below, never `filters.sort`.
+  const buildSortUrl = useCallback(
+    (next: PokemonSort) => buildSearchUrl({ ...filters, page: 1, sort: next }),
+    [filters],
+  );
+  const { sort, setSort } = useSortParam(buildSortUrl);
+
   const filter = useMemo(() => toPokemonFilter(filters), [filters]);
 
   const { loading, data, previousData } = useQuery<{
     pokemonFilter: { pokemon: Pokemon[]; total: number };
   }>(FILTER_POKEMON, {
-    variables: { filter, limit: ITEMS_PER_PAGE, offset: (page - 1) * ITEMS_PER_PAGE },
+    variables: { filter, limit: ITEMS_PER_PAGE, offset: (page - 1) * ITEMS_PER_PAGE, sort },
   });
 
   // A page change swaps the variables, which empties `data` until the next page
@@ -58,9 +72,9 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   useEffect(() => {
     const totalPages = getTotalPages(total, ITEMS_PER_PAGE);
     if (total > 0 && page > totalPages) {
-      window.history.replaceState(null, "", buildSearchUrl({ ...filters, page: totalPages }));
+      window.history.replaceState(null, "", buildSearchUrl({ ...filters, page: totalPages, sort }));
     }
-  }, [total, page, filters]);
+  }, [total, page, filters, sort]);
 
   // pushState rather than router.push: the page belongs to this list, and a
   // real navigation would re-run the server page for a filter that hasn't
@@ -68,18 +82,37 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildSearchUrl({ ...filters, page: nextPage }));
+      window.history.pushState(null, "", buildSearchUrl({ ...filters, page: nextPage, sort }));
     },
-    [filters],
+    [filters, sort, headingRef],
   );
 
   return (
     <section className={styles.container}>
-      <h1 className={styles.heading} ref={headingRef}>
-        {getSearchHeading(filters)}
-      </h1>
+      {/* Ahead of ListHeader in the flow, so it is already pinned to the top of
+          the scroll area when it appears and lands over the heading instead of
+          stacking under it. */}
+      {scrolledPast && (
+        <HeroToolbar
+          title={getSearchHeading(filters)}
+          titleSide="left"
+          aside={<SortToggle value={sort} onChange={setSort} />}
+        />
+      )}
 
-      {loading ? (
+      <ListHeader
+        title={getSearchHeading(filters)}
+        level={1}
+        sort={sort}
+        onSortChange={setSort}
+        ref={headingRef}
+      />
+
+      {/* Only the first load has nothing to show. Keeping the previous grid up
+          while the next one lands also keeps the scroll position: tearing the
+          cards out mid-frame resets the shell's scroller to the top, which
+          would drop the sticky toolbar out from under a sort change. */}
+      {loading && !results ? (
         <PokemonListSkeleton count={ITEMS_PER_PAGE} />
       ) : (
         <PokemonList pokemon={results?.pokemon ?? []} />

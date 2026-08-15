@@ -1,8 +1,8 @@
 import type { DataSourceContext } from "./context.js";
 import type { PokemonIndex } from "./datasources/pokemon-api.types.js";
 import { logger } from "./logger.js";
-import type { PokemonFilter, Resolvers } from "./types.js";
-import { intersect, sortByNumber, union } from "./utils/filter.js";
+import { type PokemonFilter, PokemonSort, type Resolvers } from "./types.js";
+import { intersect, sortResults, union } from "./utils/filter.js";
 import { getPaginatedResults } from "./utils/pagination.js";
 
 /**
@@ -136,25 +136,36 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
-    pokemonSearch: async (_, { query, limit = 20, offset = 0 }, { dataSources }) => {
+    pokemonSearch: async (
+      _,
+      { query, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
+      { dataSources },
+    ) => {
       logger.info(`Resolving pokemonSearch query: "${query}" with limit: ${limit}`);
       try {
-        const results = dataSources.pokemonAPI.getPokemonByName(query, offset, limit);
+        const results = sortResults(dataSources.pokemonAPI.searchPokemonIndex(query), sort);
+        const total = results.length;
+        const limitedResults = getPaginatedResults(results, limit, offset);
+
         const pokemon = await Promise.all(
-          results.pokemon.map(({ id }) => dataSources.pokemonAPI.getPokemon(id)),
+          limitedResults.map(({ id }) => dataSources.pokemonAPI.getPokemon(id)),
         );
         logger.info(`pokemonSearch resolved ${pokemon.length} Pokemon`);
         return {
-          pokemon,
-          total: results.total,
+          total,
           offset,
+          pokemon,
         };
       } catch (error) {
         logger.error(`Error resolving pokemonSearch "${query}":`, error);
         throw error;
       }
     },
-    pokemonByType: async (_, { type, limit = 20, offset = 0 }, { dataSources }) => {
+    pokemonByType: async (
+      _,
+      { type, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
+      { dataSources },
+    ) => {
       logger.info(`Resolving pokemonByType query: type=${type}, limit=${limit}, offset=${offset}`);
       if (!type) {
         logger.info("No type specified, returning empty result");
@@ -162,7 +173,7 @@ export const resolvers: Resolvers = {
       }
 
       try {
-        const results = await dataSources.pokemonAPI.getPokemonByType(type);
+        const results = sortResults(await dataSources.pokemonAPI.getPokemonByType(type), sort);
         const total = results.length;
         const limitedResults = getPaginatedResults(results, limit, offset);
 
@@ -192,7 +203,11 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
-    pokemonByPokedex: async (_, { pokedex, limit = 20, offset = 0 }, { dataSources }) => {
+    pokemonByPokedex: async (
+      _,
+      { pokedex, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
+      { dataSources },
+    ) => {
       logger.info(
         `Resolving pokemonByPokedex query: pokedex=${pokedex}, limit=${limit}, offset=${offset}`,
       );
@@ -202,7 +217,10 @@ export const resolvers: Resolvers = {
       }
 
       try {
-        const results = await dataSources.pokemonAPI.getPokemonByPokedex(pokedex);
+        const results = sortResults(
+          await dataSources.pokemonAPI.getPokemonByPokedex(pokedex),
+          sort,
+        );
         const total = results.length;
         const limitedResults = getPaginatedResults(results, limit, offset);
 
@@ -233,7 +251,11 @@ export const resolvers: Resolvers = {
       }
     },
 
-    pokemonByRegion: async (_, { region, limit = 20, offset = 0 }, { dataSources }) => {
+    pokemonByRegion: async (
+      _,
+      { region, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
+      { dataSources },
+    ) => {
       logger.info(
         `Resolving pokemonByRegion query: region=${region}, limit=${limit}, offset=${offset}`,
       );
@@ -243,7 +265,7 @@ export const resolvers: Resolvers = {
       }
 
       try {
-        const results = await dataSources.pokemonAPI.getPokemonByRegion(region);
+        const results = sortResults(await dataSources.pokemonAPI.getPokemonByRegion(region), sort);
         const total = results.length;
         const limitedResults = getPaginatedResults(results, limit, offset);
 
@@ -274,7 +296,11 @@ export const resolvers: Resolvers = {
       }
     },
 
-    pokemonFilter: async (_, { filter, limit = 20, offset = 0 }, context) => {
+    pokemonFilter: async (
+      _,
+      { filter, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
+      context,
+    ) => {
       logger.info(
         `Resolving pokemonFilter query: ${JSON.stringify(filter)}, limit=${limit}, offset=${offset}`,
       );
@@ -283,11 +309,12 @@ export const resolvers: Resolvers = {
         const facets = await Promise.all(resolveFacets(context, filter));
 
         // An empty filter narrows nothing, so browse the whole dex rather than
-        // return nothing. The index is already in dex order and is shared state,
-        // so it is sliced rather than re-sorted.
-        const matches = facets.length
-          ? sortByNumber(intersect(facets))
-          : context.dataSources.pokemonAPI.getPokemonIndex();
+        // return nothing. sortResults copies before sorting, so the shared
+        // index is never reordered in place.
+        const matches = sortResults(
+          facets.length ? intersect(facets) : context.dataSources.pokemonAPI.getPokemonIndex(),
+          sort,
+        );
 
         const total = matches.length;
         const page = getPaginatedResults(matches, limit, offset);

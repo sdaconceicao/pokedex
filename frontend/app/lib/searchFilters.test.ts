@@ -26,6 +26,7 @@ describe("parseSearchParams", () => {
         dual: "fire,flying",
         regions: "kanto",
         pokedexes: "kanto,national",
+        sort: "NAME_DESC",
         page: "3",
       }),
     ).toEqual({
@@ -35,6 +36,7 @@ describe("parseSearchParams", () => {
       regions: ["kanto"],
       pokedexes: ["kanto", "national"],
       special: undefined,
+      sort: "NAME_DESC",
       page: 3,
     });
   });
@@ -63,7 +65,16 @@ describe("parseSearchParams", () => {
   });
 
   it("ignores unknown params", () => {
-    expect(parseSearchParams({ sort: "name", type: "fire" })).toEqual(state());
+    expect(parseSearchParams({ bogus: "nonsense", type: "fire" })).toEqual(state());
+  });
+
+  it("defaults sort when absent and falls back to it when malformed", () => {
+    expect(parseSearchParams({}).sort).toBe("ID_ASC");
+    expect(parseSearchParams({ sort: "bogus" }).sort).toBe("ID_ASC");
+  });
+
+  it("parses a recognised sort", () => {
+    expect(parseSearchParams({ sort: "NAME_ASC" }).sort).toBe("NAME_ASC");
   });
 
   it("clamps a missing, malformed or out-of-range page to 1", () => {
@@ -170,6 +181,14 @@ describe("buildSearchUrl", () => {
     expect(buildSearchUrl(state({ types: ["fire"], page: 4 }))).toBe("/search?types=fire&page=4");
   });
 
+  it("omits sort at the default and emits it otherwise, before page", () => {
+    expect(buildSearchUrl(state({ sort: "ID_ASC" }))).toBe("/search");
+    expect(buildSearchUrl(state({ sort: "NAME_ASC" }))).toBe("/search?sort=NAME_ASC");
+    expect(buildSearchUrl(state({ sort: "NAME_ASC", page: 2 }))).toBe(
+      "/search?sort=NAME_ASC&page=2",
+    );
+  });
+
   it("normalizes slugs on the way out too", () => {
     expect(buildSearchUrl(state({ types: [" Fire ", "fire", "Grass"] }))).toBe(
       "/search?types=fire,grass",
@@ -194,6 +213,7 @@ describe("buildSearchUrl", () => {
       dualType: { primary: "fire", secondary: "flying" },
       regions: ["kanto", "johto"],
       pokedexes: ["national"],
+      sort: "NAME_DESC",
       page: 3,
     });
 

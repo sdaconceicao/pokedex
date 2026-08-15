@@ -1,5 +1,6 @@
-import type { DualTypeFilter, PokemonFilter, PokemonType } from "@/types";
+import type { DualTypeFilter, PokemonFilter, PokemonSort, PokemonType } from "@/types";
 import { parsePage } from "./pagination";
+import { DEFAULT_SORT, encodeSort, parseSort } from "./sort";
 import { titleCase } from "./string";
 
 /** The two curated collections the sidebar links to. They are not a facet of
@@ -24,6 +25,7 @@ export interface SearchFilterState {
   regions: readonly string[];
   pokedexes: readonly string[];
   special?: Special;
+  sort: PokemonSort;
   page: number;
 }
 
@@ -43,6 +45,7 @@ export const EMPTY_SEARCH_FILTERS: SearchFilterState = Object.freeze({
   types: NO_VALUES,
   regions: NO_VALUES,
   pokedexes: NO_VALUES,
+  sort: DEFAULT_SORT,
   page: 1,
 });
 
@@ -140,6 +143,7 @@ export const parseSearchParams = (params: SearchParamsLike): SearchFilterState =
     regions: parseSlugList(readParam(params, "regions")),
     pokedexes: parseSlugList(readParam(params, "pokedexes")),
     special,
+    sort: parseSort(readParam(params, "sort")),
     page: parsePage(readParam(params, "page")),
   };
 };
@@ -202,6 +206,8 @@ export const buildSearchUrl = (state: Partial<SearchFilterState> = {}): string =
   // Mirrors the precedence in parseSearchParams, so a URL never carries a
   // `special` that reading it back would discard.
   if (!q) append("special", state.special);
+
+  append("sort", encodeSort(state.sort));
 
   const page = state.page ?? 1;
   if (page > 1) params.set("page", String(page));

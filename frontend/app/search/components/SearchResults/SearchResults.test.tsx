@@ -133,13 +133,30 @@ describe("SearchResults", () => {
       expect(screen.getByRole("heading", { name: "Gigantamax Pokemon" })).toBeInTheDocument();
     });
 
-    it("shows a full page of placeholders while loading", () => {
-      setResults({ loading: true });
+    it("shows a full page of placeholders on the first load", () => {
+      vi.mocked(useQuery).mockReturnValue({
+        loading: true,
+        data: undefined,
+        previousData: undefined,
+      } as unknown as ReturnType<typeof useQuery>);
 
       render(<SearchResults filters={filters({ q: "char" })} />);
 
       expect(screen.getByTestId("pokemon-list-skeleton")).toHaveTextContent("20");
       expect(screen.queryByTestId("pokemon-list")).not.toBeInTheDocument();
+    });
+
+    it("keeps the current grid up while the next result set loads", () => {
+      vi.mocked(useQuery).mockReturnValue({
+        loading: true,
+        data: undefined,
+        previousData: { pokemonFilter: { pokemon, total: 1 } },
+      } as unknown as ReturnType<typeof useQuery>);
+
+      render(<SearchResults filters={filters({ q: "char" })} />);
+
+      expect(screen.queryByTestId("pokemon-list-skeleton")).not.toBeInTheDocument();
+      expect(screen.getByText("charmander")).toBeInTheDocument();
     });
 
     it("shows the matches once they land", () => {
