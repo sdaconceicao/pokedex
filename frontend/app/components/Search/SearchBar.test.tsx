@@ -99,7 +99,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "charizard");
       await user.click(searchButton);
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=charizard");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=charizard");
     });
 
     it("submits search with trimmed query", async () => {
@@ -114,7 +114,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "  mewtwo  ");
       await user.click(searchButton);
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=mewtwo");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=mewtwo");
     });
 
     it("submits empty search and navigates to home", async () => {
@@ -156,7 +156,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "bulbasaur");
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=bulbasaur");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=bulbasaur");
     });
   });
 
@@ -278,7 +278,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "test");
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=test");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=test");
     });
 
     it("submits the current query when the search button is clicked", async () => {
@@ -293,7 +293,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "test");
       await user.click(searchButton);
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=test");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=test");
     });
   });
 
@@ -355,7 +355,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "12345");
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=12345");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=12345");
     });
 
     it("handles search query with mixed content and URL encoding", async () => {
@@ -370,7 +370,7 @@ describe("SearchBar", () => {
       await user.keyboard("{Enter}");
 
       // URL encoding will convert # to %23 and spaces to +
-      expect(mockPush).toHaveBeenCalledWith("/?q=Pikachu+%23025+Electric");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=Pikachu+%23025+Electric");
     });
 
     it("handles rapid input changes", async () => {
@@ -404,7 +404,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, reasonableQuery);
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith(`/?q=${reasonableQuery}`);
+      expect(mockPush).toHaveBeenCalledWith(`/search?q=${reasonableQuery}`);
     });
   });
 

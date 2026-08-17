@@ -4,17 +4,20 @@ import { Link } from "@code-x/lago";
 import NextLink from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { paramIncludes } from "./Navbar.util";
 import styles from "./NavbarItem.module.css";
 
 export interface NavItem {
   label: string;
   href: string;
-  activeWhenQueryParamEquals?: {
+  /** For items that are one facet of the shared `/search` results rather than a
+   *  page of their own. Membership, not equality: several of these can be
+   *  selected at once and they share a single comma-joined param. */
+  activeWhenSearchParamIncludes?: {
     key: string;
     value: string;
   };
-  /** For items that navigate to a page of their own rather than filtering the
-   *  results on the home page */
+  /** For items that navigate to a page of their own */
   activeWhenPathnameEquals?: string;
   icon?: ReactNode;
 }
@@ -27,11 +30,17 @@ export default function NavbarItem({ item }: NavbarItemProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
+  // The param check is scoped to the item's own route, taken from its href, so
+  // an item can't light up on some other page that happens to use the same
+  // param name.
   const isActive = item.activeWhenPathnameEquals
     ? pathname === item.activeWhenPathnameEquals
-    : item.activeWhenQueryParamEquals
-      ? searchParams.get(item.activeWhenQueryParamEquals.key) ===
-        item.activeWhenQueryParamEquals.value
+    : item.activeWhenSearchParamIncludes
+      ? pathname === item.href.split("?")[0] &&
+        paramIncludes(
+          searchParams.get(item.activeWhenSearchParamIncludes.key),
+          item.activeWhenSearchParamIncludes.value,
+        )
       : false;
 
   return (

@@ -2,12 +2,15 @@
 
 import { Heading } from "@code-x/lago";
 import Image from "next/image";
+import { useCallback } from "react";
 import CountPill from "@/components/CountPill";
 import HeroToolbar from "@/components/HeroToolbar";
+import SortToggle from "@/components/SortToggle";
 import StatTile from "@/components/StatTile";
-import { useScrolledPast } from "@/hooks";
+import { useScrolledPast, useSortParam } from "@/hooks";
+import { buildBrowseUrl } from "@/lib/browseUrls";
 import { formatGeneration } from "@/lib/string";
-import type { TypeDetail } from "@/types";
+import type { PokemonSort, TypeDetail } from "@/types";
 import TypeWheel from "../TypeWheel/TypeWheel";
 import styles from "./TypeHero.module.css";
 
@@ -22,6 +25,12 @@ export const TypeHero = ({ type }: TypeHeroProps) => {
   const generation = formatGeneration(type.generation);
   const { ref, scrolledPast } = useScrolledPast<HTMLElement>();
   const typeClass = `type-${type.name.toLowerCase()}`;
+
+  const buildSortUrl = useCallback(
+    (next: PokemonSort) => buildBrowseUrl("type", type.name, { page: 1, sort: next }),
+    [type.name],
+  );
+  const { sort, setSort } = useSortParam(buildSortUrl);
 
   return (
     <>
@@ -43,8 +52,13 @@ export const TypeHero = ({ type }: TypeHeroProps) => {
           }
           aside={
             <>
-              <CountPill value={type.pokemonCount} label="Pokemon" />
-              <CountPill value={type.moveCount} label="Moves" />
+              <CountPill
+                value={type.pokemonCount}
+                label="Pokemon"
+                className={styles.toolbarCount}
+              />
+              <CountPill value={type.moveCount} label="Moves" className={styles.toolbarCount} />
+              <SortToggle value={sort} onChange={setSort} />
             </>
           }
         />

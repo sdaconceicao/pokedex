@@ -1,0 +1,5 @@
+.container {
+  width: 100%;
+  /* Room for the floating pagination bar, matching the browse pages. */
+  padding-bottom: 120px;
+}

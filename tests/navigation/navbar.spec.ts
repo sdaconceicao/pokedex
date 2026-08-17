@@ -70,13 +70,15 @@ test.describe("Navbar", () => {
 
     await page.waitForLoadState("networkidle");
 
-    await expect(page).toHaveURL(/\?special=gmax/);
+    // The curated collections are one facet of the shared search results now,
+    // rather than a filter on the home page
+    await expect(page).toHaveURL(/\/search\?special=gmax/);
     await expect(gigantamaxLink).toHaveAttribute("aria-current", "page");
     await expect(searchInput).toHaveValue("");
 
     await expect(
       page
-        .getByRole("heading", { level: 2 })
+        .getByRole("heading", { level: 1 })
         .filter({ hasText: /gigantamax/i }),
     ).toBeVisible();
   });

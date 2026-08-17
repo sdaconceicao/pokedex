@@ -1,5 +1,6 @@
 import type { PokemonIndex } from "../datasources/pokemon-api.types";
-import { byNumber, intersect, sortByNumber, union } from "./filter";
+import { PokemonSort } from "../types";
+import { byName, byNumber, intersect, sortByNumber, sortResults, union } from "./filter";
 
 const entry = (number: number, name: string): PokemonIndex => ({
   id: String(number),
@@ -40,6 +41,64 @@ describe("byNumber", () => {
     expect(byNumber(charmander, charizard)).toBeLessThan(0);
     expect(byNumber(charizard, charmander)).toBeGreaterThan(0);
     expect(byNumber(charizard, charizard)).toBe(0);
+  });
+});
+
+describe("byName", () => {
+  it("sorts alphabetically", () => {
+    expect(byName(charmander, charizard)).toBeGreaterThan(0);
+    expect(byName(charizard, charmander)).toBeLessThan(0);
+    expect(byName(charizard, charizard)).toBe(0);
+  });
+});
+
+describe("sortResults", () => {
+  it("orders by national dex number ascending for ID_ASC", () => {
+    expect(names(sortResults([moltres, charmander, pidgey], PokemonSort.IdAsc))).toEqual([
+      "charmander",
+      "pidgey",
+      "moltres",
+    ]);
+  });
+
+  it("orders by national dex number descending for ID_DESC", () => {
+    expect(names(sortResults([moltres, charmander, pidgey], PokemonSort.IdDesc))).toEqual([
+      "moltres",
+      "pidgey",
+      "charmander",
+    ]);
+  });
+
+  it("orders alphabetically ascending for NAME_ASC", () => {
+    expect(names(sortResults([moltres, charmander, pidgey], PokemonSort.NameAsc))).toEqual([
+      "charmander",
+      "moltres",
+      "pidgey",
+    ]);
+  });
+
+  it("orders alphabetically descending for NAME_DESC", () => {
+    expect(names(sortResults([moltres, charmander, pidgey], PokemonSort.NameDesc))).toEqual([
+      "pidgey",
+      "moltres",
+      "charmander",
+    ]);
+  });
+
+  it("defaults to ID_ASC", () => {
+    expect(names(sortResults([moltres, charmander, pidgey]))).toEqual([
+      "charmander",
+      "pidgey",
+      "moltres",
+    ]);
+  });
+
+  it("returns a new array and leaves the input untouched", () => {
+    const input = [moltres, charmander, pidgey];
+    const result = sortResults(input, PokemonSort.NameAsc);
+
+    expect(result).not.toBe(input);
+    expect(names(input)).toEqual(["moltres", "charmander", "pidgey"]);
   });
 });
 

@@ -92,7 +92,7 @@ export type PokemonFilter = {
   types?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
-/** Results are ordered by national dex number. */
+/** Results are ordered by the query's `sort`, national dex number by default. */
 export type PokemonList = {
   __typename?: 'PokemonList';
   offset: Scalars['Int']['output'];
@@ -111,6 +111,17 @@ export type PokemonRegion = {
   count: Scalars['Int']['output'];
   name: Scalars['String']['output'];
 };
+
+/**
+ * How a list is ordered. `ID_*` is by national dex number, `NAME_*` alphabetical by
+ * the name the API spells — which is what the cards display.
+ */
+export enum PokemonSort {
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC'
+}
 
 export type PokemonType = {
   __typename?: 'PokemonType';
@@ -149,6 +160,7 @@ export type QueryPokemonByPokedexArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   pokedex?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
@@ -156,12 +168,14 @@ export type QueryPokemonByRegionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   region?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
 export type QueryPokemonByTypeArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
   type?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -170,6 +184,7 @@ export type QueryPokemonFilterArgs = {
   filter: PokemonFilter;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
@@ -177,6 +192,7 @@ export type QueryPokemonSearchArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   query: Scalars['String']['input'];
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
@@ -324,6 +340,7 @@ export type ResolversTypes = {
   PokemonList: ResolverTypeWrapper<PokemonList>;
   PokemonPokedex: ResolverTypeWrapper<PokemonPokedex>;
   PokemonRegion: ResolverTypeWrapper<PokemonRegion>;
+  PokemonSort: PokemonSort;
   PokemonType: ResolverTypeWrapper<PokemonType>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   RegionDetail: ResolverTypeWrapper<RegionDetail>;
@@ -425,11 +442,11 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   ability?: Resolver<Maybe<ResolversTypes['Ability']>, ParentType, ContextType, RequireFields<QueryAbilityArgs, 'id'>>;
   pokedexes?: Resolver<Array<ResolversTypes['PokemonPokedex']>, ParentType, ContextType>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
-  pokemonByPokedex?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByPokedexArgs>>;
-  pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByRegionArgs>>;
-  pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, Partial<QueryPokemonByTypeArgs>>;
-  pokemonFilter?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonFilterArgs, 'filter'>>;
-  pokemonSearch?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query'>>;
+  pokemonByPokedex?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByPokedexArgs, 'sort'>>;
+  pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByRegionArgs, 'sort'>>;
+  pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByTypeArgs, 'sort'>>;
+  pokemonFilter?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonFilterArgs, 'filter' | 'sort'>>;
+  pokemonSearch?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query' | 'sort'>>;
   region?: Resolver<Maybe<ResolversTypes['RegionDetail']>, ParentType, ContextType, RequireFields<QueryRegionArgs, 'name'>>;
   regions?: Resolver<Array<ResolversTypes['PokemonRegion']>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['TypeDetail']>, ParentType, ContextType, RequireFields<QueryTypeArgs, 'name'>>;

@@ -2,17 +2,38 @@
 export const typeDefs = /* GraphQL */ `
 type Query {
   pokemon(id: ID!): Pokemon
-  pokemonSearch(query: String!, limit: Int, offset: Int): PokemonList
-  pokemonByType(type: String, limit: Int, offset: Int): PokemonList
-  pokemonByPokedex(pokedex: String, limit: Int, offset: Int): PokemonList
-  pokemonByRegion(region: String, limit: Int, offset: Int): PokemonList
-  pokemonFilter(filter: PokemonFilter!, limit: Int, offset: Int): PokemonList
+  pokemonSearch(query: String!, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
+  pokemonByType(type: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
+  pokemonByPokedex(
+    pokedex: String
+    limit: Int
+    offset: Int
+    sort: PokemonSort = ID_ASC
+  ): PokemonList
+  pokemonByRegion(region: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
+  pokemonFilter(
+    filter: PokemonFilter!
+    limit: Int
+    offset: Int
+    sort: PokemonSort = ID_ASC
+  ): PokemonList
   ability(id: ID!): Ability
   types: [PokemonType!]!
   pokedexes: [PokemonPokedex!]!
   regions: [PokemonRegion!]!
   region(name: String!): RegionDetail
   type(name: String!): TypeDetail
+}
+
+"""
+How a list is ordered. \`ID_*\` is by national dex number, \`NAME_*\` alphabetical by
+the name the API spells — which is what the cards display.
+"""
+enum PokemonSort {
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
 }
 
 """
@@ -50,7 +71,7 @@ input PokemonFilter {
 }
 
 """
-Results are ordered by national dex number.
+Results are ordered by the query's \`sort\`, national dex number by default.
 """
 type PokemonList {
   total: Int!

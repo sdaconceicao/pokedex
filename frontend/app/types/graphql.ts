@@ -84,7 +84,7 @@ export type PokemonFilter = {
   types?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
-/** Results are ordered by national dex number. */
+/** Results are ordered by the query's `sort`, national dex number by default. */
 export type PokemonList = {
   offset: Scalars['Int']['output'];
   pokemon: Array<Pokemon>;
@@ -100,6 +100,16 @@ export type PokemonRegion = {
   count: Scalars['Int']['output'];
   name: Scalars['String']['output'];
 };
+
+/**
+ * How a list is ordered. `ID_*` is by national dex number, `NAME_*` alphabetical by
+ * the name the API spells — which is what the cards display.
+ */
+export type PokemonSort =
+  | 'ID_ASC'
+  | 'ID_DESC'
+  | 'NAME_ASC'
+  | 'NAME_DESC';
 
 export type PokemonType = {
   count: Scalars['Int']['output'];
@@ -136,6 +146,7 @@ export type QueryPokemonByPokedexArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   pokedex?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
@@ -143,12 +154,14 @@ export type QueryPokemonByRegionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   region?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
 export type QueryPokemonByTypeArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
   type?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -157,6 +170,7 @@ export type QueryPokemonFilterArgs = {
   filter: PokemonFilter;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
@@ -164,6 +178,7 @@ export type QueryPokemonSearchArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   query: Scalars['String']['input'];
+  sort?: InputMaybe<PokemonSort>;
 };
 
 

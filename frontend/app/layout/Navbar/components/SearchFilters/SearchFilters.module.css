@@ -1,0 +1,45 @@
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  box-sizing: border-box;
+}
+
+/* The one thing about the filter that isn't guessable: values inside a field
+   are OR'd, fields are AND'd together. */
+.hint {
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--muted-foreground);
+}
+
+/* lago's Select and MultiSelect already fill their container, but SearchField
+   is an inline column wrapper — the same reset SearchBar applies to the header
+   field. */
+.nameField {
+  display: block;
+  width: 100%;
+}
+
+/* The dual-type field carries a `description`, which lago renders below the
+   input at the body size. In a 17rem column that reads as a paragraph, so it is
+   pulled down to match `.hint`. */
+.filters :global(.react-aria-Text[slot="description"]) {
+  font-size: 0.6875rem;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+/* Search is the primary action and takes the room; Clear sits beside it as a
+   quiet button and only needs its label's width. */
+.actions :global(.react-aria-Button):first-child {
+  flex: 1;
+}
