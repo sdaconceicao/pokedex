@@ -45,12 +45,15 @@ test.describe("Search filters", () => {
   });
 
   test("restores every facet from the URL", async ({ page }) => {
-    await page.goto("/search?q=saur&types=grass&dual=grass,poison&regions=kanto");
+    // The dual-type field can only restore a pair it has an option for, and the
+    // options are built from the types the API reports — so this pair has to be
+    // one the mocked backend also serves, not just the live one.
+    await page.goto("/search?q=saur&types=grass&dual=grass,normal&regions=kanto");
     await page.waitForLoadState("networkidle");
 
     await expect(filters(page).getByRole("searchbox", { name: "Name" })).toHaveValue("saur");
     await expect(filters(page).getByRole("combobox", { name: /Dual type/ })).toHaveValue(
-      "Grass / Poison",
+      "Grass / Normal",
     );
     // The multi-selects show their picks as removable tags
     await expect(filters(page).getByText("Grass", { exact: true }).first()).toBeVisible();
@@ -70,13 +73,6 @@ test.describe("Search filters", () => {
 
     await expect(page).toHaveURL(/\/search$/);
     await expect(page.getByRole("heading", { level: 1, name: "All Pokemon" })).toBeVisible();
-  });
-
-  test("forwards a pre-move home page link to the results", async ({ page }) => {
-    await page.goto("/?q=bulbasaur");
-    await page.waitForLoadState("networkidle");
-
-    await expect(page).toHaveURL(/\/search\?q=bulbasaur/);
   });
 
   test("the header bar sends its query to the same results page", async ({ page }) => {

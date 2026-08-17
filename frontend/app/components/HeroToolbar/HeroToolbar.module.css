@@ -43,11 +43,15 @@
   border-radius: var(--panel-radius, 0px) var(--panel-radius, 0px) 0 0;
 }
 
+/* Holds counts and controls, which have a size of their own and are useless
+   clipped — so this side keeps its width and the title truncates instead.
+   Without this both sides shrink in proportion and the controls spill past the
+   bar's edge on a narrow screen. */
 .aside {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  min-width: 0;
+  flex-shrink: 0;
 }
 
 .identity {

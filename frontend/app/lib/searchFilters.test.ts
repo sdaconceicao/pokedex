@@ -6,7 +6,6 @@ import {
   getSearchHeading,
   hasActiveFilters,
   parseDualType,
-  parseLegacySearchParams,
   parseSearchParams,
   type SearchFilterState,
   toPokemonFilter,
@@ -99,31 +98,6 @@ describe("parseSearchParams", () => {
   it("does not mutate the shared empty filter", () => {
     parseSearchParams({ types: "fire" });
     expect(EMPTY_SEARCH_FILTERS.types).toEqual([]);
-  });
-});
-
-describe("parseLegacySearchParams", () => {
-  it("renames the singular home page facets onto their /search equivalents", () => {
-    expect(parseLegacySearchParams({ type: "fire" })).toEqual(state({ types: ["fire"] }));
-    expect(parseLegacySearchParams({ pokedex: "kanto" })).toEqual(state({ pokedexes: ["kanto"] }));
-    expect(parseLegacySearchParams({ region: "johto" })).toEqual(state({ regions: ["johto"] }));
-  });
-
-  it("forwards the two names that did not change", () => {
-    expect(parseLegacySearchParams({ q: "pikachu" })).toEqual(state({ q: "pikachu" }));
-    expect(parseLegacySearchParams({ special: "gmax" })).toEqual(state({ special: "gmax" }));
-  });
-
-  it("carries several legacy params at once", () => {
-    expect(parseLegacySearchParams({ type: "fire", region: "kanto" })).toEqual(
-      state({ types: ["fire"], regions: ["kanto"] }),
-    );
-  });
-
-  it("leaves a bare or unrecognised URL alone", () => {
-    expect(parseLegacySearchParams({})).toBeNull();
-    expect(parseLegacySearchParams({ sort: "name" })).toBeNull();
-    expect(parseLegacySearchParams(new URLSearchParams())).toBeNull();
   });
 });
 

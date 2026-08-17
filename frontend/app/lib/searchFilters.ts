@@ -148,41 +148,6 @@ export const parseSearchParams = (params: SearchParamsLike): SearchFilterState =
   };
 };
 
-/** What the home page used to accept, before every facet moved to `/search`:
- *  one value per facet, under a singular name. */
-const LEGACY_PARAMS = [
-  ["type", "types"],
-  ["pokedex", "pokedexes"],
-  ["region", "regions"],
-] as const;
-
-/**
- * Reads a pre-`/search` home page URL, so old links and bookmarks still land on
- * the results they asked for instead of the browse screen.
- *
- * @param params - Next's `searchParams` object, or a `URLSearchParams`
- * @returns The equivalent filter, or nothing if this isn't a legacy link
- */
-export const parseLegacySearchParams = (params: SearchParamsLike): SearchFilterState | null => {
-  const legacy: Record<string, string> = {};
-
-  for (const [from, to] of LEGACY_PARAMS) {
-    const value = readParam(params, from);
-    if (value) legacy[to] = value;
-  }
-
-  const q = readParam(params, "q");
-  const special = readParam(params, "special");
-
-  // These two kept their names, but the home page no longer answers them, so
-  // they still need forwarding.
-  if (q) legacy.q = q;
-  if (special) legacy.special = special;
-
-  // A bare `/` asks for nothing and stays where it is.
-  return Object.keys(legacy).length ? parseSearchParams(legacy) : null;
-};
-
 /**
  * Builds the `/search` URL for a filter. Params are emitted in a fixed order and
  * empty facets are left off, so the same filter always produces the same link.

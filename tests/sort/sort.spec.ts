@@ -210,13 +210,16 @@ test.describe("Pokemon list sorting", () => {
   test("scroll position survives a sort change", async ({ page }) => {
     await page.goto("/type/grass");
     await page.waitForLoadState("networkidle");
-    test.skip(
-      !(await isScrollable(page)),
-      "not enough content under the mock backend to scroll past the hero",
-    );
+
+    // Needs real room to scroll, and lands mid-range rather than pinned to the
+    // bottom: at the bottom any few pixels of settling clamps the scroll, which
+    // would read as this regression without being it. The bug this guards moved
+    // the page by hundreds of pixels.
+    const room = await main(page).evaluate((el) => el.scrollHeight - el.clientHeight);
+    test.skip(room < 400, "not enough content under the mock backend to scroll meaningfully");
 
     await main(page).evaluate((el) => {
-      el.scrollTop = el.scrollHeight;
+      el.scrollTop = Math.round((el.scrollHeight - el.clientHeight) / 2);
     });
     const scrollTop = await main(page).evaluate((el) => el.scrollTop);
     await expect(sortFieldGroup(page)).toBeVisible();
@@ -224,7 +227,8 @@ test.describe("Pokemon list sorting", () => {
     await sortRadio(page, "Name").click();
     await page.waitForLoadState("networkidle");
 
-    await expect(main(page)).toHaveJSProperty("scrollTop", scrollTop);
+    const after = await main(page).evaluate((el) => el.scrollTop);
+    expect(Math.abs(after - scrollTop)).toBeLessThanOrEqual(20);
     await expect(sortFieldGroup(page)).toBeVisible();
   });
 
