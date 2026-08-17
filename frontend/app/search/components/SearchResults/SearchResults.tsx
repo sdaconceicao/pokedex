@@ -34,8 +34,7 @@ const ITEMS_PER_PAGE = 20;
  * one per facet.
  */
 export default function SearchResults({ filters }: SearchResultsProps) {
-  const { ref: headingRef, scrolledPast } =
-    useScrolledPast<HTMLHeadingElement>();
+  const { ref: headingRef, scrolledPast } = useScrolledPast<HTMLHeadingElement>();
   const searchParams = useSearchParams();
 
   // The page lives in the URL rather than in state, so it survives a reload and
@@ -49,7 +48,7 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   // this value everywhere below, never `filters.sort`.
   const buildSortUrl = useCallback(
     (next: PokemonSort) => buildSearchUrl({ ...filters, page: 1, sort: next }),
-    [filters]
+    [filters],
   );
   const { sort, setSort } = useSortParam(buildSortUrl);
 
@@ -78,11 +77,7 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   useEffect(() => {
     const totalPages = getTotalPages(total, ITEMS_PER_PAGE);
     if (total > 0 && page > totalPages) {
-      window.history.replaceState(
-        null,
-        "",
-        buildSearchUrl({ ...filters, page: totalPages, sort })
-      );
+      window.history.replaceState(null, "", buildSearchUrl({ ...filters, page: totalPages, sort }));
     }
   }, [total, page, filters, sort]);
 
@@ -92,13 +87,9 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(
-        null,
-        "",
-        buildSearchUrl({ ...filters, page: nextPage, sort })
-      );
+      window.history.pushState(null, "", buildSearchUrl({ ...filters, page: nextPage, sort }));
     },
-    [filters, sort, headingRef]
+    [filters, sort, headingRef],
   );
 
   return (

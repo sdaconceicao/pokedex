@@ -29,9 +29,8 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
   const page = parsePage(searchParams.get("page"));
 
   const buildSortUrl = useCallback(
-    (next: PokemonSort) =>
-      buildBrowseUrl("region", region, { page: 1, sort: next }),
-    [region]
+    (next: PokemonSort) => buildBrowseUrl("region", region, { page: 1, sort: next }),
+    [region],
   );
   const { sort, setSort } = useSortParam(buildSortUrl);
 
@@ -60,16 +59,15 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
       window.history.pushState(
         null,
         "",
-        buildBrowseUrl("region", region, { page: nextPage, sort })
+        buildBrowseUrl("region", region, { page: nextPage, sort }),
       );
     },
-    [region, sort]
+    [region, sort],
   );
 
   const getPokemonHref = useCallback(
-    (pokemon: Pokemon) =>
-      buildBrowseUrl("region", region, { page, sort, pokemonId: pokemon.id }),
-    [region, page, sort]
+    (pokemon: Pokemon) => buildBrowseUrl("region", region, { page, sort, pokemonId: pokemon.id }),
+    [region, page, sort],
   );
 
   return (
@@ -85,10 +83,7 @@ export default function RegionPokemon({ region }: RegionPokemonProps) {
       {loading && !results ? (
         <PokemonListSkeleton count={ITEMS_PER_PAGE} />
       ) : (
-        <PokemonList
-          pokemon={results?.pokemon ?? []}
-          getHref={getPokemonHref}
-        />
+        <PokemonList pokemon={results?.pokemon ?? []} getHref={getPokemonHref} />
       )}
 
       <Pagination
