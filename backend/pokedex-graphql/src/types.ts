@@ -63,9 +63,12 @@ export type Pokemon = {
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
   evolution?: Maybe<EvolutionChain>;
+  forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  speciesId: Scalars['ID']['output'];
+  speciesName: Scalars['String']['output'];
   stats: Stats;
   type: Array<Scalars['String']['output']>;
 };
@@ -90,6 +93,14 @@ export type PokemonFilter = {
   query?: InputMaybe<Scalars['String']['input']>;
   regions?: InputMaybe<Array<Scalars['String']['input']>>;
   types?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type PokemonForm = {
+  __typename?: 'PokemonForm';
+  id: Scalars['ID']['output'];
+  image: Scalars['String']['output'];
+  isDefault: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
 };
 
 /** Results are ordered by the query's `sort`, national dex number by default. */
@@ -138,6 +149,7 @@ export type Query = {
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
   pokemonFilter?: Maybe<PokemonList>;
+  pokemonForms?: Maybe<PokemonList>;
   pokemonSearch?: Maybe<PokemonList>;
   region?: Maybe<RegionDetail>;
   regions: Array<PokemonRegion>;
@@ -184,6 +196,14 @@ export type QueryPokemonFilterArgs = {
   filter: PokemonFilter;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
+};
+
+
+export type QueryPokemonFormsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<PokemonSort>;
 };
 
@@ -337,6 +357,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
   PokemonFilter: PokemonFilter;
+  PokemonForm: ResolverTypeWrapper<PokemonForm>;
   PokemonList: ResolverTypeWrapper<PokemonList>;
   PokemonPokedex: ResolverTypeWrapper<PokemonPokedex>;
   PokemonRegion: ResolverTypeWrapper<PokemonRegion>;
@@ -362,6 +383,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   Pokemon: Pokemon;
   PokemonFilter: PokemonFilter;
+  PokemonForm: PokemonForm;
   PokemonList: PokemonList;
   PokemonPokedex: PokemonPokedex;
   PokemonRegion: PokemonRegion;
@@ -410,11 +432,21 @@ export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends
   abilities?: Resolver<Maybe<Array<ResolversTypes['Ability']>>, ParentType, ContextType>;
   abilitiesLite?: Resolver<Array<ResolversTypes['AbilityLite']>, ParentType, ContextType>;
   evolution?: Resolver<Maybe<ResolversTypes['EvolutionChain']>, ParentType, ContextType>;
+  forms?: Resolver<Maybe<Array<ResolversTypes['PokemonForm']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  speciesId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  speciesName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stats?: Resolver<ResolversTypes['Stats'], ParentType, ContextType>;
   type?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+};
+
+export type PokemonFormResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonForm'] = ResolversParentTypes['PokemonForm']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isDefault?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type PokemonListResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonList'] = ResolversParentTypes['PokemonList']> = {
@@ -446,6 +478,7 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByRegionArgs, 'sort'>>;
   pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByTypeArgs, 'sort'>>;
   pokemonFilter?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonFilterArgs, 'filter' | 'sort'>>;
+  pokemonForms?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonFormsArgs, 'sort'>>;
   pokemonSearch?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonSearchArgs, 'query' | 'sort'>>;
   region?: Resolver<Maybe<ResolversTypes['RegionDetail']>, ParentType, ContextType, RequireFields<QueryRegionArgs, 'name'>>;
   regions?: Resolver<Array<ResolversTypes['PokemonRegion']>, ParentType, ContextType>;
@@ -499,6 +532,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   EvolutionChain?: EvolutionChainResolvers<ContextType>;
   EvolutionNode?: EvolutionNodeResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
+  PokemonForm?: PokemonFormResolvers<ContextType>;
   PokemonList?: PokemonListResolvers<ContextType>;
   PokemonPokedex?: PokemonPokedexResolvers<ContextType>;
   PokemonRegion?: PokemonRegionResolvers<ContextType>;

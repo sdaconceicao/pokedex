@@ -161,6 +161,35 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    pokemonForms: async (
+      _,
+      { query, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
+      { dataSources },
+    ) => {
+      logger.info(`Resolving pokemonForms query: "${query ?? ""}" with limit: ${limit}`);
+      try {
+        const { pokemonAPI } = dataSources;
+        const results = sortResults(
+          query ? pokemonAPI.searchFormsIndex(query) : pokemonAPI.getFormsIndex(),
+          sort,
+        );
+        const total = results.length;
+        const limitedResults = getPaginatedResults(results, limit, offset);
+
+        const pokemon = await Promise.all(
+          limitedResults.map(({ id }) => pokemonAPI.getPokemon(id)),
+        );
+        logger.info(`pokemonForms resolved ${pokemon.length} of ${total} forms`);
+        return {
+          total,
+          offset,
+          pokemon,
+        };
+      } catch (error) {
+        logger.error(`Error resolving pokemonForms "${query}":`, error);
+        throw error;
+      }
+    },
     pokemonByType: async (
       _,
       { type, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
@@ -347,16 +376,25 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
-    evolution: async ({ id }, _, { dataSources }) => {
-      logger.info(`Resolving evolution chain for Pokemon ${id}`);
+    evolution: async ({ id, speciesId }, _, { dataSources }) => {
+      logger.info(`Resolving evolution chain for Pokemon ${id} (species ${speciesId})`);
       try {
-        const result = await dataSources.pokemonAPI.getEvolutionForPokemon(id);
+        const result = await dataSources.pokemonAPI.getEvolutionForSpecies(speciesId);
         logger.info(`Evolution chain for Pokemon ${id} resolved successfully`);
         return result;
       } catch (error) {
         // Evolution data is supplementary — a failure here should not break
         // the whole Pokemon query, so log it and omit the section.
         logger.error(`Error resolving evolution for Pokemon ${id}:`, error);
+        return null;
+      }
+    },
+    forms: async ({ id, speciesId }, _, { dataSources }) => {
+      logger.info(`Resolving forms for Pokemon ${id} (species ${speciesId})`);
+      try {
+        return await dataSources.pokemonAPI.getFormsForSpecies(speciesId);
+      } catch (error) {
+        logger.error(`Error resolving forms for Pokemon ${id}:`, error);
         return null;
       }
     },

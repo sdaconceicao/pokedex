@@ -25,7 +25,7 @@ export async function createContext(config?: DataSourceConfig): Promise<DataSour
     ...config,
   });
 
-  // Lazy-load index on first request; static cache reuses across warm instances
+  // Lazy-load indexes on first request; static cache reuses across warm instances
   await pokemonAPI.loadPokemonIndex();
 
   return {

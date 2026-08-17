@@ -34,7 +34,6 @@ describe("parseSearchParams", () => {
       dualType: { primary: "fire", secondary: "flying" },
       regions: ["kanto"],
       pokedexes: ["kanto", "national"],
-      special: undefined,
       sort: "NAME_DESC",
       page: 3,
     });
@@ -83,16 +82,8 @@ describe("parseSearchParams", () => {
     expect(parseSearchParams({}).page).toBe(1);
   });
 
-  it("keeps a recognised special and drops anything else", () => {
-    expect(parseSearchParams({ special: "gmax" }).special).toBe("gmax");
-    expect(parseSearchParams({ special: " MEGA " }).special).toBe("mega");
-    expect(parseSearchParams({ special: "shiny" }).special).toBeUndefined();
-  });
-
-  it("lets free text win over special, since the schema has one query field", () => {
-    expect(parseSearchParams({ q: "char", special: "gmax" })).toEqual(
-      state({ q: "char", special: undefined }),
-    );
+  it("ignores a stale special param, which now has a route of its own", () => {
+    expect(parseSearchParams({ special: "gmax" })).toEqual(state());
   });
 
   it("does not mutate the shared empty filter", () => {
@@ -169,11 +160,6 @@ describe("buildSearchUrl", () => {
     );
   });
 
-  it("drops special when free text is set, matching how it is parsed back", () => {
-    expect(buildSearchUrl(state({ q: "char", special: "gmax" }))).toBe("/search?q=char");
-    expect(buildSearchUrl(state({ special: "gmax" }))).toBe("/search?special=gmax");
-  });
-
   it("escapes free text while leaving the list separator readable", () => {
     expect(buildSearchUrl(state({ q: "mr mime&", types: ["fire", "grass"] }))).toBe(
       "/search?q=mr+mime%26&types=fire,grass",
@@ -221,14 +207,6 @@ describe("toPokemonFilter", () => {
       regions: ["kanto"],
       pokedexes: ["national"],
     });
-  });
-
-  it("sends special as the query, since it is really a name substring", () => {
-    expect(toPokemonFilter(state({ special: "gmax" }))).toEqual({ query: "gmax" });
-  });
-
-  it("prefers free text over special", () => {
-    expect(toPokemonFilter(state({ q: "char", special: "gmax" }))).toEqual({ query: "char" });
   });
 
   it("copies the lists so the caller cannot reach back into the state", () => {
@@ -295,16 +273,10 @@ describe("hasActiveFilters", () => {
     );
     expect(hasActiveFilters(state({ regions: ["kanto"] }))).toBe(true);
     expect(hasActiveFilters(state({ pokedexes: ["national"] }))).toBe(true);
-    expect(hasActiveFilters(state({ special: "mega" }))).toBe(true);
   });
 });
 
 describe("getSearchHeading", () => {
-  it("names the collection for a special", () => {
-    expect(getSearchHeading(state({ special: "gmax" }))).toBe("Gigantamax Pokemon");
-    expect(getSearchHeading(state({ special: "mega" }))).toBe("Mega Evolve Pokemon");
-  });
-
   it("keeps the old search wording when free text is the only facet", () => {
     expect(getSearchHeading(state({ q: "char" }))).toBe('Search results for "char"');
   });

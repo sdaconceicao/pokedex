@@ -37,6 +37,32 @@ export const pokemonList: {
       name: "charizard",
       url: "https://pokeapi.co/api/v2/pokemon/6/",
     },
+    {
+      name: "charizard-mega-x",
+      url: "https://pokeapi.co/api/v2/pokemon/10034/",
+    },
+    {
+      name: "bulbasaur-gmax",
+      url: "https://pokeapi.co/api/v2/pokemon/10186/",
+    },
+    {
+      name: "pikachu-gmax",
+      url: "https://pokeapi.co/api/v2/pokemon/10199/",
+    },
+  ],
+};
+
+export const pokemonSpeciesList: typeof pokemonList = {
+  count: 1025,
+  next: "https://pokeapi.co/api/v2/pokemon-species?offset=20&limit=20",
+  previous: null,
+  results: [
+    { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon-species/2/" },
+    { name: "venusaur", url: "https://pokeapi.co/api/v2/pokemon-species/3/" },
+    { name: "charmander", url: "https://pokeapi.co/api/v2/pokemon-species/4/" },
+    { name: "charmeleon", url: "https://pokeapi.co/api/v2/pokemon-species/5/" },
+    { name: "charizard", url: "https://pokeapi.co/api/v2/pokemon-species/6/" },
   ],
 };
 
@@ -384,7 +410,50 @@ export const pokemonSpecies: PokemonSpecies = {
   evolution_chain: {
     url: "https://pokeapi.co/api/v2/evolution-chain/1/",
   },
+  varieties: [
+    {
+      is_default: true,
+      pokemon: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/1/" },
+    },
+    {
+      is_default: false,
+      pokemon: { name: "bulbasaur-gmax", url: "https://pokeapi.co/api/v2/pokemon/10186/" },
+    },
+  ],
 };
+
+const formEntity = (id: number, name: string, speciesId: number): typeof pokemonEntity => ({
+  ...pokemonEntity,
+  id,
+  name,
+  is_default: false,
+  species: {
+    name: name.split("-")[0],
+    url: `https://pokeapi.co/api/v2/pokemon-species/${speciesId}/`,
+  },
+});
+
+export const pokemonFormEntity: typeof pokemonEntity = {
+  ...formEntity(10186, "bulbasaur-gmax", 1),
+  sprites: {
+    ...pokemonEntity.sprites,
+    back_default: null,
+    back_shiny: null,
+    front_default: null,
+    front_shiny: null,
+    other: {
+      ...pokemonEntity.sprites.other,
+      "official-artwork": {
+        front_default:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10186.png",
+        front_shiny: null,
+      },
+    },
+  },
+};
+
+export const charizardMegaXEntity = formEntity(10034, "charizard-mega-x", 6);
+export const pikachuGmaxEntity = formEntity(10199, "pikachu-gmax", 25);
 
 export const evolutionChain: EvolutionChainResponse = {
   id: 1,

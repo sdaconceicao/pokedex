@@ -126,13 +126,11 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) 
                   <Heading level={3} className={styles.updateTitle}>
                     {update.title}
                   </Heading>
-                  <span
-                    className={`${styles.updateTag} ${
-                      update.tag === "New" ? styles.updateTagNew : styles.updateTagImproved
-                    }`}
-                  >
-                    {update.tag}
-                  </span>
+                  {update.tags?.map((tag) => (
+                    <span key={tag} className={`${styles.updateTag} ${styles[`updateTag${tag}`]}`}>
+                      {tag}
+                    </span>
+                  ))}
                 </div>
                 <p className={styles.updateBody}>{update.body}</p>
               </div>

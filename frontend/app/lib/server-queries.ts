@@ -6,6 +6,8 @@ const GET_POKEMON_BY_ID = gql`
   query GetPokemonById($id: ID!) {
     pokemon(id: $id) {
       id
+      speciesId
+      speciesName
       name
       type
       image
@@ -58,6 +60,12 @@ const GET_POKEMON_BY_ID = gql`
             }
           }
         }
+      }
+      forms {
+        id
+        name
+        image
+        isDefault
       }
     }
   }

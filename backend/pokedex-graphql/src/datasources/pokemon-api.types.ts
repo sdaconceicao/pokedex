@@ -154,6 +154,11 @@ export type PokemonResponse = {
   results: PokemonEntity[];
 };
 
+export type PokemonSpeciesVariety = {
+  is_default: boolean;
+  pokemon: NamedAPIResource;
+};
+
 // Species-related types (used to reach the evolution chain from a Pokemon)
 export type PokemonSpecies = {
   id: number;
@@ -161,6 +166,7 @@ export type PokemonSpecies = {
   evolution_chain: {
     url: string;
   };
+  varieties: PokemonSpeciesVariety[];
 };
 
 // Evolution-related types

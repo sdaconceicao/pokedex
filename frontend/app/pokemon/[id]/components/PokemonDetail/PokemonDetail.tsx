@@ -43,7 +43,7 @@ export default function PokemonDetail({ pokemon, flush }: PokemonDetailProps) {
       {pokemon.evolution && hasEvolutions(pokemon.evolution) && (
         <PokemonSection title="Evolution" className={typeClass}>
           <div className={styles.evolutionGrid}>
-            <PokemonEvolution evolution={pokemon.evolution} currentId={String(pokemon.id)} />
+            <PokemonEvolution evolution={pokemon.evolution} currentId={String(pokemon.speciesId)} />
           </div>
         </PokemonSection>
       )}
