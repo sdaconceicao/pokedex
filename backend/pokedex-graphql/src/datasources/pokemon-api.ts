@@ -6,6 +6,7 @@ import type {
   EvolutionChain,
   EvolutionNode,
   Pokemon,
+  PokemonForm,
   PokemonPokedex,
   PokemonRegion,
   PokemonType,
@@ -18,6 +19,8 @@ import {
   convertPokemonEntityToPokemon,
   getEvolutionDetail,
   getIdFromUrl,
+  isForm,
+  isSpecies,
   toPokemonIndex,
 } from "../utils/pokemon.js";
 import { convertRegionToRegionDetail } from "../utils/region.js";
@@ -38,34 +41,56 @@ import type {
   TypeResponse,
 } from "./pokemon-api.types.js";
 
+type PokemonIndexes = {
+  species: PokemonIndex[];
+  forms: PokemonIndex[];
+};
+
 export class PokemonAPI extends RESTDataSource {
   baseURL = "https://pokeapi.co/api/v2/";
-  private static pokemonIndex: PokemonIndex[] = [];
-  private static isIndexLoaded = false;
+  private static indexes: PokemonIndexes | null = null;
+  private static indexLoad: Promise<PokemonIndexes> | null = null;
 
-  // Request name/ids of all pokemon for search
   async loadPokemonIndex(): Promise<void> {
-    if (PokemonAPI.isIndexLoaded) return;
+    if (PokemonAPI.indexes) return;
+
+    if (!PokemonAPI.indexLoad) {
+      PokemonAPI.indexLoad = this.fetchIndexes();
+    }
+
+    const load = PokemonAPI.indexLoad;
 
     try {
-      const response = await this.get<PokemonListResponse>("pokemon?limit=1500");
-      const entries = response.results;
-
-      PokemonAPI.pokemonIndex = entries
-        .map(toPokemonIndex)
-        .sort((a: PokemonIndex, b: PokemonIndex) => a.number - b.number);
-
-      PokemonAPI.isIndexLoaded = true;
-      logger.info(`Loaded ${PokemonAPI.pokemonIndex.length} Pokémon into index`);
+      PokemonAPI.indexes = await load;
     } catch (error) {
+      if (PokemonAPI.indexLoad === load) PokemonAPI.indexLoad = null;
       logger.error("Failed to load Pokémon index:", error);
       throw error;
     }
   }
 
+  private async fetchIndexes(): Promise<PokemonIndexes> {
+    const [speciesResponse, pokemonResponse] = await Promise.all([
+      this.get<PokemonListResponse>("pokemon-species?limit=1500"),
+      this.get<PokemonListResponse>("pokemon?limit=1500"),
+    ]);
+
+    const species = sortByNumber(speciesResponse.results.map(toPokemonIndex));
+    const forms = sortByNumber(pokemonResponse.results.map(toPokemonIndex).filter(isForm));
+
+    logger.info(`Loaded ${species.length} Pokémon and ${forms.length} forms into index`);
+
+    return { species, forms };
+  }
+
   // Check if index is loaded
   isIndexLoaded(): boolean {
-    return PokemonAPI.isIndexLoaded;
+    return PokemonAPI.indexes !== null;
+  }
+
+  static resetIndexes(): void {
+    PokemonAPI.indexes = null;
+    PokemonAPI.indexLoad = null;
   }
 
   getAbility(id: string): Promise<Ability> {
@@ -104,17 +129,19 @@ export class PokemonAPI extends RESTDataSource {
 
     return {
       id: pokemon.id,
-      name: pokemon.name,
+      // The species' name, not the default form's: a chain is a chain of
+      // species, and the two differ wherever the base form carries a suffix —
+      // a stage reading "Aegislash Shield" would name a form the chain has no
+      // other member of.
+      name: link.species.name,
       image: pokemon.image,
       ...getEvolutionDetail(link.evolution_details),
       evolvesTo,
     };
   }
 
-  // Resolve a Pokemon's full evolution chain: pokemon -> species ->
-  // evolution chain -> a tree of nodes with links back to each Pokemon.
-  async getEvolutionForPokemon(id: string): Promise<EvolutionChain> {
-    const species = await this.getPokemonSpecies(id);
+  async getEvolutionForSpecies(speciesId: string): Promise<EvolutionChain> {
+    const species = await this.getPokemonSpecies(speciesId);
     const chainResponse = await this.get<EvolutionChainResponse>(species.evolution_chain.url);
 
     return {
@@ -123,22 +150,54 @@ export class PokemonAPI extends RESTDataSource {
     };
   }
 
-  // The whole index, already in dex order. Backs an unfiltered pokemonFilter.
-  getPokemonIndex(): PokemonIndex[] {
-    if (!PokemonAPI.isIndexLoaded) {
+  async getFormsForSpecies(speciesId: string): Promise<PokemonForm[]> {
+    const species = await this.getPokemonSpecies(speciesId);
+
+    const forms = await Promise.all(
+      species.varieties.map(async (variety) => {
+        const pokemon = await this.getPokemon(getIdFromUrl(variety.pokemon.url));
+
+        return {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.image,
+          isDefault: variety.is_default,
+        };
+      }),
+    );
+
+    return forms.sort((a, b) => Number(b.isDefault) - Number(a.isDefault));
+  }
+
+  private static requireIndexes(): PokemonIndexes {
+    if (!PokemonAPI.indexes) {
       throw new Error("Pokemon index not loaded. Call loadPokemonIndex() first.");
     }
 
-    return PokemonAPI.pokemonIndex;
+    return PokemonAPI.indexes;
+  }
+
+  getPokemonIndex(): PokemonIndex[] {
+    return PokemonAPI.requireIndexes().species;
+  }
+
+  getFormsIndex(): PokemonIndex[] {
+    return PokemonAPI.requireIndexes().forms;
+  }
+
+  private static matchName(entries: PokemonIndex[], query: string): PokemonIndex[] {
+    const lowerQuery = query.toLowerCase();
+
+    return entries.filter((pokemon) => pokemon.name.toLowerCase().includes(lowerQuery));
   }
 
   // Every name match, unpaginated, so it can be composed with other facets.
   searchPokemonIndex(query: string): PokemonIndex[] {
-    const lowerQuery = query.toLowerCase();
+    return PokemonAPI.matchName(this.getPokemonIndex(), query);
+  }
 
-    return this.getPokemonIndex().filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(lowerQuery),
-    );
+  searchFormsIndex(query: string): PokemonIndex[] {
+    return PokemonAPI.matchName(this.getFormsIndex(), query);
   }
 
   getPokemonByPokedex(pokedex: string): Promise<PokemonIndex[]> {
@@ -222,7 +281,9 @@ export class PokemonAPI extends RESTDataSource {
     logger.info(`Fetching Pokemon of type: ${type}`);
     return this.get<TypeResponse>(`type/${type}`)
       .then((data) => {
-        const results = data.pokemon.map((result) => toPokemonIndex(result.pokemon));
+        const results = data.pokemon
+          .map((result) => toPokemonIndex(result.pokemon))
+          .filter(isSpecies);
         return sortByNumber(results);
       })
       .catch((error) => {

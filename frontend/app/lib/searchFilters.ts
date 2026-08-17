@@ -3,17 +3,6 @@ import { parsePage } from "./pagination";
 import { DEFAULT_SORT, encodeSort, parseSort } from "./sort";
 import { titleCase } from "./string";
 
-/** The two curated collections the sidebar links to. They are not a facet of
- *  their own in the schema — each is really a name substring — so they ride in
- *  on `query` and only exist to keep their own heading. */
-export const SPECIALS = ["gmax", "mega"] as const;
-export type Special = (typeof SPECIALS)[number];
-
-export const SPECIAL_TITLES: Record<Special, string> = {
-  gmax: "Gigantamax",
-  mega: "Mega Evolve",
-};
-
 /** Everything `/search` can be asked for, parsed out of the URL. The lists are
  *  `readonly` because they are shared with lago's `MultiSelect`, whose `value`
  *  is a `readonly Key[]`, and because `EMPTY_SEARCH_FILTERS` below is a shared
@@ -24,7 +13,6 @@ export interface SearchFilterState {
   dualType?: DualTypeFilter;
   regions: readonly string[];
   pokedexes: readonly string[];
-  special?: Special;
   sort: PokemonSort;
   page: number;
 }
@@ -112,11 +100,6 @@ export const encodeDualType = (pair?: DualTypeFilter): string | undefined => {
   return joinSlugs([pair.primary, pair.secondary].sort());
 };
 
-const parseSpecial = (value: string | undefined): Special | undefined => {
-  const special = value?.trim().toLowerCase();
-  return SPECIALS.includes(special as Special) ? (special as Special) : undefined;
-};
-
 /**
  * Reads a whole filter out of a URL query. Unknown params are ignored and
  * malformed ones fall back to their empty value rather than throwing — a URL is
@@ -131,18 +114,12 @@ const parseSpecial = (value: string | undefined): Special | undefined => {
 export const parseSearchParams = (params: SearchParamsLike): SearchFilterState => {
   const q = (readParam(params, "q") ?? "").trim();
 
-  // `PokemonFilter` has a single `query` field, so free text and a `special`
-  // shortcut cannot both be honoured. Free text wins and the shortcut is
-  // dropped outright, so the URL, the heading and the form all agree.
-  const special = q ? undefined : parseSpecial(readParam(params, "special"));
-
   return {
     q,
     types: parseSlugList(readParam(params, "types")),
     dualType: parseDualType(readParam(params, "dual")),
     regions: parseSlugList(readParam(params, "regions")),
     pokedexes: parseSlugList(readParam(params, "pokedexes")),
-    special,
     sort: parseSort(readParam(params, "sort")),
     page: parsePage(readParam(params, "page")),
   };
@@ -168,10 +145,6 @@ export const buildSearchUrl = (state: Partial<SearchFilterState> = {}): string =
   append("dual", encodeDualType(state.dualType));
   append("regions", joinSlugs(state.regions));
   append("pokedexes", joinSlugs(state.pokedexes));
-  // Mirrors the precedence in parseSearchParams, so a URL never carries a
-  // `special` that reading it back would discard.
-  if (!q) append("special", state.special);
-
   append("sort", encodeSort(state.sort));
 
   const page = state.page ?? 1;
@@ -197,9 +170,7 @@ export const buildSearchUrl = (state: Partial<SearchFilterState> = {}): string =
 export const toPokemonFilter = (state: SearchFilterState): PokemonFilter => {
   const filter: PokemonFilter = {};
 
-  // `special` is only ever a name substring, and `query` is the one field for
-  // both, so the two share it.
-  const query = state.q.trim() || state.special;
+  const query = state.q.trim();
 
   if (query) filter.query = query;
   if (state.types.length) filter.types = [...state.types];
@@ -245,7 +216,7 @@ export const buildDualTypeOptions = (types: PokemonType[]): DualTypeOption[] => 
 export const hasActiveFilters = (state: SearchFilterState): boolean =>
   // Trimmed, because this is asked of a draft straight out of a text field as
   // well as of a parsed URL, and whitespace is not a filter.
-  Boolean(state.q.trim() || state.special || state.dualType) ||
+  Boolean(state.q.trim() || state.dualType) ||
   state.types.length > 0 ||
   state.regions.length > 0 ||
   state.pokedexes.length > 0;
@@ -280,7 +251,6 @@ const describeSoleFacet = (state: SearchFilterState): string | null => {
  * @returns The heading text
  */
 export const getSearchHeading = (state: SearchFilterState): string => {
-  if (state.special) return `${SPECIAL_TITLES[state.special]} Pokemon`;
   if (!hasActiveFilters(state)) return "All Pokemon";
 
   const facets = [

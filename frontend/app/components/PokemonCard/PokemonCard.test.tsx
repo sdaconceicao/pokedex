@@ -34,6 +34,8 @@ vi.mock("next/image", () => ({
 describe("PokemonCard", () => {
   const mockPokemon: Pokemon = {
     id: "1",
+    speciesId: "1",
+    speciesName: "bulbasaur",
     name: "bulbasaur",
     image: "https://example.com/bulbasaur.jpg",
     type: ["grass", "poison"],
@@ -79,6 +81,22 @@ describe("PokemonCard", () => {
     const nameLink = screen.getByText("Bulbasaur");
     expect(nameLink).toBeInTheDocument();
     expect(nameLink.closest("a")).toHaveAttribute("href", "/pokemon/1");
+  });
+
+  describe("a card for an alternate form", () => {
+    const gmax = { ...mockPokemon, id: "10186", speciesId: "1", name: "bulbasaur-gmax" };
+
+    it("links to the form nested under its species", () => {
+      const { container } = render(<PokemonCard pokemon={gmax} />);
+
+      expect(container.querySelector("a")).toHaveAttribute("href", "/pokemon/1/forms/10186");
+    });
+
+    it("shows the species' dex number rather than the form's id", () => {
+      render(<PokemonCard pokemon={gmax} />);
+
+      expect(screen.getByText("#001")).toBeInTheDocument();
+    });
   });
 
   it("displays all Pokemon types", () => {
@@ -131,17 +149,19 @@ describe("PokemonCard", () => {
   it("handles Pokemon with special characters in name", () => {
     const specialNamePokemon: Pokemon = {
       ...mockPokemon,
+      speciesName: "mr-mime",
       name: "mr-mime",
     };
 
     render(<PokemonCard pokemon={specialNamePokemon} />);
 
-    expect(screen.getByText("Mr-mime")).toBeInTheDocument();
+    expect(screen.getByText("Mr Mime")).toBeInTheDocument();
   });
 
   it("handles Pokemon with uppercase name", () => {
     const uppercaseNamePokemon: Pokemon = {
       ...mockPokemon,
+      speciesName: "CHARIZARD",
       name: "CHARIZARD",
     };
 

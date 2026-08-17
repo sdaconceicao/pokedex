@@ -6,9 +6,11 @@ import Link from "next/link";
 import { type FunctionComponent, useState } from "react";
 import PokeballMark from "@/components/PokeballMark";
 import PokemonTypePill from "@/components/PokemonTypePill";
+import { formatPokemonName } from "@/lib/formNames";
+import { buildPokemonPath } from "@/lib/pokemonUrls";
 import type { Pokemon } from "@/types/graphql";
 import css from "./PokemonCard.module.css";
-import { formatPokemonName, getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";
+import { getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -20,14 +22,14 @@ interface PokemonCardProps {
 export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href }) => {
   const primaryType = getPrimaryType(pokemon.type);
   const typeClass = getPokemonTypeClass(primaryType);
-  const formattedName = formatPokemonName(pokemon.name);
-  const dexNumber = `#${String(pokemon.id).padStart(3, "0")}`;
+  const formattedName = formatPokemonName(pokemon);
+  const dexNumber = `#${String(pokemon.speciesId).padStart(3, "0")}`;
   const [imageLoaded, setImageLoaded] = useState(false);
 
   // Absolute by default: the card also renders from nested routes like
   // /region/kanto, where a relative href would resolve under the current path
   return (
-    <Link href={href ?? `/pokemon/${pokemon.id}`}>
+    <Link href={href ?? buildPokemonPath(pokemon.speciesId, pokemon.id)}>
       <div
         className={`${css.pokemonCard} ${css[typeClass as keyof typeof css]}`}
         data-testid="pokemon-card"

@@ -4,10 +4,12 @@ import type { Pokemon } from "@/types";
 import { PokemonHero } from "./PokemonHero";
 
 const back = vi.fn();
+const replace = vi.fn();
 
-// Mock Next.js components
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ back }),
+  useRouter: () => ({ back, replace }),
+  usePathname: () => "/pokemon/4",
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 vi.mock("next/image", () => ({
@@ -18,9 +20,19 @@ vi.mock("next/image", () => ({
 
 const charmander = {
   id: "4",
+  speciesId: "4",
+  speciesName: "charmander",
   name: "charmander",
   image: "https://example.com/4.png",
   type: ["Fire"],
+  forms: [
+    {
+      id: "4",
+      name: "charmander",
+      image: "https://example.com/4.png",
+      isDefault: true,
+    },
+  ],
 } as Pokemon;
 
 describe("PokemonHero", () => {
@@ -31,11 +43,44 @@ describe("PokemonHero", () => {
   it("renders the name as the page heading", () => {
     render(<PokemonHero pokemon={charmander} />);
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("charmander");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Charmander");
+  });
+
+  it("heads a form page with the species rather than the form slug", () => {
+    render(<PokemonHero pokemon={{ ...charmander, name: "charmander-gmax" } as Pokemon} />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Charmander");
+  });
+
+  it("heads with the species even when the default form's name carries a suffix", () => {
+    render(
+      <PokemonHero
+        pokemon={
+          {
+            ...charmander,
+            id: "681",
+            speciesId: "681",
+            speciesName: "aegislash",
+            name: "aegislash-shield",
+          } as Pokemon
+        }
+      />,
+    );
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Aegislash");
+    expect(screen.queryByRole("heading", { name: "Aegislash Shield" })).not.toBeInTheDocument();
   });
 
   it("renders the zero-padded dex number", () => {
     render(<PokemonHero pokemon={charmander} />);
+
+    expect(screen.getByText("#004")).toBeInTheDocument();
+  });
+
+  it("numbers a form by its species, not by its own id", () => {
+    render(
+      <PokemonHero pokemon={{ ...charmander, id: "10199", name: "charmander-gmax" } as Pokemon} />,
+    );
 
     expect(screen.getByText("#004")).toBeInTheDocument();
   });
@@ -78,5 +123,32 @@ describe("PokemonHero", () => {
     const { container } = render(<PokemonHero pokemon={charmander} flush />);
 
     expect(container.querySelector("section")).toHaveClass("flush");
+  });
+
+  describe("form switcher", () => {
+    const charmanderWithForms = {
+      ...charmander,
+      forms: [
+        ...(charmander.forms ?? []),
+        {
+          id: "10199",
+          name: "charmander-gmax",
+          image: "https://example.com/10199.png",
+          isDefault: false,
+        },
+      ],
+    } as Pokemon;
+
+    it("is left out when the Pokemon has no alternate form", () => {
+      render(<PokemonHero pokemon={charmander} />);
+
+      expect(screen.queryByRole("combobox", { name: "Form" })).not.toBeInTheDocument();
+    });
+
+    it("is offered once there is something to switch to", () => {
+      render(<PokemonHero pokemon={charmanderWithForms} />);
+
+      expect(screen.getByRole("combobox", { name: "Form" })).toBeInTheDocument();
+    });
   });
 });

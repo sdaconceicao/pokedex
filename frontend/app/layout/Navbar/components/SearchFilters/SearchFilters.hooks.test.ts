@@ -163,17 +163,39 @@ describe("useSearchFilterForm", () => {
   describe("name suggestions", () => {
     it("looks up matching names and returns them as suggestions", async () => {
       mockQuery.mockResolvedValue({
-        data: { pokemonSearch: { pokemon: [{ id: "4", name: "charmander" }] } },
+        data: {
+          pokemonSearch: {
+            pokemon: [{ id: "4", speciesId: "4", speciesName: "charmander", name: "charmander" }],
+          },
+        },
       });
 
       const { result } = renderHook(() => useSearchFilterForm());
 
       await expect(result.current.loadSuggestions("char")).resolves.toEqual([
-        { id: "4", label: "charmander" },
+        { id: "4", label: "Charmander" },
       ]);
       expect(mockQuery).toHaveBeenCalledWith(
         expect.objectContaining({ variables: { query: "char", limit: 8 } }),
       );
+    });
+
+    it("suggests a base form by its species, not by the suffix the API spells", async () => {
+      mockQuery.mockResolvedValue({
+        data: {
+          pokemonSearch: {
+            pokemon: [
+              { id: "681", speciesId: "681", speciesName: "aegislash", name: "aegislash-shield" },
+            ],
+          },
+        },
+      });
+
+      const { result } = renderHook(() => useSearchFilterForm());
+
+      await expect(result.current.loadSuggestions("aegis")).resolves.toEqual([
+        { id: "681", label: "Aegislash" },
+      ]);
     });
 
     it("does not fetch for a query too short to narrow anything", async () => {

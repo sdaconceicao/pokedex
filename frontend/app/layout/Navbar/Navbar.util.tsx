@@ -1,7 +1,8 @@
 import { BookOpen01, MarkerPin01, Star01, Tag01 } from "@untitled-ui/icons-react";
 import type { ReactNode } from "react";
 import { getPokemonTypeIcon } from "@/lib/pokemonTypeIcons";
-import { buildSearchUrl, SPECIAL_TITLES, SPECIALS } from "@/lib/searchFilters";
+import { buildSearchUrl } from "@/lib/searchFilters";
+import { SPECIAL_TITLES, SPECIALS } from "@/lib/specials";
 import { capitalize } from "@/lib/string";
 import type { PokemonPokedex, PokemonRegion, PokemonType } from "@/types";
 import type { NavItem } from "./NavbarItem";
@@ -58,8 +59,8 @@ export const getRegionItems = (regions: PokemonRegion[]): NavItem[] =>
 export const getSpecialItems = (): NavItem[] =>
   SPECIALS.map((special) => ({
     label: SPECIAL_TITLES[special],
-    href: buildSearchUrl({ special }),
-    activeWhenSearchParamIncludes: { key: "special", value: special },
+    href: `/forms/${special}`,
+    activeWhenPathnameEquals: `/forms/${special}`,
   }));
 
 /**

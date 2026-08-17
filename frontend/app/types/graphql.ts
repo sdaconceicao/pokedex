@@ -55,9 +55,12 @@ export type Pokemon = {
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
   evolution?: Maybe<EvolutionChain>;
+  forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  speciesId: Scalars['ID']['output'];
+  speciesName: Scalars['String']['output'];
   stats: Stats;
   type: Array<Scalars['String']['output']>;
 };
@@ -82,6 +85,13 @@ export type PokemonFilter = {
   query?: InputMaybe<Scalars['String']['input']>;
   regions?: InputMaybe<Array<Scalars['String']['input']>>;
   types?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type PokemonForm = {
+  id: Scalars['ID']['output'];
+  image: Scalars['String']['output'];
+  isDefault: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
 };
 
 /** Results are ordered by the query's `sort`, national dex number by default. */
@@ -124,6 +134,7 @@ export type Query = {
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
   pokemonFilter?: Maybe<PokemonList>;
+  pokemonForms?: Maybe<PokemonList>;
   pokemonSearch?: Maybe<PokemonList>;
   region?: Maybe<RegionDetail>;
   regions: Array<PokemonRegion>;
@@ -170,6 +181,14 @@ export type QueryPokemonFilterArgs = {
   filter: PokemonFilter;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
+};
+
+
+export type QueryPokemonFormsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<PokemonSort>;
 };
 

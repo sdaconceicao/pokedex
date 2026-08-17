@@ -16,6 +16,8 @@ export const GET_POKEMON_BY_TYPE = gql`
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image
@@ -46,6 +48,8 @@ export const SEARCH_POKEMON = gql`
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image
@@ -78,6 +82,40 @@ export const FILTER_POKEMON = gql`
       offset
       pokemon {
         id
+        speciesId
+        speciesName
+        name
+        type
+        image
+        stats {
+          hp
+          attack
+          defense
+          specialAttack
+          specialDefense
+          speed
+        }
+        abilitiesLite {
+          id
+          name
+          url
+          slot
+          isHidden
+        }
+      }
+    }
+  }
+`;
+
+export const GET_POKEMON_FORMS = gql`
+  query GetPokemonForms($query: String, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonForms(query: $query, limit: $limit, offset: $offset, sort: $sort) {
+      total
+      offset
+      pokemon {
+        id
+        speciesId
+        speciesName
         name
         type
         image
@@ -108,6 +146,8 @@ export const GET_POKEMON_NAME_SUGGESTIONS = gql`
     pokemonSearch(query: $query, limit: $limit) {
       pokemon {
         id
+        speciesId
+        speciesName
         name
       }
     }
@@ -130,6 +170,8 @@ export const GET_POKEMON_BY_POKEDEX = gql`
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image
@@ -169,6 +211,8 @@ export const GET_POKEMON_BY_REGION = gql`
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image
