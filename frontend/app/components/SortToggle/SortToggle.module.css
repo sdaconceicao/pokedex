@@ -5,22 +5,12 @@
   flex-shrink: 0;
 }
 
-/* Restyles SegmentedControl for HeroToolbar's saturated accent background: a
-   translucent surface derived from the inherited highlight-foreground, the
-   same color-mix idiom CountPill and SortSelect's former toolbar rules use,
-   rather than lago's absolute --gray track and --tint selection pill.
-   Doubled with lago's own stable classes for specificity over its
-   single-class rules, as SortSelect.module.css did. */
 .group:global(.segmented-control) {
   background: color-mix(in srgb, currentColor 16%, transparent);
   border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
   box-shadow: none;
 }
 
-/* Every segment is a single glyph standing in for a word — `#`, `A`, `↑`, `↓`
-   — drawn from three different character classes with their own advance
-   widths and optical weights. Boxing them to one width and one type size is
-   what makes them read as one set rather than four loose characters. */
 .group :global(.segmented-control-item) {
   color: color-mix(in srgb, currentColor 78%, transparent);
   min-width: 1.875rem;
@@ -34,4 +24,28 @@
 .group :global(.react-aria-SelectionIndicator) {
   background: color-mix(in srgb, currentColor 28%, transparent);
   box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .toggle {
+    gap: 0.3125rem;
+  }
+
+  .group :global(.segmented-control-item) {
+    min-width: 1.5rem;
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .toggle {
+    gap: 0.25rem;
+  }
+
+  .group :global(.segmented-control-item) {
+    min-width: 1.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
 }

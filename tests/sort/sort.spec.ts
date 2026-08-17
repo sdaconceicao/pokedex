@@ -243,4 +243,39 @@ test.describe("Pokemon list sorting", () => {
 
     expect(overflowAnchor).toBe("none");
   });
+
+  test("the toolbar's controls still fit on a 320px screen", async ({ page }) => {
+    // 320px is the narrowest phone worth supporting, and /search is the worst
+    // case because its heading is a whole sentence. The segments must all stay
+    // reachable — the title truncates instead.
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto("/search?types=fire");
+    await page.waitForLoadState("networkidle");
+    await expect(pokemonCards(page).first()).toBeVisible();
+
+    test.skip(!(await isScrollable(page)), "not enough Pokemon to reach the toolbar");
+    await main(page).evaluate((el) => {
+      el.scrollTop = 2000;
+    });
+
+    await expect(sortFieldGroup(page)).toBeVisible();
+
+    const bar = page.locator('[class*="HeroToolbar"] > *').first();
+    const fits = await bar.evaluate((el) => el.scrollWidth <= el.clientWidth + 1);
+    expect(fits).toBe(true);
+
+    // Every segment inside the visible bar, and each still big enough to hit
+    // (WCAG 2.5.8 asks for 24x24).
+    const barBox = await bar.boundingBox();
+    for (const name of ["Dex number", "Name", "Ascending", "Descending"]) {
+      const box = await sortRadio(page, name).boundingBox();
+      expect(box, name).not.toBeNull();
+      expect(box!.width, name).toBeGreaterThanOrEqual(24);
+      expect(box!.height, name).toBeGreaterThanOrEqual(24);
+      expect(box!.x + box!.width, name).toBeLessThanOrEqual(barBox!.x + barBox!.width + 1);
+    }
+
+    await sortRadio(page, "Name").click();
+    await expect(page).toHaveURL(/sort=NAME_ASC/);
+  });
 });

@@ -91,6 +91,7 @@
     --bar-pad-right: 0.5rem;
     padding: 0 var(--bar-pad-right) 0 0.625rem;
     border-radius: 0;
+    gap: 0.5rem;
   }
 
   .title {
