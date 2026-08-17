@@ -70,9 +70,8 @@ test.describe("Navbar", () => {
 
     await page.waitForLoadState("networkidle");
 
-    // The curated collections are one facet of the shared search results now,
-    // rather than a filter on the home page
-    await expect(page).toHaveURL(/\/search\?special=gmax/);
+    // The curated collections have their own page rather than a search facet
+    await expect(page).toHaveURL(/\/forms\/gmax/);
     await expect(gigantamaxLink).toHaveAttribute("aria-current", "page");
     await expect(searchInput).toHaveValue("");
 

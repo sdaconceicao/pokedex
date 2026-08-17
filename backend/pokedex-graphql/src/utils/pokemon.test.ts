@@ -599,6 +599,10 @@ describe("convertPokemonEntityToPokemon", () => {
     const mockPokemonEntity: PokemonEntity = {
       id: 1,
       name: "bulbasaur",
+      species: {
+        name: "bulbasaur",
+        url: "https://pokeapi.co/api/v2/pokemon-species/1/",
+      },
       abilities: [
         {
           ability: {
@@ -696,6 +700,8 @@ describe("convertPokemonEntityToPokemon", () => {
 
     expect(result).toEqual({
       id: "1",
+      speciesId: "1",
+      speciesName: "bulbasaur",
       name: "bulbasaur",
       type: ["grass", "poison"],
       image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
@@ -730,6 +736,10 @@ describe("convertPokemonEntityToPokemon", () => {
     const mockPokemonEntity: PokemonEntity = {
       id: 999,
       name: "test-pokemon",
+      species: {
+        name: "test-pokemon",
+        url: "https://pokeapi.co/api/v2/pokemon-species/999/",
+      },
       abilities: [],
       types: [],
       stats: [],
@@ -763,6 +773,8 @@ describe("convertPokemonEntityToPokemon", () => {
 
     expect(result).toEqual({
       id: "999",
+      speciesId: "999",
+      speciesName: "test-pokemon",
       name: "test-pokemon",
       type: [],
       image: "https://dummyimage.com/96x96/f0f0f0/666666.png&text=test-pokemon",
@@ -782,6 +794,10 @@ describe("convertPokemonEntityToPokemon", () => {
     const mockPokemonEntity: PokemonEntity = {
       id: 25,
       name: "pikachu",
+      species: {
+        name: "pikachu",
+        url: "https://pokeapi.co/api/v2/pokemon-species/25/",
+      },
       abilities: [],
       types: [],
       stats: [],

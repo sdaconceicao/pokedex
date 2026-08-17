@@ -3,6 +3,7 @@ export const typeDefs = /* GraphQL */ `
 type Query {
   pokemon(id: ID!): Pokemon
   pokemonSearch(query: String!, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
+  pokemonForms(query: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
   pokemonByType(type: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
   pokemonByPokedex(
     pokedex: String
@@ -81,6 +82,8 @@ type PokemonList {
 
 type Pokemon {
   id: ID!
+  speciesId: ID!
+  speciesName: String!
   name: String!
   type: [String!]!
   image: String!
@@ -88,6 +91,14 @@ type Pokemon {
   abilitiesLite: [AbilityLite!]!
   abilities: [Ability!]
   evolution: EvolutionChain
+  forms: [PokemonForm!]
+}
+
+type PokemonForm {
+  id: ID!
+  name: String!
+  image: String!
+  isDefault: Boolean!
 }
 
 type EvolutionChain {

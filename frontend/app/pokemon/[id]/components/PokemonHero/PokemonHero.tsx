@@ -7,6 +7,8 @@ import BackButton from "@/components/BackButton";
 import HeroToolbar from "@/components/HeroToolbar";
 import PokemonTypePill from "@/components/PokemonTypePill";
 import { useScrolledPast } from "@/hooks";
+import { formatFormName, formatPokemonName } from "@/lib/formNames";
+import FormSelect from "@/pokemon/[id]/components/FormSelect";
 import type { Pokemon } from "@/types";
 import styles from "./PokemonHero.module.css";
 import { getDexNumber } from "./PokemonHero.utils";
@@ -24,13 +26,16 @@ interface PokemonHeroProps {
 export const PokemonHero = ({ pokemon, className, flush }: PokemonHeroProps) => {
   const { ref, scrolledPast } = useScrolledPast<HTMLElement>();
 
+  const forms = pokemon.forms ?? [];
+  const speciesName = pokemon.speciesName;
+
   return (
     <>
       {scrolledPast && (
         <HeroToolbar
           className={className}
           flush={flush}
-          title={pokemon.name}
+          title={formatPokemonName(pokemon)}
           aside={<BackButton size="sm">Back</BackButton>}
           icon={
             <Image
@@ -47,14 +52,20 @@ export const PokemonHero = ({ pokemon, className, flush }: PokemonHeroProps) => 
       <section ref={ref} className={clsx(styles.hero, flush && styles.flush, className)}>
         <div className={styles.heroToolbar}>
           <BackButton>Back</BackButton>
-          <span className={styles.pokemonNumber}>{getDexNumber(pokemon.id)}</span>
+          <span className={styles.pokemonNumber}>{getDexNumber(pokemon.speciesId)}</span>
         </div>
 
         <div className={styles.heroBody}>
           <div className={styles.heroInfo}>
             <Heading level={1} className={styles.pokemonName}>
-              {pokemon.name}
+              {formatFormName(speciesName)}
             </Heading>
+            <FormSelect
+              forms={forms}
+              currentId={pokemon.id}
+              speciesId={pokemon.speciesId}
+              speciesName={speciesName}
+            />
             <div className={styles.typesContainer}>
               {pokemon.type.map((type: string) => (
                 <PokemonTypePill key={type} type={type} className={styles.heroPill} />

@@ -4,6 +4,13 @@ describe("buildBrowseUrl", () => {
   it("builds a section's own page", () => {
     expect(buildBrowseUrl("region", "johto")).toBe("/region/johto");
     expect(buildBrowseUrl("type", "fire")).toBe("/type/fire");
+    expect(buildBrowseUrl("forms", "gmax")).toBe("/forms/gmax");
+  });
+
+  it("pages and sorts a form collection like any other section", () => {
+    expect(buildBrowseUrl("forms", "mega", { page: 2, sort: "NAME_ASC" })).toBe(
+      "/forms/mega?sort=NAME_ASC&page=2",
+    );
   });
 
   it("leaves the page off the first page and carries later ones", () => {

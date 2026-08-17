@@ -5,6 +5,7 @@ import type { SearchSuggestion } from "@code-x/lago";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Key } from "react-aria-components";
+import { formatPokemonName } from "@/lib/formNames";
 import { GET_POKEMON_NAME_SUGGESTIONS } from "@/lib/queries";
 import {
   buildSearchUrl,
@@ -23,7 +24,9 @@ const MIN_SUGGESTION_LENGTH = 2;
 const SUGGESTION_LIMIT = 8;
 
 interface SuggestionsData {
-  pokemonSearch?: { pokemon: { id: string; name: string }[] } | null;
+  pokemonSearch?: {
+    pokemon: { id: string; speciesId: string; speciesName: string; name: string }[];
+  } | null;
 }
 
 export interface SearchFilterForm {
@@ -101,7 +104,10 @@ export function useSearchFilterForm(): SearchFilterForm {
           fetchPolicy: "cache-first",
         });
 
-        return (data?.pokemonSearch?.pokemon ?? []).map(({ id, name }) => ({ id, label: name }));
+        return (data?.pokemonSearch?.pokemon ?? []).map((pokemon) => ({
+          id: pokemon.id,
+          label: formatPokemonName(pokemon),
+        }));
       } catch {
         // A failed lookup means no suggestions, not a broken field — the query
         // is valid free text either way.
