@@ -127,12 +127,6 @@ describe("SearchResults", () => {
       ).toBeInTheDocument();
     });
 
-    it("keeps the curated collections' own heading", () => {
-      render(<SearchResults filters={filters({ special: "gmax" })} />);
-
-      expect(screen.getByRole("heading", { name: "Gigantamax Pokemon" })).toBeInTheDocument();
-    });
-
     it("shows a full page of placeholders on the first load", () => {
       vi.mocked(useQuery).mockReturnValue({
         loading: true,

@@ -1,11 +1,4 @@
 /**
- * Formats Pokemon name with first letter capitalized
- */
-export const formatPokemonName = (name: string): string => {
-  return name.charAt(0).toUpperCase() + name.slice(1);
-};
-
-/**
  * Generates CSS class for Pokemon type styling
  */
 export const getPokemonTypeClass = (type: string): string => {

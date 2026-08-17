@@ -1,0 +1,36 @@
+.select {
+  width: 200px;
+  flex-shrink: 0;
+
+  --field-background: rgba(255, 255, 255, 0.22);
+  --field-text-color: #fff;
+  --text-color: #fff;
+  --text-color-placeholder: rgba(255, 255, 255, 0.75);
+  --focus-ring-color: #fff;
+}
+
+.select :global(.react-aria-Group) {
+  --inset-border: rgba(255, 255, 255, 0.25);
+  --inset-highlight: transparent;
+  --inset-shadow-offset: 0;
+  --inset-shadow-size: 0;
+
+  backdrop-filter: blur(4px);
+}
+
+.select :global(.field-Button) {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.select :global(.field-Button):where([data-hovered], [data-pressed]) {
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.select :global(.react-aria-Input) {
+  text-align: start;
+}
+
+.sprite img {
+  object-fit: contain;
+}

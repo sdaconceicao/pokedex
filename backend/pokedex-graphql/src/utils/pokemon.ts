@@ -8,6 +8,12 @@ import type {
 } from "../datasources/pokemon-api.types.js";
 import type { AbilityLite, Pokemon, Stats } from "../types.js";
 
+export const FORM_ID_THRESHOLD = 10000;
+
+export const isForm = (entry: PokemonIndex): boolean => entry.number >= FORM_ID_THRESHOLD;
+
+export const isSpecies = (entry: PokemonIndex): boolean => !isForm(entry);
+
 export const getIdFromUrl = (url: string): string => {
   return url.split("/").filter(Boolean).pop() ?? "";
 };
@@ -121,6 +127,8 @@ export const convertAbilityLiteToAbility = (data: PokemonAbility, abilityLite: A
 export const convertPokemonEntityToPokemon = (pokemon: PokemonEntity): Pokemon => {
   return {
     id: pokemon.id.toString(),
+    speciesId: getIdFromUrl(pokemon.species.url),
+    speciesName: pokemon.species.name,
     name: pokemon.name,
     type: getPokemonTypes(pokemon),
     image: getPokemonDefaultImageUrl(pokemon),

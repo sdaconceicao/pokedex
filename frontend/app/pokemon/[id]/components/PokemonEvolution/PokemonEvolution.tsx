@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatPokemonName } from "@/components/PokemonCard/PokemonCard.utils";
+import { formatFormName } from "@/lib/formNames";
 import type { EvolutionChain, EvolutionNode } from "@/types/graphql";
 import styles from "./PokemonEvolution.module.css";
 import { getEvolutionCondition } from "./PokemonEvolution.utils";
@@ -30,7 +30,7 @@ const EvolutionStage = ({ node, isCurrent }: StageProps) => {
           className={styles.stageImage}
         />
       </div>
-      <span className={styles.stageName}>{formatPokemonName(node.name)}</span>
+      <span className={styles.stageName}>{formatFormName(node.name)}</span>
       <span className={styles.stageNumber}>{dexNumber}</span>
     </>
   );

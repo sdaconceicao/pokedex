@@ -49,17 +49,17 @@ describe("getPokedexItems", () => {
 });
 
 describe("getSpecialItems", () => {
-  it("links each curated collection to the search results", () => {
+  it("links each curated collection to its own page", () => {
     expect(getSpecialItems()).toEqual([
       {
         label: "Gigantamax",
-        href: "/search?special=gmax",
-        activeWhenSearchParamIncludes: { key: "special", value: "gmax" },
+        href: "/forms/gmax",
+        activeWhenPathnameEquals: "/forms/gmax",
       },
       {
         label: "Mega Evolve",
-        href: "/search?special=mega",
-        activeWhenSearchParamIncludes: { key: "special", value: "mega" },
+        href: "/forms/mega",
+        activeWhenPathnameEquals: "/forms/mega",
       },
     ]);
   });
