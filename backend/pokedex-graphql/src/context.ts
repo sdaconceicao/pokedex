@@ -18,16 +18,14 @@ const sharedCache = new InMemoryLRUCache();
 const fetcher: NonNullable<DataSourceConfig["fetch"]> = (url, init) =>
   fetch(url, init as RequestInit);
 
-export async function createContext(
-  config?: DataSourceConfig
-): Promise<DataSourceContext> {
+export async function createContext(config?: DataSourceConfig): Promise<DataSourceContext> {
   const pokemonAPI = new PokemonAPI({
     cache: sharedCache,
     fetch: fetcher,
     ...config,
   });
 
-  // Lazy-load index on first request; static cache reuses across warm instances
+  // Lazy-load indexes on first request; static cache reuses across warm instances
   await pokemonAPI.loadPokemonIndex();
 
   return {

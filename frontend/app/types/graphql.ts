@@ -26,6 +26,16 @@ export type AbilityLite = {
   url: Scalars['String']['output'];
 };
 
+/**
+ * A pair of types that must BOTH be present. Requires two types by construction,
+ * and matching ignores slot order — `fire` + `flying` and `flying` + `fire` select
+ * the same Pokemon.
+ */
+export type DualTypeFilter = {
+  primary: Scalars['String']['input'];
+  secondary: Scalars['String']['input'];
+};
+
 export type EvolutionChain = {
   chain: EvolutionNode;
   id: Scalars['ID']['output'];
@@ -45,13 +55,46 @@ export type Pokemon = {
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
   evolution?: Maybe<EvolutionChain>;
+  forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  speciesId: Scalars['ID']['output'];
+  speciesName: Scalars['String']['output'];
   stats: Stats;
   type: Array<Scalars['String']['output']>;
 };
 
+/**
+ * Every facet is OR internally and AND against the others. The one exception is
+ * `dualType`, which is AND internally and is then OR'd into the type facet:
+ *
+ *     (types ANY  OR  dualType BOTH)  AND  pokedexes ANY  AND  regions ANY  AND  query
+ *
+ * So `types: [fire, grass, ground]` with `dualType: {fire, flying}` matches anything
+ * that is fire, grass or ground, plus anything that is a fire/flying dual — and then
+ * narrows that to the given pokedexes and regions.
+ *
+ * Omitted facets are skipped rather than matching nothing; a filter with no facets
+ * at all returns the full dex.
+ */
+export type PokemonFilter = {
+  dualType?: InputMaybe<DualTypeFilter>;
+  pokedexes?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Case-insensitive substring match on the Pokemon name. */
+  query?: InputMaybe<Scalars['String']['input']>;
+  regions?: InputMaybe<Array<Scalars['String']['input']>>;
+  types?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type PokemonForm = {
+  id: Scalars['ID']['output'];
+  image: Scalars['String']['output'];
+  isDefault: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+};
+
+/** Results are ordered by the query's `sort`, national dex number by default. */
 export type PokemonList = {
   offset: Scalars['Int']['output'];
   pokemon: Array<Pokemon>;
@@ -68,6 +111,16 @@ export type PokemonRegion = {
   name: Scalars['String']['output'];
 };
 
+/**
+ * How a list is ordered. `ID_*` is by national dex number, `NAME_*` alphabetical by
+ * the name the API spells — which is what the cards display.
+ */
+export type PokemonSort =
+  | 'ID_ASC'
+  | 'ID_DESC'
+  | 'NAME_ASC'
+  | 'NAME_DESC';
+
 export type PokemonType = {
   count: Scalars['Int']['output'];
   name: Scalars['String']['output'];
@@ -80,8 +133,12 @@ export type Query = {
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
+  pokemonFilter?: Maybe<PokemonList>;
+  pokemonForms?: Maybe<PokemonList>;
   pokemonSearch?: Maybe<PokemonList>;
+  region?: Maybe<RegionDetail>;
   regions: Array<PokemonRegion>;
+  type?: Maybe<TypeDetail>;
   types: Array<PokemonType>;
 };
 
@@ -100,6 +157,7 @@ export type QueryPokemonByPokedexArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   pokedex?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
@@ -107,13 +165,31 @@ export type QueryPokemonByRegionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   region?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
 export type QueryPokemonByTypeArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
   type?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryPokemonFilterArgs = {
+  filter: PokemonFilter;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PokemonSort>;
+};
+
+
+export type QueryPokemonFormsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<PokemonSort>;
 };
 
 
@@ -121,6 +197,28 @@ export type QueryPokemonSearchArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   query: Scalars['String']['input'];
+  sort?: InputMaybe<PokemonSort>;
+};
+
+
+export type QueryRegionArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryTypeArgs = {
+  name: Scalars['String']['input'];
+};
+
+export type RegionDetail = {
+  displayName: Scalars['String']['output'];
+  generation?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  locations: Array<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  pokedexes: Array<Scalars['String']['output']>;
+  pokemonCount: Scalars['Int']['output'];
+  versionGroups: Array<Scalars['String']['output']>;
 };
 
 export type Stats = {
@@ -130,4 +228,29 @@ export type Stats = {
   specialAttack: Scalars['Int']['output'];
   specialDefense: Scalars['Int']['output'];
   speed: Scalars['Int']['output'];
+};
+
+/**
+ * How this type fares in battle, as type names. The `*To` fields are what its own
+ * attacks do; the `*From` fields are what it takes.
+ */
+export type TypeDamageRelations = {
+  doubleDamageFrom: Array<Scalars['String']['output']>;
+  doubleDamageTo: Array<Scalars['String']['output']>;
+  halfDamageFrom: Array<Scalars['String']['output']>;
+  halfDamageTo: Array<Scalars['String']['output']>;
+  noDamageFrom: Array<Scalars['String']['output']>;
+  noDamageTo: Array<Scalars['String']['output']>;
+};
+
+export type TypeDetail = {
+  damageRelations: TypeDamageRelations;
+  displayName: Scalars['String']['output'];
+  generation?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  moveCount: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  pokemonCount: Scalars['Int']['output'];
+  /** The type's own icon, newest generation first. */
+  sprite?: Maybe<Scalars['String']['output']>;
 };

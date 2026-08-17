@@ -1,0 +1,18 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 1.5rem;
+  /* This is used to prevent the grid from scrolling to the top when the user sorts or pages. */
+  overflow-anchor: none;
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--red);
+}
+
+.centerText {
+  text-align: center;
+  padding: 2rem;
+}

@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Ported verbatim from the region/type/search list headings this replaces:
+   the accent bar is drawn with a ::before gradient. Font-size now comes off
+   `level` instead of being copy-pasted per page, and every page keeps the
+   scroll-margin-top the smooth-scroll target needs. */
+.heading {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  padding-left: 0.875rem;
+  position: relative;
+  scroll-margin-top: 1rem;
+}
+
+.heading[data-level="1"] {
+  font-size: 1.75rem;
+}
+
+.heading[data-level="2"] {
+  font-size: 1.5rem;
+}
+
+.heading::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--layout-primary-background), #f08030);
+}

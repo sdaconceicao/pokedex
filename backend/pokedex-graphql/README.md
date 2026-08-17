@@ -85,17 +85,24 @@ The project uses GraphQL Code Generator to generate TypeScript types from the Gr
 $ pn  generate
 ```
 
-### Linting
+### Linting and Formatting
+
+Linting and formatting are handled by [Biome](https://biomejs.dev/). The version
+is pinned once for the whole monorepo in the `catalog:` block of
+`pnpm-workspace.yaml`, and each package keeps its own `biome.json`.
 
 ```bash
-# Check for linting errors
+# Check for lint and formatting errors
 $ pn  lint
 
-# Fix linting errors
+# Fix lint and formatting errors
 $ pn  lint:fix
 
-# Check linting with zero warnings
+# Check in CI mode (no writes)
 $ pn  lint:check
+
+# Format only
+$ pn  format
 ```
 
 ### Type Checking

@@ -1,8 +1,4 @@
-export const getPaginatedResults = (
-  results: unknown[],
-  limit: number,
-  offset: number
-) => {
+export const getPaginatedResults = <T>(results: T[], limit: number, offset: number): T[] => {
   if (!Array.isArray(results)) {
     return [];
   }

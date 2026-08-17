@@ -1,42 +1,39 @@
+import { Skeleton, SkeletonParagraph } from "@code-x/lago";
 import { useMemo } from "react";
+import PokemonHeroSkeleton from "../PokemonHero/PokemonHeroSkeleton";
 import styles from "./PokemonDetailSkeleton.module.css";
 
-export default function PokemonDetailSkeleton() {
+interface PokemonDetailSkeletonProps {
+  /** Passed through to the hero placeholder so the loading state matches the
+   *  flush detail it stands in for. */
+  flush?: boolean;
+}
+
+export default function PokemonDetailSkeleton({ flush }: PokemonDetailSkeletonProps) {
   const statKeys = useMemo(() => Array.from({ length: 6 }, (_, i) => i), []);
   const abilityKeys = useMemo(() => Array.from({ length: 3 }, (_, i) => i), []);
 
   return (
     <div className={styles.container}>
-      <div className={styles.backButton}>
-        <div className={styles.backButtonSkeleton}></div>
-      </div>
-
-      {/* Hero skeleton */}
-      <div className={styles.hero}>
-        <div className={styles.heroInfo}>
-          <div className={styles.numberSkeleton}></div>
-          <div className={styles.nameSkeleton}></div>
-          <div className={styles.typesContainer}>
-            <div className={styles.typeSkeleton}></div>
-            <div className={styles.typeSkeleton}></div>
-          </div>
-        </div>
-        <div className={styles.heroImage}>
-          <div className={styles.imageSkeleton}></div>
-        </div>
-      </div>
+      {/* PokemonHeroSkeleton carries the one labeled placeholder for the whole
+       *  page; every skeleton below stays decorative so a screen reader
+       *  announces the loading state once, not once per shape. */}
+      <PokemonHeroSkeleton flush={flush} />
 
       {/* Stats skeleton */}
       <div className={styles.statsSection}>
-        <div className={styles.titleSkeleton}></div>
+        <Skeleton variant="line" width={130} height={24} className={styles.titleSkeleton} />
         <div className={styles.statsGrid}>
           {statKeys.map((key) => (
             <div key={key} className={styles.statItem}>
-              <div className={styles.statLabelSkeleton}></div>
-              <div className={styles.statBarSkeleton}>
-                <div className={styles.statFillSkeleton}></div>
-              </div>
-              <div className={styles.statValueSkeleton}></div>
+              <Skeleton variant="line" width={70} height={14} />
+              <Skeleton variant="line" height={8} />
+              <Skeleton
+                variant="line"
+                width={30}
+                height={16}
+                className={styles.statValueSkeleton}
+              />
             </div>
           ))}
         </div>
@@ -44,18 +41,16 @@ export default function PokemonDetailSkeleton() {
 
       {/* Abilities skeleton */}
       <div className={styles.abilitiesSection}>
-        <div className={styles.titleSkeleton}></div>
+        <Skeleton variant="line" width={130} height={24} className={styles.titleSkeleton} />
         <div className={styles.abilitiesGrid}>
           {abilityKeys.map((key) => (
             <div key={key} className={styles.abilityCard}>
               <div className={styles.abilityHeader}>
-                <div className={styles.abilityNameSkeleton}></div>
-                <div className={styles.abilitySlotSkeleton}></div>
+                <Skeleton variant="line" width={120} height={22} />
+                <Skeleton variant="line" width={64} height={22} />
               </div>
               <div className={styles.abilityDetails}>
-                <div className={styles.abilityDescriptionSkeleton}></div>
-                <div className={styles.abilityEffectSkeleton}></div>
-                <div className={styles.abilityGenerationSkeleton}></div>
+                <SkeletonParagraph lines={3} />
               </div>
             </div>
           ))}

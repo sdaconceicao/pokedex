@@ -1,9 +1,9 @@
 {
   "name": "pokedex-frontend",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
-    "prebuild": "pn  codegen",
+    "prebuild": "pn codegen",
     "build": "next build",
     "start": "next start",
     "start:dev": "concurrently \"next dev --turbopack --port 3010\" \"pn  codegen:watch\"",
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.2.9",
+    "@code-x/lago": "^0.7.0",
     "@pokemonle/icons-react": "^0.0.3",
     "@tanstack/react-query": "^5.101.4",
     "@untitled-ui/icons-react": "^0.1.4",
@@ -27,14 +28,15 @@
     "clsx": "^2.1.1",
     "graphql": "^17.0.2",
     "nanoid": "^6.0.0",
-    "next": "16.2.12",
+    "next": "^16.3.0",
     "picocolors": "^1.1.1",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
+    "react": "^19.2.8",
+    "react-aria-components": "^1.20.0",
+    "react-dom": "^19.2.8",
     "source-map-js": "^1.2.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
+    "@biomejs/biome": "catalog:",
     "@graphql-codegen/cli": "^7.2.0",
     "@graphql-codegen/typescript": "^6.1.0",
     "@graphql-codegen/typescript-operations": "^6.1.2",
@@ -45,7 +47,6 @@
     "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/testing-library__user-event": "^4.1.1",
     "@vitejs/plugin-react": "^6.0.5",
     "@vitest/coverage-v8": "^4.1.10",
     "@vitest/expect": "^4.1.10",

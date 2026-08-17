@@ -1,276 +1,17 @@
 .container {
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  /* Published so HeroToolbar's zero-height rail can cancel the gap it would
+     otherwise add between the hero and the section under it */
+  --stack-gap: 1.5rem;
+  gap: var(--stack-gap);
 }
 
-.backButton {
-  align-self: flex-start;
-}
-
-/* ── Type palette (shared by hero / stats / abilities) ── */
-.type-normal {
-  --type-grad-1: #9da0aa;
-  --type-grad-2: #7c7f8a;
-  --type-accent: #7c7f8a;
-  --type-shadow: rgba(124, 127, 138, 0.5);
-}
-
-.type-fire {
-  --type-grad-1: #fb7c6c;
-  --type-grad-2: #e8554d;
-  --type-accent: #e8554d;
-  --type-shadow: rgba(232, 85, 77, 0.5);
-}
-
-.type-water {
-  --type-grad-1: #63b5e8;
-  --type-grad-2: #4187d6;
-  --type-accent: #4187d6;
-  --type-shadow: rgba(65, 135, 214, 0.5);
-}
-
-.type-electric {
-  --type-grad-1: #f5c842;
-  --type-grad-2: #e0a32e;
-  --type-accent: #e0a32e;
-  --type-shadow: rgba(224, 163, 46, 0.5);
-}
-
-.type-grass {
-  --type-grad-1: #5dbe62;
-  --type-grad-2: #3da04a;
-  --type-accent: #3da04a;
-  --type-shadow: rgba(61, 160, 74, 0.5);
-}
-
-.type-ice {
-  --type-grad-1: #75d0c7;
-  --type-grad-2: #4caeb5;
-  --type-accent: #4caeb5;
-  --type-shadow: rgba(76, 174, 181, 0.5);
-}
-
-.type-fighting {
-  --type-grad-1: #eb5971;
-  --type-grad-2: #ce3a57;
-  --type-accent: #ce3a57;
-  --type-shadow: rgba(206, 58, 87, 0.5);
-}
-
-.type-poison {
-  --type-grad-1: #b569c9;
-  --type-grad-2: #9445ab;
-  --type-accent: #9445ab;
-  --type-shadow: rgba(148, 69, 171, 0.5);
-}
-
-.type-ground {
-  --type-grad-1: #dd8b53;
-  --type-grad-2: #c0693a;
-  --type-accent: #c0693a;
-  --type-shadow: rgba(192, 105, 58, 0.5);
-}
-
-.type-flying {
-  --type-grad-1: #91a8ee;
-  --type-grad-2: #6d87dd;
-  --type-accent: #6d87dd;
-  --type-shadow: rgba(109, 135, 221, 0.5);
-}
-
-.type-psychic {
-  --type-grad-1: #f87c8b;
-  --type-grad-2: #e25577;
-  --type-accent: #e25577;
-  --type-shadow: rgba(226, 85, 119, 0.5);
-}
-
-.type-bug {
-  --type-grad-1: #a6c939;
-  --type-grad-2: #84ad1f;
-  --type-accent: #84ad1f;
-  --type-shadow: rgba(132, 173, 31, 0.5);
-}
-
-.type-rock {
-  --type-grad-1: #c2b186;
-  --type-grad-2: #a08f5d;
-  --type-accent: #a08f5d;
-  --type-shadow: rgba(160, 143, 93, 0.5);
-}
-
-.type-ghost {
-  --type-grad-1: #897cc8;
-  --type-grad-2: #685ab0;
-  --type-accent: #685ab0;
-  --type-shadow: rgba(104, 90, 176, 0.5);
-}
-
-.type-dragon {
-  --type-grad-1: #6f7cf7;
-  --type-grad-2: #4d59dd;
-  --type-accent: #4d59dd;
-  --type-shadow: rgba(77, 89, 221, 0.5);
-}
-
-.type-dark {
-  --type-grad-1: #6f6e78;
-  --type-grad-2: #4e4d57;
-  --type-accent: #4e4d57;
-  --type-shadow: rgba(78, 77, 87, 0.5);
-}
-
-.type-steel {
-  --type-grad-1: #6ba8b8;
-  --type-grad-2: #4b8799;
-  --type-accent: #4b8799;
-  --type-shadow: rgba(75, 135, 153, 0.5);
-}
-
-.type-fairy {
-  --type-grad-1: #f18fbe;
-  --type-grad-2: #df66a2;
-  --type-accent: #df66a2;
-  --type-shadow: rgba(223, 102, 162, 0.5);
-}
-
-/* ── Hero ────────────────────────────────────────── */
-.hero {
-  position: relative;
+.abilitiesGrid {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 2rem;
-  background: linear-gradient(150deg, var(--type-grad-1, #9da0aa), var(--type-grad-2, #7c7f8a));
-  border-radius: 1.5rem;
-  padding: 1.5rem 3rem;
-  color: #fff;
-  overflow: hidden;
-  min-height: 210px;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.06),
-    0 16px 32px -12px var(--type-shadow, rgba(0, 0, 0, 0.35));
-}
-
-/* Pokéball watermark */
-.hero::before {
-  content: "";
-  position: absolute;
-  top: -3.5rem;
-  right: -3.5rem;
-  width: 18rem;
-  height: 18rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='white' stroke-width='10'/%3E%3Cpath d='M6 50h33M61 50h33' stroke='white' stroke-width='10'/%3E%3Ccircle cx='50' cy='50' r='14' fill='white'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.13;
-  transform: rotate(18deg);
-  pointer-events: none;
-}
-
-.heroInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.75rem;
-  position: relative;
-  z-index: 1;
-}
-
-.pokemonNumber {
-  font-size: 0.875rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  padding: 0.25rem 0.75rem;
-}
-
-.pokemonName {
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 0;
-  text-transform: capitalize;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-.typesContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.typesContainer .heroPill {
-  background: rgba(255, 255, 255, 0.22);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: none;
-  backdrop-filter: blur(4px);
-}
-
-.heroImage {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  /* Pull the artwork past the hero's padding so it bleeds off
-     the rounded edge and gets clipped by overflow: hidden */
-  margin: -3rem -6.5rem -3.5rem 0;
-}
-
-.pokemonImage {
-  width: 340px !important;
-  height: 340px !important;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.3));
-  transition:
-    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    filter 0.25s ease;
-}
-
-.pokemonImage:hover {
-  transform: scale(1.04) rotate(-2deg);
-  filter: drop-shadow(0 24px 32px rgba(0, 0, 0, 0.35));
-}
-
-/* ── Section cards ───────────────────────────────── */
-.statsSection,
-.abilitiesSection,
-.evolutionSection {
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: 1.25rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  padding: 1.75rem 2rem;
-}
-
-.sectionTitle {
-  margin: 0 0 1.5rem;
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--foreground);
-  padding-left: 0.75rem;
-  position: relative;
-}
-
-.sectionTitle::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.1em;
-  bottom: 0.1em;
-  width: 4px;
-  border-radius: 999px;
-  background: var(--type-accent, var(--layout-primary-background));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
 }
 
 .statsGrid {
@@ -280,46 +21,20 @@
   row-gap: 1.125rem;
 }
 
-.abilitiesGrid {
+.evolutionGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
 }
 
-/* ── Responsive ──────────────────────────────────── */
+/* ── Responsive ──────────────────────────────────────
+   Two stat columns leave each row too narrow for its bar once the viewport
+   reaches tablet width — the bar collapses to nothing and the row overflows
+   the card. One stat per row gives every bar its full width back. */
 @media (max-width: 768px) {
-  .hero {
-    grid-template-columns: 1fr;
-    padding: 2rem 1.5rem;
-    text-align: center;
-  }
-
-  .heroInfo {
-    align-items: center;
-  }
-
-  .pokemonName {
-    font-size: 2.25rem;
-  }
-
-  .heroImage {
-    order: -1;
-    justify-content: center;
-    margin: -2.5rem 0 0;
-  }
-
-  .pokemonImage {
-    width: 240px !important;
-    height: 240px !important;
-  }
-
   .statsGrid {
     grid-template-columns: 1fr;
-  }
-
-  .statsSection,
-  .abilitiesSection,
-  .evolutionSection {
-    padding: 1.25rem 1.25rem;
+    column-gap: 0;
+    row-gap: 0.875rem;
   }
 }

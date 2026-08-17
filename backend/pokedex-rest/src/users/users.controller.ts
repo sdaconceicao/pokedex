@@ -7,8 +7,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
-import { UsersService } from './users.service';
 import { UserResponseDto } from './dtos/user-response.dto';
+import { UsersService } from './users.service';
 
 interface JwtUser {
   userId: string;

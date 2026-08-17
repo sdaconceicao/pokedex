@@ -1,10 +1,10 @@
+import { BadRequestException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Mocked } from 'vitest';
-import { JwtService } from '@nestjs/jwt';
-import { BadRequestException } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
 import { UserEntity } from '../users/users.entity';
+import { UsersService } from '../users/users.service';
+import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 
 // Mock bcrypt module

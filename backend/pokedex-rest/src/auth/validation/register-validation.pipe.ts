@@ -1,6 +1,6 @@
-import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { RegisterRequestDto } from '../dtos/register-request.dto';
-import { validatePassword, validateEmail } from './password.validation';
+import { validateEmail, validatePassword } from './password.validation';
 
 @Injectable()
 export class RegisterValidationPipe implements PipeTransform {

@@ -1,0 +1,14 @@
+/* A route's content is page-sized, so it has to scroll inside the dialog.
+   lago's Dialog already caps at `max-height: inherit` and scrolls, but that
+   inherited cap floats with content up to ~90vh — a definite height keeps the
+   modal the same size regardless of how much a given Pokémon's detail page
+   has to show. Desktop only: below the breakpoint Modal makes the dialog full
+   screen, which is definite already. Width is left to `size`.
+   Modal's `className` lands on react-aria's ModalOverlay, not the panel
+   itself, so this reaches the panel through its stable class rather than a
+   hashed one — see Modal.module.css for the fuller explanation. */
+@media (min-width: 641px) {
+  .modal :global(.react-aria-Modal) {
+    height: 90vh;
+  }
+}

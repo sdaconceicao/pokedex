@@ -1,0 +1,26 @@
+.count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: color-mix(in srgb, currentColor 85%, transparent);
+  background: color-mix(in srgb, currentColor 18%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: 999px;
+  padding: 0.125rem 0.5rem;
+}
+
+.count strong {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: currentColor;
+}
+
+@media (max-width: 480px) {
+  .count + .count {
+    display: none;
+  }
+}

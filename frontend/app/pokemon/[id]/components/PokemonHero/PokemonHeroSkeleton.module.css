@@ -1,0 +1,96 @@
+/* Neutral gradient — the real hero is tinted by the Pokemon's type,
+   which isn't known until the data resolves. */
+.hero {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(150deg, #d4d6dc, #b8bac2);
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+/* Mirrors .hero.flush in PokemonHero.module.css so the placeholder sits in the
+   same band as the hero that replaces it. */
+.hero.flush {
+  margin-top: calc(-1 * var(--panel-inset, 0px));
+  margin-left: calc(-1 * var(--panel-inset, 0px));
+  margin-right: calc(-1 * (var(--panel-inset, 0px) + var(--panel-scrollbar, 0px)));
+  margin-bottom: 0;
+  border-radius: var(--panel-radius, 0px) var(--panel-radius, 0px) 0 0;
+}
+
+/* Same wash as the other tinted hero placeholders — see RegionHeroSkeleton for
+   why this is scoped here rather than applied to every lago Skeleton. */
+.hero :global(.skeleton) {
+  --skeleton-surface-color: var(--skeleton-wash);
+  --skeleton-shimmer-color: var(--skeleton-wash);
+}
+
+.heroToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.heroBody {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.5rem 3rem;
+  max-height: 310px;
+  overflow: hidden;
+}
+
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.typesContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.heroImage {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: -3rem -6.5rem -3.5rem 0;
+}
+
+/* lago's Skeleton shimmers in --gray tones, sized for placement on a plain
+   surface. This hero is its own tinted gradient, so every placeholder here
+   is retinted to the same translucent white the rest of the hero chrome
+   uses, rather than blending into the background. */
+.onGradient {
+  --skeleton-surface-color: rgb(255 255 255 / 0.35);
+  --skeleton-shimmer-color: rgb(255 255 255 / 0.6);
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .heroToolbar {
+    padding: 0.625rem 1rem;
+  }
+
+  .heroBody {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.5rem;
+  }
+
+  .heroInfo {
+    align-items: center;
+  }
+
+  .heroImage {
+    order: -1;
+    justify-content: center;
+    margin: -2.5rem 0 0;
+  }
+}

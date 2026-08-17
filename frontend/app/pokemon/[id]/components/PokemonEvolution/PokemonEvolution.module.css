@@ -26,7 +26,7 @@
   border: 1px solid var(--border-subtle);
   background: var(--surface);
   text-decoration: none;
-  color: var(--foreground);
+  color: var(--text-color);
   min-width: 120px;
   transition:
     transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
@@ -37,17 +37,13 @@
 a.stage:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 24px -8px var(--type-shadow, rgba(0, 0, 0, 0.2));
-  border-color: var(--type-accent, var(--layout-primary-background));
+  border-color: var(--type-accent, var(--tint));
 }
 
 /* The Pokemon currently being viewed */
 .current {
-  border-color: var(--type-accent, var(--layout-primary-background));
-  background: color-mix(
-    in srgb,
-    var(--type-accent, var(--layout-primary-background)) 10%,
-    var(--surface)
-  );
+  border-color: var(--type-accent, var(--tint));
+  background: color-mix(in srgb, var(--type-accent, var(--tint)) 10%, var(--surface));
 }
 
 .stageImageWrap {
@@ -74,7 +70,7 @@ a.stage:hover {
 
 .stageNumber {
   font-size: 0.75rem;
-  color: var(--muted-foreground);
+  color: var(--gray-1000);
   font-variant-numeric: tabular-nums;
 }
 
@@ -99,13 +95,13 @@ a.stage:hover {
   gap: 0.15rem;
   width: 96px;
   flex-shrink: 0;
-  color: var(--muted-foreground);
+  color: var(--gray-1000);
 }
 
 .arrowCondition {
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--type-accent, var(--foreground));
+  color: var(--type-accent, var(--text-color));
   text-align: center;
   line-height: 1.2;
 }
@@ -115,8 +111,40 @@ a.stage:hover {
   line-height: 1;
 }
 
+/* ── Responsive ──────────────────────────────────────
+   A chain that runs off the side of a card can't be read, and a branching one
+   is wider still, so from tablet down it runs top to bottom: every row in the
+   chain — the chain itself, each branch, each transition — turns to a column,
+   and the arrows turn with them. */
 @media (max-width: 768px) {
+  .chain,
+  .branch,
+  .transition {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .chain {
-    justify-content: flex-start;
+    overflow-x: visible;
+  }
+
+  /* Full width on a phone, but capped so a tablet gets a column of cards
+     rather than three very wide bands */
+  .stage {
+    width: 100%;
+    max-width: 360px;
+    margin-inline: auto;
+  }
+
+  /* Condition beside the arrow rather than above it, to spend less height */
+  .arrow {
+    width: auto;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .arrowLine {
+    transform: rotate(90deg);
   }
 }

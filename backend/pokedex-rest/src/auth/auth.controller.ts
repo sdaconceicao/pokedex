@@ -6,6 +6,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -14,15 +15,14 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
-import { LoginRequestDto } from './dtos/login-request.dto';
-import { RegisterRequestDto } from './dtos/register-request.dto';
-import { LoginResponseDTO } from './dtos/login-response.dto';
-import { RegisterResponseDTO } from './dtos/register-response.dto';
 import { FastifyRequest } from 'fastify';
 import { UserEntity } from '../users/users.entity';
+import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { LoginRequestDto } from './dtos/login-request.dto';
+import { LoginResponseDTO } from './dtos/login-response.dto';
+import { RegisterRequestDto } from './dtos/register-request.dto';
+import { RegisterResponseDTO } from './dtos/register-response.dto';
 
 export interface AuthenticatedRequest extends FastifyRequest {
   user: UserEntity;

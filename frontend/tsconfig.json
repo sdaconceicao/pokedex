@@ -29,7 +29,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "/tmp/nextdist/dev/types/**/*.ts",
-    "/tmp/nextdist/dev/dev/types/**/*.ts"
+    "/tmp/nextdist/dev/dev/types/**/*.ts",
+    ".next/dev/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules", "vitest.config.ts", "vitest.setup.ts", "test/**/*"]
 }

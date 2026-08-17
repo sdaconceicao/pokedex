@@ -10,12 +10,14 @@ export const GET_TYPES = gql`
 `;
 
 export const GET_POKEMON_BY_TYPE = gql`
-  query GetPokemonByType($type: String!, $limit: Int, $offset: Int) {
-    pokemonByType(type: $type, limit: $limit, offset: $offset) {
+  query GetPokemonByType($type: String!, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonByType(type: $type, limit: $limit, offset: $offset, sort: $sort) {
       total
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image
@@ -46,6 +48,8 @@ export const SEARCH_POKEMON = gql`
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image
@@ -69,6 +73,87 @@ export const SEARCH_POKEMON = gql`
   }
 `;
 
+/** The faceted search behind `/search`. Every facet is optional and an omitted
+ *  one is skipped, so an empty filter browses the whole dex. */
+export const FILTER_POKEMON = gql`
+  query FilterPokemon($filter: PokemonFilter!, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonFilter(filter: $filter, limit: $limit, offset: $offset, sort: $sort) {
+      total
+      offset
+      pokemon {
+        id
+        speciesId
+        speciesName
+        name
+        type
+        image
+        stats {
+          hp
+          attack
+          defense
+          specialAttack
+          specialDefense
+          speed
+        }
+        abilitiesLite {
+          id
+          name
+          url
+          slot
+          isHidden
+        }
+      }
+    }
+  }
+`;
+
+export const GET_POKEMON_FORMS = gql`
+  query GetPokemonForms($query: String, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonForms(query: $query, limit: $limit, offset: $offset, sort: $sort) {
+      total
+      offset
+      pokemon {
+        id
+        speciesId
+        speciesName
+        name
+        type
+        image
+        stats {
+          hp
+          attack
+          defense
+          specialAttack
+          specialDefense
+          speed
+        }
+        abilitiesLite {
+          id
+          name
+          url
+          slot
+          isHidden
+        }
+      }
+    }
+  }
+`;
+
+/** Names only, for the search field's suggestion dropdown — the list rows carry
+ *  no artwork or stats, and the backend hydrates one upstream record per row. */
+export const GET_POKEMON_NAME_SUGGESTIONS = gql`
+  query GetPokemonNameSuggestions($query: String!, $limit: Int) {
+    pokemonSearch(query: $query, limit: $limit) {
+      pokemon {
+        id
+        speciesId
+        speciesName
+        name
+      }
+    }
+  }
+`;
+
 export const GET_POKEDEXES = gql`
   query GetPokedexes {
     pokedexes {
@@ -85,6 +170,8 @@ export const GET_POKEMON_BY_POKEDEX = gql`
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image
@@ -118,12 +205,14 @@ export const GET_REGIONS = gql`
 `;
 
 export const GET_POKEMON_BY_REGION = gql`
-  query GetPokemonByRegion($region: String!, $limit: Int, $offset: Int) {
-    pokemonByRegion(region: $region, limit: $limit, offset: $offset) {
+  query GetPokemonByRegion($region: String!, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonByRegion(region: $region, limit: $limit, offset: $offset, sort: $sort) {
       total
       offset
       pokemon {
         id
+        speciesId
+        speciesName
         name
         type
         image

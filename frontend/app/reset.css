@@ -1,0 +1,27 @@
+/* The app's own reset, in the layer lago reserves for exactly this.
+ *
+ * A universal `* { padding: 0; margin: 0 }` is unlayered, and an unlayered
+ * declaration beats a layered one at *any* specificity — layer order is
+ * resolved before specificity. Since lago emits all of its CSS into
+ * `@layer lago.*`, an unlayered reset silently flattened the padding of every
+ * lago component: buttons collapsed to the width of their label, so their
+ * background hugged the text instead of forming a pill.
+ *
+ * lago declares `@layer reset, lago.tokens, lago.base, lago.components` and
+ * never writes into `reset`, so putting ours there makes it the lowest layer.
+ * It still zeroes the browser's defaults; it no longer outranks lago. And
+ * because the slot is declared in lago's own stylesheet, this holds regardless
+ * of import order.
+ */
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    padding: 0;
+    margin: 0;
+  }
+}

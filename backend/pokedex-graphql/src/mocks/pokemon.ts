@@ -1,7 +1,4 @@
-import type {
-  EvolutionChainResponse,
-  PokemonSpecies,
-} from "../datasources/pokemon-api.types.js";
+import type { EvolutionChainResponse, PokemonSpecies } from "../datasources/pokemon-api.types.js";
 
 export const pokemonList: {
   count: number;
@@ -40,6 +37,32 @@ export const pokemonList: {
       name: "charizard",
       url: "https://pokeapi.co/api/v2/pokemon/6/",
     },
+    {
+      name: "charizard-mega-x",
+      url: "https://pokeapi.co/api/v2/pokemon/10034/",
+    },
+    {
+      name: "bulbasaur-gmax",
+      url: "https://pokeapi.co/api/v2/pokemon/10186/",
+    },
+    {
+      name: "pikachu-gmax",
+      url: "https://pokeapi.co/api/v2/pokemon/10199/",
+    },
+  ],
+};
+
+export const pokemonSpeciesList: typeof pokemonList = {
+  count: 1025,
+  next: "https://pokeapi.co/api/v2/pokemon-species?offset=20&limit=20",
+  previous: null,
+  results: [
+    { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon-species/2/" },
+    { name: "venusaur", url: "https://pokeapi.co/api/v2/pokemon-species/3/" },
+    { name: "charmander", url: "https://pokeapi.co/api/v2/pokemon-species/4/" },
+    { name: "charmeleon", url: "https://pokeapi.co/api/v2/pokemon-species/5/" },
+    { name: "charizard", url: "https://pokeapi.co/api/v2/pokemon-species/6/" },
   ],
 };
 
@@ -250,8 +273,7 @@ export const pokemonEntity: {
     back_shiny:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/1.png",
     back_shiny_female: null,
-    front_default:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+    front_default: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
     front_female: null,
     front_shiny:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/1.png",
@@ -311,10 +333,8 @@ export const pokemonEntity: {
     },
   },
   cries: {
-    latest:
-      "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/1.ogg",
-    legacy:
-      "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/1.ogg",
+    latest: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/1.ogg",
+    legacy: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/1.ogg",
   },
   stats: [
     {
@@ -390,7 +410,50 @@ export const pokemonSpecies: PokemonSpecies = {
   evolution_chain: {
     url: "https://pokeapi.co/api/v2/evolution-chain/1/",
   },
+  varieties: [
+    {
+      is_default: true,
+      pokemon: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/1/" },
+    },
+    {
+      is_default: false,
+      pokemon: { name: "bulbasaur-gmax", url: "https://pokeapi.co/api/v2/pokemon/10186/" },
+    },
+  ],
 };
+
+const formEntity = (id: number, name: string, speciesId: number): typeof pokemonEntity => ({
+  ...pokemonEntity,
+  id,
+  name,
+  is_default: false,
+  species: {
+    name: name.split("-")[0],
+    url: `https://pokeapi.co/api/v2/pokemon-species/${speciesId}/`,
+  },
+});
+
+export const pokemonFormEntity: typeof pokemonEntity = {
+  ...formEntity(10186, "bulbasaur-gmax", 1),
+  sprites: {
+    ...pokemonEntity.sprites,
+    back_default: null,
+    back_shiny: null,
+    front_default: null,
+    front_shiny: null,
+    other: {
+      ...pokemonEntity.sprites.other,
+      "official-artwork": {
+        front_default:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10186.png",
+        front_shiny: null,
+      },
+    },
+  },
+};
+
+export const charizardMegaXEntity = formEntity(10034, "charizard-mega-x", 6);
+export const pikachuGmaxEntity = formEntity(10199, "pikachu-gmax", 25);
 
 export const evolutionChain: EvolutionChainResponse = {
   id: 1,
@@ -464,8 +527,7 @@ export const pokemonAbility = {
     {
       effect:
         "When this Pokémon has 1/3 or less of its HP remaining, its grass-type moves inflict 1.5× as much regular damage.",
-      short_effect:
-        "Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.",
+      short_effect: "Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.",
       language: {
         name: "en",
         url: "https://pokeapi.co/api/v2/language/9/",
@@ -559,6 +621,7 @@ export const typeResponse: {
     name: string;
     url: string;
   }>;
+  sprites: Record<string, Record<string, { name_icon: string | null; symbol_icon: string | null }>>;
 } = {
   id: 12,
   name: "grass",
@@ -702,6 +765,16 @@ export const typeResponse: {
       url: "https://pokeapi.co/api/v2/move/71/",
     },
   ],
+  sprites: {
+    "generation-ix": {
+      "scarlet-violet": {
+        name_icon:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/12.png",
+        symbol_icon:
+          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/small/12.png",
+      },
+    },
+  },
 };
 
 export const pokedex = {

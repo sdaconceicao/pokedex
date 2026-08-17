@@ -1,10 +1,7 @@
 "use client";
 
+import { Button, Form, Password, TextField } from "@code-x/lago";
 import { useState } from "react";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import Label from "@/components/Label";
-import Password from "@/components/Password";
 import { validateEmail, validatePassword } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 
@@ -89,60 +86,51 @@ export default function RegisterForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.registerForm}>
+    // `validationBehavior="aria"` keeps the browser's native constraint-validation
+    // popups out of the way so `validateForm` above stays the single source of
+    // truth for errors, same as the hand-rolled form before it.
+    <Form onSubmit={handleSubmit} validationBehavior="aria">
       {submitError && <div className={styles.submitError}>{submitError}</div>}
 
-      <div className={styles.formGroup}>
-        <Label htmlFor="reg-email" required>
-          Email
-        </Label>
-        <Input
-          id="reg-email"
-          type="email"
-          value={formData.email}
-          onChange={(e) => handleInputChange("email", e.target.value)}
-          placeholder="Enter your email"
-          autoComplete="email"
-          error={!!errors.email}
-          errorMessage={errors.email}
-          disabled={isLoading}
-        />
-      </div>
+      <TextField
+        type="email"
+        label="Email"
+        isRequired
+        value={formData.email}
+        onChange={(value) => handleInputChange("email", value)}
+        placeholder="Enter your email"
+        autoComplete="email"
+        isInvalid={!!errors.email}
+        errorMessage={errors.email}
+        isDisabled={isLoading}
+      />
 
-      <div className={styles.formGroup}>
-        <Label htmlFor="reg-password" required>
-          Password
-        </Label>
-        <Password
-          id="reg-password"
-          value={formData.password}
-          onChange={(e) => handleInputChange("password", e.target.value)}
-          placeholder="Enter your password"
-          autoComplete="new-password"
-          error={!!errors.password}
-          errorMessage={errors.password}
-          disabled={isLoading}
-        />
-      </div>
+      <Password
+        label="Password"
+        isRequired
+        value={formData.password}
+        onChange={(value) => handleInputChange("password", value)}
+        placeholder="Enter your password"
+        autoComplete="new-password"
+        isInvalid={!!errors.password}
+        errorMessage={errors.password}
+        isDisabled={isLoading}
+      />
 
-      <div className={styles.formGroup}>
-        <Label htmlFor="reg-confirm-password" required>
-          Confirm Password
-        </Label>
-        <Password
-          id="reg-confirm-password"
-          value={formData.confirmPassword}
-          onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-          placeholder="Confirm your password"
-          autoComplete="new-password"
-          error={!!errors.confirmPassword}
-          errorMessage={errors.confirmPassword}
-          disabled={isLoading}
-        />
-      </div>
+      <Password
+        label="Confirm Password"
+        isRequired
+        value={formData.confirmPassword}
+        onChange={(value) => handleInputChange("confirmPassword", value)}
+        placeholder="Confirm your password"
+        autoComplete="new-password"
+        isInvalid={!!errors.confirmPassword}
+        errorMessage={errors.confirmPassword}
+        isDisabled={isLoading}
+      />
 
       <div className={styles.formActions}>
-        <Button type="submit" variant="primary" disabled={isLoading}>
+        <Button type="submit" variant="primary" isDisabled={isLoading}>
           {isLoading ? "Creating Account…" : "Create Account"}
         </Button>
       </div>
@@ -158,6 +146,6 @@ export default function RegisterForm({
           Sign in
         </button>
       </p>
-    </form>
+    </Form>
   );
 }

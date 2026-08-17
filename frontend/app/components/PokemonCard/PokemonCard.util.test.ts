@@ -1,45 +1,6 @@
-import { formatPokemonName, getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";
+import { getPokemonTypeClass, getPrimaryType } from "./PokemonCard.utils";
 
 describe("PokemonCard Utils", () => {
-  describe("formatPokemonName", () => {
-    it("capitalizes first letter of lowercase name", () => {
-      expect(formatPokemonName("bulbasaur")).toBe("Bulbasaur");
-    });
-
-    it("handles already capitalized name", () => {
-      expect(formatPokemonName("Bulbasaur")).toBe("Bulbasaur");
-    });
-
-    it("handles all uppercase name", () => {
-      expect(formatPokemonName("CHARIZARD")).toBe("CHARIZARD");
-    });
-
-    it("handles name with hyphens", () => {
-      expect(formatPokemonName("mr-mime")).toBe("Mr-mime");
-    });
-
-    it("handles single character name", () => {
-      expect(formatPokemonName("a")).toBe("A");
-    });
-
-    it("handles empty string", () => {
-      expect(formatPokemonName("")).toBe("");
-    });
-
-    it("handles name with numbers", () => {
-      expect(formatPokemonName("pikachu123")).toBe("Pikachu123");
-    });
-
-    it("maintains function purity", () => {
-      const input = "bulbasaur";
-      const result1 = formatPokemonName(input);
-      const result2 = formatPokemonName(input);
-
-      expect(result1).toBe(result2);
-      expect(input).toBe("bulbasaur"); // Original unchanged
-    });
-  });
-
   describe("getPokemonTypeClass", () => {
     it("generates correct CSS class for normal type", () => {
       expect(getPokemonTypeClass("normal")).toBe("type-normal");

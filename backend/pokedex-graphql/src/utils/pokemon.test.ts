@@ -1,18 +1,18 @@
-import {
-  PokemonEntity,
-  PokemonAbility,
+import type {
   EvolutionDetail,
+  PokemonAbility,
+  PokemonEntity,
 } from "../datasources/pokemon-api.types";
-import { AbilityLite } from "../types";
+import type { AbilityLite } from "../types";
 import {
+  convertAbilityLiteToAbility,
+  convertPokemonEntityToPokemon,
+  getEvolutionDetail,
+  getIdFromUrl,
   getPokemonAbilitiesLite,
   getPokemonDefaultImageUrl,
-  getPokemonTypes,
   getPokemonStats,
-  convertPokemonEntityToPokemon,
-  convertAbilityLiteToAbility,
-  getIdFromUrl,
-  getEvolutionDetail,
+  getPokemonTypes,
   toPokemonIndex,
 } from "./pokemon";
 
@@ -153,7 +153,7 @@ describe("getPokemonDefaultImageUrl", () => {
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
     expect(result).toBe(
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
     );
   });
 
@@ -193,7 +193,7 @@ describe("getPokemonDefaultImageUrl", () => {
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
     expect(result).toBe(
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/1.png"
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/1.png",
     );
   });
 
@@ -233,7 +233,7 @@ describe("getPokemonDefaultImageUrl", () => {
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
     expect(result).toBe(
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png"
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png",
     );
   });
 
@@ -272,7 +272,7 @@ describe("getPokemonDefaultImageUrl", () => {
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
     expect(result).toBe(
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     );
   });
 
@@ -308,9 +308,7 @@ describe("getPokemonDefaultImageUrl", () => {
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
-    expect(result).toBe(
-      "https://dummyimage.com/96x96/f0f0f0/666666.png&text=bulbasaur"
-    );
+    expect(result).toBe("https://dummyimage.com/96x96/f0f0f0/666666.png&text=bulbasaur");
   });
 
   it("should handle Pokemon name with special characters in placeholder", () => {
@@ -345,9 +343,7 @@ describe("getPokemonDefaultImageUrl", () => {
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
-    expect(result).toBe(
-      "https://dummyimage.com/96x96/f0f0f0/666666.png&text=mr.%20mime"
-    );
+    expect(result).toBe("https://dummyimage.com/96x96/f0f0f0/666666.png&text=mr.%20mime");
   });
 });
 
@@ -603,6 +599,10 @@ describe("convertPokemonEntityToPokemon", () => {
     const mockPokemonEntity: PokemonEntity = {
       id: 1,
       name: "bulbasaur",
+      species: {
+        name: "bulbasaur",
+        url: "https://pokeapi.co/api/v2/pokemon-species/1/",
+      },
       abilities: [
         {
           ability: {
@@ -700,10 +700,11 @@ describe("convertPokemonEntityToPokemon", () => {
 
     expect(result).toEqual({
       id: "1",
+      speciesId: "1",
+      speciesName: "bulbasaur",
       name: "bulbasaur",
       type: ["grass", "poison"],
-      image:
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+      image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
       stats: {
         hp: 45,
         attack: 49,
@@ -735,6 +736,10 @@ describe("convertPokemonEntityToPokemon", () => {
     const mockPokemonEntity: PokemonEntity = {
       id: 999,
       name: "test-pokemon",
+      species: {
+        name: "test-pokemon",
+        url: "https://pokeapi.co/api/v2/pokemon-species/999/",
+      },
       abilities: [],
       types: [],
       stats: [],
@@ -768,6 +773,8 @@ describe("convertPokemonEntityToPokemon", () => {
 
     expect(result).toEqual({
       id: "999",
+      speciesId: "999",
+      speciesName: "test-pokemon",
       name: "test-pokemon",
       type: [],
       image: "https://dummyimage.com/96x96/f0f0f0/666666.png&text=test-pokemon",
@@ -787,6 +794,10 @@ describe("convertPokemonEntityToPokemon", () => {
     const mockPokemonEntity: PokemonEntity = {
       id: 25,
       name: "pikachu",
+      species: {
+        name: "pikachu",
+        url: "https://pokeapi.co/api/v2/pokemon-species/25/",
+      },
       abilities: [],
       types: [],
       stats: [],
@@ -832,8 +843,7 @@ describe("convertAbilityLiteToAbility", () => {
         {
           effect:
             "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
-          short_effect:
-            "Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.",
+          short_effect: "Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.",
           language: {
             name: "en",
             url: "https://pokeapi.co/api/v2/language/9/",
@@ -842,8 +852,7 @@ describe("convertAbilityLiteToAbility", () => {
         {
           effect:
             "Quando questo Pokémon ha 1/3 o meno dei suoi PS massimi, le sue mosse d'attacco infliggono 1,5× più danni normali.",
-          short_effect:
-            "Potenzia le mosse erba per infliggere 1,5× danni a 1/3 PS max o meno.",
+          short_effect: "Potenzia le mosse erba per infliggere 1,5× danni a 1/3 PS max o meno.",
           language: {
             name: "it",
             url: "https://pokeapi.co/api/v2/language/8/",
@@ -892,10 +901,7 @@ describe("convertAbilityLiteToAbility", () => {
       slot: 1,
     };
 
-    const result = convertAbilityLiteToAbility(
-      mockPokemonAbility,
-      mockAbilityLite
-    );
+    const result = convertAbilityLiteToAbility(mockPokemonAbility, mockAbilityLite);
 
     expect(result).toEqual({
       id: "65",
@@ -925,8 +931,7 @@ describe("convertAbilityLiteToAbility", () => {
       ],
       flavor_text_entries: [
         {
-          flavor_text:
-            "This Pokémon's Speed is doubled during strong sunlight.",
+          flavor_text: "This Pokémon's Speed is doubled during strong sunlight.",
           language: {
             name: "en",
             url: "https://pokeapi.co/api/v2/language/9/",
@@ -953,10 +958,7 @@ describe("convertAbilityLiteToAbility", () => {
       slot: 3,
     };
 
-    const result = convertAbilityLiteToAbility(
-      mockPokemonAbility,
-      mockAbilityLite
-    );
+    const result = convertAbilityLiteToAbility(mockPokemonAbility, mockAbilityLite);
 
     expect(result).toEqual({
       id: "66",
@@ -976,8 +978,7 @@ describe("convertAbilityLiteToAbility", () => {
         {
           effect:
             "When this Pokémon has 1/3 or less of its maximum HP, its attacking moves inflict 1.5× as much regular damage.",
-          short_effect:
-            "Strengthens fire moves to inflict 1.5× damage at 1/3 max HP or less.",
+          short_effect: "Strengthens fire moves to inflict 1.5× damage at 1/3 max HP or less.",
           language: {
             name: "en",
             url: "https://pokeapi.co/api/v2/language/9/",
@@ -1014,10 +1015,7 @@ describe("convertAbilityLiteToAbility", () => {
       slot: 1,
     };
 
-    const result = convertAbilityLiteToAbility(
-      mockPokemonAbility,
-      mockAbilityLite
-    );
+    const result = convertAbilityLiteToAbility(mockPokemonAbility, mockAbilityLite);
 
     expect(result).toEqual({
       id: "67",
@@ -1052,10 +1050,7 @@ describe("convertAbilityLiteToAbility", () => {
       slot: 1,
     };
 
-    const result = convertAbilityLiteToAbility(
-      mockPokemonAbility,
-      mockAbilityLite
-    );
+    const result = convertAbilityLiteToAbility(mockPokemonAbility, mockAbilityLite);
 
     expect(result).toEqual({
       id: "68",
@@ -1110,8 +1105,7 @@ describe("convertAbilityLiteToAbility", () => {
           },
         },
         {
-          flavor_text:
-            "La Velocità di questo Pokémon raddoppia durante la pioggia.",
+          flavor_text: "La Velocità di questo Pokémon raddoppia durante la pioggia.",
           language: {
             name: "it",
             url: "https://pokeapi.co/api/v2/language/8/",
@@ -1138,10 +1132,7 @@ describe("convertAbilityLiteToAbility", () => {
       slot: 2,
     };
 
-    const result = convertAbilityLiteToAbility(
-      mockPokemonAbility,
-      mockAbilityLite
-    );
+    const result = convertAbilityLiteToAbility(mockPokemonAbility, mockAbilityLite);
 
     expect(result).toEqual({
       id: "69",
@@ -1175,10 +1166,7 @@ describe("convertAbilityLiteToAbility", () => {
       slot: 1,
     };
 
-    const result = convertAbilityLiteToAbility(
-      mockPokemonAbility,
-      mockAbilityLite
-    );
+    const result = convertAbilityLiteToAbility(mockPokemonAbility, mockAbilityLite);
 
     expect(result.id).toBe("999");
     expect(typeof result.id).toBe("string");
@@ -1206,10 +1194,7 @@ describe("convertAbilityLiteToAbility", () => {
       slot: 5,
     };
 
-    const result = convertAbilityLiteToAbility(
-      mockPokemonAbility,
-      mockAbilityLite
-    );
+    const result = convertAbilityLiteToAbility(mockPokemonAbility, mockAbilityLite);
 
     expect(result.slot).toBe(5);
     expect(typeof result.slot).toBe("number");
@@ -1218,21 +1203,15 @@ describe("convertAbilityLiteToAbility", () => {
 
 describe("getIdFromUrl", () => {
   it("should extract the id from a url with a trailing slash", () => {
-    expect(getIdFromUrl("https://pokeapi.co/api/v2/pokemon-species/1/")).toBe(
-      "1"
-    );
+    expect(getIdFromUrl("https://pokeapi.co/api/v2/pokemon-species/1/")).toBe("1");
   });
 
   it("should extract the id from a url without a trailing slash", () => {
-    expect(getIdFromUrl("https://pokeapi.co/api/v2/pokemon-species/25")).toBe(
-      "25"
-    );
+    expect(getIdFromUrl("https://pokeapi.co/api/v2/pokemon-species/25")).toBe("25");
   });
 
   it("should extract the id from an evolution-chain url", () => {
-    expect(getIdFromUrl("https://pokeapi.co/api/v2/evolution-chain/67/")).toBe(
-      "67"
-    );
+    expect(getIdFromUrl("https://pokeapi.co/api/v2/evolution-chain/67/")).toBe("67");
   });
 
   it("should return an empty string for an empty url", () => {
@@ -1309,7 +1288,7 @@ describe("toPokemonIndex", () => {
       toPokemonIndex({
         name: "bulbasaur",
         url: "https://pokeapi.co/api/v2/pokemon/1/",
-      })
+      }),
     ).toEqual({ id: "1", name: "bulbasaur", number: 1 });
   });
 
@@ -1318,7 +1297,7 @@ describe("toPokemonIndex", () => {
       toPokemonIndex({
         name: "pikachu",
         url: "https://pokeapi.co/api/v2/pokemon-species/25",
-      })
+      }),
     ).toEqual({ id: "25", name: "pikachu", number: 25 });
   });
 
@@ -1329,14 +1308,8 @@ describe("toPokemonIndex", () => {
       { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon/2/" },
     ];
 
-    const sorted = entries
-      .map(toPokemonIndex)
-      .sort((a, b) => a.number - b.number);
+    const sorted = entries.map(toPokemonIndex).sort((a, b) => a.number - b.number);
 
-    expect(sorted.map((p) => p.name)).toEqual([
-      "bulbasaur",
-      "ivysaur",
-      "venusaur",
-    ]);
+    expect(sorted.map((p) => p.name)).toEqual(["bulbasaur", "ivysaur", "venusaur"]);
   });
 });

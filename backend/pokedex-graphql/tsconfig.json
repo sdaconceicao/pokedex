@@ -2,9 +2,9 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "target": "ES2020",
-    "module": "ES2020",
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
@@ -17,21 +17,10 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "lib": ["ES2020", "DOM"],
-
-    "baseUrl": ".",
-    "paths": {
-      "*": ["types/*"]
-    },
-    "typeRoots": ["../node_modules/@types", "src/@types"]
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"]
   },
   "files": ["src/graphql.d.ts"],
   "include": ["src/**/*.ts"],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.test.ts",
-    "**/vitest.setup.ts",
-    "codegen.ts"
-  ]
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/vitest.setup.ts", "codegen.ts"]
 }

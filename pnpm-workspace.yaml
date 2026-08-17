@@ -2,6 +2,11 @@ packages:
   - "backend/*"
   - "frontend"
 
+# Every workspace package lints and formats with the same Biome release. Bump it
+# here and each package picks it up via "@biomejs/biome": "catalog:".
+catalog:
+  "@biomejs/biome": 2.5.6
+
 allowBuilds:
   "@apollo/protobufjs": true
   "@parcel/watcher": true
@@ -22,3 +27,20 @@ packageExtensions:
   "@untitled-ui/icons-react@*":
     dependencies:
       "@babel/runtime": "^7.29.7"
+
+# Security overrides, all sourced from `pnpm audit`. Keys are version-scoped
+# where two majors coexist in the tree: minimatch@3 needs the 1.x line while
+# minimatch@10 needs 5.x, and an unscoped "brace-expansion" key would collapse
+# both onto 1.x, whose CJS export has no named `expand` for minimatch@10.
+overrides:
+  "brace-expansion@1": "^1.1.18"
+  "brace-expansion@5": "^5.0.9"
+  "find-my-way": "^9.6.1"
+  "form-data": "^4.0.6"
+  "js-yaml@4": "^4.3.1"
+  "js-yaml@5": "^5.2.2"
+  "lodash": "^4.18.0"
+  "shell-quote": "^1.8.5"
+
+minimumReleaseAgeExclude:
+  - '@code-x/lago@0.7.0'

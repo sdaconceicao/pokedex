@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import SearchBar from "./SearchBar";
-import styles from "./SearchBar.module.css";
 
 // Mock Next.js navigation hooks
 vi.mock("next/navigation", () => ({
@@ -46,7 +45,6 @@ describe("SearchBar", () => {
 
       const searchButton = screen.getByRole("button", { name: /search/i });
       expect(searchButton).toBeInTheDocument();
-      expect(searchButton).toHaveAttribute("type", "submit");
     });
 
     it("does not render clear button initially", () => {
@@ -101,7 +99,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "charizard");
       await user.click(searchButton);
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=charizard");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=charizard");
     });
 
     it("submits search with trimmed query", async () => {
@@ -116,7 +114,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "  mewtwo  ");
       await user.click(searchButton);
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=mewtwo");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=mewtwo");
     });
 
     it("submits empty search and navigates to home", async () => {
@@ -125,10 +123,8 @@ describe("SearchBar", () => {
 
       render(<SearchBar />);
 
-      const searchInput = screen.getByPlaceholderText("Search Pokemon...");
       const searchButton = screen.getByRole("button", { name: /search/i });
 
-      await user.clear(searchInput);
       await user.click(searchButton);
 
       expect(mockPush).toHaveBeenCalledWith("/");
@@ -160,7 +156,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "bulbasaur");
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=bulbasaur");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=bulbasaur");
     });
   });
 
@@ -271,8 +267,8 @@ describe("SearchBar", () => {
     });
   });
 
-  describe("Form Behavior", () => {
-    it("submits form with search query", async () => {
+  describe("Submit Behavior", () => {
+    it("submits on Enter with the current query", async () => {
       const user = userEvent.setup();
       mockSearchParams.get.mockReturnValue("");
 
@@ -282,10 +278,10 @@ describe("SearchBar", () => {
       await user.type(searchInput, "test");
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=test");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=test");
     });
 
-    it("handles form submission with button click", async () => {
+    it("submits the current query when the search button is clicked", async () => {
       const user = userEvent.setup();
       mockSearchParams.get.mockReturnValue("");
 
@@ -297,80 +293,17 @@ describe("SearchBar", () => {
       await user.type(searchInput, "test");
       await user.click(searchButton);
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=test");
-    });
-  });
-
-  describe("CSS Module Classes", () => {
-    it("applies correct CSS module classes to container", () => {
-      mockSearchParams.get.mockReturnValue("");
-
-      render(<SearchBar />);
-
-      const searchBar = screen
-        .getByPlaceholderText("Search Pokemon...")
-        .closest(`.${styles.searchBar}`);
-      expect(searchBar).toBeInTheDocument();
-    });
-
-    it("applies correct CSS module classes to form", () => {
-      mockSearchParams.get.mockReturnValue("");
-
-      render(<SearchBar />);
-
-      const form = screen.getByPlaceholderText("Search Pokemon...").closest("form");
-      expect(form).toHaveClass(styles.searchForm);
-    });
-
-    it("applies correct CSS module classes to search input", () => {
-      mockSearchParams.get.mockReturnValue("");
-
-      render(<SearchBar />);
-
-      const searchInput = screen.getByPlaceholderText("Search Pokemon...");
-      expect(searchInput).toHaveClass(styles.searchInput);
-    });
-
-    it("applies correct CSS module classes to search button", () => {
-      mockSearchParams.get.mockReturnValue("");
-
-      render(<SearchBar />);
-
-      const searchButton = screen.getByRole("button", { name: /search/i });
-      expect(searchButton).toHaveClass(styles.searchButton);
-    });
-
-    it("applies correct CSS module classes to clear button", async () => {
-      const user = userEvent.setup();
-      mockSearchParams.get.mockReturnValue("");
-
-      render(<SearchBar />);
-
-      const searchInput = screen.getByPlaceholderText("Search Pokemon...");
-      await user.type(searchInput, "test");
-
-      const clearButton = screen.getByRole("button", { name: /clear search/i });
-      expect(clearButton).toHaveClass(styles.clearButton);
+      expect(mockPush).toHaveBeenCalledWith("/search?q=test");
     });
   });
 
   describe("Accessibility", () => {
-    it("has proper form element", () => {
+    it("has an accessible name", () => {
       mockSearchParams.get.mockReturnValue("");
 
       render(<SearchBar />);
 
-      const form = screen.getByPlaceholderText("Search Pokemon...").closest("form");
-      expect(form).toBeInTheDocument();
-    });
-
-    it("has proper input role", () => {
-      mockSearchParams.get.mockReturnValue("");
-
-      render(<SearchBar />);
-
-      const searchInput = screen.getByRole("textbox");
-      expect(searchInput).toBeInTheDocument();
+      expect(screen.getByRole("searchbox", { name: /search pokemon/i })).toBeInTheDocument();
     });
 
     it("has proper button roles", () => {
@@ -382,21 +315,21 @@ describe("SearchBar", () => {
       expect(searchButton).toBeInTheDocument();
     });
 
-    it("has proper aria-labels for icons", async () => {
+    it("has proper aria-labels on its controls", async () => {
       const user = userEvent.setup();
       mockSearchParams.get.mockReturnValue("");
 
       render(<SearchBar />);
 
-      const searchIcon = screen.getByLabelText("Search");
-      expect(searchIcon).toBeInTheDocument();
+      const searchButton = screen.getByLabelText("Search");
+      expect(searchButton).toBeInTheDocument();
 
       // Type something to show clear button
       const searchInput = screen.getByPlaceholderText("Search Pokemon...");
       await user.type(searchInput, "test");
 
-      const clearIcon = screen.getByLabelText("Clear search");
-      expect(clearIcon).toBeInTheDocument();
+      const clearButton = screen.getByLabelText("Clear search");
+      expect(clearButton).toBeInTheDocument();
     });
 
     it("has proper placeholder text", () => {
@@ -422,7 +355,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, "12345");
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith("/?q=12345");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=12345");
     });
 
     it("handles search query with mixed content and URL encoding", async () => {
@@ -437,7 +370,7 @@ describe("SearchBar", () => {
       await user.keyboard("{Enter}");
 
       // URL encoding will convert # to %23 and spaces to +
-      expect(mockPush).toHaveBeenCalledWith("/?q=Pikachu+%23025+Electric");
+      expect(mockPush).toHaveBeenCalledWith("/search?q=Pikachu+%23025+Electric");
     });
 
     it("handles rapid input changes", async () => {
@@ -471,7 +404,7 @@ describe("SearchBar", () => {
       await user.type(searchInput, reasonableQuery);
       await user.keyboard("{Enter}");
 
-      expect(mockPush).toHaveBeenCalledWith(`/?q=${reasonableQuery}`);
+      expect(mockPush).toHaveBeenCalledWith(`/search?q=${reasonableQuery}`);
     });
   });
 

@@ -1,4 +1,4 @@
-import { UUID } from 'crypto';
+import { UUID } from 'node:crypto';
 
 export type AccessTokenPayload = {
   userId: UUID;

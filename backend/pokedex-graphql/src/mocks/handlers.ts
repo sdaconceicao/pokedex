@@ -1,18 +1,29 @@
-import { http, HttpResponse } from "msw";
-import { URL } from "url";
+import { URL } from "node:url";
+import { HttpResponse, http } from "msw";
+import { FORM_ID_THRESHOLD } from "../utils/pokemon.js";
 import {
-  pokemonList,
-  pokemonEntity,
-  pokemonSpecies,
+  charizardMegaXEntity,
   evolutionChain,
-  pokemonAbility,
-  typeResponse,
+  pikachuGmaxEntity,
   pokedex,
-  region,
   pokedexListResponse,
+  pokemonAbility,
+  pokemonEntity,
+  pokemonFormEntity,
+  pokemonList,
+  pokemonSpecies,
+  pokemonSpeciesList,
+  region,
   regionListResponse,
   typeListResponse,
+  typeResponse,
 } from "./pokemon.js";
+
+const pokemonById: Record<string, unknown> = {
+  "10034": charizardMegaXEntity,
+  "10186": pokemonFormEntity,
+  "10199": pikachuGmaxEntity,
+};
 
 export const handlers = [
   // Pokemon list endpoint - used by loadPokemonIndex()
@@ -29,19 +40,25 @@ export const handlers = [
     return HttpResponse.json(pokemonList);
   }),
 
+  http.get("https://pokeapi.co/api/v2/pokemon-species", () => {
+    return HttpResponse.json(pokemonSpeciesList);
+  }),
+
   // Pokemon detail endpoint - used by getPokemon()
-  http.get("https://pokeapi.co/api/v2/pokemon/:id", () => {
-    // Return mock data for any Pokemon ID
-    return HttpResponse.json(pokemonEntity);
+  http.get("https://pokeapi.co/api/v2/pokemon/:id", ({ params }) => {
+    return HttpResponse.json(pokemonById[String(params.id)] ?? pokemonEntity);
   }),
 
   // Pokemon species endpoint - used by getPokemonSpecies()
-  http.get("https://pokeapi.co/api/v2/pokemon-species/:id", () => {
-    // Return mock data for any species ID
+  http.get("https://pokeapi.co/api/v2/pokemon-species/:id", ({ params }) => {
+    if (Number(params.id) >= FORM_ID_THRESHOLD) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
     return HttpResponse.json(pokemonSpecies);
   }),
 
-  // Evolution chain endpoint - used by getEvolutionForPokemon()
+  // Evolution chain endpoint - used by getEvolutionForSpecies()
   http.get("https://pokeapi.co/api/v2/evolution-chain/:id", () => {
     // Return mock data for any evolution chain ID
     return HttpResponse.json(evolutionChain);

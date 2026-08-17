@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.4.0...pokedex-frontend-v0.5.0) (2026-08-17)
+
+
+### Features
+
+* Add Filter query ([#115](https://github.com/sdaconceicao/pokedex/issues/115)) ([f983f53](https://github.com/sdaconceicao/pokedex/commit/f983f5354ef7f2c6ca9816a48e403d68b9e7ec88))
+* Add pokemonForms query and related types ([#118](https://github.com/sdaconceicao/pokedex/issues/118)) ([9f81cfb](https://github.com/sdaconceicao/pokedex/commit/9f81cfb87d54930e05967f6d144533553427b21e))
+* Feature update ([#119](https://github.com/sdaconceicao/pokedex/issues/119)) ([d540fbc](https://github.com/sdaconceicao/pokedex/commit/d540fbcd601ffc27052c18711fafa557701280c4))
+* Lago integration ([#116](https://github.com/sdaconceicao/pokedex/issues/116)) ([a6c9732](https://github.com/sdaconceicao/pokedex/commit/a6c973234ef7183d170c847be81755630ea87b60))
+* Multifaceted search filters with ordering ([#117](https://github.com/sdaconceicao/pokedex/issues/117)) ([62fd998](https://github.com/sdaconceicao/pokedex/commit/62fd99894e6e588228cbffc2c477be1eeec302d2))
+* Region page ([#108](https://github.com/sdaconceicao/pokedex/issues/108)) ([5628d12](https://github.com/sdaconceicao/pokedex/commit/5628d12e2de2de24a5be35a7e5ea351631834bb7))
+* Type page ([#114](https://github.com/sdaconceicao/pokedex/issues/114)) ([95f6f2d](https://github.com/sdaconceicao/pokedex/commit/95f6f2db40c4faf88c78a111ae82a65c91c37604))
+* Updated main layout ([#106](https://github.com/sdaconceicao/pokedex/issues/106)) ([f397792](https://github.com/sdaconceicao/pokedex/commit/f397792f2623d3ae3539c1d5902e9b39fe223363))
+
 ## [0.4.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.3.0...pokedex-frontend-v0.4.0) (2026-08-02)
 
 
