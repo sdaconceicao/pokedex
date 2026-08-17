@@ -1,12 +1,15 @@
 "use client";
 
 import { Heading } from "@code-x/lago";
+import { useCallback } from "react";
 import CountPill from "@/components/CountPill";
 import HeroToolbar from "@/components/HeroToolbar";
+import SortToggle from "@/components/SortToggle";
 import StatTile from "@/components/StatTile";
-import { useScrolledPast } from "@/hooks";
+import { useScrolledPast, useSortParam } from "@/hooks";
+import { buildBrowseUrl } from "@/lib/browseUrls";
 import { formatGeneration } from "@/lib/string";
-import type { RegionDetail } from "@/types";
+import type { PokemonSort, RegionDetail } from "@/types";
 import RegionFacts from "../RegionFacts/RegionFacts";
 import styles from "./RegionHero.module.css";
 
@@ -20,6 +23,12 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
   const generation = formatGeneration(region.generation);
   const { ref, scrolledPast } = useScrolledPast<HTMLElement>();
 
+  const buildSortUrl = useCallback(
+    (next: PokemonSort) => buildBrowseUrl("region", region.name, { page: 1, sort: next }),
+    [region.name],
+  );
+  const { sort, setSort } = useSortParam(buildSortUrl);
+
   return (
     <>
       {/* Ahead of the hero in the flow, so it is already pinned to the top of
@@ -32,8 +41,17 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
           titleSide="left"
           aside={
             <>
-              <CountPill value={region.pokemonCount} label="Pokemon" />
-              <CountPill value={region.locations.length} label="Locations" />
+              <CountPill
+                value={region.pokemonCount}
+                label="Pokemon"
+                className={styles.toolbarCount}
+              />
+              <CountPill
+                value={region.locations.length}
+                label="Locations"
+                className={styles.toolbarCount}
+              />
+              <SortToggle value={sort} onChange={setSort} />
             </>
           }
         />

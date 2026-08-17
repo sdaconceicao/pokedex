@@ -8,6 +8,11 @@ vi.mock("next/image", () => ({
   },
 }));
 
+// useSortParam reads the sort out of the URL via this hook
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 const fire: TypeDetail = {
   id: "10",
   name: "fire",

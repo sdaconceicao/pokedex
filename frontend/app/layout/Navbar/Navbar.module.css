@@ -8,17 +8,26 @@
   overflow-y: auto;
 }
 
-/* Boosted past a plain `.section`: lago's own Disclosure root carries a
-   fixed 200px width (`._disclosure_*`, real specificity, not the
-   zero-specificity `:where()` colour rules), which would otherwise clip the
-   sidebar's actual width. */
+.group + .group {
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.groupTitle {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--foreground);
+}
+
 .navbar .section {
   width: 100%;
 }
 
-/* Same tie-breaking concern for the header: it's now a lago `Button` (on
-   Disclosure's `trigger` slot) rather than a native `<button>`, and lago's
-   own button base rule sits at the same one-class specificity. */
 .section .sectionHeader {
   display: flex;
   align-items: center;

@@ -1,0 +1,51 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.group:global(.segmented-control) {
+  background: color-mix(in srgb, currentColor 16%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  box-shadow: none;
+}
+
+.group :global(.segmented-control-item) {
+  color: color-mix(in srgb, currentColor 78%, transparent);
+  min-width: 1.875rem;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.group :global(.react-aria-SelectionIndicator) {
+  background: color-mix(in srgb, currentColor 28%, transparent);
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .toggle {
+    gap: 0.3125rem;
+  }
+
+  .group :global(.segmented-control-item) {
+    min-width: 1.5rem;
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .toggle {
+    gap: 0.25rem;
+  }
+
+  .group :global(.segmented-control-item) {
+    min-width: 1.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+}

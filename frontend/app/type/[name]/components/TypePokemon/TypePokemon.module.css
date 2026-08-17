@@ -1,25 +1,3 @@
 .container {
   width: 100%;
 }
-
-/* Same accented heading the results list uses on the home page */
-.heading {
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 1.5rem;
-  padding-left: 0.875rem;
-  position: relative;
-  scroll-margin-top: 1rem;
-}
-
-.heading::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.2em;
-  bottom: 0.2em;
-  width: 4px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, var(--layout-primary-background), #f08030);
-}

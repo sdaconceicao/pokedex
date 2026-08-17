@@ -141,20 +141,6 @@ export class PokemonAPI extends RESTDataSource {
     );
   }
 
-  // Fast partial string search on name
-  getPokemonByName(
-    query: string,
-    offset: number = 0,
-    limit: number = 20,
-  ): { pokemon: PokemonIndex[]; total: number } {
-    const allMatches = this.searchPokemonIndex(query);
-
-    return {
-      pokemon: allMatches.slice(offset, offset + limit),
-      total: allMatches.length,
-    };
-  }
-
   getPokemonByPokedex(pokedex: string): Promise<PokemonIndex[]> {
     logger.info(`Fetching Pokemon from pokedex: ${pokedex}`);
     return this.get<Pokedex>(`pokedex/${pokedex}`)

@@ -121,3 +121,11 @@
     padding: 1rem 1.5rem 1.25rem;
   }
 }
+
+/* The toolbar's aside holds two counts plus the sort select; below this the
+   bar doesn't have room for all three, so the counts give way to the select. */
+@media (max-width: 640px) {
+  .toolbarCount {
+    display: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { BarChart01, FilterFunnel01, SearchLg, Stars02 } from "@untitled-ui/icons-react";
-import type { FeatureTileAccent } from "@/layout/HomePageLayout/components/FeatureTile";
+import type { FeatureTileAccent } from "@/components/FeatureTile";
 
 export const FEATURES: Array<{
   icon: React.ReactNode;
