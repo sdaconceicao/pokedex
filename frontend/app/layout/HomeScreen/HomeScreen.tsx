@@ -18,9 +18,7 @@ interface HomeScreenProps {
   types: PokemonType[];
 }
 
-export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
-  types,
-}) => {
+export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ types }) => {
   const { isAuthenticated } = useIsAuthenticated();
   const { openSignUp } = useAuthModal();
   const typesSectionRef = useRef<HTMLElement>(null);
@@ -50,57 +48,31 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
           <span className={styles.heroTitleAccent}>The Poképendium.</span>
         </Heading>
         <p className={styles.heroSubtitle}>
-          Search for every Pokémon by name, browse by type, region, or regional
-          Pokedex, and see there full stats, abilities, and special forms.
+          Search for every Pokémon by name, browse by type, region, or regional Pokedex, and see
+          there full stats, abilities, and special forms.
         </p>
         <div className={styles.heroActions}>
           {isAuthenticated ? (
             <Button size="lg" onPress={scrollToTypes}>
-              <Compass01
-                width={18}
-                height={18}
-                className={styles.ctaIcon}
-                aria-hidden="true"
-              />
+              <Compass01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
               Start exploring
             </Button>
           ) : (
             <Button size="lg" onPress={openSignUp}>
-              <UserPlus01
-                width={18}
-                height={18}
-                className={styles.ctaIcon}
-                aria-hidden="true"
-              />
+              <UserPlus01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
               Sign Up today
             </Button>
           )}
-          <button
-            type="button"
-            className={styles.heroSecondaryCta}
-            onClick={scrollToUpdates}
-          >
-            <Bell01
-              width={18}
-              height={18}
-              className={styles.ctaIcon}
-              aria-hidden="true"
-            />
+          <button type="button" className={styles.heroSecondaryCta} onClick={scrollToUpdates}>
+            <Bell01 width={18} height={18} className={styles.ctaIcon} aria-hidden="true" />
             What&apos;s new
           </button>
         </div>
       </section>
 
-      <section
-        className={styles.section}
-        aria-labelledby="home-features-heading"
-      >
+      <section className={styles.section} aria-labelledby="home-features-heading">
         <p className={styles.sectionEyebrow}>How it works</p>
-        <Heading
-          level={2}
-          id="home-features-heading"
-          className={styles.sectionTitle}
-        >
+        <Heading level={2} id="home-features-heading" className={styles.sectionTitle}>
           Find your Pokémon
         </Heading>
         <ul className={styles.featureGrid}>
@@ -116,11 +88,7 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
         aria-labelledby="home-types-heading"
       >
         <p className={styles.sectionEyebrow}>Start exploring</p>
-        <Heading
-          level={2}
-          id="home-types-heading"
-          className={styles.sectionTitle}
-        >
+        <Heading level={2} id="home-types-heading" className={styles.sectionTitle}>
           Start with a type
         </Heading>
         <ul className={styles.typeGrid}>
@@ -144,11 +112,7 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
         aria-labelledby="home-updates-heading"
       >
         <p className={styles.sectionEyebrow}>What&apos;s new</p>
-        <Heading
-          level={2}
-          id="home-updates-heading"
-          className={styles.sectionTitle}
-        >
+        <Heading level={2} id="home-updates-heading" className={styles.sectionTitle}>
           Latest updates
         </Heading>
         <ul className={styles.updateList}>
@@ -163,12 +127,7 @@ export const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({
                     {update.title}
                   </Heading>
                   {update.tags?.map((tag) => (
-                    <span
-                      key={tag}
-                      className={`${styles.updateTag} ${
-                        styles[`updateTag${tag}`]
-                      }`}
-                    >
+                    <span key={tag} className={`${styles.updateTag} ${styles[`updateTag${tag}`]}`}>
                       {tag}
                     </span>
                   ))}
