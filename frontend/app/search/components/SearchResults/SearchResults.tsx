@@ -34,7 +34,8 @@ const ITEMS_PER_PAGE = 20;
  * one per facet.
  */
 export default function SearchResults({ filters }: SearchResultsProps) {
-  const { ref: headingRef, scrolledPast } = useScrolledPast<HTMLHeadingElement>();
+  const { ref: headingRef, scrolledPast } =
+    useScrolledPast<HTMLHeadingElement>();
   const searchParams = useSearchParams();
 
   // The page lives in the URL rather than in state, so it survives a reload and
@@ -48,7 +49,7 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   // this value everywhere below, never `filters.sort`.
   const buildSortUrl = useCallback(
     (next: PokemonSort) => buildSearchUrl({ ...filters, page: 1, sort: next }),
-    [filters],
+    [filters]
   );
   const { sort, setSort } = useSortParam(buildSortUrl);
 
@@ -57,7 +58,12 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   const { loading, data, previousData } = useQuery<{
     pokemonFilter: { pokemon: Pokemon[]; total: number };
   }>(FILTER_POKEMON, {
-    variables: { filter, limit: ITEMS_PER_PAGE, offset: (page - 1) * ITEMS_PER_PAGE, sort },
+    variables: {
+      filter,
+      limit: ITEMS_PER_PAGE,
+      offset: (page - 1) * ITEMS_PER_PAGE,
+      sort,
+    },
   });
 
   // A page change swaps the variables, which empties `data` until the next page
@@ -72,7 +78,11 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   useEffect(() => {
     const totalPages = getTotalPages(total, ITEMS_PER_PAGE);
     if (total > 0 && page > totalPages) {
-      window.history.replaceState(null, "", buildSearchUrl({ ...filters, page: totalPages, sort }));
+      window.history.replaceState(
+        null,
+        "",
+        buildSearchUrl({ ...filters, page: totalPages, sort })
+      );
     }
   }, [total, page, filters, sort]);
 
@@ -82,9 +92,13 @@ export default function SearchResults({ filters }: SearchResultsProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildSearchUrl({ ...filters, page: nextPage, sort }));
+      window.history.pushState(
+        null,
+        "",
+        buildSearchUrl({ ...filters, page: nextPage, sort })
+      );
     },
-    [filters, sort, headingRef],
+    [filters, sort, headingRef]
   );
 
   return (
@@ -108,10 +122,7 @@ export default function SearchResults({ filters }: SearchResultsProps) {
         ref={headingRef}
       />
 
-      {/* Only the first load has nothing to show. Keeping the previous grid up
-          while the next one lands also keeps the scroll position: tearing the
-          cards out mid-frame resets the shell's scroller to the top, which
-          would drop the sticky toolbar out from under a sort change. */}
+      {/* Keeping the previous grid up while the next one lands also keeps the scroll position */}
       {loading && !results ? (
         <PokemonListSkeleton count={ITEMS_PER_PAGE} />
       ) : (

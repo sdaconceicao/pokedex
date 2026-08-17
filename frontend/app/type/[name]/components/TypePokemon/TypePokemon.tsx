@@ -29,8 +29,9 @@ export default function TypePokemon({ type }: TypePokemonProps) {
   const page = parsePage(searchParams.get("page"));
 
   const buildSortUrl = useCallback(
-    (next: PokemonSort) => buildBrowseUrl("type", type, { page: 1, sort: next }),
-    [type],
+    (next: PokemonSort) =>
+      buildBrowseUrl("type", type, { page: 1, sort: next }),
+    [type]
   );
   const { sort, setSort } = useSortParam(buildSortUrl);
 
@@ -56,14 +57,19 @@ export default function TypePokemon({ type }: TypePokemonProps) {
   const handlePageChange = useCallback(
     (nextPage: number) => {
       headingRef.current?.scrollIntoView({ behavior: "smooth" });
-      window.history.pushState(null, "", buildBrowseUrl("type", type, { page: nextPage, sort }));
+      window.history.pushState(
+        null,
+        "",
+        buildBrowseUrl("type", type, { page: nextPage, sort })
+      );
     },
-    [type, sort],
+    [type, sort]
   );
 
   const getPokemonHref = useCallback(
-    (pokemon: Pokemon) => buildBrowseUrl("type", type, { page, sort, pokemonId: pokemon.id }),
-    [type, page, sort],
+    (pokemon: Pokemon) =>
+      buildBrowseUrl("type", type, { page, sort, pokemonId: pokemon.id }),
+    [type, page, sort]
   );
 
   return (
@@ -75,10 +81,14 @@ export default function TypePokemon({ type }: TypePokemonProps) {
         ref={headingRef}
       />
 
-      {loading ? (
+      {/* Keeping the previous grid up while the next one lands also keeps the scroll position */}
+      {loading && !results ? (
         <PokemonListSkeleton count={ITEMS_PER_PAGE} />
       ) : (
-        <PokemonList pokemon={results?.pokemon ?? []} getHref={getPokemonHref} />
+        <PokemonList
+          pokemon={results?.pokemon ?? []}
+          getHref={getPokemonHref}
+        />
       )}
 
       <Pagination
