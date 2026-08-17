@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.2.1...pokedex-rest-v0.3.0) (2026-08-17)
+
+
+### Features
+
+* Lago integration ([#116](https://github.com/sdaconceicao/pokedex/issues/116)) ([a6c9732](https://github.com/sdaconceicao/pokedex/commit/a6c973234ef7183d170c847be81755630ea87b60))
+* Region page ([#108](https://github.com/sdaconceicao/pokedex/issues/108)) ([5628d12](https://github.com/sdaconceicao/pokedex/commit/5628d12e2de2de24a5be35a7e5ea351631834bb7))
+* Type page ([#114](https://github.com/sdaconceicao/pokedex/issues/114)) ([95f6f2d](https://github.com/sdaconceicao/pokedex/commit/95f6f2db40c4faf88c78a111ae82a65c91c37604))
+
 ## [0.2.1](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.2.0...pokedex-rest-v0.2.1) (2026-08-03)
 
 
