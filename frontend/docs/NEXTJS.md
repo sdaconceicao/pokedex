@@ -1,9 +1,3 @@
----
-description: Next.js Standards
-globs: **/*.tsx
-alwaysApply: false
----
-
 # Next.js Development Standards
 
 ## Import Strategy
