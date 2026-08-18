@@ -142,10 +142,12 @@ export const resolvers: Resolvers = {
       { dataSources },
     ) => {
       logger.info(`Resolving pokemonSearch query: "${query}" with limit: ${limit}`);
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       try {
         const results = sortResults(dataSources.pokemonAPI.searchPokemonIndex(query), sort);
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         const pokemon = await Promise.all(
           limitedResults.map(({ id }) => dataSources.pokemonAPI.getPokemon(id)),
@@ -153,7 +155,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonSearch resolved ${pokemon.length} Pokemon`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -167,6 +169,8 @@ export const resolvers: Resolvers = {
       { dataSources },
     ) => {
       logger.info(`Resolving pokemonForms query: "${query ?? ""}" with limit: ${limit}`);
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       try {
         const { pokemonAPI } = dataSources;
         const results = sortResults(
@@ -174,7 +178,7 @@ export const resolvers: Resolvers = {
           sort,
         );
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         const pokemon = await Promise.all(
           limitedResults.map(({ id }) => pokemonAPI.getPokemon(id)),
@@ -182,7 +186,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonForms resolved ${pokemon.length} of ${total} forms`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -196,15 +200,17 @@ export const resolvers: Resolvers = {
       { dataSources },
     ) => {
       logger.info(`Resolving pokemonByType query: type=${type}, limit=${limit}, offset=${offset}`);
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       if (!type) {
         logger.info("No type specified, returning empty result");
-        return { total: 0, offset, pokemon: [] };
+        return { total: 0, offset: resolvedOffset, pokemon: [] };
       }
 
       try {
         const results = sortResults(await dataSources.pokemonAPI.getPokemonByType(type), sort);
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         logger.info(`Fetching ${limitedResults.length} Pokemon details for type ${type}`);
 
@@ -224,7 +230,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonByType resolved ${pokemon.length} Pokemon for type ${type}`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -240,9 +246,11 @@ export const resolvers: Resolvers = {
       logger.info(
         `Resolving pokemonByPokedex query: pokedex=${pokedex}, limit=${limit}, offset=${offset}`,
       );
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       if (!pokedex) {
         logger.info("No pokedex specified, returning empty result");
-        return { total: 0, offset, pokemon: [] };
+        return { total: 0, offset: resolvedOffset, pokemon: [] };
       }
 
       try {
@@ -251,7 +259,7 @@ export const resolvers: Resolvers = {
           sort,
         );
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         logger.info(`Fetching ${limitedResults.length} Pokemon details for pokedex ${pokedex}`);
 
@@ -271,7 +279,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonByPokedex resolved ${pokemon.length} Pokemon for pokedex ${pokedex}`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -288,15 +296,17 @@ export const resolvers: Resolvers = {
       logger.info(
         `Resolving pokemonByRegion query: region=${region}, limit=${limit}, offset=${offset}`,
       );
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       if (!region) {
         logger.info("No region specified, returning empty result");
-        return { total: 0, offset, pokemon: [] };
+        return { total: 0, offset: resolvedOffset, pokemon: [] };
       }
 
       try {
         const results = sortResults(await dataSources.pokemonAPI.getPokemonByRegion(region), sort);
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         logger.info(`Fetching ${limitedResults.length} Pokemon details for region ${region}`);
 
@@ -316,7 +326,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonByRegion resolved ${pokemon.length} Pokemon for region ${region}`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -333,6 +343,8 @@ export const resolvers: Resolvers = {
       logger.info(
         `Resolving pokemonFilter query: ${JSON.stringify(filter)}, limit=${limit}, offset=${offset}`,
       );
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
 
       try {
         const facets = await Promise.all(resolveFacets(context, filter));
@@ -346,7 +358,7 @@ export const resolvers: Resolvers = {
         );
 
         const total = matches.length;
-        const page = getPaginatedResults(matches, limit, offset);
+        const page = getPaginatedResults(matches, resolvedLimit, resolvedOffset);
 
         logger.info(`pokemonFilter matched ${total} Pokemon, hydrating ${page.length}`);
 
@@ -356,7 +368,7 @@ export const resolvers: Resolvers = {
           page.map(({ id }) => context.dataSources.pokemonAPI.getPokemon(id)),
         );
 
-        return { total, offset, pokemon };
+        return { total, offset: resolvedOffset, pokemon };
       } catch (error) {
         logger.error("Error resolving pokemonFilter:", error);
         throw error;

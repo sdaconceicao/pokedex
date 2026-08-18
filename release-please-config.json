@@ -6,7 +6,9 @@
   "packages": {
     "backend/pokedex-graphql": {},
     "backend/pokedex-rest": {},
-    "frontend": {}
+    "frontend": {
+      "component": "pokedex-frontend"
+    }
   },
   "changelog-sections": [
     { "type": "feat", "section": "Features" },
