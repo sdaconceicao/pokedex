@@ -1,5 +1,47 @@
 # Changelog
 
+## [0.6.0](https://github.com/sdaconceicao/pokependium/compare/pokependium-frontend-v0.5.0...pokependium-frontend-v0.6.0) (2026-08-18)
+
+
+### Features
+
+* Add Filter query ([#115](https://github.com/sdaconceicao/pokependium/issues/115)) ([f983f53](https://github.com/sdaconceicao/pokependium/commit/f983f5354ef7f2c6ca9816a48e403d68b9e7ec88))
+* Add pokemonForms query and related types ([#118](https://github.com/sdaconceicao/pokependium/issues/118)) ([9f81cfb](https://github.com/sdaconceicao/pokependium/commit/9f81cfb87d54930e05967f6d144533553427b21e))
+* Added attrs for pagination ([2535f65](https://github.com/sdaconceicao/pokependium/commit/2535f6539b17052aed62914000ccf77f0cea8012))
+* Added Evolution chains ([#78](https://github.com/sdaconceicao/pokependium/issues/78)) ([2e4fea5](https://github.com/sdaconceicao/pokependium/commit/2e4fea5a3c44d25ecf9ea1b8b2443f6f17203af2))
+* Added pagination to pokemon lists ([2896824](https://github.com/sdaconceicao/pokependium/commit/2896824a7f45c345dd3108cb849fb5d1051f85f3))
+* Added search with pagination ([83c5f21](https://github.com/sdaconceicao/pokependium/commit/83c5f2179f120a9dacedaa1a588116c208862cb4))
+* Added skeletons and suspense ([6f272f3](https://github.com/sdaconceicao/pokependium/commit/6f272f35430d0638f5a311c75a672a01db05d6d1))
+* Added special section ([656c486](https://github.com/sdaconceicao/pokependium/commit/656c4863e9db88cf5fe0a9f9d70b77b1b14400a0))
+* Added type svgs ([#31](https://github.com/sdaconceicao/pokependium/issues/31)) ([7aac9ee](https://github.com/sdaconceicao/pokependium/commit/7aac9eeccf086ae18ea2b7574964b44af0ea4707))
+* Collapsible Navbar with multiple sections ([dfe21c5](https://github.com/sdaconceicao/pokependium/commit/dfe21c5779552ab5104bf25225e99e647d4868bd))
+* Feature update ([#119](https://github.com/sdaconceicao/pokependium/issues/119)) ([d540fbc](https://github.com/sdaconceicao/pokependium/commit/d540fbcd601ffc27052c18711fafa557701280c4))
+* Initial Nextjs app setup, retrieving pokemon by type ([b9607a9](https://github.com/sdaconceicao/pokependium/commit/b9607a9dbe365bacc1ef5651906a347a6a3ba8eb))
+* Lago integration ([#116](https://github.com/sdaconceicao/pokependium/issues/116)) ([a6c9732](https://github.com/sdaconceicao/pokependium/commit/a6c973234ef7183d170c847be81755630ea87b60))
+* Login/Register/Logout workflows ([#13](https://github.com/sdaconceicao/pokependium/issues/13)) ([59d5582](https://github.com/sdaconceicao/pokependium/commit/59d5582f364cb83d2c663a89a95af5aae7ab2553))
+* Multifaceted search filters with ordering ([#117](https://github.com/sdaconceicao/pokependium/issues/117)) ([62fd998](https://github.com/sdaconceicao/pokependium/commit/62fd99894e6e588228cbffc2c477be1eeec302d2))
+* pokedex query and search option ([7a26ebf](https://github.com/sdaconceicao/pokependium/commit/7a26ebfec42ab4280830ceb7622d7dbe5458e2ab))
+* Pokemon View Page ([#1](https://github.com/sdaconceicao/pokependium/issues/1)) ([bc2191b](https://github.com/sdaconceicao/pokependium/commit/bc2191b91e501e9e60e1169e59e2d61b643b405e))
+* Region page ([#108](https://github.com/sdaconceicao/pokependium/issues/108)) ([5628d12](https://github.com/sdaconceicao/pokependium/commit/5628d12e2de2de24a5be35a7e5ea351631834bb7))
+* Search by region ([12687c9](https://github.com/sdaconceicao/pokependium/commit/12687c9036ca25316d00280e743afc98d434474e))
+* Setup Frontend Vercel ([#70](https://github.com/sdaconceicao/pokependium/issues/70)) ([8d3f7e2](https://github.com/sdaconceicao/pokependium/commit/8d3f7e23e3d4e894f3bb7572c7afdc75f1d14f73))
+* Type page ([#114](https://github.com/sdaconceicao/pokependium/issues/114)) ([95f6f2d](https://github.com/sdaconceicao/pokependium/commit/95f6f2db40c4faf88c78a111ae82a65c91c37604))
+* Updated homepage ([#76](https://github.com/sdaconceicao/pokependium/issues/76)) ([59394c8](https://github.com/sdaconceicao/pokependium/commit/59394c81f8493dd8322d24518e4c1b6d80e03f33))
+* Updated main layout ([#106](https://github.com/sdaconceicao/pokependium/issues/106)) ([f397792](https://github.com/sdaconceicao/pokependium/commit/f397792f2623d3ae3539c1d5902e9b39fe223363))
+* Updated to use nextjs/image ([abf2cfd](https://github.com/sdaconceicao/pokependium/commit/abf2cfd1cc8c1bd474215c2e75cb5046d4128385))
+* Updated ux / branding ([#56](https://github.com/sdaconceicao/pokependium/issues/56)) ([71e991e](https://github.com/sdaconceicao/pokependium/commit/71e991ea59e0c6c2c9ca39bf4d398e41018d3300))
+* Updated UX / layout ([#34](https://github.com/sdaconceicao/pokependium/issues/34)) ([291c940](https://github.com/sdaconceicao/pokependium/commit/291c94048d8c86131b74c625a719e4003d95ff52))
+
+
+### Bug Fixes
+
+* Corrected skeleton styling ([731af02](https://github.com/sdaconceicao/pokependium/commit/731af021f0d9870b528889066364fb9d1fa647b0))
+* Exclude empty categories from navbar ([#20](https://github.com/sdaconceicao/pokependium/issues/20)) ([a248aa3](https://github.com/sdaconceicao/pokependium/commit/a248aa35cb0bbcf1a770909f800f76d8ea8f7584))
+* Fixing vercel build for pokdex-rest ([#66](https://github.com/sdaconceicao/pokependium/issues/66)) ([5c41ce0](https://github.com/sdaconceicao/pokependium/commit/5c41ce0f52ab559e0d24170a534f60cbb16f225d))
+* improved text color ([8745a2d](https://github.com/sdaconceicao/pokependium/commit/8745a2d89bdad629d1957311eeba53527de80f76))
+* Update handling of special types ([#29](https://github.com/sdaconceicao/pokependium/issues/29)) ([8606dac](https://github.com/sdaconceicao/pokependium/commit/8606dac01ee57bff36a52e5e9243360c7e51c66e))
+* Updated 2 column layout for vh ([88efad1](https://github.com/sdaconceicao/pokependium/commit/88efad11b847113529213eac92864093d47eef13))
+
 ## [0.5.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.4.0...pokedex-frontend-v0.5.0) (2026-08-17)
 
 
