@@ -61,7 +61,7 @@ export const getPokemonDefaultImageUrl = (pokemon: PokemonEntity) => {
       pokemon.sprites.other?.showdown?.front_default,
     ];
 
-    imageUrl = fallbackSprites.find((sprite) => sprite !== null && sprite !== undefined);
+    imageUrl = fallbackSprites.find((sprite): sprite is string => sprite != null) ?? null;
   }
 
   // If still no image, use a placeholder or throw an error
