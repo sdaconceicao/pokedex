@@ -1,7 +1,7 @@
 {
-  "name": "pokedex",
-  "version": "0.0.1",
-  "description": "A full stack pokedex including GraphQL API and nextjs frontend.",
+  "name": "pokependium",
+  "version": "0.2.0",
+  "description": "A full stack multi pokedex including GraphQL API and nextjs frontend.",
   "packageManager": "pnpm@11.3.0",
   "engines": {
     "node": ">=24.0.0"
@@ -17,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sdaconceicao/pokedex.git"
+    "url": "git+https://github.com/sdaconceicao/pokependium.git"
   },
   "author": "Stephen da Conceicao",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sdaconceicao/pokedex/issues"
+    "url": "https://github.com/sdaconceicao/pokependium/issues"
   },
-  "homepage": "https://github.com/sdaconceicao/pokedex#readme"
+  "homepage": "https://github.com/sdaconceicao/pokependium#readme"
 }

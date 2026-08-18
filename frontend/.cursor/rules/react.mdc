@@ -1,0 +1,9 @@
+---
+description: React Standards
+globs: **/*.tsx
+alwaysApply: false
+---
+
+# React Component Standards
+
+Read and follow '../../docs/REACT.md'
