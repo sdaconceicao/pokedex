@@ -1,9 +1,3 @@
----
-description: React Standards
-globs: **/*.tsx
-alwaysApply: false
----
-
 # React Component Standards
 
 ## Quick Reference

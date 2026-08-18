@@ -1,7 +1,7 @@
 {
   "name": "pokedex-graphql",
   "private": true,
-  "description": "The API for the Pokedex project",
+  "description": "The API for the Pokependium project",
   "version": "0.3.0",
   "license": "MIT",
   "type": "module",

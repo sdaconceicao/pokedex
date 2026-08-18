@@ -1,9 +1,3 @@
----
-description: CSS Modules Styling Standards
-globs: **/*.module.css
-alwaysApply: false
----
-
 # CSS Modules Styling Standards
 
 ## Quick Reference
