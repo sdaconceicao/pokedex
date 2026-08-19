@@ -20,7 +20,6 @@ interface NavbarSectionProps {
   icon?: ReactNode;
   /** Options per row — see `NavSection.columns` for why it is per section */
   columns?: 2;
-  /** Whether the route sits in this section, marked open or closed */
   isCurrent?: boolean;
 }
 
@@ -54,8 +53,6 @@ export default function NavbarSection({
       <Button
         slot="trigger"
         className={styles.sectionHeader}
-        // "true" rather than "page": a section holds a set of pages, and the
-        // link to the page itself already carries `aria-current="page"`.
         aria-current={isCurrent ? "true" : undefined}
       >
         <span className={styles.sectionHeaderLeft}>

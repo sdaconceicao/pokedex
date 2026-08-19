@@ -29,16 +29,11 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Which Browse section is open lives here rather than in Navbar: the collapsed
-  // rail below opens one too, so the sections and the rail have to be looking at
-  // the same value.
   const routeSection = getOpenSectionKey(usePathname());
   const [openSection, setOpenSection] = useState<NavSectionKey | null>(routeSection);
   const [lastRouteSection, setLastRouteSection] = useState(routeSection);
 
-  // Arriving in a different section opens it, while a pick inside the one you are
-  // already in is left standing. Adjusted during render rather than in an effect,
-  // so the sidebar never paints the previous section's list for a frame.
+  // Sync open section when the route crosses into another Browse section.
   if (routeSection !== lastRouteSection) {
     setLastRouteSection(routeSection);
     setOpenSection(routeSection);
@@ -149,14 +144,9 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
                 variant="quiet"
                 className={styles.railButton}
                 onPress={() => {
-                  // Opening the sidebar on the section that was asked for, rather
-                  // than on whatever was open when it was collapsed
                   setOpenSection(key);
                   setCollapsed(false);
                 }}
-                // The section the route sits in, so the rail still says where you
-                // are once the labels are gone. "true" rather than "page": a
-                // section is a set of pages, not one of them.
                 aria-current={key === routeSection ? "true" : undefined}
                 aria-label={`Expand sidebar to browse ${title}`}
               >

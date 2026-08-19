@@ -17,11 +17,7 @@ import NavbarSection from "./NavbarSection";
 
 interface NavbarProps {
   navigationData: NavigationData;
-  /** Which Browse section is open, or none. Owned by AppShell, since the
-   *  collapsed rail opens a section too. */
   openSection: NavSectionKey | null;
-  /** The section the route sits in — marked wherever it is, open or closed, so
-   *  the sidebar says where you are even when you have opened another one. */
   currentSection: NavSectionKey | null;
   onOpenSectionChange: (key: NavSectionKey | null) => void;
 }
@@ -62,7 +58,10 @@ export default function Navbar({
             this group's. All four open at once ran the sidebar to three screens. */}
         <DisclosureGroup
           expandedKeys={openSection ? [openSection] : []}
-          onExpandedChange={(keys) => onOpenSectionChange(([...keys][0] as NavSectionKey) ?? null)}
+          onExpandedChange={(keys) => {
+            const key = Array.from(keys)[0];
+            onOpenSectionChange((key as NavSectionKey | undefined) ?? null);
+          }}
         >
           {NAV_SECTIONS.map(({ key, title, icon, columns }) =>
             key === "pokedexes" ? (

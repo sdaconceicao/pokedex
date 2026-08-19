@@ -8,7 +8,6 @@ import type {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_AUTH_API_URL || "http://localhost:3004";
 
-// Helper function to safely access localStorage
 export const getStoredToken = (): string | null => {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("access_token");
@@ -24,7 +23,6 @@ const removeStoredToken = (): void => {
   localStorage.removeItem("access_token");
 };
 
-// Authentication API functions
 export const authApi = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {

@@ -15,7 +15,6 @@ vi.mock("../lib/apollo-client", () => ({
 
 const mockClient = vi.mocked(client);
 
-// Helper type for mock query results
 type MockQueryResult<_T> = never;
 
 describe("NavigationDataProvider", () => {

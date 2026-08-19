@@ -85,7 +85,6 @@ export class PokemonAPI extends RESTDataSource {
     return { species, forms };
   }
 
-  // Check if index is loaded
   isIndexLoaded(): boolean {
     return PokemonAPI.indexes !== null;
   }

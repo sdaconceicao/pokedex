@@ -62,11 +62,7 @@
   scale: 1;
 }
 
-/* The section the route sits in. Kept as a tinted label with a tint rail down its
-   leading edge rather than the filled pill `.navItem[data-current]` uses: that fill
-   is how the one current *page* is marked, and a whole band in it would out-shout
-   the link inside it. Marked whether the section is open or closed, so a reader who
-   has opened another section can still see where they are. */
+/* Current Browse section — tint rail instead of the filled page pill. */
 .section .sectionHeader[aria-current] {
   color: var(--tint);
   box-shadow: inset 3px 0 0 0 var(--tint);
@@ -80,9 +76,6 @@
   color: var(--tint);
 }
 
-/* Hover shares the tint, so the rail is what keeps the current section legible
-   under the pointer — restated here because lago's own hover box-shadow would
-   otherwise replace it. */
 .section .sectionHeader[aria-current]:hover {
   box-shadow: inset 3px 0 0 0 var(--tint);
 }

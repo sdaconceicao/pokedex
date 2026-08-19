@@ -1,13 +1,13 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 /** Each Browse section's header, whose `aria-expanded` is the open/closed state. */
-const header = (page: import("@playwright/test").Page, title: string) =>
+const header = (page: Page, title: string) =>
   page.getByRole("button", { name: title, exact: true });
 
 const SECTIONS = ["Types", "Special", "Regions", "Pokedexes"] as const;
 
 /** Which sections report themselves open. */
-const openSections = async (page: import("@playwright/test").Page) => {
+const openSections = async (page: Page) => {
   const states = await Promise.all(
     SECTIONS.map(async (title) => [
       title,
@@ -19,7 +19,7 @@ const openSections = async (page: import("@playwright/test").Page) => {
 };
 
 /** Opens a section if it is not already the open one. */
-const openSection = async (page: import("@playwright/test").Page, title: string) => {
+const openSection = async (page: Page, title: string) => {
   if ((await header(page, title).getAttribute("aria-expanded")) !== "true") {
     await header(page, title).click();
     await expect(header(page, title)).toHaveAttribute("aria-expanded", "true");
@@ -102,7 +102,7 @@ test.describe("Browse sections", () => {
    * line rather than overflowing, so it never trips a `scrollWidth` check — it
    * just silently knocks the second column out of step with the first.
    */
-  const readRows = (page: import("@playwright/test").Page, hrefPrefix: string) =>
+  const readRows = (page: Page, hrefPrefix: string) =>
     page.evaluate((prefix) => {
       const links = [...document.querySelectorAll(`nav a[href^="${prefix}"]`)] as HTMLElement[];
       const shortest = Math.min(...links.map((a) => a.getBoundingClientRect().height));
@@ -170,10 +170,10 @@ test.describe("Browse sections", () => {
     expect(new Set(edges).size).toBe(1);
   });
 
-  const collapse = (page: import("@playwright/test").Page) =>
+  const collapse = (page: Page) =>
     page.getByRole("button", { name: "Hide navigation" }).click();
 
-  const railButton = (page: import("@playwright/test").Page, title: string) =>
+  const railButton = (page: Page, title: string) =>
     page.getByRole("button", { name: `Expand sidebar to browse ${title}` });
 
   test("a rail icon opens the sidebar on the section it names", async ({ page }) => {
@@ -184,7 +184,6 @@ test.describe("Browse sections", () => {
     await collapse(page);
     await expect(railButton(page, "Pokedexes")).toBeVisible();
 
-    // Not just "open the sidebar" — open it showing the section that was asked for
     await railButton(page, "Pokedexes").click();
     await expect(header(page, "Pokedexes")).toBeVisible();
     expect(await openSections(page)).toEqual(["Pokedexes"]);
@@ -212,7 +211,6 @@ test.describe("Browse sections", () => {
 
     await expect(header(page, "Types")).toHaveAttribute("aria-current", "true");
 
-    // Opening another section closes Types, but the route still sits in it
     await header(page, "Pokedexes").click();
     await expect(header(page, "Pokedexes")).toHaveAttribute("aria-expanded", "true");
     await expect(header(page, "Types")).toHaveAttribute("aria-current", "true");
@@ -224,7 +222,6 @@ test.describe("Browse sections", () => {
     await page.waitForLoadState("networkidle");
     await collapse(page);
 
-    // The rail has no labels, so this is the only "you are here" left
     await expect(railButton(page, "Types")).toHaveAttribute("aria-current", "true");
     for (const other of ["Special", "Regions", "Pokedexes"]) {
       await expect(railButton(page, other)).not.toHaveAttribute("aria-current", "true");
