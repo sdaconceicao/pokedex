@@ -1,11 +1,9 @@
-import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { DisclosureGroup } from "react-aria-components";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
 import SearchFilters from "./components/SearchFilters";
 import styles from "./Navbar.module.css";
 import {
-  getOpenSectionKey,
   getPokedexGroups,
   getRegionItems,
   getSpecialItems,
@@ -19,11 +17,22 @@ import NavbarSection from "./NavbarSection";
 
 interface NavbarProps {
   navigationData: NavigationData;
+  /** Which Browse section is open, or none. Owned by AppShell, since the
+   *  collapsed rail opens a section too. */
+  openSection: NavSectionKey | null;
+  /** The section the route sits in — marked wherever it is, open or closed, so
+   *  the sidebar says where you are even when you have opened another one. */
+  currentSection: NavSectionKey | null;
+  onOpenSectionChange: (key: NavSectionKey | null) => void;
 }
 
-export default function Navbar({ navigationData }: NavbarProps) {
+export default function Navbar({
+  navigationData,
+  openSection,
+  currentSection,
+  onOpenSectionChange,
+}: NavbarProps) {
   const { types, pokedexes, regions } = navigationData;
-  const openSection = getOpenSectionKey(usePathname());
 
   const typeItems = useMemo(() => getTypeItems(types), [types]);
   const specialItems = useMemo(() => getSpecialItems(), []);
@@ -47,25 +56,31 @@ export default function Navbar({ navigationData }: NavbarProps) {
       </NavbarGroup>
 
       <NavbarGroup title="Browse">
-        {/* One section open at a time (DisclosureGroup's default), starting on
-            whichever one the current route belongs to — and on the first section
-            from a route that belongs to none. All four open at once ran the
-            sidebar to roughly three screens.
-
-            Keyed by that section so arriving in a different one opens it, while
-            a toggle within the same one is left alone — remounting is what
-            re-applies `defaultExpandedKeys`, and it only happens when the route
-            crosses into another section. */}
-        <DisclosureGroup key={openSection} defaultExpandedKeys={[openSection]}>
+        {/* One section open at a time (DisclosureGroup's default). Controlled
+            rather than left to itself, because the collapsed rail's buttons open
+            a section as well — so which one is open is AppShell's to hold, not
+            this group's. All four open at once ran the sidebar to three screens. */}
+        <DisclosureGroup
+          expandedKeys={openSection ? [openSection] : []}
+          onExpandedChange={(keys) => onOpenSectionChange(([...keys][0] as NavSectionKey) ?? null)}
+        >
           {NAV_SECTIONS.map(({ key, title, icon, columns }) =>
             key === "pokedexes" ? (
-              <NavbarSection key={key} id={key} title={title} icon={icon} groups={pokedexGroups} />
+              <NavbarSection
+                key={key}
+                id={key}
+                title={title}
+                icon={icon}
+                isCurrent={key === currentSection}
+                groups={pokedexGroups}
+              />
             ) : (
               <NavbarSection
                 key={key}
                 id={key}
                 title={title}
                 icon={icon}
+                isCurrent={key === currentSection}
                 columns={columns}
                 items={itemsByKey[key]}
               />

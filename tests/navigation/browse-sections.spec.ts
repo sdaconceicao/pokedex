@@ -169,4 +169,65 @@ test.describe("Browse sections", () => {
 
     expect(new Set(edges).size).toBe(1);
   });
+
+  const collapse = (page: import("@playwright/test").Page) =>
+    page.getByRole("button", { name: "Hide navigation" }).click();
+
+  const railButton = (page: import("@playwright/test").Page, title: string) =>
+    page.getByRole("button", { name: `Expand sidebar to browse ${title}` });
+
+  test("a rail icon opens the sidebar on the section it names", async ({ page }) => {
+    await page.goto("/type/grass");
+    await page.waitForLoadState("networkidle");
+    expect(await openSections(page)).toEqual(["Types"]);
+
+    await collapse(page);
+    await expect(railButton(page, "Pokedexes")).toBeVisible();
+
+    // Not just "open the sidebar" — open it showing the section that was asked for
+    await railButton(page, "Pokedexes").click();
+    await expect(header(page, "Pokedexes")).toBeVisible();
+    expect(await openSections(page)).toEqual(["Pokedexes"]);
+
+    await collapse(page);
+    await railButton(page, "Regions").click();
+    await expect(header(page, "Regions")).toBeVisible();
+    expect(await openSections(page)).toEqual(["Regions"]);
+  });
+
+  test("the rail's search icon opens the sidebar without changing sections", async ({ page }) => {
+    await page.goto("/region/kanto");
+    await page.waitForLoadState("networkidle");
+
+    await collapse(page);
+    await page.getByRole("button", { name: "Expand sidebar to search" }).click();
+    await expect(header(page, "Regions")).toBeVisible();
+
+    expect(await openSections(page)).toEqual(["Regions"]);
+  });
+
+  test("marks the route's section whether it is open or closed", async ({ page }) => {
+    await page.goto("/type/grass");
+    await page.waitForLoadState("networkidle");
+
+    await expect(header(page, "Types")).toHaveAttribute("aria-current", "true");
+
+    // Opening another section closes Types, but the route still sits in it
+    await header(page, "Pokedexes").click();
+    await expect(header(page, "Pokedexes")).toHaveAttribute("aria-expanded", "true");
+    await expect(header(page, "Types")).toHaveAttribute("aria-current", "true");
+    await expect(header(page, "Pokedexes")).not.toHaveAttribute("aria-current", "true");
+  });
+
+  test("marks the route's section on the collapsed rail", async ({ page }) => {
+    await page.goto("/type/grass");
+    await page.waitForLoadState("networkidle");
+    await collapse(page);
+
+    // The rail has no labels, so this is the only "you are here" left
+    await expect(railButton(page, "Types")).toHaveAttribute("aria-current", "true");
+    for (const other of ["Special", "Regions", "Pokedexes"]) {
+      await expect(railButton(page, other)).not.toHaveAttribute("aria-current", "true");
+    }
+  });
 });

@@ -62,12 +62,29 @@
   scale: 1;
 }
 
+/* The section the route sits in. Kept as a tinted label with a tint rail down its
+   leading edge rather than the filled pill `.navItem[data-current]` uses: that fill
+   is how the one current *page* is marked, and a whole band in it would out-shout
+   the link inside it. Marked whether the section is open or closed, so a reader who
+   has opened another section can still see where they are. */
+.section .sectionHeader[aria-current] {
+  color: var(--tint);
+  box-shadow: inset 3px 0 0 0 var(--tint);
+}
+
 .section .sectionHeader:hover {
   /* One rung along the same `--layout-*` scale the fill now sits on, so the
      hover stays a consistent step in both themes — it can no longer reuse
      tertiary, which is the resting state. */
   background-color: var(--layout-quaternary-background);
   color: var(--tint);
+}
+
+/* Hover shares the tint, so the rail is what keeps the current section legible
+   under the pointer — restated here because lago's own hover box-shadow would
+   otherwise replace it. */
+.section .sectionHeader[aria-current]:hover {
+  box-shadow: inset 3px 0 0 0 var(--tint);
 }
 
 .sectionHeaderLeft {
@@ -149,6 +166,10 @@
   margin: 0.25rem 0 0;
 }
 
+.listItem {
+  margin-bottom: 0.125rem;
+}
+
 /* Half the rows for the sections whose labels fit the narrower column.
 
    Multi-column rather than a grid: these lists are alphabetical, and a grid fills
@@ -183,8 +204,4 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.listItem {
-  margin-bottom: 0.125rem;
 }

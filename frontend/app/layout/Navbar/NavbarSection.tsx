@@ -20,6 +20,8 @@ interface NavbarSectionProps {
   icon?: ReactNode;
   /** Options per row — see `NavSection.columns` for why it is per section */
   columns?: 2;
+  /** Whether the route sits in this section, marked open or closed */
+  isCurrent?: boolean;
 }
 
 export default function NavbarSection({
@@ -29,6 +31,7 @@ export default function NavbarSection({
   groups,
   icon,
   columns,
+  isCurrent,
 }: NavbarSectionProps) {
   const sectionId = title.toLowerCase().replace(/\s+/g, "-");
   return (
@@ -48,7 +51,13 @@ export default function NavbarSection({
     // its chevron *before* the label with no leading-icon slot, a different
     // layout than this sidebar uses.
     <Disclosure id={id} className={styles.section}>
-      <Button slot="trigger" className={styles.sectionHeader}>
+      <Button
+        slot="trigger"
+        className={styles.sectionHeader}
+        // "true" rather than "page": a section holds a set of pages, and the
+        // link to the page itself already carries `aria-current="page"`.
+        aria-current={isCurrent ? "true" : undefined}
+      >
         <span className={styles.sectionHeaderLeft}>
           {icon && (
             <span className={styles.sectionIcon} aria-hidden="true">

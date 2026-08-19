@@ -130,6 +130,13 @@
     color 0.15s ease;
 }
 
+/* The section the route sits in. The rail has no labels, so this is the only
+   thing telling a reader where they are while the sidebar is collapsed. */
+.rail .railButton[aria-current] {
+  background: var(--layout-secondary-background);
+  color: var(--tint);
+}
+
 .rail .railButton:hover {
   background: var(--layout-secondary-background);
   color: var(--tint);
