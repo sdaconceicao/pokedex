@@ -22,7 +22,9 @@ const types = [
   { name: "grass", count: 90 },
 ];
 const regions = [{ name: "kanto", count: 151 }];
-const pokedexes = [{ name: "letsgo-kanto", count: 153 }];
+const pokedexes = [
+  { name: "letsgo-kanto", displayName: "Let’s Go Kanto", region: "kanto", count: 153 },
+];
 
 const setParams = (search: string) =>
   vi

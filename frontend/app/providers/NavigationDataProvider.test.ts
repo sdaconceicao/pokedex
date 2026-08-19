@@ -112,10 +112,10 @@ describe("NavigationDataProvider", () => {
   describe("getPokedexes", () => {
     it("should fetch pokedexes successfully", async () => {
       const mockPokedexes: PokemonPokedex[] = [
-        { name: "national", count: 1008 },
-        { name: "kanto", count: 151 },
-        { name: "johto", count: 100 },
-        { name: "hoenn", count: 135 },
+        { name: "national", displayName: "National", region: null, count: 1008 },
+        { name: "kanto", displayName: "Kanto", region: "kanto", count: 151 },
+        { name: "johto", displayName: "Johto", region: "johto", count: 100 },
+        { name: "hoenn", displayName: "Hoenn", region: "hoenn", count: 135 },
       ];
 
       mockClient.query.mockResolvedValue({
@@ -175,11 +175,11 @@ describe("NavigationDataProvider", () => {
 
     it("should filter out pokedexes with count 0", async () => {
       const mockPokedexes: PokemonPokedex[] = [
-        { name: "national", count: 1008 },
-        { name: "kanto", count: 0 },
-        { name: "johto", count: 100 },
-        { name: "hoenn", count: 0 },
-        { name: "sinnoh", count: 107 },
+        { name: "national", displayName: "National", region: null, count: 1008 },
+        { name: "kanto", displayName: "Kanto", region: "kanto", count: 0 },
+        { name: "johto", displayName: "Johto", region: "johto", count: 100 },
+        { name: "hoenn", displayName: "Hoenn", region: "hoenn", count: 0 },
+        { name: "sinnoh", displayName: "Sinnoh", region: "sinnoh", count: 107 },
       ];
 
       mockClient.query.mockResolvedValue({
@@ -189,9 +189,9 @@ describe("NavigationDataProvider", () => {
       const result = await getPokedexes();
 
       expect(result).toEqual([
-        { name: "national", count: 1008 },
-        { name: "johto", count: 100 },
-        { name: "sinnoh", count: 107 },
+        { name: "national", displayName: "National", region: null, count: 1008 },
+        { name: "johto", displayName: "Johto", region: "johto", count: 100 },
+        { name: "sinnoh", displayName: "Sinnoh", region: "sinnoh", count: 107 },
       ]);
     });
   });
@@ -289,8 +289,8 @@ describe("NavigationDataProvider", () => {
         { name: "water", count: 3 },
       ];
       const mockPokedexes: PokemonPokedex[] = [
-        { name: "national", count: 1008 },
-        { name: "kanto", count: 151 },
+        { name: "national", displayName: "National", region: null, count: 1008 },
+        { name: "kanto", displayName: "Kanto", region: "kanto", count: 151 },
       ];
       const mockRegions: PokemonRegion[] = [
         { name: "kanto", count: 151 },
@@ -326,9 +326,9 @@ describe("NavigationDataProvider", () => {
         { name: "grass", count: 3 },
       ];
       const mockPokedexes: PokemonPokedex[] = [
-        { name: "national", count: 1008 },
-        { name: "kanto", count: 0 },
-        { name: "johto", count: 100 },
+        { name: "national", displayName: "National", region: null, count: 1008 },
+        { name: "kanto", displayName: "Kanto", region: "kanto", count: 0 },
+        { name: "johto", displayName: "Johto", region: "johto", count: 100 },
       ];
       const mockRegions: PokemonRegion[] = [
         { name: "kanto", count: 151 },
@@ -356,8 +356,8 @@ describe("NavigationDataProvider", () => {
           { name: "grass", count: 3 },
         ],
         pokedexes: [
-          { name: "national", count: 1008 },
-          { name: "johto", count: 100 },
+          { name: "national", displayName: "National", region: null, count: 1008 },
+          { name: "johto", displayName: "Johto", region: "johto", count: 100 },
         ],
         regions: [
           { name: "kanto", count: 151 },

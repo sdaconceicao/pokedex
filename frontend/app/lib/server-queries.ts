@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import type { Pokemon, RegionDetail, TypeDetail } from "../types";
+import type { PokedexDetail, Pokemon, RegionDetail, TypeDetail } from "../types";
 import { client } from "./apollo-client";
 
 const GET_POKEMON_BY_ID = gql`
@@ -108,6 +108,21 @@ const GET_TYPE = gql`
   }
 `;
 
+const GET_POKEDEX = gql`
+  query GetPokedex($name: String!) {
+    pokedex(name: $name) {
+      id
+      name
+      displayName
+      description
+      region
+      pokemonCount
+      versionGroups
+      isMainSeries
+    }
+  }
+`;
+
 export async function getPokemonById(id: string): Promise<Pokemon> {
   try {
     console.log("Attempting to fetch Pokemon with ID:", id);
@@ -161,6 +176,22 @@ export async function getTypeByName(name: string): Promise<TypeDetail | null> {
     return data?.type ?? null;
   } catch (error) {
     console.error(`Failed to fetch type ${name}:`, error);
+    return null;
+  }
+}
+
+/** Returns null for a pokedex the API doesn't know, so the page can 404 on a
+ *  bad slug rather than surface an error boundary. */
+export async function getPokedexByName(name: string): Promise<PokedexDetail | null> {
+  try {
+    const { data } = await client.query<{ pokedex: PokedexDetail | null }>({
+      query: GET_POKEDEX,
+      variables: { name },
+    });
+
+    return data?.pokedex ?? null;
+  } catch (error) {
+    console.error(`Failed to fetch pokedex ${name}:`, error);
     return null;
   }
 }

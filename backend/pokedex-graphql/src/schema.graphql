@@ -22,6 +22,7 @@ type Query {
   regions: [PokemonRegion!]!
   region(name: String!): RegionDetail
   type(name: String!): TypeDetail
+  pokedex(name: String!): PokedexDetail
 }
 
 """
@@ -158,7 +159,41 @@ type RegionDetail {
 
 type PokemonPokedex {
   name: String!
+  """
+  The same name the dex's own page shows, so a nav label and its page agree.
+  """
+  displayName: String!
+  """
+  The region this dex covers, for grouping the list. Null for the dexes that
+  belong to no single region.
+  """
+  region: String
   count: Int!
+}
+
+"""
+One dex as PokeAPI ships it: the list a set of games shipped with, which is why a
+dex belongs to version groups rather than to a generation.
+"""
+type PokedexDetail {
+  id: ID!
+  name: String!
+  displayName: String!
+  """
+  The English blurb, when PokeAPI has one for this dex.
+  """
+  description: String
+  """
+  The region this dex covers, as a slug. Null for the national dex and the
+  spin-off dexes, which aren't tied to one.
+  """
+  region: String
+  pokemonCount: Int!
+  versionGroups: [String!]!
+  """
+  False for the spin-off dexes (Conquest, Let's Go's own listings, and so on).
+  """
+  isMainSeries: Boolean!
 }
 
 type PokemonType {
