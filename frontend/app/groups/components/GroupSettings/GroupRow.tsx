@@ -1,6 +1,13 @@
 "use client";
 
-import { Alert, Button, Checkbox, Heading, IconButton, TextField } from "@code-x/lago";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Heading,
+  IconButton,
+  TextField,
+} from "@code-x/lago";
 import { Edit02, Trash01 } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { useCallback, useState } from "react";
@@ -9,7 +16,10 @@ import { Modal } from "@/components/Modal";
 import { useDeleteGroup, useUpdateGroup } from "@/hooks/useGroups";
 import type { PokemonGroup } from "@/types";
 import styles from "./GroupRow.module.css";
-import { buildGroupUpdatePayload, isValidGroupName } from "./GroupSettings.utils";
+import {
+  buildGroupUpdatePayload,
+  isValidGroupName,
+} from "./GroupSettings.utils";
 
 interface GroupRowProps {
   group: PokemonGroup;
@@ -21,7 +31,8 @@ export default function GroupRow({ group }: GroupRowProps) {
   const [makeDefault, setMakeDefault] = useState(group.isDefault);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
-  const { updateGroupAsync, isUpdateGroupLoading, updateGroupError } = useUpdateGroup();
+  const { updateGroupAsync, isUpdateGroupLoading, updateGroupError } =
+    useUpdateGroup();
   const { deleteGroupAsync, isDeleteGroupLoading } = useDeleteGroup();
 
   const handleEdit = useCallback(() => {
@@ -67,36 +78,22 @@ export default function GroupRow({ group }: GroupRowProps) {
             onChange={setName}
             isDisabled={isUpdateGroupLoading}
           />
-          <Checkbox
-            isSelected={makeDefault}
-            // The API ignores isDefault: false -- a signed-in user always has
-            // exactly one default group, so there is no request that clears
-            // one. An already-default group can only be changed by promoting
-            // a different group instead, hence checked-and-disabled here.
-            isDisabled={group.isDefault}
-            onChange={setMakeDefault}
-          >
-            Make this my default group
-          </Checkbox>
-          {/* Rendered here rather than via Checkbox's `description`, whose
-              muted token is meant for a light surface and is close to
-              illegible on this card's gradient. */}
-          {group.isDefault && (
-            <p className={styles.hint}>
-              Already the default. Make a different group default to change it.
-            </p>
+          {!group.isDefault && (
+            <Checkbox isSelected={makeDefault} onChange={setMakeDefault}>
+              Make this my default group
+            </Checkbox>
           )}
 
           {updateGroupError && (
             <Alert variant="error" className={styles.error}>
-              <Alert.Header title="Couldn't save changes" subtitle={updateGroupError.message} />
+              <Alert.Header
+                title="Couldn't save changes"
+                subtitle={updateGroupError.message}
+              />
             </Alert>
           )}
 
           <div className={styles.editActions}>
-            <Button variant="secondary" size="sm" onPress={handleCancel}>
-              Cancel
-            </Button>
             <Button
               variant="primary"
               size="sm"
@@ -105,6 +102,9 @@ export default function GroupRow({ group }: GroupRowProps) {
               isDisabled={!isValidGroupName(name)}
             >
               Save
+            </Button>
+            <Button variant="secondary" size="sm" onPress={handleCancel}>
+              Cancel
             </Button>
           </div>
         </div>
@@ -123,10 +123,16 @@ export default function GroupRow({ group }: GroupRowProps) {
                 invalid HTML and would still navigate on press. */}
             <Link href={`/groups/${group.id}`}>{group.name}</Link>
           </Heading>
-          {group.isDefault && <span className={styles.defaultTag}>Default</span>}
+          {group.isDefault && (
+            <span className={styles.defaultTag}>Default</span>
+          )}
         </div>
 
-        <CountPill value={group.pokemonCount} label="Pokemon" className={styles.count} />
+        <CountPill
+          value={group.pokemonCount}
+          label="Pokemon"
+          className={styles.count}
+        />
 
         {/* Given its own stacking context above the stretched link (see
             .actions in the CSS) so these buttons stay independently
@@ -159,16 +165,26 @@ export default function GroupRow({ group }: GroupRowProps) {
           size="sm"
           footer={
             <>
-              <Button variant="secondary" onPress={() => setIsConfirmingDelete(false)}>
+              <Button
+                variant="secondary"
+                onPress={() => setIsConfirmingDelete(false)}
+              >
                 Cancel
               </Button>
-              <Button variant="error" onPress={handleDelete} isPending={isDeleteGroupLoading}>
+              <Button
+                variant="error"
+                onPress={handleDelete}
+                isPending={isDeleteGroupLoading}
+              >
                 Delete
               </Button>
             </>
           }
         >
-          <p>Deleting this group also deletes its saved Pokémon. This can't be undone.</p>
+          <p>
+            Deleting this group also deletes its saved Pokémon. This can't be
+            undone.
+          </p>
         </Modal>
       )}
     </li>
