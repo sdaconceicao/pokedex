@@ -100,6 +100,17 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    pokedex: async (_, { name }, { dataSources }) => {
+      logger.info(`Resolving pokedex query for name: ${name}`);
+      try {
+        const result = await dataSources.pokemonAPI.getPokedex(name);
+        logger.info(`Pokedex ${name} resolved successfully`);
+        return result;
+      } catch (error) {
+        logger.error(`Error resolving pokedex ${name}:`, error);
+        throw error;
+      }
+    },
     types: async (_, __, { dataSources }) => {
       logger.info("Resolving types query");
       try {

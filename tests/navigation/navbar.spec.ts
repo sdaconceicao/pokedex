@@ -64,6 +64,8 @@ test.describe("Navbar", () => {
     const searchInput = page.getByPlaceholder("Search Pokemon...");
     await expect(searchInput).toHaveValue("");
 
+    await page.getByRole("button", { name: "Special", exact: true }).click();
+
     const gigantamaxLink = page.getByRole("link", { name: /^Gigantamax$/ });
     await expect(gigantamaxLink).toBeVisible();
     await gigantamaxLink.click();

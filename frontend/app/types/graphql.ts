@@ -51,6 +51,27 @@ export type EvolutionNode = {
   trigger?: Maybe<Scalars['String']['output']>;
 };
 
+/**
+ * One dex as PokeAPI ships it: the list a set of games shipped with, which is why a
+ * dex belongs to version groups rather than to a generation.
+ */
+export type PokedexDetail = {
+  /** The English blurb, when PokeAPI has one for this dex. */
+  description?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  /** False for the spin-off dexes (Conquest, Let's Go's own listings, and so on). */
+  isMainSeries: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  pokemonCount: Scalars['Int']['output'];
+  /**
+   * The region this dex covers, as a slug. Null for the national dex and the
+   * spin-off dexes, which aren't tied to one.
+   */
+  region?: Maybe<Scalars['String']['output']>;
+  versionGroups: Array<Scalars['String']['output']>;
+};
+
 export type Pokemon = {
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
@@ -103,7 +124,14 @@ export type PokemonList = {
 
 export type PokemonPokedex = {
   count: Scalars['Int']['output'];
+  /** The same name the dex's own page shows, so a nav label and its page agree. */
+  displayName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  /**
+   * The region this dex covers, for grouping the list. Null for the dexes that
+   * belong to no single region.
+   */
+  region?: Maybe<Scalars['String']['output']>;
 };
 
 export type PokemonRegion = {
@@ -128,6 +156,7 @@ export type PokemonType = {
 
 export type Query = {
   ability?: Maybe<Ability>;
+  pokedex?: Maybe<PokedexDetail>;
   pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
@@ -145,6 +174,11 @@ export type Query = {
 
 export type QueryAbilityArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokedexArgs = {
+  name: Scalars['String']['input'];
 };
 
 

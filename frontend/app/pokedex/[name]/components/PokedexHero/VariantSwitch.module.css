@@ -1,0 +1,25 @@
+/* Tinted from currentColor like SortToggle's groups, so it reads as the same
+   kind of control against the hero's gradient. */
+.group:global(.segmented-control) {
+  /* lago's SegmentedControl lays itself out full-width, which in the hero's tag
+     row would take the whole line and push the series tag under it. Sized to its
+     own items instead, so the two sit side by side. */
+  width: fit-content;
+  flex: 0 0 auto;
+  background: color-mix(in srgb, currentColor 16%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  box-shadow: none;
+}
+
+.group :global(.segmented-control-item) {
+  color: color-mix(in srgb, currentColor 78%, transparent);
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.group :global(.react-aria-SelectionIndicator) {
+  background: color-mix(in srgb, currentColor 28%, transparent);
+  box-shadow: none;
+}
