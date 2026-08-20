@@ -55,9 +55,7 @@ const OTHER_GROUP: PokemonGroup = {
 const updateGroupAsync = vi.fn().mockResolvedValue(undefined);
 const deleteGroupAsync = vi.fn().mockResolvedValue(undefined);
 
-const setUpdateGroup = (
-  overrides: Partial<ReturnType<typeof useUpdateGroup>> = {}
-) =>
+const setUpdateGroup = (overrides: Partial<ReturnType<typeof useUpdateGroup>> = {}) =>
   vi.mocked(useUpdateGroup).mockReturnValue({
     updateGroup: vi.fn(),
     updateGroupAsync,
@@ -66,9 +64,7 @@ const setUpdateGroup = (
     ...overrides,
   } as unknown as ReturnType<typeof useUpdateGroup>);
 
-const setDeleteGroup = (
-  overrides: Partial<ReturnType<typeof useDeleteGroup>> = {}
-) =>
+const setDeleteGroup = (overrides: Partial<ReturnType<typeof useDeleteGroup>> = {}) =>
   vi.mocked(useDeleteGroup).mockReturnValue({
     deleteGroup: vi.fn(),
     deleteGroupAsync,
@@ -110,10 +106,7 @@ describe("GroupRow", () => {
     it("links the row to the group's detail page", () => {
       render(<GroupRow group={OTHER_GROUP} />);
 
-      expect(screen.getByRole("link", { name: "Team" })).toHaveAttribute(
-        "href",
-        "/groups/2"
-      );
+      expect(screen.getByRole("link", { name: "Team" })).toHaveAttribute("href", "/groups/2");
     });
 
     it("keeps the edit and delete buttons outside the link", () => {
@@ -135,16 +128,12 @@ describe("GroupRow", () => {
 
       await user.click(screen.getByRole("button", { name: "Edit Team" }));
 
+      expect(screen.getByRole("textbox", { name: "Team group name" })).toHaveValue("Team");
       expect(
-        screen.getByRole("textbox", { name: "Team group name" })
-      ).toHaveValue("Team");
-      expect(
-        screen.getByRole("checkbox", { name: "Make this my default group" })
+        screen.getByRole("checkbox", { name: "Make this my default group" }),
       ).not.toBeChecked();
       expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
       expect(screen.queryByRole("link")).not.toBeInTheDocument();
     });
 
@@ -196,9 +185,7 @@ describe("GroupRow", () => {
       render(<GroupRow group={OTHER_GROUP} />);
 
       await user.click(screen.getByRole("button", { name: "Edit Team" }));
-      await user.click(
-        screen.getByRole("checkbox", { name: "Make this my default group" })
-      );
+      await user.click(screen.getByRole("checkbox", { name: "Make this my default group" }));
       await user.click(screen.getByRole("button", { name: "Save" }));
 
       expect(updateGroupAsync).toHaveBeenCalledWith({
@@ -217,9 +204,7 @@ describe("GroupRow", () => {
       await user.type(field, "Squad");
       await user.click(screen.getByRole("button", { name: "Save" }));
 
-      expect(
-        await screen.findByRole("link", { name: "Team" })
-      ).toBeInTheDocument();
+      expect(await screen.findByRole("link", { name: "Team" })).toBeInTheDocument();
     });
 
     it("closes without calling the API when nothing changed", async () => {
@@ -229,9 +214,7 @@ describe("GroupRow", () => {
       await user.click(screen.getByRole("button", { name: "Edit Team" }));
       await user.click(screen.getByRole("button", { name: "Save" }));
 
-      expect(
-        await screen.findByRole("link", { name: "Team" })
-      ).toBeInTheDocument();
+      expect(await screen.findByRole("link", { name: "Team" })).toBeInTheDocument();
       expect(updateGroupAsync).not.toHaveBeenCalled();
     });
 
@@ -248,9 +231,7 @@ describe("GroupRow", () => {
       await user.click(screen.getByRole("button", { name: "Save" }));
 
       expect(updateGroupAsync).not.toHaveBeenCalled();
-      expect(
-        screen.getByRole("textbox", { name: "Team group name" })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: "Team group name" })).toBeInTheDocument();
     });
 
     it("surfaces an update error inline and stays in edit mode", async () => {
@@ -262,12 +243,8 @@ describe("GroupRow", () => {
 
       await user.click(screen.getByRole("button", { name: "Edit Team" }));
 
-      expect(
-        screen.getByText("A group with that name already exists")
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("textbox", { name: "Team group name" })
-      ).toBeInTheDocument();
+      expect(screen.getByText("A group with that name already exists")).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: "Team group name" })).toBeInTheDocument();
     });
   });
 
@@ -286,9 +263,7 @@ describe("GroupRow", () => {
       expect(screen.getByRole("heading", { name: "Team" })).toBeInTheDocument();
 
       await user.click(screen.getByRole("button", { name: "Edit Team" }));
-      expect(
-        screen.getByRole("textbox", { name: "Team group name" })
-      ).toHaveValue("Team");
+      expect(screen.getByRole("textbox", { name: "Team group name" })).toHaveValue("Team");
     });
   });
 
@@ -299,12 +274,8 @@ describe("GroupRow", () => {
 
       await user.click(screen.getByRole("button", { name: "Delete Team" }));
 
-      expect(
-        screen.getByRole("heading", { name: "Delete Team?" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/also deletes its saved Pokémon/)
-      ).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Delete Team?" })).toBeInTheDocument();
+      expect(screen.getByText(/also deletes its saved Pokémon/)).toBeInTheDocument();
       expect(deleteGroupAsync).not.toHaveBeenCalled();
     });
 

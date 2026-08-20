@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Alert,
-  Button,
-  Checkbox,
-  Heading,
-  IconButton,
-  TextField,
-} from "@code-x/lago";
+import { Alert, Button, Checkbox, Heading, IconButton, TextField } from "@code-x/lago";
 import { Edit02, Trash01 } from "@untitled-ui/icons-react";
 import Link from "next/link";
 import { useCallback, useState } from "react";
@@ -16,10 +9,7 @@ import { Modal } from "@/components/Modal";
 import { useDeleteGroup, useUpdateGroup } from "@/hooks/useGroups";
 import type { PokemonGroup } from "@/types";
 import styles from "./GroupRow.module.css";
-import {
-  buildGroupUpdatePayload,
-  isValidGroupName,
-} from "./GroupSettings.utils";
+import { buildGroupUpdatePayload, isValidGroupName } from "./GroupSettings.utils";
 
 interface GroupRowProps {
   group: PokemonGroup;
@@ -31,8 +21,7 @@ export default function GroupRow({ group }: GroupRowProps) {
   const [makeDefault, setMakeDefault] = useState(group.isDefault);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
-  const { updateGroupAsync, isUpdateGroupLoading, updateGroupError } =
-    useUpdateGroup();
+  const { updateGroupAsync, isUpdateGroupLoading, updateGroupError } = useUpdateGroup();
   const { deleteGroupAsync, isDeleteGroupLoading } = useDeleteGroup();
 
   const handleEdit = useCallback(() => {
@@ -86,10 +75,7 @@ export default function GroupRow({ group }: GroupRowProps) {
 
           {updateGroupError && (
             <Alert variant="error" className={styles.error}>
-              <Alert.Header
-                title="Couldn't save changes"
-                subtitle={updateGroupError.message}
-              />
+              <Alert.Header title="Couldn't save changes" subtitle={updateGroupError.message} />
             </Alert>
           )}
 
@@ -123,16 +109,10 @@ export default function GroupRow({ group }: GroupRowProps) {
                 invalid HTML and would still navigate on press. */}
             <Link href={`/groups/${group.id}`}>{group.name}</Link>
           </Heading>
-          {group.isDefault && (
-            <span className={styles.defaultTag}>Default</span>
-          )}
+          {group.isDefault && <span className={styles.defaultTag}>Default</span>}
         </div>
 
-        <CountPill
-          value={group.pokemonCount}
-          label="Pokemon"
-          className={styles.count}
-        />
+        <CountPill value={group.pokemonCount} label="Pokemon" className={styles.count} />
 
         {/* Given its own stacking context above the stretched link (see
             .actions in the CSS) so these buttons stay independently
@@ -165,26 +145,16 @@ export default function GroupRow({ group }: GroupRowProps) {
           size="sm"
           footer={
             <>
-              <Button
-                variant="secondary"
-                onPress={() => setIsConfirmingDelete(false)}
-              >
+              <Button variant="secondary" onPress={() => setIsConfirmingDelete(false)}>
                 Cancel
               </Button>
-              <Button
-                variant="error"
-                onPress={handleDelete}
-                isPending={isDeleteGroupLoading}
-              >
+              <Button variant="error" onPress={handleDelete} isPending={isDeleteGroupLoading}>
                 Delete
               </Button>
             </>
           }
         >
-          <p>
-            Deleting this group also deletes its saved Pokémon. This can't be
-            undone.
-          </p>
+          <p>Deleting this group also deletes its saved Pokémon. This can't be undone.</p>
         </Modal>
       )}
     </li>

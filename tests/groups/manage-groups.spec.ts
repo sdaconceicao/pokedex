@@ -112,12 +112,14 @@ test.describe("Managing saved groups", () => {
     await createTwoGroups(page);
     await gotoGroups(page);
 
-    // The already-default group cannot be un-defaulted: the API ignores
-    // isDefault: false, so its checkbox is checked and disabled.
+    // The already-default group is offered no default checkbox at all: the API
+    // ignores isDefault: false, so there is no un-defaulting to offer -- a
+    // different group has to be promoted instead.
     await page.getByRole("button", { name: "Edit Favorites" }).click();
-    const defaultCheckbox = page.getByRole("checkbox", { name: "Make this my default group" });
-    await expect(defaultCheckbox).toBeChecked();
-    await expect(defaultCheckbox).toBeDisabled();
+    await expect(page.getByRole("textbox", { name: "Favorites group name" })).toBeVisible();
+    await expect(
+      page.getByRole("checkbox", { name: "Make this my default group" }),
+    ).toHaveCount(0);
     await page.getByRole("button", { name: "Cancel" }).click();
 
     await page.getByRole("button", { name: "Edit Team" }).click();
