@@ -37,7 +37,7 @@ export default function UserAvatar({ email, onLogout, isLogoutLoading = false }:
               rather than a navigation. */}
           <MenuSection>
             <MenuItem id="my-lists" href="/groups">
-              My lists
+              My groups
             </MenuItem>
           </MenuSection>
           <Separator />

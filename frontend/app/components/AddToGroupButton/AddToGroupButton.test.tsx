@@ -65,19 +65,19 @@ beforeEach(() => {
 });
 
 describe("AddToGroupButton", () => {
-  it("renders the add label and icon when the pokemon is in no list", () => {
+  it("renders the add label and icon when the pokemon is in no group", () => {
     render(<AddToGroupButton pokemon={pokemon} />);
 
-    expect(screen.getByRole("button", { name: "Add Bulbasaur to a list" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add Bulbasaur to a group" })).toBeInTheDocument();
   });
 
   it("renders the manage label when the pokemon is already saved somewhere", () => {
     mockMemberships([{ groupId: "g1", pokemonId: pokemon.id }]);
     render(<AddToGroupButton pokemon={pokemon} />);
 
-    expect(screen.getByRole("button", { name: "Manage Bulbasaur's lists" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Manage Bulbasaur's groups" })).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "Add Bulbasaur to a list" }),
+      screen.queryByRole("button", { name: "Add Bulbasaur to a group" }),
     ).not.toBeInTheDocument();
   });
 
@@ -85,13 +85,13 @@ describe("AddToGroupButton", () => {
     mockMemberships(undefined);
     render(<AddToGroupButton pokemon={pokemon} />);
 
-    expect(screen.getByRole("button", { name: "Add Bulbasaur to a list" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add Bulbasaur to a group" })).toBeInTheDocument();
   });
 
   it("applies a custom className to the trigger button", () => {
     render(<AddToGroupButton pokemon={pokemon} className="probe" />);
 
-    expect(screen.getByRole("button", { name: "Add Bulbasaur to a list" })).toHaveClass("probe");
+    expect(screen.getByRole("button", { name: "Add Bulbasaur to a group" })).toHaveClass("probe");
   });
 
   it("does not render the control before it is opened", () => {
@@ -105,7 +105,7 @@ describe("AddToGroupButton", () => {
     const user = userEvent.setup();
     render(<AddToGroupButton pokemon={pokemon} />);
 
-    await user.click(screen.getByRole("button", { name: "Add Bulbasaur to a list" }));
+    await user.click(screen.getByRole("button", { name: "Add Bulbasaur to a group" }));
 
     expect(mockRequestOpen).toHaveBeenCalledWith(pokemon);
     expect(screen.getByText("control for bulbasaur")).toBeInTheDocument();
@@ -116,7 +116,7 @@ describe("AddToGroupButton", () => {
     const user = userEvent.setup();
     render(<AddToGroupButton pokemon={pokemon} />);
 
-    await user.click(screen.getByRole("button", { name: "Add Bulbasaur to a list" }));
+    await user.click(screen.getByRole("button", { name: "Add Bulbasaur to a group" }));
 
     expect(screen.queryByText("control for bulbasaur")).not.toBeInTheDocument();
   });
@@ -125,7 +125,7 @@ describe("AddToGroupButton", () => {
     mockRequestOpen.mockReturnValue(true);
     const user = userEvent.setup();
     render(<AddToGroupButton pokemon={pokemon} />);
-    const trigger = screen.getByRole("button", { name: "Add Bulbasaur to a list" });
+    const trigger = screen.getByRole("button", { name: "Add Bulbasaur to a group" });
 
     await user.click(trigger);
     expect(screen.getByText("control for bulbasaur")).toBeInTheDocument();
@@ -141,7 +141,7 @@ describe("AddToGroupButton", () => {
     const user = userEvent.setup();
     render(<AddToGroupButton pokemon={pokemon} />);
 
-    await user.click(screen.getByRole("button", { name: "Add Bulbasaur to a list" }));
+    await user.click(screen.getByRole("button", { name: "Add Bulbasaur to a group" }));
     expect(screen.getByText("control for bulbasaur")).toBeInTheDocument();
 
     await user.click(screen.getByText("finish"));

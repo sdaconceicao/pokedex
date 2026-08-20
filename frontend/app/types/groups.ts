@@ -10,7 +10,7 @@ export interface GroupPokemon {
   speciesId: string;
 }
 
-/** One (list, Pokemon) pairing -- every membership across all of the user's lists. */
+/** One (group, Pokemon) pairing -- every membership across all of the user's groups. */
 export interface GroupMembership {
   groupId: string;
   pokemonId: string;

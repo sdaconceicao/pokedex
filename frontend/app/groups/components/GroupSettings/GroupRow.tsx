@@ -1,75 +1,155 @@
 "use client";
 
-import { Button, IconButton, Radio, TextField } from "@code-x/lago";
-import { Trash01 } from "@untitled-ui/icons-react";
+import { Alert, Button, Checkbox, Heading, IconButton, TextField } from "@code-x/lago";
+import { Edit02, Trash01 } from "@untitled-ui/icons-react";
 import Link from "next/link";
-import { type FormEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import CountPill from "@/components/CountPill";
 import { Modal } from "@/components/Modal";
 import { useDeleteGroup, useUpdateGroup } from "@/hooks/useGroups";
 import type { PokemonGroup } from "@/types";
 import styles from "./GroupRow.module.css";
-import { shouldCommitRename } from "./GroupSettings.utils";
+import { buildGroupUpdatePayload, isValidGroupName } from "./GroupSettings.utils";
 
 interface GroupRowProps {
   group: PokemonGroup;
 }
 
 export default function GroupRow({ group }: GroupRowProps) {
+  const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(group.name);
-  const { updateGroupAsync, isUpdateGroupLoading, updateGroupError } = useUpdateGroup();
-  const { deleteGroupAsync, isDeleteGroupLoading } = useDeleteGroup();
+  const [makeDefault, setMakeDefault] = useState(group.isDefault);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
-  const commitName = useCallback(() => {
-    if (!shouldCommitRename(group.name, name)) return;
-    updateGroupAsync({ id: group.id, body: { name: name.trim() } });
-  }, [group.id, group.name, name, updateGroupAsync]);
+  const { updateGroupAsync, isUpdateGroupLoading, updateGroupError } = useUpdateGroup();
+  const { deleteGroupAsync, isDeleteGroupLoading } = useDeleteGroup();
 
-  const handleSubmit = useCallback(
-    (event: FormEvent) => {
-      event.preventDefault();
-      commitName();
-    },
-    [commitName],
-  );
+  const handleEdit = useCallback(() => {
+    setName(group.name);
+    setMakeDefault(group.isDefault);
+    setIsEditing(true);
+  }, [group.name, group.isDefault]);
+
+  const handleCancel = useCallback(() => {
+    setIsEditing(false);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    const payload = buildGroupUpdatePayload(group, { name, makeDefault });
+    if (!payload) {
+      // Either invalid (blocked by the disabled Save button below) or
+      // nothing actually changed -- either way, there is nothing to send.
+      setIsEditing(false);
+      return;
+    }
+    try {
+      await updateGroupAsync({ id: group.id, body: payload });
+      setIsEditing(false);
+    } catch {
+      // updateGroupError renders inline below; stay in edit mode so the
+      // user can retry or cancel.
+    }
+  }, [group, name, makeDefault, updateGroupAsync]);
 
   const handleDelete = useCallback(async () => {
     await deleteGroupAsync(group.id);
     setIsConfirmingDelete(false);
   }, [deleteGroupAsync, group.id]);
 
+  if (isEditing) {
+    return (
+      <li className={styles.row}>
+        <div className={styles.editCard}>
+          <TextField
+            aria-label={`${group.name} group name`}
+            className={styles.nameField}
+            value={name}
+            onChange={setName}
+            isDisabled={isUpdateGroupLoading}
+          />
+          <Checkbox
+            isSelected={makeDefault}
+            // The API ignores isDefault: false -- a signed-in user always has
+            // exactly one default group, so there is no request that clears
+            // one. An already-default group can only be changed by promoting
+            // a different group instead, hence checked-and-disabled here.
+            isDisabled={group.isDefault}
+            onChange={setMakeDefault}
+          >
+            Make this my default group
+          </Checkbox>
+          {/* Rendered here rather than via Checkbox's `description`, whose
+              muted token is meant for a light surface and is close to
+              illegible on this card's gradient. */}
+          {group.isDefault && (
+            <p className={styles.hint}>
+              Already the default. Make a different group default to change it.
+            </p>
+          )}
+
+          {updateGroupError && (
+            <Alert variant="error" className={styles.error}>
+              <Alert.Header title="Couldn't save changes" subtitle={updateGroupError.message} />
+            </Alert>
+          )}
+
+          <div className={styles.editActions}>
+            <Button variant="secondary" size="sm" onPress={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onPress={handleSave}
+              isPending={isUpdateGroupLoading}
+              isDisabled={!isValidGroupName(name)}
+            >
+              Save
+            </Button>
+          </div>
+        </div>
+      </li>
+    );
+  }
+
   return (
     <li className={styles.row}>
-      <form className={styles.renameForm} onSubmit={handleSubmit}>
-        <TextField
-          aria-label={`${group.name} list name`}
-          value={name}
-          onChange={setName}
-          onBlur={commitName}
-          isDisabled={isUpdateGroupLoading}
-          isInvalid={!!updateGroupError}
-          errorMessage={updateGroupError?.message}
-        />
-      </form>
+      <div className={styles.card}>
+        <div className={styles.info}>
+          <Heading level={3} className={styles.name}>
+            {/* Stretched via .name a::after to the whole card (which is
+                position: relative) instead of wrapping the card in a link --
+                that would put .actions' buttons inside the <a>, which is
+                invalid HTML and would still navigate on press. */}
+            <Link href={`/groups/${group.id}`}>{group.name}</Link>
+          </Heading>
+          {group.isDefault && <span className={styles.defaultTag}>Default</span>}
+        </div>
 
-      <Link
-        href={`/groups/${group.id}`}
-        className={styles.viewLink}
-        aria-label={`View ${group.name}`}
-      >
-        <CountPill value={group.pokemonCount} label="Pokemon" />
-      </Link>
+        <CountPill value={group.pokemonCount} label="Pokemon" className={styles.count} />
 
-      <Radio value={group.id} aria-label={`Make ${group.name} the default list`} />
-
-      <IconButton
-        aria-label={`Delete ${group.name}`}
-        variant="quiet"
-        onPress={() => setIsConfirmingDelete(true)}
-      >
-        <Trash01 width={16} height={16} aria-hidden="true" />
-      </IconButton>
+        {/* Given its own stacking context above the stretched link (see
+            .actions in the CSS) so these buttons stay independently
+            clickable instead of triggering navigation. */}
+        <div className={styles.actions}>
+          <IconButton
+            aria-label={`Edit ${group.name}`}
+            variant="quiet"
+            className={styles.actionButton}
+            onPress={handleEdit}
+          >
+            <Edit02 width={16} height={16} aria-hidden="true" />
+          </IconButton>
+          <IconButton
+            aria-label={`Delete ${group.name}`}
+            variant="quiet"
+            className={styles.actionButton}
+            onPress={() => setIsConfirmingDelete(true)}
+          >
+            <Trash01 width={16} height={16} aria-hidden="true" />
+          </IconButton>
+        </div>
+      </div>
 
       {isConfirmingDelete && (
         <Modal
@@ -88,7 +168,7 @@ export default function GroupRow({ group }: GroupRowProps) {
             </>
           }
         >
-          <p>Deleting this list also deletes its saved Pokémon. This can't be undone.</p>
+          <p>Deleting this group also deletes its saved Pokémon. This can't be undone.</p>
         </Modal>
       )}
     </li>

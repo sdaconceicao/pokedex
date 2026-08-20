@@ -109,23 +109,23 @@ beforeEach(() => {
 });
 
 describe("AddToGroupControl", () => {
-  describe("with no lists", () => {
-    it("shows only the always-visible new-list form", () => {
+  describe("with no groups", () => {
+    it("shows only the always-visible new-group form", () => {
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
       expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
       expect(existingListsSection(container)).toBeNull();
-      expect(screen.getByRole("textbox", { name: "New list" })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: "New group" })).toBeInTheDocument();
     });
 
-    it("prefills the name with Favorites, checked as the default list", () => {
+    it("prefills the name with Favorites, checked as the default group", () => {
       render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      expect(screen.getByRole("textbox", { name: "New list" })).toHaveValue("Favorites");
-      expect(screen.getByRole("checkbox", { name: "Make this my default list" })).toBeChecked();
+      expect(screen.getByRole("textbox", { name: "New group" })).toHaveValue("Favorites");
+      expect(screen.getByRole("checkbox", { name: "Make this my default group" })).toBeChecked();
     });
 
-    it("creates the list and adds the pokemon to it, then closes", async () => {
+    it("creates the group and adds the pokemon to it, then closes", async () => {
       const user = userEvent.setup();
       const onDone = vi.fn();
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={onDone} />);
@@ -144,10 +144,10 @@ describe("AddToGroupControl", () => {
       const user = userEvent.setup();
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      const nameField = screen.getByRole("textbox", { name: "New list" });
+      const nameField = screen.getByRole("textbox", { name: "New group" });
       await user.clear(nameField);
       await user.type(nameField, "  Shiny Hunt  ");
-      await user.click(screen.getByRole("checkbox", { name: "Make this my default list" }));
+      await user.click(screen.getByRole("checkbox", { name: "Make this my default group" }));
       await user.click(within(newListForm(container)).getByRole("button", { name: "Add" }));
 
       expect(mockCreateGroupAsync).toHaveBeenCalledWith({ name: "Shiny Hunt", isDefault: false });
@@ -157,7 +157,7 @@ describe("AddToGroupControl", () => {
       const user = userEvent.setup();
       render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      const nameField = screen.getByRole("textbox", { name: "New list" });
+      const nameField = screen.getByRole("textbox", { name: "New group" });
       await user.clear(nameField);
       await user.type(nameField, "   ");
 
@@ -168,7 +168,7 @@ describe("AddToGroupControl", () => {
       const user = userEvent.setup();
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      const nameField = screen.getByRole("textbox", { name: "New list" });
+      const nameField = screen.getByRole("textbox", { name: "New group" });
       await user.clear(nameField);
       await user.type(nameField, "   ");
       fireEvent.submit(newListForm(container));
@@ -195,12 +195,12 @@ describe("AddToGroupControl", () => {
     });
   });
 
-  describe("with exactly one list", () => {
+  describe("with exactly one group", () => {
     beforeEach(() => {
       mockGroups([FAVORITES], FAVORITES);
     });
 
-    it("shows the list's name as a checkbox rather than a dropdown", () => {
+    it("shows the group's name as a checkbox rather than a dropdown", () => {
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
       expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
@@ -263,16 +263,16 @@ describe("AddToGroupControl", () => {
     });
   });
 
-  describe("with more than one list", () => {
+  describe("with more than one group", () => {
     beforeEach(() => {
       mockGroups([FAVORITES, TEAM], FAVORITES);
     });
 
-    it("renders a multiselect over every list", async () => {
+    it("renders a multiselect over every group", async () => {
       const user = userEvent.setup();
       render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
 
       const options = await screen.findAllByRole("option");
       expect(options.map((option) => option.textContent)).toEqual(["Favorites", "Team"]);
@@ -283,14 +283,14 @@ describe("AddToGroupControl", () => {
       const user = userEvent.setup();
       render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
 
       expect(screen.queryByText(/added/)).not.toBeInTheDocument();
       const favorites = await screen.findByRole("option", { name: "Favorites" });
       expect(favorites).toHaveAttribute("aria-selected", "true");
     });
 
-    it("preselects every list the pokemon is already in, with Update disabled", async () => {
+    it("preselects every group the pokemon is already in, with Update disabled", async () => {
       mockMemberships([
         { groupId: FAVORITES.id, pokemonId: bulbasaur.id },
         { groupId: TEAM.id, pokemonId: bulbasaur.id },
@@ -302,7 +302,7 @@ describe("AddToGroupControl", () => {
         within(existingListsSection(container)).getByRole("button", { name: "Update" }),
       ).toBeDisabled();
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
 
       for (const name of ["Favorites", "Team"]) {
         expect(await screen.findByRole("option", { name })).toHaveAttribute(
@@ -316,7 +316,7 @@ describe("AddToGroupControl", () => {
       const user = userEvent.setup();
       render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
 
       for (const name of ["Favorites", "Team"]) {
         expect(await screen.findByRole("option", { name })).toHaveAttribute(
@@ -326,13 +326,13 @@ describe("AddToGroupControl", () => {
       }
     });
 
-    it("adds only the newly selected list on Update", async () => {
+    it("adds only the newly selected group on Update", async () => {
       mockMemberships([{ groupId: FAVORITES.id, pokemonId: bulbasaur.id }]);
       const user = userEvent.setup();
       const onDone = vi.fn();
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={onDone} />);
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
       await user.click(await screen.findByRole("option", { name: "Team" }));
       await user.keyboard("{Escape}");
       await user.click(
@@ -348,7 +348,7 @@ describe("AddToGroupControl", () => {
       expect(onDone).toHaveBeenCalledTimes(1);
     });
 
-    it("removes only the deselected list on Update", async () => {
+    it("removes only the deselected group on Update", async () => {
       mockMemberships([
         { groupId: FAVORITES.id, pokemonId: bulbasaur.id },
         { groupId: TEAM.id, pokemonId: bulbasaur.id },
@@ -356,7 +356,7 @@ describe("AddToGroupControl", () => {
       const user = userEvent.setup();
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
       await user.click(await screen.findByRole("option", { name: "Favorites" }));
       await user.keyboard("{Escape}");
       await user.click(
@@ -376,7 +376,7 @@ describe("AddToGroupControl", () => {
       const user = userEvent.setup();
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
       await user.click(await screen.findByRole("option", { name: "Favorites" }));
       await user.click(await screen.findByRole("option", { name: "Team" }));
       await user.keyboard("{Escape}");
@@ -399,12 +399,12 @@ describe("AddToGroupControl", () => {
         addPokemonToGroup: vi.fn(),
         addPokemonToGroupAsync: mockAddPokemonToGroupAsync,
         isAddPokemonToGroupLoading: false,
-        addPokemonToGroupError: new Error("Could not update that list"),
+        addPokemonToGroupError: new Error("Could not update that group"),
       } as unknown as ReturnType<typeof useAddPokemonToGroup>);
 
       render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
-      expect(screen.getByText("Could not update that list")).toBeInTheDocument();
+      expect(screen.getByText("Could not update that group")).toBeInTheDocument();
     });
 
     it("keeps the popover open when an update rejects", async () => {
@@ -414,7 +414,7 @@ describe("AddToGroupControl", () => {
       const onDone = vi.fn();
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={onDone} />);
 
-      await user.click(screen.getByRole("combobox", { name: "Your lists" }));
+      await user.click(screen.getByRole("combobox", { name: "Your groups" }));
       await user.click(await screen.findByRole("option", { name: "Favorites" }));
       await user.keyboard("{Escape}");
       await user.click(
@@ -437,7 +437,7 @@ describe("AddToGroupControl", () => {
       const { container } = render(<AddToGroupControl pokemon={bulbasaur} onDone={vi.fn()} />);
 
       expect(existingListsSection(container)).toBeNull();
-      expect(screen.getByRole("textbox", { name: "New list" })).toHaveValue("Favorites");
+      expect(screen.getByRole("textbox", { name: "New group" })).toHaveValue("Favorites");
     });
 
     it("treats undefined memberships the same as no memberships", () => {

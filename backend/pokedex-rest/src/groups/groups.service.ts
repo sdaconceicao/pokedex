@@ -38,8 +38,11 @@ export class GroupsService {
       .addSelect('COUNT(pokemon.id)', 'pokemonCount')
       .where('group.userId = :userId', { userId })
       .groupBy('group.id')
-      .orderBy('group.isDefault', 'DESC')
-      .addOrderBy('group.name', 'ASC')
+      // Alphabetical only: the UI marks the default with a badge rather
+      // than hoisting it, and callers identify the default by its
+      // isDefault flag, not by array position -- nothing depends on the
+      // default sorting first.
+      .orderBy('group.name', 'ASC')
       .getRawAndEntities<{ pokemonCount: string }>();
 
     entities.forEach((group, index) => {
@@ -82,7 +85,7 @@ export class GroupsService {
         return await manager.save(group);
       } catch (error) {
         if (isUniqueViolation(error)) {
-          throw new ConflictException('A list with that name already exists');
+          throw new ConflictException('A group with that name already exists');
         }
         throw error;
       }
@@ -119,7 +122,9 @@ export class GroupsService {
           await manager.update(GroupEntity, { id }, changes);
         } catch (error) {
           if (isUniqueViolation(error)) {
-            throw new ConflictException('A list with that name already exists');
+            throw new ConflictException(
+              'A group with that name already exists',
+            );
           }
           throw error;
         }
@@ -204,18 +209,16 @@ export class GroupsService {
   async findAllMembershipsForUser(
     userId: string,
   ): Promise<GroupPokemonEntity[]> {
-    return (
-      this.groupPokemonRepository
-        .createQueryBuilder('group_pokemon')
-        .innerJoin('group_pokemon.group', 'group')
-        .where('group.userId = :userId', { userId })
-        .select([
-          'group_pokemon.id',
-          'group_pokemon.groupId',
-          'group_pokemon.pokemonId',
-        ])
-        .orderBy('group_pokemon.createdAt', 'ASC')
-        .getMany()
-    );
+    return this.groupPokemonRepository
+      .createQueryBuilder('group_pokemon')
+      .innerJoin('group_pokemon.group', 'group')
+      .where('group.userId = :userId', { userId })
+      .select([
+        'group_pokemon.id',
+        'group_pokemon.groupId',
+        'group_pokemon.pokemonId',
+      ])
+      .orderBy('group_pokemon.createdAt', 'ASC')
+      .getMany();
   }
 }

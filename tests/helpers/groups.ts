@@ -43,14 +43,14 @@ const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\
 
 export function cardGroupButton(card: Locator): Locator {
   return card.locator("xpath=../..").getByRole("button", {
-    name: /^(Add .+ to a list|Manage .+'s lists)$/,
+    name: /^(Add .+ to a group|Manage .+'s groups)$/,
   });
 }
 
 export function groupPopover(page: Page, name?: string): Locator {
   const pattern = name
-    ? new RegExp(`^(Add ${escapeRegExp(name)} to a list|Manage ${escapeRegExp(name)}'s lists)$`)
-    : /^(Add .+ to a list|Manage .+'s lists)$/;
+    ? new RegExp(`^(Add ${escapeRegExp(name)} to a group|Manage ${escapeRegExp(name)}'s groups)$`)
+    : /^(Add .+ to a group|Manage .+'s groups)$/;
   return page.getByRole("dialog", { name: pattern });
 }
 
@@ -65,29 +65,39 @@ export async function openGroupPopover(
   return { popover, name };
 }
 
-export async function submitNewList(
+export async function submitNewGroup(
   popover: Locator,
   options: { name?: string; makeDefault?: boolean } = {},
 ): Promise<void> {
   if (options.name !== undefined) {
-    await popover.getByRole("textbox", { name: "New list" }).fill(options.name);
+    await popover.getByRole("textbox", { name: "New group" }).fill(options.name);
   }
   if (options.makeDefault !== undefined) {
-    const checkbox = popover.getByRole("checkbox", { name: "Make this my default list" });
+    const checkbox = popover.getByRole("checkbox", { name: "Make this my default group" });
     const isChecked = await checkbox.isChecked();
     if (isChecked !== options.makeDefault) await checkbox.click({ force: true });
   }
   await popover.getByRole("button", { name: "Add" }).click();
 }
 
-export async function toggleListSelection(
+/**
+ * Toggles groups in the popover's multiselect. The listbox has to be dismissed
+ * afterwards: react-aria hides everything outside an open popover from the
+ * accessibility tree, so Update stays unreachable while it is showing.
+ */
+export async function toggleGroupSelection(
   page: Page,
   popover: Locator,
   names: string[],
 ): Promise<void> {
-  await popover.getByRole("combobox", { name: "Your lists" }).click();
+  await popover.getByRole("combobox", { name: "Your groups" }).click();
   for (const name of names) {
     await page.getByRole("option", { name }).click();
   }
   await page.keyboard.press("Escape");
+}
+
+/** A row on /groups, located by the group's name link. */
+export function groupRow(page: Page, name: string): Locator {
+  return page.getByRole("listitem").filter({ has: page.getByRole("link", { name, exact: true }) });
 }

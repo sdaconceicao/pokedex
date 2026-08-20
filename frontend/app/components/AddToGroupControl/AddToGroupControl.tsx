@@ -165,8 +165,8 @@ export const AddToGroupControl: FunctionComponent<AddToGroupControlProps> = ({
       <div className={css.existingList}>
         <MultiSelect
           size="sm"
-          label="Your lists"
-          placeholder="No lists"
+          label="Your groups"
+          placeholder="No groups"
           value={selectedIds}
           onChange={handleSelectionChange}
           className={css.select}
@@ -194,13 +194,13 @@ export const AddToGroupControl: FunctionComponent<AddToGroupControlProps> = ({
 
       <Form className={css.newListForm} onSubmit={handleCreateSubmit} validationBehavior="aria">
         <TextField
-          label="New list"
+          label="New group"
           value={name}
           onChange={setNameOverride}
-          placeholder={allGroups.length === 0 ? undefined : "New list name"}
+          placeholder={allGroups.length === 0 ? undefined : "New group name"}
         />
         <Checkbox isSelected={isDefaultChecked} onChange={setIsDefaultOverride}>
-          Make this my default list
+          Make this my default group
         </Checkbox>
         <Button
           type="submit"

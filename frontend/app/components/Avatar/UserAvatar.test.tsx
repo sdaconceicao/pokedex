@@ -20,13 +20,16 @@ describe("UserAvatar", () => {
   });
 
   describe("the menu", () => {
-    it("links My lists to /groups", async () => {
+    it("links My groups to /groups", async () => {
       await openMenu();
 
-      expect(screen.getByRole("menuitem", { name: "My lists" })).toHaveAttribute("href", "/groups");
+      expect(screen.getByRole("menuitem", { name: "My groups" })).toHaveAttribute(
+        "href",
+        "/groups",
+      );
     });
 
-    it("offers no account-settings entry -- list management lives on /groups", async () => {
+    it("offers no account-settings entry -- group management lives on /groups", async () => {
       await openMenu();
 
       expect(screen.queryByRole("menuitem", { name: "Account settings" })).not.toBeInTheDocument();
@@ -55,7 +58,7 @@ describe("UserAvatar", () => {
     it("does not fire onLogout for the navigation items", async () => {
       const { user, onLogout } = await openMenu();
 
-      await user.click(screen.getByRole("menuitem", { name: "My lists" }));
+      await user.click(screen.getByRole("menuitem", { name: "My groups" }));
 
       expect(onLogout).not.toHaveBeenCalled();
     });

@@ -121,7 +121,7 @@ describe("GroupDetail", () => {
 
     render(<GroupDetail />);
 
-    expect(screen.getByRole("heading", { name: "List" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Group" })).toBeInTheDocument();
   });
 
   it("sends pokemonByIds the ids from the group's pokemon, in order", () => {
@@ -165,31 +165,31 @@ describe("GroupDetail", () => {
       setAuth({ user: undefined, isLoading: false });
 
       render(<GroupDetail />);
-      expect(screen.getByText("Sign in to see this list.")).toBeInTheDocument();
+      expect(screen.getByText("Sign in to see this group.")).toBeInTheDocument();
 
       await user.click(screen.getByRole("button", { name: "Sign In" }));
       expect(openSignIn).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe("a list that isn't found", () => {
+  describe("a group that isn't found", () => {
     it("surfaces a not-found message instead of crashing on the 404", () => {
       setGroupPokemon({ pokemon: undefined, error: new Error("Not Found") });
 
       render(<GroupDetail />);
 
-      expect(screen.getByRole("status")).toHaveTextContent("List not found");
+      expect(screen.getByRole("status")).toHaveTextContent("Group not found");
       expect(screen.queryByTestId("pokemon-list")).not.toBeInTheDocument();
     });
   });
 
   describe("empty", () => {
-    it("explains the list has no pokemon yet", () => {
+    it("explains the group has no pokemon yet", () => {
       setGroupPokemon({ pokemon: [] });
 
       render(<GroupDetail />);
 
-      expect(screen.getByText("This list doesn't have any Pokémon yet.")).toBeInTheDocument();
+      expect(screen.getByText("This group doesn't have any Pokémon yet.")).toBeInTheDocument();
     });
   });
 

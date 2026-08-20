@@ -1,10 +1,9 @@
 "use client";
 
-import { Alert, Button, Heading, RadioGroup, Skeleton } from "@code-x/lago";
+import { Alert, Button, Heading, Skeleton } from "@code-x/lago";
 import type { ReactNode } from "react";
-import { useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useGroups, useUpdateGroup } from "@/hooks/useGroups";
+import { useGroups } from "@/hooks/useGroups";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import GroupRow from "./GroupRow";
 import styles from "./GroupSettings.module.css";
@@ -20,7 +19,7 @@ function GroupSettingsSkeleton() {
           key={key}
           variant="line"
           height={40}
-          label={key === 0 ? "Loading your lists" : undefined}
+          label={key === 0 ? "Loading your groups" : undefined}
         />
       ))}
     </div>
@@ -30,17 +29,7 @@ function GroupSettingsSkeleton() {
 export default function GroupSettings() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const { openSignIn } = useAuthModal();
-  const { groups, defaultGroup, isLoading: isGroupsLoading, error } = useGroups();
-
-  const { updateGroupAsync: setDefaultGroupAsync, updateGroupError: setDefaultError } =
-    useUpdateGroup();
-
-  const handleDefaultChange = useCallback(
-    (id: string) => {
-      setDefaultGroupAsync({ id, body: { isDefault: true } });
-    },
-    [setDefaultGroupAsync],
-  );
+  const { groups, isLoading: isGroupsLoading, error } = useGroups();
 
   const state = resolveGroupSettingsState(isAuthLoading, user, isGroupsLoading, error, groups);
 
@@ -52,7 +41,7 @@ export default function GroupSettings() {
     case "signedOut":
       content = (
         <div className={styles.prompt}>
-          <p>Sign in to manage your Pokémon lists.</p>
+          <p>Sign in to manage your Pokémon groups.</p>
           <Button variant="primary" onPress={openSignIn}>
             Sign In
           </Button>
@@ -62,47 +51,31 @@ export default function GroupSettings() {
     case "error":
       content = (
         <Alert variant="error">
-          <Alert.Header title="Couldn't load your lists" subtitle={error?.message} />
+          <Alert.Header title="Couldn't load your groups" subtitle={error?.message} />
         </Alert>
       );
       break;
     case "empty":
       content = (
-        <p className={styles.empty}>Press the + on any Pokémon card to create your first list.</p>
+        <p className={styles.empty}>Press the + on any Pokémon card to create your first group.</p>
       );
       break;
-    case "list":
+    case "populated":
       content = (
-        <>
-          {setDefaultError && (
-            <Alert variant="error" className={styles.defaultError}>
-              <Alert.Header
-                title="Couldn't change your default list"
-                subtitle={setDefaultError.message}
-              />
-            </Alert>
-          )}
-          <RadioGroup
-            aria-label="Default list"
-            value={defaultGroup?.id}
-            onChange={handleDefaultChange}
-          >
-            <ul className={styles.list}>
-              {groups?.map((group) => (
-                <GroupRow key={group.id} group={group} />
-              ))}
-            </ul>
-          </RadioGroup>
-        </>
+        <ul className={styles.list}>
+          {groups?.map((group) => (
+            <GroupRow key={group.id} group={group} />
+          ))}
+        </ul>
       );
       break;
   }
 
   return (
     <section className={styles.container}>
-      <Heading level={1}>Your lists</Heading>
+      <Heading level={1}>Your groups</Heading>
       <p className={styles.intro}>
-        Your default list is preselected whenever you add a Pokémon to a list.
+        Your default group is preselected whenever you add a Pokémon to a group.
       </p>
       {content}
     </section>

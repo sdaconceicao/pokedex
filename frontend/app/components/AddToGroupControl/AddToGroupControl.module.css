@@ -19,7 +19,7 @@
   gap: var(--spacing-2);
 }
 
-/* Stands in for the multiselect in the single-list case: the list's name is
+/* Stands in for the multiselect in the single-group case: the group's name is
    shown plainly, with a checkbox as the thing Update acts on. */
 .addToGroupControl .singleList {
   flex: 1;

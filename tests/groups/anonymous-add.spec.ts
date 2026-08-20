@@ -11,7 +11,7 @@ import {
 
 const PASSWORD = "P@ssw0rd123";
 
-test.describe("Adding to a list while signed out", () => {
+test.describe("Adding to a group while signed out", () => {
   test("opens sign-up instead of the popover, then resumes the same add after registering", async ({
     page,
   }) => {

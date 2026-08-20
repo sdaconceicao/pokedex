@@ -1,12 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateGroupRequestDto {
-  @ApiPropertyOptional({ example: 'My Team', description: 'New list name' })
+  @ApiPropertyOptional({ example: 'My Team', description: 'New group name' })
   name?: string;
 
   @ApiPropertyOptional({
     example: true,
-    description: 'Set this list as the default',
+    description: 'Set this group as the default',
   })
   isDefault?: boolean;
 }

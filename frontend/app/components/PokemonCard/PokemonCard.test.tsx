@@ -14,7 +14,7 @@ vi.mock("@/components/AddToGroupButton", () => ({
   __esModule: true,
   default: ({ pokemon }: { pokemon: Pokemon }) => (
     <button type="button" data-testid="add-to-group-button">
-      {`Add ${pokemon.name} to a list`}
+      {`Add ${pokemon.name} to a group`}
     </button>
   ),
 }));
@@ -204,7 +204,7 @@ describe("PokemonCard", () => {
 
     const button = screen.getByTestId("add-to-group-button");
     expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent("Add bulbasaur to a list");
+    expect(button).toHaveTextContent("Add bulbasaur to a group");
     // Sibling of the link, not nested inside it — an interactive control
     // inside an <a> is invalid HTML and would still navigate on press.
     expect(container.querySelector("a")).not.toContainElement(button);

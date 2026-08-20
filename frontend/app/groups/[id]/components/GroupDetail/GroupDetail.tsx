@@ -55,7 +55,7 @@ export default function GroupDetail() {
     case "signedOut":
       content = (
         <div className={styles.prompt}>
-          <p>Sign in to see this list.</p>
+          <p>Sign in to see this group.</p>
           <Button variant="primary" onPress={openSignIn}>
             Sign In
           </Button>
@@ -66,14 +66,14 @@ export default function GroupDetail() {
       content = (
         <Alert variant="error">
           <Alert.Header
-            title="List not found"
+            title="Group not found"
             subtitle="It may have been deleted, or it isn't yours."
           />
         </Alert>
       );
       break;
     case "empty":
-      content = <p className={styles.empty}>This list doesn't have any Pokémon yet.</p>;
+      content = <p className={styles.empty}>This group doesn't have any Pokémon yet.</p>;
       break;
     case "list":
       content = <PokemonList pokemon={data?.pokemonByIds ?? []} />;
@@ -82,7 +82,7 @@ export default function GroupDetail() {
 
   return (
     <div className={styles.container}>
-      <Heading level={1}>{group?.name ?? "List"}</Heading>
+      <Heading level={1}>{group?.name ?? "Group"}</Heading>
       {content}
     </div>
   );

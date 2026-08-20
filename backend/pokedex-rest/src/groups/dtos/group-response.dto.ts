@@ -10,6 +10,6 @@ export class GroupResponseDto {
   @ApiProperty({ example: false })
   isDefault: boolean;
 
-  @ApiProperty({ example: 6, description: 'Number of Pokemon in this list' })
+  @ApiProperty({ example: 6, description: 'Number of Pokemon in this group' })
   pokemonCount: number;
 }

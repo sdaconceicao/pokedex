@@ -26,7 +26,7 @@ export const AddToGroupButton: FunctionComponent<AddToGroupButtonProps> = ({
 
   const isSaved = isPokemonSaved(memberships ?? [], pokemon.id);
   const name = formatPokemonName(pokemon);
-  const label = isSaved ? `Manage ${name}'s lists` : `Add ${name} to a list`;
+  const label = isSaved ? `Manage ${name}'s groups` : `Add ${name} to a group`;
 
   const handleOpenChange = useCallback(
     (open: boolean) => {

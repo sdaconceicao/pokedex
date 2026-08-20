@@ -58,7 +58,7 @@ function Consumer() {
       </button>
       {isOpen && (
         <div>
-          <h2>{`Add Bulbasaur to a list`}</h2>
+          <h2>{`Add Bulbasaur to a group`}</h2>
           <button type="button" onClick={() => setIsOpen(false)}>
             dismiss
           </button>
@@ -97,7 +97,7 @@ describe("AddToGroupProvider", () => {
 
     expect(mockOpenSignIn).toHaveBeenCalledTimes(1);
     expect(
-      screen.queryByRole("heading", { name: "Add Bulbasaur to a list" }),
+      screen.queryByRole("heading", { name: "Add Bulbasaur to a group" }),
     ).not.toBeInTheDocument();
   });
 
@@ -108,7 +108,7 @@ describe("AddToGroupProvider", () => {
     fireEvent.click(screen.getByText("add bulbasaur"));
 
     expect(mockOpenSignIn).not.toHaveBeenCalled();
-    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a list" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a group" })).toBeInTheDocument();
   });
 
   it("resumes and opens the control once the user appears after a signed-out press", () => {
@@ -124,7 +124,7 @@ describe("AddToGroupProvider", () => {
       </AddToGroupProvider>,
     );
 
-    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a list" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a group" })).toBeInTheDocument();
   });
 
   it("drops the pending add when the sign-in form is closed without signing in", () => {
@@ -175,7 +175,7 @@ describe("AddToGroupProvider", () => {
     mockUser = { id: "1" };
     rerenderProvider();
 
-    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a list" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a group" })).toBeInTheDocument();
   });
 
   it("does not reopen a resumed control the user just dismissed", () => {
@@ -189,7 +189,7 @@ describe("AddToGroupProvider", () => {
         <Consumer />
       </AddToGroupProvider>,
     );
-    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a list" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Add Bulbasaur to a group" })).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("dismiss"));
     expect(screen.queryByRole("heading")).not.toBeInTheDocument();

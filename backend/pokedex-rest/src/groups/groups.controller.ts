@@ -66,7 +66,7 @@ export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
-  @ApiOperation({ summary: "List the current user's Pokemon lists" })
+  @ApiOperation({ summary: "List the current user's Pokemon groups" })
   @ApiOkResponse({ type: GroupResponseDto, isArray: true })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
   async findAll(@User() user: AccessTokenPayload): Promise<GroupResponseDto[]> {
@@ -75,7 +75,7 @@ export class GroupsController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create a new Pokemon list' })
+  @ApiOperation({ summary: 'Create a new Pokemon group' })
   @ApiCreatedResponse({ type: GroupResponseDto })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
   async create(
@@ -90,7 +90,7 @@ export class GroupsController {
   // swallowed as a GET /groups/:id if that route is ever added later.
   @Get('memberships')
   @ApiOperation({
-    summary: "List every group/Pokemon pair across the user's lists",
+    summary: "List every group/Pokemon pair across the user's groups",
   })
   @ApiOkResponse({ type: GroupMembershipResponseDto, isArray: true })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
@@ -104,7 +104,7 @@ export class GroupsController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Rename a list or set it as the default' })
+  @ApiOperation({ summary: 'Rename a group or set it as the default' })
   @ApiOkResponse({ type: GroupResponseDto })
   @ApiNotFoundResponse({ description: 'Group not found' })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
@@ -119,7 +119,7 @@ export class GroupsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a list' })
+  @ApiOperation({ summary: 'Delete a group' })
   @ApiNotFoundResponse({ description: 'Group not found' })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
   async remove(
@@ -130,7 +130,7 @@ export class GroupsController {
   }
 
   @Get(':id/pokemon')
-  @ApiOperation({ summary: 'List the Pokemon saved in a list' })
+  @ApiOperation({ summary: 'List the Pokemon saved in a group' })
   @ApiOkResponse({ type: GroupPokemonResponseDto, isArray: true })
   @ApiNotFoundResponse({ description: 'Group not found' })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
@@ -146,7 +146,7 @@ export class GroupsController {
   }
 
   @Post(':id/pokemon')
-  @ApiOperation({ summary: 'Add a Pokemon to a list' })
+  @ApiOperation({ summary: 'Add a Pokemon to a group' })
   @ApiCreatedResponse({ type: GroupPokemonResponseDto })
   @ApiNotFoundResponse({ description: 'Group not found' })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
@@ -165,7 +165,7 @@ export class GroupsController {
 
   @Delete(':id/pokemon/:pokemonId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Remove a Pokemon from a list' })
+  @ApiOperation({ summary: 'Remove a Pokemon from a group' })
   @ApiNotFoundResponse({ description: 'Group not found' })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
   async removePokemon(

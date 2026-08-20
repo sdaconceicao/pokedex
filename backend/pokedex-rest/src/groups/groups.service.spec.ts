@@ -90,7 +90,7 @@ describe('GroupsService', () => {
   });
 
   describe('findAllForUser', () => {
-    it('scopes by user, maps the pokemon count, and orders default first then by name', async () => {
+    it('scopes by user, maps the pokemon count, and orders alphabetically by name', async () => {
       const groupA = { ...mockGroup, id: 'group-1' } as GroupEntity;
       const groupB = { ...mockGroup, id: 'group-2' } as GroupEntity;
       const getRawAndEntities = vi.fn().mockResolvedValue({
@@ -120,8 +120,10 @@ describe('GroupsService', () => {
         userId,
       });
       expect(qb.groupBy).toHaveBeenCalledWith('group.id');
-      expect(qb.orderBy).toHaveBeenCalledWith('group.isDefault', 'DESC');
-      expect(qb.addOrderBy).toHaveBeenCalledWith('group.name', 'ASC');
+      expect(qb.orderBy).toHaveBeenCalledWith('group.name', 'ASC');
+      // Alphabetical only now -- the default is identified by its flag,
+      // not by sorting first, so there's no secondary order-by.
+      expect(qb.addOrderBy).not.toHaveBeenCalled();
       expect(result).toEqual([
         { ...groupA, pokemonCount: 3 },
         { ...groupB, pokemonCount: 0 },
