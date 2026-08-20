@@ -19,6 +19,9 @@ export interface NavItem {
   };
   /** For items that navigate to a page of their own */
   activeWhenPathnameEquals?: string;
+  /** For an item that stands for several pages — a dex family's revisions all
+   *  light up the one item that opens them. */
+  activeWhenPathnameIn?: string[];
   icon?: ReactNode;
 }
 
@@ -33,15 +36,17 @@ export default function NavbarItem({ item }: NavbarItemProps) {
   // The param check is scoped to the item's own route, taken from its href, so
   // an item can't light up on some other page that happens to use the same
   // param name.
-  const isActive = item.activeWhenPathnameEquals
-    ? pathname === item.activeWhenPathnameEquals
-    : item.activeWhenSearchParamIncludes
-      ? pathname === item.href.split("?")[0] &&
-        paramIncludes(
-          searchParams.get(item.activeWhenSearchParamIncludes.key),
-          item.activeWhenSearchParamIncludes.value,
-        )
-      : false;
+  const isActive = item.activeWhenPathnameIn
+    ? item.activeWhenPathnameIn.includes(pathname)
+    : item.activeWhenPathnameEquals
+      ? pathname === item.activeWhenPathnameEquals
+      : item.activeWhenSearchParamIncludes
+        ? pathname === item.href.split("?")[0] &&
+          paramIncludes(
+            searchParams.get(item.activeWhenSearchParamIncludes.key),
+            item.activeWhenSearchParamIncludes.value,
+          )
+        : false;
 
   return (
     // lago's Link supplies the interaction/state contract (hover, focus-visible

@@ -158,14 +158,16 @@ export const GET_POKEDEXES = gql`
   query GetPokedexes {
     pokedexes {
       name
+      displayName
+      region
       count
     }
   }
 `;
 
 export const GET_POKEMON_BY_POKEDEX = gql`
-  query GetPokemonByPokedex($pokedex: String!, $limit: Int, $offset: Int) {
-    pokemonByPokedex(pokedex: $pokedex, limit: $limit, offset: $offset) {
+  query GetPokemonByPokedex($pokedex: String!, $limit: Int, $offset: Int, $sort: PokemonSort) {
+    pokemonByPokedex(pokedex: $pokedex, limit: $limit, offset: $offset, sort: $sort) {
       total
       offset
       pokemon {

@@ -780,6 +780,7 @@ export const typeResponse: {
 export const pokedex = {
   id: 2,
   name: "kanto",
+  is_main_series: true,
   descriptions: [
     {
       description: "Red and Blue version Pokémon",
@@ -862,6 +863,110 @@ export const region = {
   ],
 };
 
+/**
+ * The dexes beyond `kanto`, so the mock list is not four copies of one dex.
+ *
+ * `national` covers a dex the API ties to no region and gives no version
+ * groups; the Johto pair covers a place with two revisions, which is what the
+ * nav collapses and the page offers a switcher for.
+ */
+export const pokedexNational = {
+  id: 1,
+  name: "national",
+  is_main_series: true,
+  descriptions: [
+    {
+      description: "Entire National dex",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  names: [
+    { name: "National", language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" } },
+  ],
+  pokemon_entries: [
+    {
+      entry_number: 1,
+      pokemon_species: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    },
+    {
+      entry_number: 2,
+      pokemon_species: { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon-species/2/" },
+    },
+    {
+      entry_number: 3,
+      pokemon_species: { name: "venusaur", url: "https://pokeapi.co/api/v2/pokemon-species/3/" },
+    },
+  ],
+  region: null,
+  version_groups: [],
+};
+
+export const pokedexOriginalJohto = {
+  id: 3,
+  name: "original-johto",
+  is_main_series: true,
+  descriptions: [
+    {
+      description: "Gold/Silver/Crystal Johto dex",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  names: [
+    {
+      name: "Original Johto",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  pokemon_entries: [
+    {
+      entry_number: 1,
+      pokemon_species: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    },
+  ],
+  region: { name: "johto", url: "https://pokeapi.co/api/v2/region/2/" },
+  version_groups: [{ name: "gold-silver", url: "https://pokeapi.co/api/v2/version-group/3/" }],
+};
+
+export const pokedexUpdatedJohto = {
+  id: 7,
+  name: "updated-johto",
+  is_main_series: true,
+  descriptions: [
+    {
+      description: "HeartGold/SoulSilver Johto dex",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  names: [
+    {
+      name: "Updated Johto",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  pokemon_entries: [
+    {
+      entry_number: 1,
+      pokemon_species: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    },
+    {
+      entry_number: 2,
+      pokemon_species: { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon-species/2/" },
+    },
+  ],
+  region: { name: "johto", url: "https://pokeapi.co/api/v2/region/2/" },
+  version_groups: [
+    { name: "heartgold-soulsilver", url: "https://pokeapi.co/api/v2/version-group/10/" },
+  ],
+};
+
+/** Every mocked dex by slug, for the `pokedex/{name}` handler. */
+export const pokedexesBySlug: Record<string, typeof pokedex | typeof pokedexNational> = {
+  kanto: pokedex,
+  national: pokedexNational,
+  "original-johto": pokedexOriginalJohto,
+  "updated-johto": pokedexUpdatedJohto,
+};
+
 export const pokedexListResponse: {
   count: number;
   next: string | null;
@@ -882,6 +987,14 @@ export const pokedexListResponse: {
     {
       name: "kanto",
       url: "https://pokeapi.co/api/v2/pokedex/2/",
+    },
+    {
+      name: "original-johto",
+      url: "https://pokeapi.co/api/v2/pokedex/3/",
+    },
+    {
+      name: "updated-johto",
+      url: "https://pokeapi.co/api/v2/pokedex/7/",
     },
   ],
 };

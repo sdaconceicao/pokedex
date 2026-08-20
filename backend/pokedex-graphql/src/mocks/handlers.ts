@@ -6,6 +6,7 @@ import {
   evolutionChain,
   pikachuGmaxEntity,
   pokedex,
+  pokedexesBySlug,
   pokedexListResponse,
   pokemonAbility,
   pokemonEntity,
@@ -76,10 +77,12 @@ export const handlers = [
     return HttpResponse.json(typeResponse);
   }),
 
-  // Pokedex endpoint - used by getPokemonByPokedex()
-  http.get("https://pokeapi.co/api/v2/pokedex/:pokedex", () => {
-    // Return mock data for any pokedex
-    return HttpResponse.json(pokedex);
+  // Pokedex endpoint - used by getPokemonByPokedex(), getPokedex() and getPokedexes()
+  http.get("https://pokeapi.co/api/v2/pokedex/:pokedex", ({ params }) => {
+    // Answer with the dex that was asked for, so a list of them isn't the same
+    // dex repeated; anything unmocked falls back to kanto.
+    const slug = String(params.pokedex);
+    return HttpResponse.json(pokedexesBySlug[slug] ?? pokedex);
   }),
 
   // Region endpoint - used by getPokemonByRegion()

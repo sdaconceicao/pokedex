@@ -5,6 +5,7 @@ describe("buildBrowseUrl", () => {
     expect(buildBrowseUrl("region", "johto")).toBe("/region/johto");
     expect(buildBrowseUrl("type", "fire")).toBe("/type/fire");
     expect(buildBrowseUrl("forms", "gmax")).toBe("/forms/gmax");
+    expect(buildBrowseUrl("pokedex", "letsgo-kanto")).toBe("/pokedex/letsgo-kanto");
   });
 
   it("pages and sorts a form collection like any other section", () => {
@@ -25,6 +26,9 @@ describe("buildBrowseUrl", () => {
     );
     expect(buildBrowseUrl("type", "fire", { page: 3, pokemonId: "4" })).toBe(
       "/type/fire/pokemon/4?page=3",
+    );
+    expect(buildBrowseUrl("pokedex", "kanto", { page: 2, pokemonId: "25" })).toBe(
+      "/pokedex/kanto/pokemon/25?page=2",
     );
   });
 

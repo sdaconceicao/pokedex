@@ -49,7 +49,7 @@ Next.js **16** App Router application (React **19**) deployed to Vercel.
 - **Providers** (nested in `app/layout.tsx`): `LagoProvider` → `QueryProvider`
   → `ApolloWrapper` → `AuthModalProvider` → `AppShell`.
 - **Routes**: `/` (home), `/pokemon/[id]`, `/region/[name]`, `/type/[name]`,
-  `/search`. Server components fetch navigation data (`NavigationDataProvider`)
+  `/pokedex/[name]`, `/search`. Server components fetch navigation data (`NavigationDataProvider`)
   directly; interactive pieces use Apollo/React Query.
 - **Codegen**: `pnpm prebuild` runs `codegen`; `start:dev` runs `codegen:watch`
   alongside `next dev`. GraphQL documents under `app/**/*.{ts,tsx}` drive the

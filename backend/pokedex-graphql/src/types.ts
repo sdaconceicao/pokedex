@@ -58,6 +58,28 @@ export type EvolutionNode = {
   trigger?: Maybe<Scalars['String']['output']>;
 };
 
+/**
+ * One dex as PokeAPI ships it: the list a set of games shipped with, which is why a
+ * dex belongs to version groups rather than to a generation.
+ */
+export type PokedexDetail = {
+  __typename?: 'PokedexDetail';
+  /** The English blurb, when PokeAPI has one for this dex. */
+  description?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  /** False for the spin-off dexes (Conquest, Let's Go's own listings, and so on). */
+  isMainSeries: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  pokemonCount: Scalars['Int']['output'];
+  /**
+   * The region this dex covers, as a slug. Null for the national dex and the
+   * spin-off dexes, which aren't tied to one.
+   */
+  region?: Maybe<Scalars['String']['output']>;
+  versionGroups: Array<Scalars['String']['output']>;
+};
+
 export type Pokemon = {
   __typename?: 'Pokemon';
   abilities?: Maybe<Array<Ability>>;
@@ -114,7 +136,14 @@ export type PokemonList = {
 export type PokemonPokedex = {
   __typename?: 'PokemonPokedex';
   count: Scalars['Int']['output'];
+  /** The same name the dex's own page shows, so a nav label and its page agree. */
+  displayName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  /**
+   * The region this dex covers, for grouping the list. Null for the dexes that
+   * belong to no single region.
+   */
+  region?: Maybe<Scalars['String']['output']>;
 };
 
 export type PokemonRegion = {
@@ -143,6 +172,7 @@ export type PokemonType = {
 export type Query = {
   __typename?: 'Query';
   ability?: Maybe<Ability>;
+  pokedex?: Maybe<PokedexDetail>;
   pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
@@ -160,6 +190,11 @@ export type Query = {
 
 export type QueryAbilityArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokedexArgs = {
+  name: Scalars['String']['input'];
 };
 
 
@@ -355,6 +390,7 @@ export type ResolversTypes = {
   EvolutionNode: ResolverTypeWrapper<EvolutionNode>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  PokedexDetail: ResolverTypeWrapper<PokedexDetail>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
   PokemonFilter: PokemonFilter;
   PokemonForm: ResolverTypeWrapper<PokemonForm>;
@@ -381,6 +417,7 @@ export type ResolversParentTypes = {
   EvolutionNode: EvolutionNode;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  PokedexDetail: PokedexDetail;
   Pokemon: Pokemon;
   PokemonFilter: PokemonFilter;
   PokemonForm: PokemonForm;
@@ -428,6 +465,17 @@ export type EvolutionNodeResolvers<ContextType = DataSourceContext, ParentType e
   trigger?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
+export type PokedexDetailResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokedexDetail'] = ResolversParentTypes['PokedexDetail']> = {
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isMainSeries?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pokemonCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  region?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  versionGroups?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+};
+
 export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
   abilities?: Resolver<Maybe<Array<ResolversTypes['Ability']>>, ParentType, ContextType>;
   abilitiesLite?: Resolver<Array<ResolversTypes['AbilityLite']>, ParentType, ContextType>;
@@ -457,7 +505,9 @@ export type PokemonListResolvers<ContextType = DataSourceContext, ParentType ext
 
 export type PokemonPokedexResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonPokedex'] = ResolversParentTypes['PokemonPokedex']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  region?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
 export type PokemonRegionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonRegion'] = ResolversParentTypes['PokemonRegion']> = {
@@ -472,6 +522,7 @@ export type PokemonTypeResolvers<ContextType = DataSourceContext, ParentType ext
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ability?: Resolver<Maybe<ResolversTypes['Ability']>, ParentType, ContextType, RequireFields<QueryAbilityArgs, 'id'>>;
+  pokedex?: Resolver<Maybe<ResolversTypes['PokedexDetail']>, ParentType, ContextType, RequireFields<QueryPokedexArgs, 'name'>>;
   pokedexes?: Resolver<Array<ResolversTypes['PokemonPokedex']>, ParentType, ContextType>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
   pokemonByPokedex?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByPokedexArgs, 'sort'>>;
@@ -531,6 +582,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   AbilityLite?: AbilityLiteResolvers<ContextType>;
   EvolutionChain?: EvolutionChainResolvers<ContextType>;
   EvolutionNode?: EvolutionNodeResolvers<ContextType>;
+  PokedexDetail?: PokedexDetailResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   PokemonForm?: PokemonFormResolvers<ContextType>;
   PokemonList?: PokemonListResolvers<ContextType>;

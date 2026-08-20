@@ -4,12 +4,16 @@
    way to out-rank a tied selector without one. */
 .navItem.navItem {
   display: block;
-  padding: 0.4rem 0.75rem;
+  /* Tight rows: four Browse sections' worth of these decide the sidebar's
+     height, so the vertical padding is as small as the text can sit in. The
+     horizontal padding is untouched — it, plus this margin, is what lines an
+     option up with its region heading. */
+  padding: 0.25rem 0.75rem;
   margin: 0 0.5rem;
   border-radius: 0.5rem;
   color: var(--gray-1100);
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   transition:
     background 0.15s ease,

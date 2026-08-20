@@ -280,6 +280,7 @@ export type Pokedex = {
     description: string;
     language: NamedAPIResource;
   }[];
+  is_main_series: boolean;
   names: NameEntry[];
   pokemon_entries: {
     entry_number: number;

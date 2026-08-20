@@ -5,6 +5,7 @@ import type {
   AbilityLite,
   EvolutionChain,
   EvolutionNode,
+  PokedexDetail,
   Pokemon,
   PokemonForm,
   PokemonPokedex,
@@ -14,6 +15,7 @@ import type {
   TypeDetail,
 } from "../types.js";
 import { sortByNumber } from "../utils/filter.js";
+import { convertPokedexToPokedexDetail, getDisplayName } from "../utils/pokedex.js";
 import {
   convertAbilityLiteToAbility,
   convertPokemonEntityToPokemon,
@@ -83,7 +85,6 @@ export class PokemonAPI extends RESTDataSource {
     return { species, forms };
   }
 
-  // Check if index is loaded
   isIndexLoaded(): boolean {
     return PokemonAPI.indexes !== null;
   }
@@ -200,6 +201,18 @@ export class PokemonAPI extends RESTDataSource {
     return PokemonAPI.matchName(this.getFormsIndex(), query);
   }
 
+  // One fetch is enough: the entry list carries the count, so unlike getRegion
+  // there is no second request to size the dex.
+  getPokedex(name: string): Promise<PokedexDetail> {
+    logger.info(`Fetching pokedex: ${name}`);
+    return this.get<Pokedex>(`pokedex/${name}`)
+      .then(convertPokedexToPokedexDetail)
+      .catch((error) => {
+        logger.error(`Error fetching pokedex ${name}:`, error);
+        throw error;
+      });
+  }
+
   getPokemonByPokedex(pokedex: string): Promise<PokemonIndex[]> {
     logger.info(`Fetching Pokemon from pokedex: ${pokedex}`);
     return this.get<Pokedex>(`pokedex/${pokedex}`)
@@ -292,22 +305,29 @@ export class PokemonAPI extends RESTDataSource {
       });
   }
 
+  // The per-dex fetch this needs for the count already carries the name and the
+  // region, so both come out of the same response rather than costing a request
+  // of their own.
   getPokedexes(): Promise<PokemonPokedex[]> {
     return this.get<PokedexListResponse>("pokedex?limit=50").then(async (data) => {
       const pokedexesWithCounts = await Promise.all(
         data.results.map(async (entry: NamedAPIResource) => {
           try {
-            const count = await this.getPokemonByPokedex(entry.name).then(
-              (pokemon) => pokemon.length,
-            );
+            const pokedex = await this.get<Pokedex>(`pokedex/${entry.name}`);
             return {
+              // Keyed by the slug asked for, not the one echoed back, so the
+              // name the routes use is the name the list was built from
               name: entry.name,
-              count,
+              displayName: getDisplayName(pokedex.names, entry.name),
+              region: pokedex.region?.name ?? null,
+              count: pokedex.pokemon_entries.length,
             };
           } catch (error) {
             logger.error(`Error getting count for pokedex ${entry.name}:`, error);
             return {
               name: entry.name,
+              displayName: entry.name,
+              region: null,
               count: 0,
             };
           }

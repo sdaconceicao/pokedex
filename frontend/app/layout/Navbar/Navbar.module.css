@@ -62,12 +62,22 @@
   scale: 1;
 }
 
+/* Current Browse section — tint rail instead of the filled page pill. */
+.section .sectionHeader[aria-current] {
+  color: var(--tint);
+  box-shadow: inset 3px 0 0 0 var(--tint);
+}
+
 .section .sectionHeader:hover {
   /* One rung along the same `--layout-*` scale the fill now sits on, so the
      hover stays a consistent step in both themes — it can no longer reuse
      tertiary, which is the resting state. */
   background-color: var(--layout-quaternary-background);
   color: var(--tint);
+}
+
+.section .sectionHeader[aria-current]:hover {
+  box-shadow: inset 3px 0 0 0 var(--tint);
 }
 
 .sectionHeaderLeft {
@@ -101,10 +111,46 @@
 }
 
 /* lago's DisclosurePanel wraps whatever it's given in its own unclassed
-   `<div>`, which its stylesheet pads — reset that back to flush so `.list`'s
-   own spacing (matching `.listItem`/`.navItem` below) is the only inset. */
-.section :global(.react-aria-DisclosurePanel) > div {
+   `<div>`, and its stylesheet pads *every* div inside the panel
+   (`._disclosurePanel_* div`), not just that wrapper — reset that back to flush
+   so `.list`'s own spacing (matching `.listItem`/`.navItem` below) is the only
+   inset. Written as a descendant selector to match the rule it counters:
+   targeting only `> div` left `.subGroup` padded, which indented a grouped
+   section's options 16px past an ungrouped one's. */
+.section :global(.react-aria-DisclosurePanel) div {
   padding: 0;
+}
+
+/* One region's band inside the Pokedexes section. Margin above every band, the
+   first included, so the top one doesn't butt against the section header. */
+.subGroup {
+  margin-top: 0.625rem;
+}
+
+/* A filled caption rather than bare text, so a band reads as a heading over its
+   options instead of as another option. The fill is one rung along the same
+   `--layout-*` scale `.sectionHeader` sits on, so it stays a consistent step in
+   both themes.
+
+   The text is a step darker than `.navItem`'s `--gray-1100`, which gives the
+   caption weight over the options it heads without out-shouting `.sectionHeader`
+   above it. Not the scale's own `--layout-quaternary-foreground`: against this
+   fill that pair only reaches 3.3:1 in light and 3.1:1 in dark, and at this size
+   the text is not large enough for 3:1 to be the bar — `--gray-1200` clears 4.5:1
+   in both.
+
+   Inset to match `.navItem`'s own margin and padding, which lines this text up
+   with the option text below it while the fill stops short of the panel edge. */
+.subGroupTitle {
+  margin: 0 0.5rem 0.25rem;
+  padding: 0.25rem 0.75rem;
+  background: var(--layout-quaternary-background);
+  color: var(--gray-1200);
+  border-radius: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .list {
@@ -115,4 +161,40 @@
 
 .listItem {
   margin-bottom: 0.125rem;
+}
+
+/* Half the rows for the sections whose labels fit the narrower column.
+
+   Multi-column rather than a grid: these lists are alphabetical, and a grid fills
+   row-major, so the alphabet would read across-then-down (Bug, Dark / Dragon,
+   Electric). Columns fill top-to-bottom, which continues the list into the second
+   column the way a printed index does — and they balance themselves, so no row
+   count has to be worked out per section.
+
+   `.navItem` keeps its own margin, so the first column stays on the same left
+   edge as an uncolumned section's. */
+.list[data-columns="2"] {
+  columns: 2;
+  column-gap: 0;
+}
+
+.list[data-columns="2"] .listItem {
+  break-inside: avoid;
+}
+
+/* A narrower column leaves the longest label ("Psychic (102)") ~4px short of the
+   room it needs, and the overflow it takes is a *wrap* rather than a clip: the row
+   grows to two lines and the second column stops lining up with the first.
+   Trimming the inner padding buys that room back — the margin is untouched, so the
+   first column keeps the left edge every other section's options sit on — and
+   nowrap holds the line if a longer label ever turns up.
+
+   The anchor is matched by element rather than by `.navItem`: that class belongs to
+   NavbarItem's own stylesheet, so naming it here would hash to a different name and
+   match nothing. A list item holds exactly one link, so the element is precise. */
+.list[data-columns="2"] a {
+  padding-inline: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

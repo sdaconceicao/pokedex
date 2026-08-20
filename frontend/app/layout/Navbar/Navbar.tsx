@@ -1,9 +1,10 @@
 import { useMemo } from "react";
+import { DisclosureGroup } from "react-aria-components";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
 import SearchFilters from "./components/SearchFilters";
 import styles from "./Navbar.module.css";
 import {
-  getPokedexItems,
+  getPokedexGroups,
   getRegionItems,
   getSpecialItems,
   getTypeItems,
@@ -16,21 +17,30 @@ import NavbarSection from "./NavbarSection";
 
 interface NavbarProps {
   navigationData: NavigationData;
+  openSection: NavSectionKey | null;
+  currentSection: NavSectionKey | null;
+  onOpenSectionChange: (key: NavSectionKey | null) => void;
 }
 
-export default function Navbar({ navigationData }: NavbarProps) {
+export default function Navbar({
+  navigationData,
+  openSection,
+  currentSection,
+  onOpenSectionChange,
+}: NavbarProps) {
   const { types, pokedexes, regions } = navigationData;
 
   const typeItems = useMemo(() => getTypeItems(types), [types]);
   const specialItems = useMemo(() => getSpecialItems(), []);
   const regionItems = useMemo(() => getRegionItems(regions), [regions]);
-  const pokedexItems = useMemo(() => getPokedexItems(pokedexes), [pokedexes]);
+  // Pokedexes are the one section grouped rather than flat: there are ~35 of
+  // them, ten in Alola alone.
+  const pokedexGroups = useMemo(() => getPokedexGroups(pokedexes), [pokedexes]);
 
-  const itemsByKey: Record<NavSectionKey, NavItem[]> = {
+  const itemsByKey: Record<Exclude<NavSectionKey, "pokedexes">, NavItem[]> = {
     types: typeItems,
     special: specialItems,
     regions: regionItems,
-    pokedexes: pokedexItems,
   };
 
   return (
@@ -42,9 +52,40 @@ export default function Navbar({ navigationData }: NavbarProps) {
       </NavbarGroup>
 
       <NavbarGroup title="Browse">
-        {NAV_SECTIONS.map(({ key, title, icon }) => (
-          <NavbarSection key={key} title={title} icon={icon} items={itemsByKey[key]} />
-        ))}
+        {/* One section open at a time (DisclosureGroup's default). Controlled
+            rather than left to itself, because the collapsed rail's buttons open
+            a section as well — so which one is open is AppShell's to hold, not
+            this group's. All four open at once ran the sidebar to three screens. */}
+        <DisclosureGroup
+          expandedKeys={openSection ? [openSection] : []}
+          onExpandedChange={(keys) => {
+            const key = Array.from(keys)[0];
+            onOpenSectionChange((key as NavSectionKey | undefined) ?? null);
+          }}
+        >
+          {NAV_SECTIONS.map(({ key, title, icon, columns }) =>
+            key === "pokedexes" ? (
+              <NavbarSection
+                key={key}
+                id={key}
+                title={title}
+                icon={icon}
+                isCurrent={key === currentSection}
+                groups={pokedexGroups}
+              />
+            ) : (
+              <NavbarSection
+                key={key}
+                id={key}
+                title={title}
+                icon={icon}
+                isCurrent={key === currentSection}
+                columns={columns}
+                items={itemsByKey[key]}
+              />
+            ),
+          )}
+        </DisclosureGroup>
       </NavbarGroup>
     </nav>
   );

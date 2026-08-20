@@ -130,6 +130,12 @@
     color 0.15s ease;
 }
 
+/* Current Browse section on the collapsed rail. */
+.rail .railButton[aria-current] {
+  background: var(--layout-secondary-background);
+  color: var(--tint);
+}
+
 .rail .railButton:hover {
   background: var(--layout-secondary-background);
   color: var(--tint);
