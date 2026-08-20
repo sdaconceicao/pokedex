@@ -1,3 +1,38 @@
+/* Wraps the link and the "+" button, which must sit outside <a> (an
+   interactive control nested in one is invalid HTML and would still
+   navigate on press). Hover lift lives here so button and card move
+   together, see .cardWrapper:hover below. */
+.cardWrapper {
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cardWrapper:hover {
+  transform: translateY(-6px);
+}
+
+/* Directly under the dex number, right edges aligned (hence `right` matching
+   .pokemonCard's own padding). Anchoring to a fixed offset is safe because the
+   dex pill never moves: it stays on the header's first line even when a long
+   name wraps beneath it. Outside .pokemonCard, so that element's
+   overflow: hidden doesn't clip it. */
+.cardWrapper .addButton {
+  position: absolute;
+  top: 3.375rem;
+  right: 1.25rem;
+  z-index: 3;
+  /* Same translucent chip treatment as .pokemonId and the type pills: on the
+     bare gradient a quiet icon button has almost no contrast. */
+  color: var(--highlight-foreground);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(4px);
+}
+
+.cardWrapper .addButton:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
 .pokemonCard {
   position: relative;
   background: linear-gradient(155deg, var(--type-grad-1, #9da0aa), var(--type-grad-2, #7c7f8a));
@@ -12,9 +47,7 @@
   align-items: stretch;
   overflow: hidden;
   color: var(--highlight-foreground);
-  transition:
-    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Type gradients ─────────────────────────────── */
@@ -141,13 +174,15 @@
     transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.pokemonCard:hover .cardWatermark {
+.cardWrapper:hover .cardWatermark {
   opacity: 0.22;
   transform: rotate(38deg) scale(1.06);
 }
 
-.pokemonCard:hover {
-  transform: translateY(-6px);
+/* Card's own lift stays on .pokemonCard (the wrapper only translates), so the
+   card's border-radius/overflow keep clipping this box-shadow the same way
+   it always has. */
+.cardWrapper:hover .pokemonCard {
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.08),
     0 22px 36px -12px var(--type-shadow, rgba(0, 0, 0, 0.45));
@@ -216,6 +251,9 @@
   justify-content: flex-start;
   position: relative;
   z-index: 1;
+  /* Shares a band with the "+" above, so keep two long type names from
+     running under it on a narrow card. */
+  padding-right: 2.25rem;
 }
 
 .pokemonCard .typeList .cardPill {
@@ -274,7 +312,7 @@
     filter 0.25s ease;
 }
 
-.pokemonCard:hover .pokemonImage {
+.cardWrapper:hover .pokemonImage {
   transform: scale(1.08) translateY(-3px);
   filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.32));
 }

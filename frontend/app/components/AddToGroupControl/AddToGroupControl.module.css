@@ -1,0 +1,44 @@
+.addToGroupControl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  /* 21rem fits the multiselect and Update side by side (at 17rem the button
+     was clipped once the field carried a tag). max-width lets it give way when
+     the popover is capped against a narrow viewport -- see
+     AddToGroupButton.module.css. */
+  width: 21rem;
+  max-width: 100%;
+}
+
+/* flex-end, not center: the field renders its label above itself, so
+   centring would align the button against the label+field block and leave it
+   sitting below the field's own box. */
+.addToGroupControl .existingList {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+}
+
+/* Stands in for the multiselect in the single-list case: the list's name is
+   shown plainly, with a checkbox as the thing Update acts on. */
+.addToGroupControl .singleList {
+  flex: 1;
+  font-weight: 600;
+}
+
+/* The field absorbs the spare width; the button keeps its intrinsic size so
+   its label can never be squeezed out. */
+.addToGroupControl .select {
+  flex: 1;
+  min-width: 0;
+}
+
+.addToGroupControl .updateButton {
+  flex-shrink: 0;
+}
+
+.addToGroupControl .newListForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}

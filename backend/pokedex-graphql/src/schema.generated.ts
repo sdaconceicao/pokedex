@@ -2,6 +2,12 @@
 export const typeDefs = /* GraphQL */ `
 type Query {
   pokemon(id: ID!): Pokemon
+  """
+  Fetch several Pokemon by id in one round trip. Unknown ids are omitted rather
+  than failing the whole list, so a saved list survives an id that no longer
+  resolves.
+  """
+  pokemonByIds(ids: [ID!]!): [Pokemon!]!
   pokemonSearch(query: String!, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
   pokemonForms(query: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
   pokemonByType(type: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList

@@ -68,6 +68,9 @@ export function useAuth() {
       // Clear token and user data from cache
       queryClient.setQueryData(["auth", "token"], null);
       queryClient.removeQueries({ queryKey: ["auth", "user"] });
+      // Also drop any cached groups -- otherwise the next user to sign in on
+      // this browser would see the previous user's saved lists.
+      queryClient.removeQueries({ queryKey: ["groups"] });
     },
   });
 

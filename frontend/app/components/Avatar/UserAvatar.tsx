@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Button, Heading, Menu, MenuItem, MenuSection, Popover } from "@code-x/lago";
+import { Avatar, Button, Menu, MenuItem, MenuSection, Popover, Separator } from "@code-x/lago";
 import { Header, MenuTrigger } from "react-aria-components";
 import styles from "./UserAvatar.module.css";
 
@@ -31,6 +31,16 @@ export default function UserAvatar({ email, onLogout, isLogoutLoading = false }:
           }}
           disabledKeys={isLogoutLoading ? [LOGOUT_KEY] : []}
         >
+          {/* `href` navigates through LagoProvider's RouterProvider (wired to
+              next/navigation's router), so this needs no onAction key or
+              router call of its own — unlike Log out, which is a real action
+              rather than a navigation. */}
+          <MenuSection>
+            <MenuItem id="my-lists" href="/groups">
+              My lists
+            </MenuItem>
+          </MenuSection>
+          <Separator />
           <MenuSection>
             <Header>{email}</Header>
             <MenuItem id={LOGOUT_KEY}>{isLogoutLoading ? "Logging out…" : "Log out"}</MenuItem>

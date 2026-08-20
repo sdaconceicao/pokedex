@@ -12,6 +12,8 @@ import { runSeeders, SeederOptions } from 'typeorm-extension';
 import { AppModule } from './app.module';
 import { createWinstonLogger } from './config/logging.config';
 import { postgresDriver } from './config/postgres-driver';
+import { GroupPokemonEntity } from './groups/group-pokemon.entity';
+import { GroupEntity } from './groups/groups.entity';
 import { UserEntity } from './users/users.entity';
 
 async function bootstrap() {
@@ -58,7 +60,7 @@ async function bootstrap() {
   app.enableCors({
     origin: allowedOrigins,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
@@ -93,7 +95,7 @@ async function bootstrap() {
         password: configService.get<string>('database.password')!,
         database: configService.get<string>('database.database')!,
         schema: configService.get<string>('database.schema')!,
-        entities: [UserEntity],
+        entities: [UserEntity, GroupEntity, GroupPokemonEntity],
         seeds: ['src/**/*.seed{.ts,.js}'],
         seedTracking: false,
       } as DataSourceOptions & SeederOptions);

@@ -175,6 +175,12 @@ export type Query = {
   pokedex?: Maybe<PokedexDetail>;
   pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
+  /**
+   * Fetch several Pokemon by id in one round trip. Unknown ids are omitted rather
+   * than failing the whole list, so a saved list survives an id that no longer
+   * resolves.
+   */
+  pokemonByIds: Array<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
@@ -200,6 +206,11 @@ export type QueryPokedexArgs = {
 
 export type QueryPokemonArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokemonByIdsArgs = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
 
@@ -525,6 +536,7 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   pokedex?: Resolver<Maybe<ResolversTypes['PokedexDetail']>, ParentType, ContextType, RequireFields<QueryPokedexArgs, 'name'>>;
   pokedexes?: Resolver<Array<ResolversTypes['PokemonPokedex']>, ParentType, ContextType>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
+  pokemonByIds?: Resolver<Array<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonByIdsArgs, 'ids'>>;
   pokemonByPokedex?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByPokedexArgs, 'sort'>>;
   pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByRegionArgs, 'sort'>>;
   pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByTypeArgs, 'sort'>>;
