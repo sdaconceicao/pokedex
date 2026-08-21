@@ -20,7 +20,10 @@ interface PokemonCardProps {
   href?: string;
 }
 
-export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href }) => {
+export const PokemonCard: FunctionComponent<PokemonCardProps> = ({
+  pokemon,
+  href,
+}) => {
   const primaryType = getPrimaryType(pokemon.type);
   const typeClass = getPokemonTypeClass(primaryType);
   const formattedName = formatPokemonName(pokemon);
@@ -45,7 +48,11 @@ export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href
           </div>
           <div className={css.typeList}>
             {pokemon.type.map((type: string) => (
-              <PokemonTypePill key={type} type={type} className={css.cardPill} />
+              <PokemonTypePill
+                key={type}
+                type={type}
+                className={css.cardPill}
+              />
             ))}
           </div>
           <div className={css.imageWrap}>
@@ -67,8 +74,7 @@ export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href
           </div>
         </div>
       </Link>
-      {/* Outside the link: a react-aria Button nested inside an <a> is invalid
-          HTML and would still navigate on press. */}
+      {/* Outside the link to avoid nested interactive controls */}
       <AddToGroupButton pokemon={pokemon} className={css.addButton} />
     </div>
   );

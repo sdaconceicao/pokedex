@@ -5,8 +5,6 @@
 .card {
   position: relative;
   display: grid;
-  /* name | count | actions -- a real column each, so neither the count nor
-     the buttons can be overlapped by the others regardless of their size. */
   grid-template-columns: 1fr auto auto;
   align-items: center;
   gap: 1rem;
@@ -20,17 +18,12 @@
     0 8px 16px -8px color-mix(in srgb, var(--tint) 45%, transparent);
 }
 
-/* Outlines the whole card when the name link is focused -- see .name a
-   below, which is what actually carries focus. */
+
 .card:has(.name a:focus-visible) {
   outline: 3px solid var(--highlight-foreground);
   outline-offset: 3px;
 }
 
-/* Pokéball watermark, toned down from the full hero's so a stack of these
-   rows doesn't turn noisy. Negative z-index so it paints behind the card's
-   own (non-positioned) content instead of over it -- a positioned box with
-   the default z-index: auto would otherwise paint on top of ordinary text. */
 .card::before {
   content: "";
   position: absolute;
@@ -51,9 +44,6 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  /* Lets the name ellipsize instead of pushing the count and actions
-     columns wider -- a flex/grid item's min-width defaults to its content
-     size otherwise. */
   min-width: 0;
 }
 
@@ -73,10 +63,6 @@
   text-decoration: none;
 }
 
-/* Stretches the link's hit area from the name text to the whole card:
-   .card is the nearest position: relative ancestor, and nothing in between
-   (.info, .name) introduces its own positioning context, so inset: 0
-   resolves against .card's own box. */
 .name a::after {
   content: "";
   position: absolute;
@@ -100,10 +86,6 @@
   justify-self: end;
 }
 
-/* A real grid column (not a floating overlay), given its own stacking
-   context above the stretched link in .name a::after -- that pseudo-element
-   covers the whole card at z-index: auto, which would otherwise intercept
-   clicks meant for these buttons. */
 .actions {
   position: relative;
   z-index: 1;
@@ -111,8 +93,6 @@
   gap: 0.5rem;
 }
 
-/* Same translucent chip treatment as .defaultTag: on the bare gradient a
-   quiet icon button has almost no contrast on its own. */
 .actionButton {
   color: var(--highlight-foreground);
   background: rgba(255, 255, 255, 0.18);
@@ -125,9 +105,6 @@
 }
 
 /* ── Edit mode ───────────────────────────────────── */
-/* Keeps the row's card identity while editing -- same gradient, radius and
-   foreground as .card, so an editing row still reads as one of the rows
-   rather than a form that has detached from the stack. */
 .editCard {
   display: flex;
   flex-direction: column;
@@ -156,11 +133,6 @@
   width: 100%;
 }
 
-/* Below ~480px, name + count + actions side by side leave the name column
-   too narrow to hold more than a couple of characters once a Default tag
-   or a wide count is in play (measured: the tag and the count pill visually
-   collided). Stack the name onto its own full-width row instead of
-   continuing to shrink it. */
 @media (max-width: 480px) {
   .card {
     grid-template-columns: 1fr auto;
@@ -185,7 +157,7 @@
 }
 
 /* Sits on the card gradient, so it needs a light foreground rather than the
-   design system's muted-on-white description colour. */
+   design system's muted-on-white description color. */
 .hint {
   margin: 0;
   font-size: 0.8125rem;

@@ -27,9 +27,9 @@ const resolveFacets = (
         Promise.all((types ?? []).map((type) => pokemonAPI.getPokemonByType(type))),
         dualType
           ? Promise.all([
-              pokemonAPI.getPokemonByType(dualType.primary),
-              pokemonAPI.getPokemonByType(dualType.secondary),
-            ])
+            pokemonAPI.getPokemonByType(dualType.primary),
+            pokemonAPI.getPokemonByType(dualType.secondary),
+          ])
           : Promise.resolve([]),
       ]).then(([anyOf, bothOf]) => union([...anyOf, intersect(bothOf)])),
     );
@@ -150,9 +150,6 @@ export const resolvers: Resolvers = {
     pokemonByIds: async (_, { ids }, { dataSources }) => {
       logger.info(`Resolving pokemonByIds query for ${ids.length} ids`);
 
-      // A saved list is only as durable as its weakest id, so one Pokemon
-      // that no longer resolves (e.g. removed upstream) is dropped rather
-      // than failing the whole batch.
       const results = await Promise.all(
         ids.map((id) =>
           dataSources.pokemonAPI.getPokemon(id).catch((error) => {

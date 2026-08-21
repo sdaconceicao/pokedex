@@ -159,11 +159,6 @@ export type Query = {
   pokedex?: Maybe<PokedexDetail>;
   pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
-  /**
-   * Fetch several Pokemon by id in one round trip. Unknown ids are omitted rather
-   * than failing the whole list, so a saved list survives an id that no longer
-   * resolves.
-   */
   pokemonByIds: Array<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;

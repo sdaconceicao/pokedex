@@ -25,7 +25,7 @@ export interface GroupEditValues {
 }
 
 /**
- * Diffs a row's edit-mode values against the group as loaded, returning only
+ * Diffs a row's edit mode values against the group as loaded, returning only
  * the fields that actually changed. Returns `null` when there is nothing to
  * send: an invalid name, or no changes at all.
  *

@@ -63,7 +63,7 @@ function toGroupMembershipResponse(
 @ApiBearerAuth()
 @Controller('groups')
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService) {}
+  constructor(private readonly groupsService: GroupsService) { }
 
   @Get()
   @ApiOperation({ summary: "List the current user's Pokemon groups" })
@@ -86,8 +86,6 @@ export class GroupsController {
     return toGroupResponse(group);
   }
 
-  // Declared before the :id routes below: /groups/memberships must not be
-  // swallowed as a GET /groups/:id if that route is ever added later.
   @Get('memberships')
   @ApiOperation({
     summary: "List every group/Pokemon pair across the user's groups",

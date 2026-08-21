@@ -1,7 +1,5 @@
-/* Wraps the link and the "+" button, which must sit outside <a> (an
-   interactive control nested in one is invalid HTML and would still
-   navigate on press). Hover lift lives here so button and card move
-   together, see .cardWrapper:hover below. */
+/* Wraps the link and the "+" button, which must sit outside <a> for
+  a11y reasons to avoid nested interactive controls. */
 .cardWrapper {
   position: relative;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -11,18 +9,11 @@
   transform: translateY(-6px);
 }
 
-/* Directly under the dex number, right edges aligned (hence `right` matching
-   .pokemonCard's own padding). Anchoring to a fixed offset is safe because the
-   dex pill never moves: it stays on the header's first line even when a long
-   name wraps beneath it. Outside .pokemonCard, so that element's
-   overflow: hidden doesn't clip it. */
 .cardWrapper .addButton {
   position: absolute;
   top: 3.375rem;
   right: 1.25rem;
   z-index: 3;
-  /* Same translucent chip treatment as .pokemonId and the type pills: on the
-     bare gradient a quiet icon button has almost no contrast. */
   color: var(--highlight-foreground);
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.14);
