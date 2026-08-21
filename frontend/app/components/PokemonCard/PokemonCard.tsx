@@ -20,10 +20,7 @@ interface PokemonCardProps {
   href?: string;
 }
 
-export const PokemonCard: FunctionComponent<PokemonCardProps> = ({
-  pokemon,
-  href,
-}) => {
+export const PokemonCard: FunctionComponent<PokemonCardProps> = ({ pokemon, href }) => {
   const primaryType = getPrimaryType(pokemon.type);
   const typeClass = getPokemonTypeClass(primaryType);
   const formattedName = formatPokemonName(pokemon);
@@ -48,11 +45,7 @@ export const PokemonCard: FunctionComponent<PokemonCardProps> = ({
           </div>
           <div className={css.typeList}>
             {pokemon.type.map((type: string) => (
-              <PokemonTypePill
-                key={type}
-                type={type}
-                className={css.cardPill}
-              />
+              <PokemonTypePill key={type} type={type} className={css.cardPill} />
             ))}
           </div>
           <div className={css.imageWrap}>

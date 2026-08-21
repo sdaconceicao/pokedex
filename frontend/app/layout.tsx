@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import ApolloWrapper from "@/layout/ApolloWrapper";
 import AppShell from "@/layout/AppShellLayout";
 import AddToGroupProvider from "./providers/AddToGroupProvider";
@@ -7,6 +8,7 @@ import AuthModalProvider from "./providers/AuthModalProvider";
 import LagoProvider from "./providers/LagoProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
 import QueryProvider from "./providers/QueryProvider";
+
 // reset.css writes into the `reset` layer lago declares, so it sits below the
 // design system wherever it is imported. globals.css and typePalette.css are
 // unlayered and so cascade last, which is what makes the theme overrides win.
@@ -48,12 +50,6 @@ export default async function RootLayout({
   const navigationData = await NavigationDataProvider();
 
   return (
-    /* The font classes belong on <html>, not <body>: they are what declare
-     * `--font-geist-sans`, and globals.css builds `--font-family` out of it on
-     * `:root`. A custom property is substituted against the element it is
-     * declared on, so with the classes down on <body> that `var()` had nothing
-     * to resolve against — `--font-family` went invalid, `body { font-family }`
-     * fell back to the initial value, and the whole app rendered in Times. */
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable}`}
@@ -67,7 +63,10 @@ export default async function RootLayout({
             <ApolloWrapper>
               <AuthModalProvider>
                 <AddToGroupProvider>
-                  <AppShell navigationData={navigationData}>{children}</AppShell>
+                  <AppShell navigationData={navigationData}>
+                    {children}
+                    <Analytics />
+                  </AppShell>
                 </AddToGroupProvider>
               </AuthModalProvider>
             </ApolloWrapper>
