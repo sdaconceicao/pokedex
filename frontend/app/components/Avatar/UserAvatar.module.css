@@ -1,5 +1,6 @@
 /* lago's Menu/Popover own outside-click dismissal, positioning and the
-   card/shadow chrome now, so this file only has two jobs left. */
+   card/shadow chrome now, so this file only dresses the trigger and the
+   account row the menu opens with. */
 
 /* `Button` only goes edge-to-edge round for an `<svg>`-only child (see its
    `:has(>svg:only-child)` rule); an Avatar is a `<span>`, so the same
@@ -15,21 +16,31 @@
   scale: 1;
 }
 
-/* Avatar's initials fallback otherwise picks a hue by hashing `name`, which
-   would make every signed-in user a different colour. Pin it to the brand
-   tint so the avatar reads the same red circle it always has. */
-.avatar {
-  --avatar-color: var(--tint);
-}
 
 .popover {
+  width: 16rem;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
-.popover :global(.react-aria-Header) {
+.account {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  background: none;
+  border-block: 0;
+  box-shadow: none;
   font-size: var(--font-size);
+  font-weight: 500;
 }
 
 .popover :global(.react-aria-MenuItem:not([data-disabled])) {
   cursor: pointer;
+}
+
+.account .email {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
