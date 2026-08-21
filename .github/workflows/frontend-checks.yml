@@ -15,14 +15,14 @@ jobs:
 
     steps:
       - name: Restore Build
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: restore-build
         with:
           path: ./*
           key: ${{ inputs.cached-build-id }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Run linting - frontend
         run: pnpm --filter ./frontend run lint
