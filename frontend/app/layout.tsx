@@ -1,6 +1,6 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import ApolloWrapper from "@/layout/ApolloWrapper";
 import AppShell from "@/layout/AppShellLayout";
 import AddToGroupProvider from "./providers/AddToGroupProvider";
@@ -63,15 +63,13 @@ export default async function RootLayout({
             <ApolloWrapper>
               <AuthModalProvider>
                 <AddToGroupProvider>
-                  <AppShell navigationData={navigationData}>
-                    {children}
-                    <Analytics />
-                  </AppShell>
+                  <AppShell navigationData={navigationData}>{children}</AppShell>
                 </AddToGroupProvider>
               </AuthModalProvider>
             </ApolloWrapper>
           </QueryProvider>
         </LagoProvider>
+        {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
   );
