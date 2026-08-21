@@ -63,7 +63,7 @@ function toGroupMembershipResponse(
 @ApiBearerAuth()
 @Controller('groups')
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService) { }
+  constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
   @ApiOperation({ summary: "List the current user's Pokemon groups" })

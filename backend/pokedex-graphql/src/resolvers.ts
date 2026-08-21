@@ -27,9 +27,9 @@ const resolveFacets = (
         Promise.all((types ?? []).map((type) => pokemonAPI.getPokemonByType(type))),
         dualType
           ? Promise.all([
-            pokemonAPI.getPokemonByType(dualType.primary),
-            pokemonAPI.getPokemonByType(dualType.secondary),
-          ])
+              pokemonAPI.getPokemonByType(dualType.primary),
+              pokemonAPI.getPokemonByType(dualType.secondary),
+            ])
           : Promise.resolve([]),
       ]).then(([anyOf, bothOf]) => union([...anyOf, intersect(bothOf)])),
     );
