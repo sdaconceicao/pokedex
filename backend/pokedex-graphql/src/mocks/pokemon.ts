@@ -686,16 +686,8 @@ export const typeResponse: {
         url: "https://pokeapi.co/api/v2/type/12/",
       },
       {
-        name: "fighting",
-        url: "https://pokeapi.co/api/v2/type/2/",
-      },
-      {
-        name: "bug",
-        url: "https://pokeapi.co/api/v2/type/7/",
-      },
-      {
-        name: "steel",
-        url: "https://pokeapi.co/api/v2/type/9/",
+        name: "ground",
+        url: "https://pokeapi.co/api/v2/type/5/",
       },
     ],
     double_damage_from: [
@@ -714,6 +706,10 @@ export const typeResponse: {
       {
         name: "flying",
         url: "https://pokeapi.co/api/v2/type/3/",
+      },
+      {
+        name: "bug",
+        url: "https://pokeapi.co/api/v2/type/7/",
       },
     ],
   },
@@ -775,6 +771,60 @@ export const typeResponse: {
       },
     },
   },
+};
+
+/**
+ * Poison, so a dual-type Pokemon can be served both of its real halves.
+ * Bulbasaur is grass/poison: handed one type twice, a matchup product squares
+ * every multiplier — a quarter where a half belongs — and reads as plausible
+ * while being wrong.
+ */
+export const poisonTypeResponse: typeof typeResponse = {
+  ...typeResponse,
+  id: 4,
+  name: "poison",
+  // Overridden alongside the relations so this fixture never answers "Grass"
+  names: [
+    {
+      name: "Poison",
+      language: {
+        name: "en",
+        url: "https://pokeapi.co/api/v2/language/9/",
+      },
+    },
+  ],
+  damage_relations: {
+    no_damage_to: [{ name: "steel", url: "https://pokeapi.co/api/v2/type/9/" }],
+    half_damage_to: [
+      { name: "poison", url: "https://pokeapi.co/api/v2/type/4/" },
+      { name: "ground", url: "https://pokeapi.co/api/v2/type/5/" },
+      { name: "rock", url: "https://pokeapi.co/api/v2/type/6/" },
+      { name: "ghost", url: "https://pokeapi.co/api/v2/type/8/" },
+    ],
+    double_damage_to: [
+      { name: "grass", url: "https://pokeapi.co/api/v2/type/12/" },
+      { name: "fairy", url: "https://pokeapi.co/api/v2/type/18/" },
+    ],
+    no_damage_from: [],
+    half_damage_from: [
+      { name: "fighting", url: "https://pokeapi.co/api/v2/type/2/" },
+      { name: "poison", url: "https://pokeapi.co/api/v2/type/4/" },
+      { name: "bug", url: "https://pokeapi.co/api/v2/type/7/" },
+      { name: "grass", url: "https://pokeapi.co/api/v2/type/12/" },
+      { name: "fairy", url: "https://pokeapi.co/api/v2/type/18/" },
+    ],
+    double_damage_from: [
+      { name: "ground", url: "https://pokeapi.co/api/v2/type/5/" },
+      { name: "psychic", url: "https://pokeapi.co/api/v2/type/14/" },
+    ],
+  },
+};
+
+/** Keyed the way `pokedexesBySlug` is, so the type handler can answer with the
+ *  type it was actually asked for. */
+export const typesBySlug: Record<string, typeof typeResponse> = {
+  grass: typeResponse,
+  poison: poisonTypeResponse,
 };
 
 export const pokedex = {
