@@ -12,39 +12,27 @@ jobs:
       cache-key: ${{ steps.cache-key.outputs.value }}
 
     steps:
-      - name: Checkout code\
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v5
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Use Node.js 24.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "24.x"
           cache: "pnpm"
 
       - name: Setup Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: restore-build
         with:
           path: ./*
           key: cache-${{ runner.os }}-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
 
-      - name: Cache node modules
-        uses: actions/cache@v4
-        id: node_modules
-        with:
-          path: |
-            node_modules
-            **/node_modules
-          key: pokedex-deps-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pokedex-deps-${{ hashFiles('pnpm-lock.yaml') }}
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        if: steps.node_modules.outputs.cache-hit != 'true'
 
       - name: Set cache key
         id: cache-key
