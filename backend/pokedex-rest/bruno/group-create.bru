@@ -1,0 +1,26 @@
+meta {
+  name: group-create
+  type: http
+  seq: 5
+}
+
+post {
+  url: 127.0.0.1:3004/groups
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "name": "My Team",
+    "isDefault": false
+  }
+}
+
+vars:post-response {
+  groupId: res.body.id
+}

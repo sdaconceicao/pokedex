@@ -159,6 +159,7 @@ export type Query = {
   pokedex?: Maybe<PokedexDetail>;
   pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
+  pokemonByIds: Array<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
@@ -184,6 +185,11 @@ export type QueryPokedexArgs = {
 
 export type QueryPokemonArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokemonByIdsArgs = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
 

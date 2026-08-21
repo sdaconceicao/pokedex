@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ApolloWrapper from "@/layout/ApolloWrapper";
 import AppShell from "@/layout/AppShellLayout";
+import AddToGroupProvider from "./providers/AddToGroupProvider";
 import AuthModalProvider from "./providers/AuthModalProvider";
 import LagoProvider from "./providers/LagoProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
@@ -65,7 +66,9 @@ export default async function RootLayout({
           <QueryProvider>
             <ApolloWrapper>
               <AuthModalProvider>
-                <AppShell navigationData={navigationData}>{children}</AppShell>
+                <AddToGroupProvider>
+                  <AppShell navigationData={navigationData}>{children}</AppShell>
+                </AddToGroupProvider>
               </AuthModalProvider>
             </ApolloWrapper>
           </QueryProvider>
