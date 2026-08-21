@@ -27,6 +27,15 @@ export type AbilityLite = {
 };
 
 /**
+ * One defensive reading. `multiplier` is 0, 0.25, 0.5, 2 or 4 — never 1, which is
+ * omitted from `defending` entirely.
+ */
+export type DefensiveMatchup = {
+  multiplier: Scalars['Float']['output'];
+  type: Scalars['String']['output'];
+};
+
+/**
  * A pair of types that must BOTH be present. Requires two types by construction,
  * and matching ignores slot order — `fire` + `flying` and `flying` + `fire` select
  * the same Pokemon.
@@ -79,6 +88,7 @@ export type Pokemon = {
   forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
+  matchups?: Maybe<PokemonMatchups>;
   name: Scalars['String']['output'];
   speciesId: Scalars['ID']['output'];
   speciesName: Scalars['String']['output'];
@@ -120,6 +130,22 @@ export type PokemonList = {
   offset: Scalars['Int']['output'];
   pokemon: Array<Pokemon>;
   total: Scalars['Int']['output'];
+};
+
+/** How a Pokemon fares in battle, given its one or two types. */
+export type PokemonMatchups = {
+  /**
+   * What this Pokemon's types deal, one entry per type. Deliberately not combined:
+   * each type attacks on its own, so a dual type gets two independent readings and
+   * a 2x from one type is not multiplied by a 2x from the other.
+   */
+  attacking: Array<TypeOffense>;
+  /**
+   * What this Pokemon takes, its types combined multiplicatively. Types that come
+   * out at exactly 1x are omitted, so an absent type is neutral rather than
+   * unknown.
+   */
+  defending: Array<DefensiveMatchup>;
 };
 
 export type PokemonPokedex = {
@@ -293,4 +319,15 @@ export type TypeDetail = {
   pokemonCount: Scalars['Int']['output'];
   /** The type's own icon, newest generation first. */
   sprite?: Maybe<Scalars['String']['output']>;
+};
+
+/**
+ * What one of the Pokemon's types deals to the eighteen. Types absent from all
+ * three lists take normal damage.
+ */
+export type TypeOffense = {
+  noEffect: Array<Scalars['String']['output']>;
+  notVeryEffective: Array<Scalars['String']['output']>;
+  superEffective: Array<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
 };

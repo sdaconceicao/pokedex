@@ -4,6 +4,7 @@ import { logger } from "./logger.js";
 import { type PokemonFilter, PokemonSort, type Resolvers } from "./types.js";
 import { intersect, sortResults, union } from "./utils/filter.js";
 import { getPaginatedResults } from "./utils/pagination.js";
+import { buildPokemonMatchups } from "./utils/type.js";
 
 /**
  * Reduce a filter to one candidate list per facet. Every facet is dispatched
@@ -434,6 +435,20 @@ export const resolvers: Resolvers = {
         return await dataSources.pokemonAPI.getFormsForSpecies(speciesId);
       } catch (error) {
         logger.error(`Error resolving forms for Pokemon ${id}:`, error);
+        return null;
+      }
+    },
+    matchups: async ({ id, type }, _, { dataSources }) => {
+      logger.info(`Resolving matchups for Pokemon ${id} (${type.join("/")})`);
+      try {
+        // Both types are dispatched before either is awaited; the shared HTTP
+        // cache means the second is usually free anyway.
+        const types = await Promise.all(type.map((name) => dataSources.pokemonAPI.getType(name)));
+        return buildPokemonMatchups(types);
+      } catch (error) {
+        // Supplementary, like evolution: a type fetch that fails should cost the
+        // section, not the whole Pokemon.
+        logger.error(`Error resolving matchups for Pokemon ${id}:`, error);
         return null;
       }
     },
