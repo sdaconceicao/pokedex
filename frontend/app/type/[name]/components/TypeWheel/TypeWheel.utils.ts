@@ -135,7 +135,7 @@ export const buildTrackGradient = (matchups: Matchup[], direction: Direction): s
   const slice = 360 / matchups.length;
   const stops = matchups.map(
     (matchup, index) =>
-      `var(--wheel-${matchup[direction].tint}) ${index * slice}deg ${(index + 1) * slice}deg`,
+      `var(--matchup-${matchup[direction].tint}) ${index * slice}deg ${(index + 1) * slice}deg`,
   );
 
   return `conic-gradient(from ${-slice / 2}deg, ${stops.join(", ")})`;

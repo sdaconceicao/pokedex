@@ -84,6 +84,17 @@
      the shimmer *over* the surface rather than replacing it, so two passes of
      0.18 composite to ~0.33, which is the card's 0.32 highlight. */
   --skeleton-wash: rgb(255 255 255 / 0.18);
+
+  /* The matchup scale, green where a matchup falls the Pokemon's way and black
+     where nothing gets through at all. Global because the type page's wheel and
+     the detail page's matchup columns have to agree: the same 2x must read the
+     same colour whichever page you met it on. Solid-ish rather than translucent
+     because the wheel sits on the hero's tinted gradient and has to carry over
+     it. */
+  --matchup-good: rgba(76, 196, 90, 0.95);
+  --matchup-neutral: rgba(255, 255, 255, 0.22);
+  --matchup-bad: rgba(240, 78, 70, 0.95);
+  --matchup-none: rgba(10, 10, 12, 0.92);
 }
 
 :root.dark-mode {
