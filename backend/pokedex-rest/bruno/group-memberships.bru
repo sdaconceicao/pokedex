@@ -1,0 +1,15 @@
+meta {
+  name: group-memberships
+  type: http
+  seq: 7
+}
+
+get {
+  url: 127.0.0.1:3004/groups/memberships
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}

@@ -11,6 +11,7 @@ import { JwtGuard } from './auth/guards/jwt.guard';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 import databaseConfig from './config/database.config';
 import { postgresDriver } from './config/postgres-driver';
+import { GroupsModule } from './groups/groups.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -50,6 +51,7 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     UsersModule,
+    GroupsModule,
   ],
   controllers: [AppController],
   providers: [

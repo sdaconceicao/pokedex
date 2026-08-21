@@ -3,7 +3,7 @@ import { createSchema, createYoga } from "graphql-yoga";
 import { HttpResponse, http } from "msw";
 import { createContext, type DataSourceContext } from "./context.js";
 import { PokemonAPI } from "./datasources/pokemon-api.js";
-import { pokemonEntity } from "./mocks/pokemon.js";
+import { pokemonEntity, pokemonFormEntity } from "./mocks/pokemon.js";
 import { server } from "./mocks/server.js";
 import { resolvers } from "./resolvers.js";
 import { typeDefs } from "./schema.generated.js";
@@ -137,6 +137,25 @@ describe("pokemonFilter", () => {
     const data = await run(`{ pokemonFilter(filter: { query: "gmax" }) { total } }`);
 
     expect(data.pokemonFilter).toMatchObject({ total: 0 });
+  });
+});
+
+describe("pokemonByIds", () => {
+  it("resolves several ids in order, omitting one whose fetch rejects", async () => {
+    server.use(
+      http.get("https://pokeapi.co/api/v2/pokemon/:id", ({ params }) => {
+        if (params.id === "9999") return new HttpResponse(null, { status: 500 });
+        if (params.id === "10186") return HttpResponse.json(pokemonFormEntity);
+        return HttpResponse.json(pokemonEntity);
+      }),
+    );
+
+    const data = await run(`{ pokemonByIds(ids: ["1", "9999", "10186"]) { id name } }`);
+
+    expect(data.pokemonByIds).toEqual([
+      { id: "1", name: "bulbasaur" },
+      { id: "10186", name: "bulbasaur-gmax" },
+    ]);
   });
 });
 

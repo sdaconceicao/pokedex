@@ -147,6 +147,22 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    pokemonByIds: async (_, { ids }, { dataSources }) => {
+      logger.info(`Resolving pokemonByIds query for ${ids.length} ids`);
+
+      const results = await Promise.all(
+        ids.map((id) =>
+          dataSources.pokemonAPI.getPokemon(id).catch((error) => {
+            logger.error(`Error resolving pokemon ${id}:`, error);
+            return null;
+          }),
+        ),
+      );
+
+      const pokemon = results.filter((result) => result !== null);
+      logger.info(`pokemonByIds resolved ${pokemon.length} of ${ids.length} Pokemon`);
+      return pokemon;
+    },
     pokemonSearch: async (
       _,
       { query, limit = 20, offset = 0, sort = PokemonSort.IdAsc },

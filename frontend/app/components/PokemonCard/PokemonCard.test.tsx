@@ -8,6 +8,17 @@ vi.mock("../PokemonTypePill", () => ({
   default: ({ type }: { type: string }) => <span data-testid={`type-pill-${type}`}>{type}</span>,
 }));
 
+// The button opens AddToGroupProvider's picker, which needs providers this
+// test doesn't set up — stub it the same way PokemonTypePill is stubbed.
+vi.mock("@/components/AddToGroupButton", () => ({
+  __esModule: true,
+  default: ({ pokemon }: { pokemon: Pokemon }) => (
+    <button type="button" data-testid="add-to-group-button">
+      {`Add ${pokemon.name} to a group`}
+    </button>
+  ),
+}));
+
 // Mock Next.js components
 vi.mock("next/link", () => ({
   default: function MockLink({ children, href }: { children: React.ReactNode; href: string }) {
@@ -186,5 +197,16 @@ describe("PokemonCard", () => {
     render(<PokemonCard pokemon={mockPokemon} />);
 
     expect(screen.getByTestId("pokemon-card")).toBeInTheDocument();
+  });
+
+  it("renders the add-to-group button outside the link, for this Pokemon", () => {
+    const { container } = render(<PokemonCard pokemon={mockPokemon} />);
+
+    const button = screen.getByTestId("add-to-group-button");
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent("Add bulbasaur to a group");
+    // Sibling of the link, not nested inside it — an interactive control
+    // inside an <a> is invalid HTML and would still navigate on press.
+    expect(container.querySelector("a")).not.toContainElement(button);
   });
 });

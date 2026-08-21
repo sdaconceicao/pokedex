@@ -237,3 +237,34 @@ export const GET_POKEMON_BY_REGION = gql`
     }
   }
 `;
+
+/** Hydrates a saved list's Pokemon in one round trip: `useGroupPokemon` only
+ *  carries ids, and the cards need the full record. Unknown ids are omitted
+ *  by the resolver rather than failing the whole list. */
+export const GET_POKEMON_BY_IDS = gql`
+  query GetPokemonByIds($ids: [ID!]!) {
+    pokemonByIds(ids: $ids) {
+      id
+      speciesId
+      speciesName
+      name
+      type
+      image
+      stats {
+        hp
+        attack
+        defense
+        specialAttack
+        specialDefense
+        speed
+      }
+      abilitiesLite {
+        id
+        name
+        url
+        slot
+        isHidden
+      }
+    }
+  }
+`;

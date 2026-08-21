@@ -1,6 +1,8 @@
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 import { postgresDriver } from './config/postgres-driver';
+import { GroupPokemonEntity } from './groups/group-pokemon.entity';
+import { GroupEntity } from './groups/groups.entity';
 import { UserEntity } from './users/users.entity';
 
 config();
@@ -22,7 +24,7 @@ async function runMigrations() {
         }),
     ssl: process.env.DB_SSL === 'true' || !!url,
     schema: 'public',
-    entities: [UserEntity],
+    entities: [UserEntity, GroupEntity, GroupPokemonEntity],
     migrations: [`${__dirname}/migrations/*{.ts,.js}`],
     migrationsTableName: 'migrations',
   });

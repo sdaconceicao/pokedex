@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 interface AuthModalContextValue {
   openSignIn: () => void;
   openSignUp: () => void;
+  isAuthModalOpen: boolean;
 }
 
 const AuthModalContext = createContext<AuthModalContextValue | null>(null);
@@ -56,7 +57,10 @@ export default function AuthModalProvider({ children }: { children: React.ReactN
     [registerAsync],
   );
 
-  const value = useMemo(() => ({ openSignIn, openSignUp }), [openSignIn, openSignUp]);
+  const value = useMemo(
+    () => ({ openSignIn, openSignUp, isAuthModalOpen: isOpen }),
+    [openSignIn, openSignUp, isOpen],
+  );
 
   return (
     <AuthModalContext.Provider value={value}>

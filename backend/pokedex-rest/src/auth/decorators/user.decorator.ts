@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
-import { UserEntity } from '../../users/users.entity';
+import { AccessTokenPayload } from '../types/AccessTokenPayload';
 
 interface AuthenticatedRequest extends FastifyRequest {
-  user: UserEntity;
+  user: AccessTokenPayload;
 }
 
 export const User = createParamDecorator(

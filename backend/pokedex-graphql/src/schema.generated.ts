@@ -2,6 +2,7 @@
 export const typeDefs = /* GraphQL */ `
 type Query {
   pokemon(id: ID!): Pokemon
+  pokemonByIds(ids: [ID!]!): [Pokemon!]!
   pokemonSearch(query: String!, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
   pokemonForms(query: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
   pokemonByType(type: String, limit: Int, offset: Int, sort: PokemonSort = ID_ASC): PokemonList
