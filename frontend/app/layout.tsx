@@ -63,9 +63,7 @@ export default async function RootLayout({
             <ApolloWrapper>
               <AuthModalProvider>
                 <AddToGroupProvider>
-                  <AppShell navigationData={navigationData}>
-                    {children}
-                  </AppShell>
+                  <AppShell navigationData={navigationData}>{children}</AppShell>
                 </AddToGroupProvider>
               </AuthModalProvider>
             </ApolloWrapper>
