@@ -12,7 +12,7 @@ jobs:
       cache-key: ${{ steps.cache-key.outputs.value }}
 
     steps:
-      - name: Checkout code\
+      - name: Checkout code
         uses: actions/checkout@v5
 
       - name: Install pnpm
@@ -31,20 +31,8 @@ jobs:
           path: ./*
           key: cache-${{ runner.os }}-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
 
-      - name: Cache node modules
-        uses: actions/cache@v5
-        id: node_modules
-        with:
-          path: |
-            node_modules
-            **/node_modules
-          key: pokedex-deps-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pokedex-deps-${{ hashFiles('pnpm-lock.yaml') }}
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        if: steps.node_modules.outputs.cache-hit != 'true'
 
       - name: Set cache key
         id: cache-key
