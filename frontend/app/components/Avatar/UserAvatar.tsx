@@ -40,18 +40,10 @@ export default function UserAvatar({
     <MenuTrigger>
       {/* react-aria wires aria-haspopup/aria-expanded onto this trigger itself,
           so the aria-label is the only accessibility prop left to supply. */}
-      <Button
-        aria-label="Account menu"
-        variant="quiet"
-        className={styles.trigger}
-      >
+      <Button aria-label="Account menu" variant="quiet" className={styles.trigger}>
         <Avatar name={email} src={avatarSrc} />
       </Button>
-      <Popover
-        placement="bottom end"
-        offset={HEADER_EDGE_OFFSET}
-        className={styles.popover}
-      >
+      <Popover placement="bottom end" offset={HEADER_EDGE_OFFSET} className={styles.popover}>
         <Menu
           onAction={(key) => {
             if (key === LOGOUT_KEY) onLogout();
