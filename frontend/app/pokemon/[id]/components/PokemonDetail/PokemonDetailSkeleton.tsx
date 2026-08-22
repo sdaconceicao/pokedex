@@ -12,6 +12,9 @@ interface PokemonDetailSkeletonProps {
 export default function PokemonDetailSkeleton({ flush }: PokemonDetailSkeletonProps) {
   const statKeys = useMemo(() => Array.from({ length: 6 }, (_, i) => i), []);
   const abilityKeys = useMemo(() => Array.from({ length: 3 }, (_, i) => i), []);
+  // Three headings a side: the columns are uneven in reality, so an even
+  // pair of stacks is the honest placeholder rather than a guess at shape.
+  const matchupKeys = useMemo(() => Array.from({ length: 3 }, (_, i) => i), []);
 
   return (
     <div className={styles.container}>
@@ -34,6 +37,23 @@ export default function PokemonDetailSkeleton({ flush }: PokemonDetailSkeletonPr
                 height={16}
                 className={styles.statValueSkeleton}
               />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Type matchups skeleton */}
+      <div className={styles.matchupsSection}>
+        <Skeleton variant="line" width={160} height={24} className={styles.titleSkeleton} />
+        <div className={styles.matchupsGrid}>
+          {["attacking", "defending"].map((side) => (
+            <div key={side} className={styles.matchupsColumn}>
+              {matchupKeys.map((key) => (
+                <div key={key}>
+                  <Skeleton variant="line" width={90} height={14} />
+                  <Skeleton variant="line" height={28} />
+                </div>
+              ))}
             </div>
           ))}
         </div>

@@ -95,6 +95,16 @@
   --matchup-neutral: rgba(255, 255, 255, 0.22);
   --matchup-bad: rgba(240, 78, 70, 0.95);
   --matchup-none: rgba(10, 10, 12, 0.92);
+
+  /* Text that sits *on* those tints. Each carries its own because the tints are
+     near-opaque and so don't follow the theme, which means their text can't
+     either — and because the obvious choice fails: --card-foreground clears AA
+     on the green but not on the red (3.85:1 on the dark surface) or the black
+     (1.23:1). These are the measured-AA pairings at chip text sizes, in both
+     themes; changing a tint means re-checking its ink. */
+  --matchup-good-ink: #111827;
+  --matchup-bad-ink: #111827;
+  --matchup-none-ink: #ffffff;
 }
 
 :root.dark-mode {

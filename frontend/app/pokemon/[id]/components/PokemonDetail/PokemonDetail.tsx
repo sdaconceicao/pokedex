@@ -3,6 +3,7 @@ import PokemonAbility from "../PokemonAbility";
 import PokemonEvolution from "../PokemonEvolution";
 import { hasEvolutions } from "../PokemonEvolution/PokemonEvolution.utils";
 import PokemonHero from "../PokemonHero";
+import PokemonMatchups from "../PokemonMatchups";
 import PokemonSection from "../PokemonSection";
 import PokemonStat from "../PokemonStat";
 import styles from "./PokemonDetail.module.css";
@@ -33,6 +34,13 @@ export default function PokemonDetail({ pokemon, flush }: PokemonDetailProps) {
           <PokemonStat name="Speed" value={pokemon.stats.speed} />
         </div>
       </PokemonSection>
+      {/* Nullable upstream: a type fetch that failed costs the section, not
+          the page. */}
+      {pokemon.matchups && (
+        <PokemonSection title="Type Matchups" className={typeClass}>
+          <PokemonMatchups matchups={pokemon.matchups} type={primaryType} />
+        </PokemonSection>
+      )}
       <PokemonSection title="Abilities" className={typeClass}>
         <div className={styles.abilitiesGrid}>
           {pokemon.abilities?.map((ability: Ability) => (

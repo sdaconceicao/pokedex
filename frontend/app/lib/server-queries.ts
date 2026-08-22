@@ -26,6 +26,18 @@ const GET_POKEMON_BY_ID = gql`
         slot
         isHidden
       }
+      matchups {
+        defending {
+          type
+          multiplier
+        }
+        attacking {
+          type
+          superEffective
+          notVeryEffective
+          noEffect
+        }
+      }
       abilities {
         id
         name
