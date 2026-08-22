@@ -118,9 +118,6 @@ export class PokemonAPI extends RESTDataSource {
     return this.get<PokemonSpecies>(`pokemon-species/${id}`);
   }
 
-  // Build a single evolution node (id, name, image + how it evolves), then
-  // recurse into its branches. Uses getPokemon so node images reuse the same
-  // sprite/fallback logic as the rest of the app.
   private async buildEvolutionNode(link: ChainLink): Promise<EvolutionNode> {
     const speciesId = getIdFromUrl(link.species.url);
     const [pokemon, evolvesTo] = await Promise.all([
@@ -130,10 +127,6 @@ export class PokemonAPI extends RESTDataSource {
 
     return {
       id: pokemon.id,
-      // The species' name, not the default form's: a chain is a chain of
-      // species, and the two differ wherever the base form carries a suffix —
-      // a stage reading "Aegislash Shield" would name a form the chain has no
-      // other member of.
       name: link.species.name,
       image: pokemon.image,
       ...getEvolutionDetail(link.evolution_details),
@@ -192,7 +185,6 @@ export class PokemonAPI extends RESTDataSource {
     return entries.filter((pokemon) => pokemon.name.toLowerCase().includes(lowerQuery));
   }
 
-  // Every name match, unpaginated, so it can be composed with other facets.
   searchPokemonIndex(query: string): PokemonIndex[] {
     return PokemonAPI.matchName(this.getPokemonIndex(), query);
   }
@@ -201,8 +193,6 @@ export class PokemonAPI extends RESTDataSource {
     return PokemonAPI.matchName(this.getFormsIndex(), query);
   }
 
-  // One fetch is enough: the entry list carries the count, so unlike getRegion
-  // there is no second request to size the dex.
   getPokedex(name: string): Promise<PokedexDetail> {
     logger.info(`Fetching pokedex: ${name}`);
     return this.get<Pokedex>(`pokedex/${name}`)
@@ -305,9 +295,6 @@ export class PokemonAPI extends RESTDataSource {
       });
   }
 
-  // The per-dex fetch this needs for the count already carries the name and the
-  // region, so both come out of the same response rather than costing a request
-  // of their own.
   getPokedexes(): Promise<PokemonPokedex[]> {
     return this.get<PokedexListResponse>("pokedex?limit=50").then(async (data) => {
       const pokedexesWithCounts = await Promise.all(
@@ -315,8 +302,6 @@ export class PokemonAPI extends RESTDataSource {
           try {
             const pokedex = await this.get<Pokedex>(`pokedex/${entry.name}`);
             return {
-              // Keyed by the slug asked for, not the one echoed back, so the
-              // name the routes use is the name the list was built from
               name: entry.name,
               displayName: getDisplayName(pokedex.names, entry.name),
               region: pokedex.region?.name ?? null,

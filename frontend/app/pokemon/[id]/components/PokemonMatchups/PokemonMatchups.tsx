@@ -1,7 +1,6 @@
 import { Heading } from "@code-x/lago";
 import { getPokemonTypeIcon } from "@/lib/pokemonTypeIcons";
 import { capitalize } from "@/lib/string";
-// The generated GraphQL type shares this component's name, so it comes in aliased
 import type { PokemonMatchups as MatchupsData } from "@/types";
 import MatchupRow from "../MatchupRow";
 import styles from "./PokemonMatchups.module.css";
@@ -9,20 +8,9 @@ import { groupDefensiveMatchups, groupOffensiveMatchups } from "./PokemonMatchup
 
 interface PokemonMatchupsProps {
   matchups: MatchupsData;
-  /** The Pokemon's primary type, carrying the --type-* palette in, the way
-   *  PokemonAbility takes it. */
   type: string;
 }
 
-/**
- * Two columns: what this Pokemon's types deal, and what it takes. They do not
- * share arithmetic — defence multiplies across both types, offence does not —
- * so they are built by separate helpers rather than one shared shape, and the
- * attacking side stays split per type so a 2x from each never reads as 4x.
- *
- * "Attacking" and "Defending" rather than Attack and Defense: the nouns are
- * already on this page as stats, the gerunds are what the type wheel's key uses.
- */
 export const PokemonMatchups = ({ matchups, type }: PokemonMatchupsProps) => {
   const attacking = groupOffensiveMatchups(matchups.attacking);
   const defending = groupDefensiveMatchups(matchups.defending);

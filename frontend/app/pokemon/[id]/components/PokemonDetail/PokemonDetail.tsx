@@ -10,15 +10,11 @@ import styles from "./PokemonDetail.module.css";
 
 interface PokemonDetailProps {
   pokemon: Pokemon;
-  /** Let the hero run out to the container's edges and serve as its header.
-   *  Set by the modal routes; the standalone page leaves the hero a card. */
   flush?: boolean;
 }
 
 export default function PokemonDetail({ pokemon, flush }: PokemonDetailProps) {
   const primaryType = pokemon.type[0].toLowerCase();
-  // Sets the --type-* palette every section reads from. Global class, from
-  // typePalette.css, so the type page can tint itself the same way.
   const typeClass = `type-${primaryType}`;
 
   return (
@@ -34,8 +30,6 @@ export default function PokemonDetail({ pokemon, flush }: PokemonDetailProps) {
           <PokemonStat name="Speed" value={pokemon.stats.speed} />
         </div>
       </PokemonSection>
-      {/* Nullable upstream: a type fetch that failed costs the section, not
-          the page. */}
       {pokemon.matchups && (
         <PokemonSection title="Type Matchups" className={typeClass}>
           <PokemonMatchups matchups={pokemon.matchups} type={primaryType} />

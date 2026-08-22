@@ -33,8 +33,6 @@ export default function Navbar({
   const typeItems = useMemo(() => getTypeItems(types), [types]);
   const specialItems = useMemo(() => getSpecialItems(), []);
   const regionItems = useMemo(() => getRegionItems(regions), [regions]);
-  // Pokedexes are the one section grouped rather than flat: there are ~35 of
-  // them, ten in Alola alone.
   const pokedexGroups = useMemo(() => getPokedexGroups(pokedexes), [pokedexes]);
 
   const itemsByKey: Record<Exclude<NavSectionKey, "pokedexes">, NavItem[]> = {
@@ -45,17 +43,11 @@ export default function Navbar({
 
   return (
     <nav className={styles.navbar}>
-      {/* Search first: it combines facets, so it is the more capable of the
-          two, and Browse below is the one-facet shortcut to the same results. */}
       <NavbarGroup title="Search">
         <SearchFilters types={types} regions={regions} pokedexes={pokedexes} />
       </NavbarGroup>
 
       <NavbarGroup title="Browse">
-        {/* One section open at a time (DisclosureGroup's default). Controlled
-            rather than left to itself, because the collapsed rail's buttons open
-            a section as well — so which one is open is AppShell's to hold, not
-            this group's. All four open at once ran the sidebar to three screens. */}
         <DisclosureGroup
           expandedKeys={openSection ? [openSection] : []}
           onExpandedChange={(keys) => {

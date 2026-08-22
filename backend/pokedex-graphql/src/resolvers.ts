@@ -6,15 +6,6 @@ import { intersect, sortResults, union } from "./utils/filter.js";
 import { getPaginatedResults } from "./utils/pagination.js";
 import { buildPokemonMatchups } from "./utils/type.js";
 
-/**
- * Reduce a filter to one candidate list per facet. Every facet is dispatched
- * before any is awaited, so the slow one (regions, which fans out over each of
- * its pokedexes) overlaps the rest instead of following them.
- *
- * Facets are OR internally and the caller ANDs them together. `dualType` is the
- * sole exception: its two type lists are intersected, and that pair is then
- * OR'd back into the type facet alongside the plain `types` list.
- */
 const resolveFacets = (
   { dataSources }: DataSourceContext,
   { query, types, dualType, pokedexes, regions }: PokemonFilter,

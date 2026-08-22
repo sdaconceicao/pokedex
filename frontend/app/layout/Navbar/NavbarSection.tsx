@@ -34,21 +34,6 @@ export default function NavbarSection({
 }: NavbarSectionProps) {
   const sectionId = title.toLowerCase().replace(/\s+/g, "-");
   return (
-    // The enclosing DisclosureGroup owns which section is expanded — one at a
-    // time — so this passes an `id` and reads its own state back off the
-    // `data-expanded` Disclosure stamps on its root, so the
-    // chevron rotation in Navbar.module.css is a plain attribute selector
-    // instead of the old `open ? styles.chevronOpen : ""` ternary. It also
-    // gets the collapse/expand animation for free (`--disclosure-panel-height`
-    // in lago's CSS) in place of the previous instant mount/unmount.
-    //
-    // The header keeps its own bespoke markup — a leading icon, the title,
-    // then a chevron flush right — via a plain Button dropped onto the
-    // `trigger` slot Disclosure exposes through context (aria-expanded,
-    // aria-controls and the toggle handler all arrive that way, no props
-    // needed here), rather than lago's canned DisclosureHeader: that renders
-    // its chevron *before* the label with no leading-icon slot, a different
-    // layout than this sidebar uses.
     <Disclosure id={id} className={styles.section}>
       <Button
         slot="trigger"

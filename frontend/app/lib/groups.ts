@@ -68,7 +68,6 @@ export const groupsApi = {
     return response.json();
   },
 
-  // 204 responses have no body.
   async remove(token: string, id: string): Promise<void> {
     const response = await fetch(groupUrl(id), {
       method: "DELETE",
@@ -112,7 +111,6 @@ export const groupsApi = {
     return response.json();
   },
 
-  // 204 responses have no body.
   async removePokemon(token: string, groupId: string, pokemonId: string): Promise<void> {
     const response = await fetch(groupPokemonUrl(groupId, pokemonId), {
       method: "DELETE",
