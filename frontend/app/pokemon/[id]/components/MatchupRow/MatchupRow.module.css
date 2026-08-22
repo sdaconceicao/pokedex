@@ -1,0 +1,25 @@
+.row {
+  display: grid;
+  grid-template-columns: 3.25rem 1fr;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.rowLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* Named for the slot, not the word in it: `.none` is the zero-damage tint, and
+   it lives with the chip. */
+.empty {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}

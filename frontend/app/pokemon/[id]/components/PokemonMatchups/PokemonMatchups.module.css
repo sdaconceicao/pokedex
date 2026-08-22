@@ -66,67 +66,6 @@
   height: 1.125rem;
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 3.25rem 1fr;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.rowLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--muted-foreground);
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.125rem 0.5rem 0.125rem 0.25rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--chip-ink);
-  background: var(--chip-tint);
-}
-
-.chipIcon {
-  display: inline-flex;
-  width: 0.875rem;
-  height: 0.875rem;
-}
-
-/* Named for the slot, not the word in it: `.none` is the zero-damage tint. */
-.empty {
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
-}
-
-/* Variables per tint rather than three sets of background/color rules, so the
-   chip keeps one declaration of each. Ink travels with its tint: the black one
-   needs light text where the other two need dark. */
-.good {
-  --chip-tint: var(--matchup-good);
-  --chip-ink: var(--matchup-good-ink);
-}
-
-.bad {
-  --chip-tint: var(--matchup-bad);
-  --chip-ink: var(--matchup-bad-ink);
-}
-
-.none {
-  --chip-tint: var(--matchup-none);
-  --chip-ink: var(--matchup-none-ink);
-}
-
 /* ── Responsive ──────────────────────────────────────
    Two columns leave each row too narrow for its chips once the viewport reaches
    tablet width, the same problem the stats grid has, so they stack the same way

@@ -1,16 +1,8 @@
 import type { DefensiveMatchup, TypeOffense } from "@/types";
-
-/**
- * Which way a matchup falls, for the global --matchup-* scale. Green where it
- * favours this Pokemon, red where it does not, black where nothing gets through
- * either way. There is no "neutral": the backend drops every 1x before sending,
- * which is why this is a narrower set than the wheel's own Tint — the wheel
- * draws all eighteen types and still needs somewhere to put normal damage.
- */
-export type Tint = "good" | "bad" | "none";
+import type { Tint } from "../MatchupChip/MatchupChip";
 
 /** One multiplier's worth of types, under a heading that may hold several. */
-export interface MatchupRow {
+export interface MultiplierRow {
   multiplier: number;
   /** "4×", "½×" and so on */
   symbol: string;
@@ -21,12 +13,12 @@ export interface MatchupRow {
 export interface MatchupGroup {
   heading: string;
   tint: Tint;
-  rows: MatchupRow[];
+  rows: MultiplierRow[];
 }
 
 /** A defensive row carries its tint on the group; an offensive one carries its
  *  own, because one type deals all three multipliers at once. */
-export interface OffenseRow extends MatchupRow {
+export interface OffenseRow extends MultiplierRow {
   tint: Tint;
 }
 

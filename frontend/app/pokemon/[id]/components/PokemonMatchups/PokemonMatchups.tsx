@@ -3,8 +3,9 @@ import { getPokemonTypeIcon } from "@/lib/pokemonTypeIcons";
 import { capitalize } from "@/lib/string";
 // The generated GraphQL type shares this component's name, so it comes in aliased
 import type { PokemonMatchups as MatchupsData } from "@/types";
+import MatchupRow from "../MatchupRow";
 import styles from "./PokemonMatchups.module.css";
-import { groupDefensiveMatchups, groupOffensiveMatchups, type Tint } from "./PokemonMatchups.utils";
+import { groupDefensiveMatchups, groupOffensiveMatchups } from "./PokemonMatchups.utils";
 
 interface PokemonMatchupsProps {
   matchups: MatchupsData;
@@ -12,34 +13,6 @@ interface PokemonMatchupsProps {
    *  PokemonAbility takes it. */
   type: string;
 }
-
-/** A type as a chip: the icon is decorative, so the accessible reading of a row
- *  is just the type names. */
-const TypeChip = ({ type, tint }: { type: string; tint: Tint }) => (
-  <span className={`${styles.chip} ${styles[tint]}`}>
-    <span className={styles.chipIcon} aria-hidden="true">
-      {getPokemonTypeIcon(type)}
-    </span>
-    {capitalize(type)}
-  </span>
-);
-
-/** A label and the types under it, or the word None when there are none. Kept
- *  rather than dropped so both columns hold their shape between Pokemon. */
-const Row = ({ label, tint, types }: { label: string; tint: Tint; types: string[] }) => (
-  <div className={styles.row}>
-    <span className={styles.rowLabel}>{label}</span>
-    {types.length ? (
-      <span className={styles.chips}>
-        {types.map((type) => (
-          <TypeChip key={type} type={type} tint={tint} />
-        ))}
-      </span>
-    ) : (
-      <span className={styles.empty}>None</span>
-    )}
-  </div>
-);
 
 /**
  * Two columns: what this Pokemon's types deal, and what it takes. They do not
@@ -69,7 +42,7 @@ export const PokemonMatchups = ({ matchups, type }: PokemonMatchupsProps) => {
               {capitalize(source)}
             </Heading>
             {rows.map(({ symbol, tint, types }) => (
-              <Row key={symbol} label={symbol} tint={tint} types={types} />
+              <MatchupRow key={symbol} label={symbol} tint={tint} types={types} />
             ))}
           </div>
         ))}
@@ -86,10 +59,10 @@ export const PokemonMatchups = ({ matchups, type }: PokemonMatchupsProps) => {
             </Heading>
             {rows.length ? (
               rows.map(({ symbol, types }) => (
-                <Row key={symbol} label={symbol} tint={tint} types={types} />
+                <MatchupRow key={symbol} label={symbol} tint={tint} types={types} />
               ))
             ) : (
-              <Row label="" tint={tint} types={[]} />
+              <MatchupRow label="" tint={tint} types={[]} />
             )}
           </div>
         ))}

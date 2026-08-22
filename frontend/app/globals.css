@@ -96,15 +96,22 @@
   --matchup-bad: rgba(240, 78, 70, 0.95);
   --matchup-none: rgba(10, 10, 12, 0.92);
 
-  /* Text that sits *on* those tints. Each carries its own because the tints are
-     near-opaque and so don't follow the theme, which means their text can't
-     either — and because the obvious choice fails: --card-foreground clears AA
-     on the green but not on the red (3.85:1 on the dark surface) or the black
-     (1.23:1). These are the measured-AA pairings at chip text sizes, in both
-     themes; changing a tint means re-checking its ink. */
-  --matchup-good-ink: #111827;
-  --matchup-bad-ink: #111827;
-  --matchup-none-ink: #ffffff;
+  /* Deeper, fully opaque versions of the three, for surfaces that carry text on
+     them. The tints above are for fills that don't: the wheel puts only icons on
+     its rings and keeps its wording in a readout alongside, so it can afford
+     translucent mid-tones over the hero gradient. A pill with a type name on it
+     can't — and the mid-tone red is the worst case, too dark for black text and
+     too light for white (4.66:1 and 3.38:1 respectively). Going darker lets one
+     ink serve all three.
+
+     Solid rather than alpha so each ratio is a single number that no surface
+     underneath can move. Measured against white: green 5.44:1, red 5.62:1,
+     black 19.78:1 — all clear WCAG AA at pill text sizes. Re-measure if any of
+     them changes. */
+  --matchup-good-solid: #0f7a38;
+  --matchup-bad-solid: #c62828;
+  --matchup-none-solid: #0a0a0c;
+  --matchup-ink: #ffffff;
 }
 
 :root.dark-mode {
