@@ -92,6 +92,7 @@ type Pokemon {
   abilities: [Ability!]
   evolution: EvolutionChain
   forms: [PokemonForm!]
+  matchups: PokemonMatchups
 }
 
 type PokemonForm {
@@ -227,4 +228,40 @@ type TypeDamageRelations {
   doubleDamageFrom: [String!]!
   halfDamageFrom: [String!]!
   noDamageFrom: [String!]!
+}
+
+"""
+How a Pokemon fares in battle, given its one or two types.
+"""
+type PokemonMatchups {
+  """
+  Types that come out at exactly 1x are omitted, 
+  so an absent type is neutral rather than unknown.
+  """
+  defending: [DefensiveMatchup!]!
+  """
+  Deliberately not combined, each type attacks on its own, so a dual type gets two independent 
+  readings and a 2x from one type is not multiplied by a 2x from the other.
+  """
+  attacking: [TypeOffense!]!
+}
+
+"""
+One defensive reading. `multiplier` is 0, 0.25, 0.5, 2 or 4 — never 1, which is
+omitted from `defending` entirely.
+"""
+type DefensiveMatchup {
+  type: String!
+  multiplier: Float!
+}
+
+"""
+What one of the Pokemon's types deals to the eighteen. Types absent from all
+three lists take normal damage.
+"""
+type TypeOffense {
+  type: String!
+  superEffective: [String!]!
+  notVeryEffective: [String!]!
+  noEffect: [String!]!
 }

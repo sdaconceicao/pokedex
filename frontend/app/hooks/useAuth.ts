@@ -8,7 +8,6 @@ import type {
   RegisterResponse,
 } from "@/types/auth";
 
-// Custom hooks for authentication
 export function useAuth() {
   const queryClient = useQueryClient();
 
@@ -17,7 +16,6 @@ export function useAuth() {
     setHasMounted(true);
   }, []);
 
-  // Query for current token
   const {
     data: token,
     isLoading: isTokenLoading,
@@ -25,10 +23,9 @@ export function useAuth() {
   } = useQuery({
     queryKey: ["auth", "token"],
     queryFn: getStoredToken,
-    staleTime: Infinity, // Token doesn't change unless explicitly updated
+    staleTime: Infinity,
   });
 
-  // Query for current user (depends on token)
   const {
     data: user,
     isLoading: isUserLoading,
@@ -36,40 +33,32 @@ export function useAuth() {
   } = useQuery({
     queryKey: ["auth", "user", token],
     queryFn: () => authApi.getCurrentUser(token!),
-    enabled: !!token, // Only run when token exists
+    enabled: !!token,
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
-  // Login mutation
   const loginMutation = useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: authApi.login,
     onSuccess: (data: LoginResponse) => {
       setStoredToken(data.access_token);
-      // Update token in cache, which will trigger user query
       queryClient.setQueryData(["auth", "token"], data.access_token);
     },
   });
 
-  // Register mutation
   const registerMutation = useMutation<RegisterResponse, Error, RegisterCredentials>({
     mutationFn: authApi.register,
     onSuccess: (data: RegisterResponse) => {
       setStoredToken(data.access_token);
-      // Update token in cache, which will trigger user query
       queryClient.setQueryData(["auth", "token"], data.access_token);
     },
   });
 
-  // Logout mutation
   const logoutMutation = useMutation<void, Error, void>({
     mutationFn: authApi.logout,
     onSuccess: () => {
-      // Clear token and user data from cache
       queryClient.setQueryData(["auth", "token"], null);
       queryClient.removeQueries({ queryKey: ["auth", "user"] });
-      // Also drop any cached groups -- otherwise the next user to sign in on
-      // this browser would see the previous user's saved lists.
       queryClient.removeQueries({ queryKey: ["groups"] });
     },
   });
@@ -91,7 +80,6 @@ export function useAuth() {
   };
 }
 
-// Hook for checking if user is authenticated
 export function useIsAuthenticated() {
   const { user, isLoading } = useAuth();
   return { isAuthenticated: !!user, isLoading };

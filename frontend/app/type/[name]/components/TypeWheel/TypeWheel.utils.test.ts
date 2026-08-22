@@ -124,7 +124,7 @@ describe("buildTrackGradient", () => {
 
     expect(gradient).toContain("conic-gradient(from -10deg");
     // grass is the fifth type, and fire is super effective against it
-    expect(gradient).toContain("var(--wheel-good) 80deg 100deg");
+    expect(gradient).toContain("var(--matchup-good) 80deg 100deg");
     expect(gradient).toContain("340deg 360deg");
   });
 
@@ -132,16 +132,16 @@ describe("buildTrackGradient", () => {
     const matchups = getMatchups({ ...relations, noDamageFrom: ["dragon"] });
 
     // dragon is fifteenth in chart order
-    expect(buildTrackGradient(matchups, "defense")).toContain("var(--wheel-none) 280deg 300deg");
+    expect(buildTrackGradient(matchups, "defense")).toContain("var(--matchup-none) 280deg 300deg");
   });
 
   it("tints the inner ring by what the type takes", () => {
     const gradient = buildTrackGradient(getMatchups(relations), "defense");
 
     // water is third, and it hits fire for double
-    expect(gradient).toContain("var(--wheel-bad) 40deg 60deg");
+    expect(gradient).toContain("var(--matchup-bad) 40deg 60deg");
     // grass only trades evenly on the way in
-    expect(gradient).toContain("var(--wheel-neutral) 80deg 100deg");
+    expect(gradient).toContain("var(--matchup-neutral) 80deg 100deg");
   });
 });
 

@@ -18,6 +18,7 @@ import {
   regionListResponse,
   typeListResponse,
   typeResponse,
+  typesBySlug,
 } from "./pokemon.js";
 
 const pokemonById: Record<string, unknown> = {
@@ -71,10 +72,13 @@ export const handlers = [
     return HttpResponse.json(pokemonAbility);
   }),
 
-  // Type endpoint - used by getPokemonByType()
-  http.get("https://pokeapi.co/api/v2/type/:type", () => {
-    // Return mock data for any type
-    return HttpResponse.json(typeResponse);
+  // Type endpoint - used by getPokemonByType() and getType()
+  http.get("https://pokeapi.co/api/v2/type/:type", ({ params }) => {
+    // Answer with the type that was asked for, so a dual-type Pokemon gets each
+    // of its types' own relations rather than one type's repeated; anything
+    // unmocked falls back to grass.
+    const slug = String(params.type);
+    return HttpResponse.json(typesBySlug[slug] ?? typeResponse);
   }),
 
   // Pokedex endpoint - used by getPokemonByPokedex(), getPokedex() and getPokedexes()

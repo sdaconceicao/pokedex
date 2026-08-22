@@ -26,6 +26,18 @@ const GET_POKEMON_BY_ID = gql`
         slot
         isHidden
       }
+      matchups {
+        defending {
+          type
+          multiplier
+        }
+        attacking {
+          type
+          superEffective
+          notVeryEffective
+          noEffect
+        }
+      }
       abilities {
         id
         name
@@ -148,8 +160,6 @@ export async function getPokemonById(id: string): Promise<Pokemon> {
   }
 }
 
-/** Returns null for a region the API doesn't know, so the page can 404 on a
- *  bad slug rather than surface an error boundary. */
 export async function getRegionByName(name: string): Promise<RegionDetail | null> {
   try {
     const { data } = await client.query<{ region: RegionDetail | null }>({
@@ -164,8 +174,6 @@ export async function getRegionByName(name: string): Promise<RegionDetail | null
   }
 }
 
-/** Returns null for a type the API doesn't know, so the page can 404 on a bad
- *  slug rather than surface an error boundary. */
 export async function getTypeByName(name: string): Promise<TypeDetail | null> {
   try {
     const { data } = await client.query<{ type: TypeDetail | null }>({
@@ -180,8 +188,6 @@ export async function getTypeByName(name: string): Promise<TypeDetail | null> {
   }
 }
 
-/** Returns null for a pokedex the API doesn't know, so the page can 404 on a
- *  bad slug rather than surface an error boundary. */
 export async function getPokedexByName(name: string): Promise<PokedexDetail | null> {
   try {
     const { data } = await client.query<{ pokedex: PokedexDetail | null }>({
