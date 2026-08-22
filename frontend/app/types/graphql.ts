@@ -135,15 +135,13 @@ export type PokemonList = {
 /** How a Pokemon fares in battle, given its one or two types. */
 export type PokemonMatchups = {
   /**
-   * What this Pokemon's types deal, one entry per type. Deliberately not combined:
-   * each type attacks on its own, so a dual type gets two independent readings and
-   * a 2x from one type is not multiplied by a 2x from the other.
+   * Deliberately not combined, each type attacks on its own, so a dual type gets two independent
+   * readings and a 2x from one type is not multiplied by a 2x from the other.
    */
   attacking: Array<TypeOffense>;
   /**
-   * What this Pokemon takes, its types combined multiplicatively. Types that come
-   * out at exactly 1x are omitted, so an absent type is neutral rather than
-   * unknown.
+   * Types that come out at exactly 1x are omitted,
+   * so an absent type is neutral rather than unknown.
    */
   defending: Array<DefensiveMatchup>;
 };
