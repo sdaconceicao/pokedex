@@ -94,6 +94,8 @@ export type Pokemon = {
   __typename?: 'Pokemon';
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
+  description?: Maybe<Scalars['String']['output']>;
+  descriptions?: Maybe<Array<PokemonDescription>>;
   evolution?: Maybe<EvolutionChain>;
   forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
@@ -104,6 +106,12 @@ export type Pokemon = {
   speciesName: Scalars['String']['output'];
   stats: Stats;
   type: Array<Scalars['String']['output']>;
+};
+
+export type PokemonDescription = {
+  __typename?: 'PokemonDescription';
+  text: Scalars['String']['output'];
+  versions: Array<Scalars['String']['output']>;
 };
 
 /**
@@ -438,6 +446,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   PokedexDetail: ResolverTypeWrapper<PokedexDetail>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
+  PokemonDescription: ResolverTypeWrapper<PokemonDescription>;
   PokemonFilter: PokemonFilter;
   PokemonForm: ResolverTypeWrapper<PokemonForm>;
   PokemonList: ResolverTypeWrapper<PokemonList>;
@@ -469,6 +478,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   PokedexDetail: PokedexDetail;
   Pokemon: Pokemon;
+  PokemonDescription: PokemonDescription;
   PokemonFilter: PokemonFilter;
   PokemonForm: PokemonForm;
   PokemonList: PokemonList;
@@ -536,6 +546,8 @@ export type PokedexDetailResolvers<ContextType = DataSourceContext, ParentType e
 export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
   abilities?: Resolver<Maybe<Array<ResolversTypes['Ability']>>, ParentType, ContextType>;
   abilitiesLite?: Resolver<Array<ResolversTypes['AbilityLite']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  descriptions?: Resolver<Maybe<Array<ResolversTypes['PokemonDescription']>>, ParentType, ContextType>;
   evolution?: Resolver<Maybe<ResolversTypes['EvolutionChain']>, ParentType, ContextType>;
   forms?: Resolver<Maybe<Array<ResolversTypes['PokemonForm']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -546,6 +558,11 @@ export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends
   speciesName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stats?: Resolver<ResolversTypes['Stats'], ParentType, ContextType>;
   type?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+};
+
+export type PokemonDescriptionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonDescription'] = ResolversParentTypes['PokemonDescription']> = {
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  versions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
 export type PokemonFormResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonForm'] = ResolversParentTypes['PokemonForm']> = {
@@ -656,6 +673,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   EvolutionNode?: EvolutionNodeResolvers<ContextType>;
   PokedexDetail?: PokedexDetailResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
+  PokemonDescription?: PokemonDescriptionResolvers<ContextType>;
   PokemonForm?: PokemonFormResolvers<ContextType>;
   PokemonList?: PokemonListResolvers<ContextType>;
   PokemonMatchups?: PokemonMatchupsResolvers<ContextType>;

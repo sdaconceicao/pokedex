@@ -98,6 +98,37 @@ describe("PokemonHero", () => {
     expect(screen.getByText("Poison")).toBeInTheDocument();
   });
 
+  it("renders the type pills in the toolbar alongside the dex number", () => {
+    const { container } = render(
+      <PokemonHero pokemon={{ ...charmander, type: ["Grass", "Poison"] } as Pokemon} />,
+    );
+
+    // Both readings share the number's strip rather than sitting down in the
+    // body, which is where the blurb goes now.
+    const toolbar = container.querySelector(".heroToolbar");
+    expect(toolbar).toContainElement(screen.getByText("Grass"));
+    expect(toolbar).toContainElement(screen.getByText("Poison"));
+    expect(toolbar).toContainElement(screen.getByText("#004"));
+  });
+
+  describe("description", () => {
+    const blurb = "It has a preference for hot things.";
+
+    it("renders the blurb under the name", () => {
+      render(<PokemonHero pokemon={{ ...charmander, description: blurb } as Pokemon} />);
+
+      expect(screen.getByText(blurb)).toBeInTheDocument();
+    });
+
+    it("is left out entirely when the species has no blurb", () => {
+      const { container } = render(
+        <PokemonHero pokemon={{ ...charmander, description: null } as Pokemon} />,
+      );
+
+      expect(container.querySelector("p")).not.toBeInTheDocument();
+    });
+  });
+
   it("navigates back when the toolbar button is clicked", async () => {
     const user = userEvent.setup();
     render(<PokemonHero pokemon={charmander} />);

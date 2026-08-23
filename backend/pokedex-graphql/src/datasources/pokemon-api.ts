@@ -7,6 +7,7 @@ import type {
   EvolutionNode,
   PokedexDetail,
   Pokemon,
+  PokemonDescription,
   PokemonForm,
   PokemonPokedex,
   PokemonRegion,
@@ -21,6 +22,7 @@ import {
   convertPokemonEntityToPokemon,
   getEvolutionDetail,
   getIdFromUrl,
+  getSpeciesDescriptions,
   isForm,
   isSpecies,
   toPokemonIndex,
@@ -142,6 +144,12 @@ export class PokemonAPI extends RESTDataSource {
       id: chainResponse.id.toString(),
       chain: await this.buildEvolutionNode(chainResponse.chain),
     };
+  }
+
+  async getDescriptionsForSpecies(speciesId: string): Promise<PokemonDescription[]> {
+    const species = await this.getPokemonSpecies(speciesId);
+
+    return getSpeciesDescriptions(species);
   }
 
   async getFormsForSpecies(speciesId: string): Promise<PokemonForm[]> {

@@ -161,6 +161,36 @@ describe("getFormsForSpecies", () => {
   });
 });
 
+describe("getDescriptionsForSpecies", () => {
+  it("returns the species' blurbs oldest first, with the newest last", async () => {
+    const descriptions = await api().getDescriptionsForSpecies("1");
+
+    expect(descriptions.at(-1)).toEqual({
+      text: "While it is young, it uses the nutrients in its seed.",
+      versions: ["shield"],
+    });
+  });
+
+  it("groups the games that ship identical text and skips other languages", async () => {
+    const descriptions = await api().getDescriptionsForSpecies("1");
+
+    expect(descriptions).toEqual([
+      {
+        text: "A strange seed was planted on its back at birth.",
+        versions: ["red"],
+      },
+      {
+        text: "It can go for days without eating a single morsel.",
+        versions: ["blue", "leafgreen"],
+      },
+      {
+        text: "While it is young, it uses the nutrients in its seed.",
+        versions: ["shield"],
+      },
+    ]);
+  });
+});
+
 describe("getEvolutionForSpecies", () => {
   it("resolves a chain for a species", async () => {
     const chain = await api().getEvolutionForSpecies("1");

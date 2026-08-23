@@ -2,6 +2,8 @@ import type {
   EvolutionDetail,
   PokemonAbility,
   PokemonEntity,
+  PokemonSpecies,
+  SpeciesFlavorTextEntry,
 } from "../datasources/pokemon-api.types";
 import type { AbilityLite } from "../types";
 import {
@@ -9,10 +11,12 @@ import {
   convertPokemonEntityToPokemon,
   getEvolutionDetail,
   getIdFromUrl,
+  getLatestDescription,
   getPokemonAbilitiesLite,
   getPokemonDefaultImageUrl,
   getPokemonStats,
   getPokemonTypes,
+  getSpeciesDescriptions,
   toPokemonIndex,
 } from "./pokemon";
 
@@ -1311,5 +1315,135 @@ describe("toPokemonIndex", () => {
     const sorted = entries.map(toPokemonIndex).sort((a, b) => a.number - b.number);
 
     expect(sorted.map((p) => p.name)).toEqual(["bulbasaur", "ivysaur", "venusaur"]);
+  });
+});
+
+const flavorEntry = (
+  flavor_text: string,
+  version: string,
+  language = "en",
+): SpeciesFlavorTextEntry => ({
+  flavor_text,
+  language: { name: language, url: "" },
+  version: { name: version, url: "" },
+});
+
+const speciesWithEntries = (flavor_text_entries: SpeciesFlavorTextEntry[]): PokemonSpecies => ({
+  id: 1,
+  name: "bulbasaur",
+  evolution_chain: { url: "" },
+  flavor_text_entries,
+  varieties: [],
+});
+
+describe("getSpeciesDescriptions", () => {
+  it("should unwrap the text boxes' hard line breaks and form feeds", () => {
+    const species = speciesWithEntries([
+      flavorEntry(
+        "When several of\nthese POKéMON\ngather, their\felectricity could\nbuild.",
+        "red",
+      ),
+    ]);
+
+    expect(getSpeciesDescriptions(species)).toEqual([
+      {
+        text: "When several of these POKéMON gather, their electricity could build.",
+        versions: ["red"],
+      },
+    ]);
+  });
+
+  it("should close up a word the text box split with a soft hyphen", () => {
+    const species = speciesWithEntries([
+      flavorEntry("It checks its sur\u00ad\nroundings for light\u00ad\nning.", "gold"),
+    ]);
+
+    expect(getSpeciesDescriptions(species)[0].text).toBe(
+      "It checks its surroundings for lightning.",
+    );
+  });
+
+  it("should skip entries in other languages", () => {
+    const species = speciesWithEntries([
+      flavorEntry("A strange seed.", "red"),
+      flavorEntry("Une graine étrange.", "red", "fr"),
+    ]);
+
+    expect(getSpeciesDescriptions(species)).toEqual([
+      { text: "A strange seed.", versions: ["red"] },
+    ]);
+  });
+
+  it("should collapse the paired games that ship identical text", () => {
+    const species = speciesWithEntries([
+      flavorEntry("A strange seed.", "red"),
+      flavorEntry("A strange seed.", "blue"),
+    ]);
+
+    expect(getSpeciesDescriptions(species)).toEqual([
+      { text: "A strange seed.", versions: ["red", "blue"] },
+    ]);
+  });
+
+  it("should collapse reused text even when the games are generations apart", () => {
+    // Charizard really does this: its Sword entry repeats its Diamond one.
+    const species = speciesWithEntries([
+      flavorEntry("Spits fire hot enough to melt boulders.", "diamond"),
+      flavorEntry("Flies in search of powerful opponents.", "black"),
+      flavorEntry("Spits fire hot enough to melt boulders.", "sword"),
+    ]);
+
+    expect(getSpeciesDescriptions(species)).toEqual([
+      { text: "Flies in search of powerful opponents.", versions: ["black"] },
+      {
+        text: "Spits fire hot enough to melt boulders.",
+        versions: ["diamond", "sword"],
+      },
+    ]);
+  });
+
+  it("should place a reused blurb last when its newest game is the newest overall", () => {
+    // The anchor is the group's newest game, not its first — which is what keeps
+    // the last entry the newest blurb for getLatestDescription to read.
+    const species = speciesWithEntries([
+      flavorEntry("Old text.", "red"),
+      flavorEntry("Newer text.", "gold"),
+      flavorEntry("Old text.", "shield"),
+    ]);
+
+    expect(getSpeciesDescriptions(species).at(-1)).toEqual({
+      text: "Old text.",
+      versions: ["red", "shield"],
+    });
+  });
+
+  it("should drop entries whose text is only whitespace", () => {
+    const species = speciesWithEntries([
+      flavorEntry("   \n\f  ", "red"),
+      flavorEntry("A strange seed.", "blue"),
+    ]);
+
+    expect(getSpeciesDescriptions(species)).toEqual([
+      { text: "A strange seed.", versions: ["blue"] },
+    ]);
+  });
+
+  it("should return an empty list for a species with no blurbs", () => {
+    expect(getSpeciesDescriptions(speciesWithEntries([]))).toEqual([]);
+  });
+});
+
+describe("getLatestDescription", () => {
+  it("should return the last blurb, which is the newest", () => {
+    expect(
+      getLatestDescription([
+        { text: "Old text.", versions: ["red"] },
+        { text: "Newest text.", versions: ["shield"] },
+      ]),
+    ).toBe("Newest text.");
+  });
+
+  it("should return null when the species has no blurbs", () => {
+    expect(getLatestDescription([])).toBeNull();
   });
 });
