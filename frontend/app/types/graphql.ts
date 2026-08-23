@@ -84,6 +84,8 @@ export type PokedexDetail = {
 export type Pokemon = {
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
+  description?: Maybe<Scalars['String']['output']>;
+  descriptions?: Maybe<Array<PokemonDescription>>;
   evolution?: Maybe<EvolutionChain>;
   forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
@@ -94,6 +96,11 @@ export type Pokemon = {
   speciesName: Scalars['String']['output'];
   stats: Stats;
   type: Array<Scalars['String']['output']>;
+};
+
+export type PokemonDescription = {
+  text: Scalars['String']['output'];
+  versions: Array<Scalars['String']['output']>;
 };
 
 /**

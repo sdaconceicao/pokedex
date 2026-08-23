@@ -27,6 +27,12 @@ export type FlavorTextEntry = {
   version_group: NamedAPIResource;
 };
 
+export type SpeciesFlavorTextEntry = {
+  flavor_text: string;
+  language: NamedAPIResource;
+  version: NamedAPIResource;
+};
+
 export type NameEntry = {
   name: string;
   language: NamedAPIResource;
@@ -166,6 +172,8 @@ export type PokemonSpecies = {
   evolution_chain: {
     url: string;
   };
+  // Ordered oldest game first, as PokeAPI ships it.
+  flavor_text_entries: SpeciesFlavorTextEntry[];
   varieties: PokemonSpeciesVariety[];
 };
 
