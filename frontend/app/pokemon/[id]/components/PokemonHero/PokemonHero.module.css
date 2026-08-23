@@ -36,6 +36,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
   /* Named because the flush variant restates it with the scrollbar lane added
      on, and the two must stay in step across breakpoints. */
@@ -61,7 +62,7 @@
   align-items: center;
   gap: 2rem;
   padding: 1.5rem 3rem;
-  max-height: 310px;
+  min-height: 310px;
   /* Clips the bleeding artwork at the toolbar edge so it can't
      show through the toolbar's translucent band */
   overflow: hidden;
@@ -116,6 +117,18 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
+.heroMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  /* The toolbar wraps this cluster onto its own line once the type names get
+     long enough on a narrow viewport. space-between would park it at the start
+     of that line; auto keeps the number's hard-right anchor either way. */
+  margin-left: auto;
+  gap: 0.75rem;
+}
+
 .typesContainer {
   display: flex;
   flex-wrap: wrap;
@@ -123,11 +136,23 @@
 }
 
 .typesContainer .heroPill {
+  /* Matched to .pokemonNumber, which the pills now sit beside — the cluster
+     wants one silhouette, and the pill's padding alone lands 2px taller. */
+  height: 30px;
   background: rgba(255, 255, 255, 0.22);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: none;
   backdrop-filter: blur(4px);
+}
+
+.description {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .heroImage {
@@ -184,6 +209,10 @@
 
   .heroInfo {
     align-items: center;
+  }
+
+  .description {
+    margin-inline: auto;
   }
 
   .pokemonName {

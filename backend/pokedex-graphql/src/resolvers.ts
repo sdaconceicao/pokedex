@@ -4,6 +4,7 @@ import { logger } from "./logger.js";
 import { type PokemonFilter, PokemonSort, type Resolvers } from "./types.js";
 import { intersect, sortResults, union } from "./utils/filter.js";
 import { getPaginatedResults } from "./utils/pagination.js";
+import { getLatestDescription } from "./utils/pokemon.js";
 import { buildPokemonMatchups } from "./utils/type.js";
 
 const resolveFacets = (
@@ -405,6 +406,25 @@ export const resolvers: Resolvers = {
       } catch (error) {
         logger.error("Error resolving abilities:", error);
         throw error;
+      }
+    },
+    description: async ({ id, speciesId }, _, { dataSources }) => {
+      logger.info(`Resolving description for Pokemon ${id} (species ${speciesId})`);
+      try {
+        const descriptions = await dataSources.pokemonAPI.getDescriptionsForSpecies(speciesId);
+        return getLatestDescription(descriptions);
+      } catch (error) {
+        logger.error(`Error resolving description for Pokemon ${id}:`, error);
+        return null;
+      }
+    },
+    descriptions: async ({ id, speciesId }, _, { dataSources }) => {
+      logger.info(`Resolving descriptions for Pokemon ${id} (species ${speciesId})`);
+      try {
+        return await dataSources.pokemonAPI.getDescriptionsForSpecies(speciesId);
+      } catch (error) {
+        logger.error(`Error resolving descriptions for Pokemon ${id}:`, error);
+        return null;
       }
     },
     evolution: async ({ id, speciesId }, _, { dataSources }) => {

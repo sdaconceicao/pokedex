@@ -92,9 +92,16 @@ type Pokemon {
   stats: Stats!
   abilitiesLite: [AbilityLite!]!
   abilities: [Ability!]
+  description: String
+  descriptions: [PokemonDescription!]
   evolution: EvolutionChain
   forms: [PokemonForm!]
   matchups: PokemonMatchups
+}
+
+type PokemonDescription {
+  versions: [String!]!
+  text: String!
 }
 
 type PokemonForm {

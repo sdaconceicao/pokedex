@@ -13,7 +13,13 @@ export default function PokemonHeroSkeleton({ flush }: PokemonHeroSkeletonProps)
     <div className={clsx(styles.hero, flush && styles.flush)}>
       <div className={styles.heroToolbar}>
         <Skeleton variant="box" width={175} height={38} className={styles.onGradient} />
-        <Skeleton variant="line" width={64} height={30} className={styles.onGradient} />
+        <div className={styles.heroMeta}>
+          <div className={styles.typesContainer}>
+            <Skeleton variant="line" width={80} height={30} className={styles.onGradient} />
+            <Skeleton variant="line" width={80} height={30} className={styles.onGradient} />
+          </div>
+          <Skeleton variant="line" width={64} height={30} className={styles.onGradient} />
+        </div>
       </div>
       <div className={styles.heroBody}>
         <div className={styles.heroInfo}>
@@ -27,9 +33,19 @@ export default function PokemonHeroSkeleton({ flush }: PokemonHeroSkeletonProps)
             label="Loading Pokémon"
             className={styles.onGradient}
           />
-          <div className={styles.typesContainer}>
-            <Skeleton variant="line" width={80} height={30} className={styles.onGradient} />
-            <Skeleton variant="line" width={80} height={30} className={styles.onGradient} />
+          <div className={styles.description}>
+            <Skeleton
+              variant="line"
+              width="min(52ch, 100%)"
+              height={16}
+              className={styles.onGradient}
+            />
+            <Skeleton
+              variant="line"
+              width="min(38ch, 82%)"
+              height={16}
+              className={styles.onGradient}
+            />
           </div>
         </div>
         <div className={styles.heroImage}>

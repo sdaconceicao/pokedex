@@ -404,12 +404,46 @@ export const pokemonEntity: {
   ],
 };
 
+const version = (name: string) => ({
+  name,
+  url: `https://pokeapi.co/api/v2/version/${name}/`,
+});
+
+const english = { name: "en", url: "https://pokeapi.co/api/v2/language/9/" };
+
 export const pokemonSpecies: PokemonSpecies = {
   id: 1,
   name: "bulbasaur",
   evolution_chain: {
     url: "https://pokeapi.co/api/v2/evolution-chain/1/",
   },
+  flavor_text_entries: [
+    {
+      flavor_text: "A strange seed was\nplanted on its\nback at birth.",
+      language: english,
+      version: version("red"),
+    },
+    {
+      flavor_text: "It can go for days\nwithout eating a\nsingle morsel.",
+      language: english,
+      version: version("blue"),
+    },
+    {
+      flavor_text: "Une graine étrange\nlui a été plantée\ndans le dos.",
+      language: { name: "fr", url: "https://pokeapi.co/api/v2/language/5/" },
+      version: version("red"),
+    },
+    {
+      flavor_text: "It can go for days\nwithout eating a\nsingle morsel.",
+      language: english,
+      version: version("leafgreen"),
+    },
+    {
+      flavor_text: "While it is young,\nit uses the nutri\u00ad\nents in its seed.",
+      language: english,
+      version: version("shield"),
+    },
+  ],
   varieties: [
     {
       is_default: true,

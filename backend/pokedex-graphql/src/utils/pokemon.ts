@@ -4,9 +4,10 @@ import type {
   PokemonAbility,
   PokemonEntity,
   PokemonIndex,
+  PokemonSpecies,
   PokemonStat,
 } from "../datasources/pokemon-api.types.js";
-import type { AbilityLite, Pokemon, Stats } from "../types.js";
+import type { AbilityLite, Pokemon, PokemonDescription, Stats } from "../types.js";
 
 export const FORM_ID_THRESHOLD = 10000;
 
@@ -111,6 +112,34 @@ export const getPokemonStats = (pokemon: PokemonEntity) => {
   });
   return statsObj;
 };
+
+const normalizeFlavorText = (text: string): string =>
+  text
+    .replace(/\u00ad\s*/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** Every English blurb for a species, deduplicated and oldest first. */
+export const getSpeciesDescriptions = (species: PokemonSpecies): PokemonDescription[] => {
+  const groups = new Map<string, string[]>();
+
+  for (const entry of species.flavor_text_entries ?? []) {
+    if (entry.language.name !== "en") continue;
+
+    const text = normalizeFlavorText(entry.flavor_text);
+    if (!text) continue;
+
+    const versions = groups.get(text) ?? [];
+    versions.push(entry.version.name);
+    groups.delete(text);
+    groups.set(text, versions);
+  }
+
+  return Array.from(groups, ([text, versions]) => ({ text, versions }));
+};
+
+export const getLatestDescription = (descriptions: PokemonDescription[]): string | null =>
+  descriptions.at(-1)?.text ?? null;
 
 export const convertAbilityLiteToAbility = (data: PokemonAbility, abilityLite: AbilityLite) => {
   return {
