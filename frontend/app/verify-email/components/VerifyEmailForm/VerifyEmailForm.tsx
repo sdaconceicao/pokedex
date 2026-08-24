@@ -32,7 +32,8 @@ export default function VerifyEmailForm() {
   if (!token) {
     return (
       <p className={styles.submitError}>
-        This verification link is missing its token. Request a new one from the sign-in screen.
+        This verification link is missing its token. Sign up again with the same email to get a new
+        one.
       </p>
     );
   }
@@ -42,8 +43,8 @@ export default function VerifyEmailForm() {
       <div>
         <p className={styles.submitError}>{error}</p>
         <p className={styles.sentMessage}>
-          Verification links expire and can only be used once. Request a new one from the sign-in
-          screen.
+          Verification links expire and can only be used once. Sign up again with the same email to
+          get a new one.
         </p>
       </div>
     );

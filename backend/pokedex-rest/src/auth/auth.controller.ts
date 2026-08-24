@@ -23,8 +23,6 @@ import {
   EmailVerificationConfirmRequestDto,
   EmailVerificationConfirmResponseDTO,
 } from './dtos/email-verification-confirm.dto';
-import { EmailVerificationRequestDto } from './dtos/email-verification-request.dto';
-import { EmailVerificationResponseDTO } from './dtos/email-verification-response.dto';
 import { LoginRequestDto } from './dtos/login-request.dto';
 import { LoginResponseDTO } from './dtos/login-response.dto';
 import { PasswordResetConfirmRequestDto } from './dtos/password-reset-confirm-request.dto';
@@ -115,19 +113,5 @@ export class AuthController {
     @Body() body: EmailVerificationConfirmRequestDto,
   ): Promise<EmailVerificationConfirmResponseDTO> {
     return this.authService.confirmEmailVerification(body.token);
-  }
-
-  @Post('verify-email/resend')
-  @ApiOperation({ summary: 'Request a fresh verification link by email' })
-  @ApiBody({ type: EmailVerificationRequestDto })
-  @ApiCreatedResponse({
-    description:
-      'Always succeeds with an identical message, whether or not the address is registered or already verified',
-    type: EmailVerificationResponseDTO,
-  })
-  async resendEmailVerification(
-    @Body() body: EmailVerificationRequestDto,
-  ): Promise<EmailVerificationResponseDTO> {
-    return this.authService.resendEmailVerification(body.email);
   }
 }

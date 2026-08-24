@@ -50,7 +50,6 @@ describe('AuthController', () => {
             requestPasswordReset: vi.fn(),
             confirmPasswordReset: vi.fn(),
             confirmEmailVerification: vi.fn(),
-            resendEmailVerification: vi.fn(),
           },
         },
       ],
@@ -169,25 +168,6 @@ describe('AuthController', () => {
         'verify-token-123',
       );
       expect(result).toEqual(mockAccessToken);
-    });
-  });
-
-  describe('resendEmailVerification', () => {
-    it('unpacks the email and returns the generic message', async () => {
-      const response = {
-        message:
-          'If an unverified account exists for that address, a new link has been sent',
-      };
-      authService.resendEmailVerification.mockResolvedValue(response);
-
-      const result = await controller.resendEmailVerification({
-        email: 'ash@pallet.town',
-      });
-
-      expect(authService.resendEmailVerification).toHaveBeenCalledWith(
-        'ash@pallet.town',
-      );
-      expect(result).toEqual(response);
     });
   });
 });

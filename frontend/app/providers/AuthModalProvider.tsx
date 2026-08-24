@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import ForgotPasswordForm from "@/components/AuthButtons/ForgotPasswordForm";
 import LoginForm from "@/components/AuthButtons/LoginForm";
 import RegisterForm from "@/components/AuthButtons/RegisterForm";
@@ -33,28 +27,19 @@ const MODAL_TITLES = {
   login: "Sign In",
   register: "Create Account",
   forgot: "Reset Password",
-  verify: "Resend Verification",
 } as const;
 
-export default function AuthModalProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthModalProvider({ children }: { children: React.ReactNode }) {
   const {
     loginAsync,
     registerAsync,
     requestPasswordResetAsync,
-    resendEmailVerificationAsync,
     isLoginLoading,
     isRegisterLoading,
     isRequestPasswordResetLoading,
-    isResendEmailVerificationLoading,
   } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState<"login" | "register" | "forgot" | "verify">(
-    "login"
-  );
+  const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
 
   const openSignIn = useCallback(() => {
     setMode("login");
@@ -75,19 +60,19 @@ export default function AuthModalProvider({
       await loginAsync({ email, password });
       setIsOpen(false);
     },
-    [loginAsync]
+    [loginAsync],
   );
 
   const handleRegisterSubmit = useCallback(
     async (data: { email: string; password: string }) => {
       return registerAsync(data);
     },
-    [registerAsync]
+    [registerAsync],
   );
 
   const value = useMemo(
     () => ({ openSignIn, openSignUp, isAuthModalOpen: isOpen }),
-    [openSignIn, openSignUp, isOpen]
+    [openSignIn, openSignUp, isOpen],
   );
 
   return (
@@ -100,16 +85,7 @@ export default function AuthModalProvider({
           title={MODAL_TITLES[mode]}
           size={mode === "register" ? "lg" : "sm"}
         >
-          {mode === "verify" ? (
-            <ForgotPasswordForm
-              key="verify"
-              onSubmit={resendEmailVerificationAsync}
-              onSwitchToLogin={() => setMode("login")}
-              isLoading={isResendEmailVerificationLoading}
-              submitLabel="Resend verification link"
-              pendingLabel="Sending…"
-            />
-          ) : mode === "forgot" ? (
+          {mode === "forgot" ? (
             <ForgotPasswordForm
               key="forgot"
               onSubmit={requestPasswordResetAsync}
@@ -122,7 +98,6 @@ export default function AuthModalProvider({
               onSubmit={handleLoginSubmit}
               onSwitchToRegister={() => setMode("register")}
               onForgotPassword={() => setMode("forgot")}
-              onResendVerification={() => setMode("verify")}
               isLoading={isLoginLoading}
             />
           ) : (

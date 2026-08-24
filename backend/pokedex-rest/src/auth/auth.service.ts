@@ -7,7 +7,6 @@ import { buildEmailVerificationMessage } from '../mail/templates/email-verificat
 import { buildPasswordResetMessage } from '../mail/templates/password-reset.template';
 import { UserEntity } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
-import { EmailVerificationResponseDTO } from './dtos/email-verification-response.dto';
 import { PasswordResetResponseDTO } from './dtos/password-reset-response.dto';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 import { RegisterResponseDTO } from './dtos/register-response.dto';
@@ -28,10 +27,6 @@ const VERIFICATION_SENT_MESSAGE =
 // Expired, tampered, unknown user, and already-used all collapse to this.
 const INVALID_VERIFICATION_TOKEN_MESSAGE =
   'Invalid or expired verification link';
-
-// Single constant, returned for every address. Never branch this.
-const VERIFICATION_RESENT_MESSAGE =
-  'If an unverified account exists for that address, a new link has been sent';
 
 @Injectable()
 export class AuthService {
@@ -120,20 +115,6 @@ export class AuthService {
     }
 
     return this.login(updated);
-  }
-
-  async resendEmailVerification(
-    email: string,
-  ): Promise<EmailVerificationResponseDTO> {
-    const user = await this.usersService.findOneByEmail(email);
-
-    // Sends only for an unverified account, but the reply never varies — it
-    // must not reveal existence or verification state.
-    if (user && !user.emailVerified) {
-      await this.sendVerificationEmail(user);
-    }
-
-    return { message: VERIFICATION_RESENT_MESSAGE };
   }
 
   async confirmEmailVerification(token: string): Promise<AccessToken> {
@@ -226,6 +207,15 @@ export class AuthService {
   async register(user: RegisterRequestDto): Promise<RegisterResponseDTO> {
     const existingUser = await this.usersService.findOneByEmail(user.email);
     if (existingUser) {
+      if (!existingUser.emailVerified) {
+        // Re-registering an unverified address resends the link instead of
+        // erroring — the only recovery path for a lost verification email.
+        // The submitted password is deliberately ignored: honouring it would
+        // let anyone who guesses an unverified address overwrite the real
+        // owner's password before they verify.
+        await this.sendVerificationEmail(existingUser);
+        return { message: VERIFICATION_SENT_MESSAGE };
+      }
       Logger.error(`Email already exists for user: ${user.email}`);
       throw new BadRequestException('email already exists');
     }

@@ -7,11 +7,9 @@ const mockAuth = {
     message: "Check your email for a link to verify your account",
   }),
   requestPasswordResetAsync: vi.fn().mockResolvedValue({ message: "sent" }),
-  resendEmailVerificationAsync: vi.fn().mockResolvedValue({ message: "sent" }),
   isLoginLoading: false,
   isRegisterLoading: false,
   isRequestPasswordResetLoading: false,
-  isResendEmailVerificationLoading: false,
 };
 
 vi.mock("@/hooks/useAuth", () => ({
@@ -101,20 +99,6 @@ describe("AuthModalProvider", () => {
     fireEvent.click(screen.getByRole("button", { name: "Back to sign in" }));
 
     expect(screen.getByRole("heading", { name: "Sign In" })).toBeInTheDocument();
-  });
-
-  it("switches to the resend verification mode from the sign in form", () => {
-    render(
-      <AuthModalProvider>
-        <Consumer />
-      </AuthModalProvider>,
-    );
-
-    fireEvent.click(screen.getByText("trigger sign in"));
-    fireEvent.click(screen.getByRole("button", { name: "Need a new verification link?" }));
-
-    expect(screen.getByRole("heading", { name: "Resend Verification" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Resend verification link" })).toBeInTheDocument();
   });
 
   it("keeps the modal open on the notice after registering", async () => {

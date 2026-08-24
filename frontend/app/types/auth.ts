@@ -37,10 +37,6 @@ export interface PasswordResetConfirmResponse {
   access_token: string;
 }
 
-export interface EmailVerificationResponse {
-  message: string;
-}
-
 export interface EmailVerificationConfirmResponse {
   access_token: string;
 }

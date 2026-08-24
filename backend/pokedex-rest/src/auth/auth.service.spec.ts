@@ -460,11 +460,8 @@ describe('AuthService', () => {
     });
   });
 
-  describe('resendEmailVerification', () => {
-    const RESENT_MESSAGE = {
-      message:
-        'If an unverified account exists for that address, a new link has been sent',
-    };
+  describe('register (existing unverified account)', () => {
+    const unverified = { ...mockUser, emailVerified: false };
 
     beforeEach(() => {
       configService.getOrThrow.mockImplementation(
@@ -477,44 +474,38 @@ describe('AuthService', () => {
       configService.get.mockReturnValue('86400' as never);
     });
 
-    it('sends a fresh link to an unverified account', async () => {
-      usersService.findOneByEmail.mockResolvedValue({
-        ...mockUser,
-        emailVerified: false,
-      });
-      jwtService.signAsync.mockResolvedValue('verify-token-456');
+    it('resends the link instead of erroring, leaving the password alone', async () => {
+      usersService.findOneByEmail.mockResolvedValue(unverified);
+      jwtService.signAsync.mockResolvedValue('verify-token-789');
       mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
 
-      const result = await service.resendEmailVerification(mockUser.email);
+      const result = await service.register(mockRegisterDto);
 
       expect(mailService.send).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: mockUser.email,
+          to: unverified.email,
           html: expect.stringContaining(
-            'http://localhost:3010/verify-email?token=verify-token-456',
+            'http://localhost:3010/verify-email?token=verify-token-789',
           ),
         }),
       );
-      expect(result).toEqual(RESENT_MESSAGE);
+      // Neither a new row nor a password write: honouring the submitted
+      // password would let a guesser overwrite the real owner's credentials.
+      expect(usersService.create).not.toHaveBeenCalled();
+      expect(usersService.update).not.toHaveBeenCalled();
+      expect(bcrypt.hash).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        message: 'Check your email for a link to verify your account',
+      });
     });
 
-    it('sends nothing for an already-verified account but replies the same', async () => {
+    it('still rejects an address that is already verified', async () => {
       usersService.findOneByEmail.mockResolvedValue(mockUser);
 
-      const result = await service.resendEmailVerification(mockUser.email);
-
+      await expect(service.register(mockRegisterDto)).rejects.toThrow(
+        new BadRequestException('email already exists'),
+      );
       expect(mailService.send).not.toHaveBeenCalled();
-      expect(result).toEqual(RESENT_MESSAGE);
-    });
-
-    it('sends nothing for an unknown address but replies the same', async () => {
-      usersService.findOneByEmail.mockResolvedValue(null);
-
-      const result =
-        await service.resendEmailVerification('nobody@example.com');
-
-      expect(mailService.send).not.toHaveBeenCalled();
-      expect(result).toEqual(RESENT_MESSAGE);
     });
   });
 });

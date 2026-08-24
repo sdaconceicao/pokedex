@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
   EmailVerificationConfirmResponse,
-  EmailVerificationResponse,
   LoginCredentials,
   LoginResponse,
   PasswordResetConfirmCredentials,
@@ -92,10 +91,6 @@ export function useAuth() {
     },
   });
 
-  const resendEmailVerificationMutation = useMutation<EmailVerificationResponse, Error, string>({
-    mutationFn: authApi.resendEmailVerification,
-  });
-
   return {
     user: hasMounted ? user : undefined,
     isLoading: isTokenLoading || isUserLoading,
@@ -116,8 +111,6 @@ export function useAuth() {
     isConfirmPasswordResetLoading: confirmPasswordResetMutation.isPending,
     confirmEmailVerificationAsync: confirmEmailVerificationMutation.mutateAsync,
     isConfirmEmailVerificationLoading: confirmEmailVerificationMutation.isPending,
-    resendEmailVerificationAsync: resendEmailVerificationMutation.mutateAsync,
-    isResendEmailVerificationLoading: resendEmailVerificationMutation.isPending,
   };
 }
 

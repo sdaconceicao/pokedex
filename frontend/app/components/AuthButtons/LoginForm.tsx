@@ -9,7 +9,6 @@ interface LoginFormProps {
   onSubmit: (email: string, password: string) => void | Promise<void>;
   onSwitchToRegister: () => void;
   onForgotPassword: () => void;
-  onResendVerification: () => void;
   isLoading?: boolean;
 }
 
@@ -17,7 +16,6 @@ export default function LoginForm({
   onSubmit,
   onSwitchToRegister,
   onForgotPassword,
-  onResendVerification,
   isLoading = false,
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
@@ -110,15 +108,6 @@ export default function LoginForm({
           disabled={isLoading}
         >
           Forgot your password?
-        </button>
-        {" · "}
-        <button
-          type="button"
-          className={styles.switchLink}
-          onClick={onResendVerification}
-          disabled={isLoading}
-        >
-          Need a new verification link?
         </button>
       </p>
 
