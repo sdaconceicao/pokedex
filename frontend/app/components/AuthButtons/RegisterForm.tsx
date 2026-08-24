@@ -6,7 +6,7 @@ import { validateEmail, validatePassword } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 
 interface RegisterFormProps {
-  onSubmit: (data: { email: string; password: string }) => Promise<void>;
+  onSubmit: (data: { email: string; password: string }) => Promise<{ message: string }>;
   onSwitchToLogin: () => void;
   isLoading?: boolean;
 }
@@ -24,6 +24,7 @@ export default function RegisterForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string>("");
+  const [sentMessage, setSentMessage] = useState<string>("");
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -69,10 +70,11 @@ export default function RegisterForm({
     }
 
     try {
-      await onSubmit({
+      const result = await onSubmit({
         email: formData.email.trim(),
         password: formData.password,
       });
+      setSentMessage(result.message);
     } catch (error) {
       if (
         error instanceof Error &&
@@ -84,6 +86,19 @@ export default function RegisterForm({
       }
     }
   };
+
+  if (sentMessage) {
+    return (
+      <div>
+        <p className={styles.sentMessage}>{sentMessage}</p>
+        <p className={styles.switchPrompt}>
+          <button type="button" className={styles.switchLink} onClick={onSwitchToLogin}>
+            Back to sign in
+          </button>
+        </p>
+      </div>
+    );
+  }
 
   return (
     // `validationBehavior="aria"` keeps the browser's native constraint-validation

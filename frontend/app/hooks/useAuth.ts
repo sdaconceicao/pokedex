@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
+  EmailVerificationConfirmResponse,
+  EmailVerificationResponse,
   LoginCredentials,
   LoginResponse,
   PasswordResetConfirmCredentials,
@@ -51,10 +53,6 @@ export function useAuth() {
 
   const registerMutation = useMutation<RegisterResponse, Error, RegisterCredentials>({
     mutationFn: authApi.register,
-    onSuccess: (data: RegisterResponse) => {
-      setStoredToken(data.access_token);
-      queryClient.setQueryData(["auth", "token"], data.access_token);
-    },
   });
 
   const logoutMutation = useMutation<void, Error, void>({
@@ -82,6 +80,22 @@ export function useAuth() {
     },
   });
 
+  const confirmEmailVerificationMutation = useMutation<
+    EmailVerificationConfirmResponse,
+    Error,
+    string
+  >({
+    mutationFn: authApi.confirmEmailVerification,
+    onSuccess: (data: EmailVerificationConfirmResponse) => {
+      setStoredToken(data.access_token);
+      queryClient.setQueryData(["auth", "token"], data.access_token);
+    },
+  });
+
+  const resendEmailVerificationMutation = useMutation<EmailVerificationResponse, Error, string>({
+    mutationFn: authApi.resendEmailVerification,
+  });
+
   return {
     user: hasMounted ? user : undefined,
     isLoading: isTokenLoading || isUserLoading,
@@ -100,6 +114,10 @@ export function useAuth() {
     isRequestPasswordResetLoading: requestPasswordResetMutation.isPending,
     confirmPasswordResetAsync: confirmPasswordResetMutation.mutateAsync,
     isConfirmPasswordResetLoading: confirmPasswordResetMutation.isPending,
+    confirmEmailVerificationAsync: confirmEmailVerificationMutation.mutateAsync,
+    isConfirmEmailVerificationLoading: confirmEmailVerificationMutation.isPending,
+    resendEmailVerificationAsync: resendEmailVerificationMutation.mutateAsync,
+    isResendEmailVerificationLoading: resendEmailVerificationMutation.isPending,
   };
 }
 

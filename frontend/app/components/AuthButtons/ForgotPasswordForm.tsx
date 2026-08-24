@@ -10,12 +10,16 @@ interface ForgotPasswordFormProps {
   onSubmit: (email: string) => Promise<{ message: string }>;
   onSwitchToLogin: () => void;
   isLoading?: boolean;
+  submitLabel?: string;
+  pendingLabel?: string;
 }
 
 export default function ForgotPasswordForm({
   onSubmit,
   onSwitchToLogin,
   isLoading = false,
+  submitLabel = "Send reset link",
+  pendingLabel = "Sending…",
 }: ForgotPasswordFormProps) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string>("");
@@ -83,7 +87,7 @@ export default function ForgotPasswordForm({
 
       <div className={styles.formActions}>
         <Button type="submit" variant="primary" isDisabled={isLoading}>
-          {isLoading ? "Sending…" : "Send reset link"}
+          {isLoading ? pendingLabel : submitLabel}
         </Button>
       </div>
 

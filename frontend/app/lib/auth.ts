@@ -1,4 +1,6 @@
 import type {
+  EmailVerificationConfirmResponse,
+  EmailVerificationResponse,
   LoginCredentials,
   LoginResponse,
   PasswordResetConfirmCredentials,
@@ -84,6 +86,36 @@ export const authApi = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || "Password reset failed");
+    }
+
+    return response.json();
+  },
+
+  async confirmEmailVerification(token: string): Promise<EmailVerificationConfirmResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Verification failed");
+    }
+
+    return response.json();
+  },
+
+  async resendEmailVerification(email: string): Promise<EmailVerificationResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/verify-email/resend`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Could not resend verification");
     }
 
     return response.json();

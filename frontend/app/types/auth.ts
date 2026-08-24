@@ -21,7 +21,7 @@ export interface LoginResponse {
 }
 
 export interface RegisterResponse {
-  access_token: string;
+  message: string;
 }
 
 export interface PasswordResetConfirmCredentials {
@@ -34,5 +34,13 @@ export interface PasswordResetResponse {
 }
 
 export interface PasswordResetConfirmResponse {
+  access_token: string;
+}
+
+export interface EmailVerificationResponse {
+  message: string;
+}
+
+export interface EmailVerificationConfirmResponse {
   access_token: string;
 }
