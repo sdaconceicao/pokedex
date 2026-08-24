@@ -1,0 +1,108 @@
+"use client";
+
+import { Button, Form, Password } from "@code-x/lago";
+import { useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
+import styles from "@/components/AuthButtons/AuthButtons.module.css";
+import { useAuth } from "@/hooks/useAuth";
+import { validatePassword } from "@/lib/validation";
+
+export default function ResetPasswordForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token") ?? "";
+  const { confirmPasswordResetAsync, isConfirmPasswordResetLoading } = useAuth();
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState("");
+
+  const handleInputChange = (field: "password" | "confirmPassword", value: string) => {
+    if (field === "password") setPassword(value);
+    else setConfirmPassword(value);
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+    setSubmitError("");
+
+    const newErrors: Record<string, string> = {};
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else {
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.isValid) {
+        newErrors.password = passwordValidation.errors[0];
+      }
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      await confirmPasswordResetAsync({ token, password });
+      // replace(), not push() — drops the token from history so it can't be
+      // recovered with the back button or leaked in a referrer.
+      router.replace("/");
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Password reset failed");
+    }
+  };
+
+  if (!token) {
+    return (
+      <p className={styles.submitError}>
+        This reset link is missing its token. Request a new link from the sign-in screen.
+      </p>
+    );
+  }
+
+  return (
+    <Form onSubmit={handleSubmit} validationBehavior="aria">
+      {submitError && <div className={styles.submitError}>{submitError}</div>}
+
+      <Password
+        label="New password"
+        isRequired
+        value={password}
+        onChange={(value) => handleInputChange("password", value)}
+        placeholder="Enter a new password"
+        autoComplete="new-password"
+        isInvalid={!!errors.password}
+        errorMessage={errors.password}
+        isDisabled={isConfirmPasswordResetLoading}
+      />
+
+      <Password
+        label="Confirm new password"
+        isRequired
+        value={confirmPassword}
+        onChange={(value) => handleInputChange("confirmPassword", value)}
+        placeholder="Re-enter the new password"
+        autoComplete="new-password"
+        isInvalid={!!errors.confirmPassword}
+        errorMessage={errors.confirmPassword}
+        isDisabled={isConfirmPasswordResetLoading}
+      />
+
+      <div className={styles.formActions}>
+        <Button type="submit" variant="primary" isDisabled={isConfirmPasswordResetLoading}>
+          {isConfirmPasswordResetLoading ? "Saving…" : "Set new password"}
+        </Button>
+      </div>
+    </Form>
+  );
+}

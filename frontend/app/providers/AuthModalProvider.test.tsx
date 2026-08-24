@@ -4,8 +4,10 @@ import AuthModalProvider, { useAuthModal } from "./AuthModalProvider";
 const mockAuth = {
   loginAsync: vi.fn(),
   registerAsync: vi.fn(),
+  requestPasswordResetAsync: vi.fn().mockResolvedValue({ message: "sent" }),
   isLoginLoading: false,
   isRegisterLoading: false,
+  isRequestPasswordResetLoading: false,
 };
 
 vi.mock("@/hooks/useAuth", () => ({
@@ -78,6 +80,23 @@ describe("AuthModalProvider", () => {
     fireEvent.click(screen.getByText("trigger sign up"));
 
     expect(screen.getByRole("heading", { name: "Create Account" })).toBeInTheDocument();
+  });
+
+  it("switches to the reset mode and back from the sign in form", () => {
+    render(
+      <AuthModalProvider>
+        <Consumer />
+      </AuthModalProvider>,
+    );
+
+    fireEvent.click(screen.getByText("trigger sign in"));
+    fireEvent.click(screen.getByRole("button", { name: "Forgot your password?" }));
+
+    expect(screen.getByRole("heading", { name: "Reset Password" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Back to sign in" }));
+
+    expect(screen.getByRole("heading", { name: "Sign In" })).toBeInTheDocument();
   });
 
   it("throws when useAuthModal is used outside the provider", () => {

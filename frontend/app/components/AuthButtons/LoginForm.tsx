@@ -8,12 +8,14 @@ import styles from "./AuthButtons.module.css";
 interface LoginFormProps {
   onSubmit: (email: string, password: string) => void | Promise<void>;
   onSwitchToRegister: () => void;
+  onForgotPassword: () => void;
   isLoading?: boolean;
 }
 
 export default function LoginForm({
   onSubmit,
   onSwitchToRegister,
+  onForgotPassword,
   isLoading = false,
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
@@ -97,6 +99,17 @@ export default function LoginForm({
           {isLoading ? "Signing in…" : "Sign In"}
         </Button>
       </div>
+
+      <p className={styles.switchPrompt}>
+        <button
+          type="button"
+          className={styles.switchLink}
+          onClick={onForgotPassword}
+          disabled={isLoading}
+        >
+          Forgot your password?
+        </button>
+      </p>
 
       <p className={styles.switchPrompt}>
         Don&apos;t have an account?{" "}

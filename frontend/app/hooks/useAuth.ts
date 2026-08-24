@@ -4,6 +4,9 @@ import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
   LoginCredentials,
   LoginResponse,
+  PasswordResetConfirmCredentials,
+  PasswordResetConfirmResponse,
+  PasswordResetResponse,
   RegisterCredentials,
   RegisterResponse,
 } from "@/types/auth";
@@ -63,6 +66,22 @@ export function useAuth() {
     },
   });
 
+  const requestPasswordResetMutation = useMutation<PasswordResetResponse, Error, string>({
+    mutationFn: authApi.requestPasswordReset,
+  });
+
+  const confirmPasswordResetMutation = useMutation<
+    PasswordResetConfirmResponse,
+    Error,
+    PasswordResetConfirmCredentials
+  >({
+    mutationFn: authApi.confirmPasswordReset,
+    onSuccess: (data: PasswordResetConfirmResponse) => {
+      setStoredToken(data.access_token);
+      queryClient.setQueryData(["auth", "token"], data.access_token);
+    },
+  });
+
   return {
     user: hasMounted ? user : undefined,
     isLoading: isTokenLoading || isUserLoading,
@@ -77,6 +96,10 @@ export function useAuth() {
     isLoginLoading: loginMutation.isPending,
     isRegisterLoading: registerMutation.isPending,
     isLogoutLoading: logoutMutation.isPending,
+    requestPasswordResetAsync: requestPasswordResetMutation.mutateAsync,
+    isRequestPasswordResetLoading: requestPasswordResetMutation.isPending,
+    confirmPasswordResetAsync: confirmPasswordResetMutation.mutateAsync,
+    isConfirmPasswordResetLoading: confirmPasswordResetMutation.isPending,
   };
 }
 

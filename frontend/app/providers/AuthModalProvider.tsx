@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import ForgotPasswordForm from "@/components/AuthButtons/ForgotPasswordForm";
 import LoginForm from "@/components/AuthButtons/LoginForm";
 import RegisterForm from "@/components/AuthButtons/RegisterForm";
 import { Modal } from "@/components/Modal";
@@ -22,10 +23,23 @@ export function useAuthModal(): AuthModalContextValue {
   return context;
 }
 
+const MODAL_TITLES = {
+  login: "Sign In",
+  register: "Create Account",
+  forgot: "Reset Password",
+} as const;
+
 export default function AuthModalProvider({ children }: { children: React.ReactNode }) {
-  const { loginAsync, registerAsync, isLoginLoading, isRegisterLoading } = useAuth();
+  const {
+    loginAsync,
+    registerAsync,
+    requestPasswordResetAsync,
+    isLoginLoading,
+    isRegisterLoading,
+    isRequestPasswordResetLoading,
+  } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
 
   const openSignIn = useCallback(() => {
     setMode("login");
@@ -69,14 +83,22 @@ export default function AuthModalProvider({ children }: { children: React.ReactN
         <Modal
           isOpen
           onClose={handleClose}
-          title={mode === "login" ? "Sign In" : "Create Account"}
+          title={MODAL_TITLES[mode]}
           size={mode === "register" ? "lg" : "sm"}
         >
-          {mode === "login" ? (
+          {mode === "forgot" ? (
+            <ForgotPasswordForm
+              key="forgot"
+              onSubmit={requestPasswordResetAsync}
+              onSwitchToLogin={() => setMode("login")}
+              isLoading={isRequestPasswordResetLoading}
+            />
+          ) : mode === "login" ? (
             <LoginForm
               key="login"
               onSubmit={handleLoginSubmit}
               onSwitchToRegister={() => setMode("register")}
+              onForgotPassword={() => setMode("forgot")}
               isLoading={isLoginLoading}
             />
           ) : (
