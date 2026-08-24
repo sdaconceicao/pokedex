@@ -63,6 +63,7 @@ describe('AuthService', () => {
           provide: ConfigService,
           useValue: {
             getOrThrow: vi.fn(),
+            get: vi.fn(),
           },
         },
         {
@@ -213,10 +214,25 @@ describe('AuthService', () => {
         (key: string) =>
           ({
             JWT_SECRET: 'test-secret',
-            PASSWORD_RESET_TOKEN_VALIDITY_DURATION_IN_SEC: '900',
             FRONTEND_BASE_URL: 'http://localhost:3010',
           })[key] as never,
       );
+      configService.get.mockReturnValue('900' as never);
+    });
+
+    it('falls back to a 15 minute expiry when the TTL is unset', async () => {
+      configService.get.mockReturnValue(undefined as never);
+      usersService.findOneByEmail.mockResolvedValue(mockUser);
+      jwtService.signAsync.mockResolvedValue('reset-token-123');
+      mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
+
+      const result = await service.requestPasswordReset(mockUser.email);
+
+      expect(jwtService.signAsync).toHaveBeenCalledWith(
+        { userId: mockUser.id },
+        { secret: `test-secret${mockUser.password}`, expiresIn: 900 },
+      );
+      expect(result).toEqual(GENERIC_MESSAGE);
     });
 
     it('signs a token against the current hash and mails the link', async () => {

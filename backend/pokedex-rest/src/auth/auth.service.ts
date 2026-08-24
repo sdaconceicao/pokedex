@@ -41,9 +41,9 @@ export class AuthService {
 
     if (user) {
       const expirySeconds = parseInt(
-        this.configService.getOrThrow<string>(
+        this.configService.get<string>(
           'PASSWORD_RESET_TOKEN_VALIDITY_DURATION_IN_SEC',
-        ),
+        ) ?? '900',
         10,
       );
       const payload: PasswordResetTokenPayload = { userId: user.id };
