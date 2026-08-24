@@ -3,6 +3,8 @@ import type { Mocked } from 'vitest';
 import { UserEntity } from '../users/users.entity';
 import { AuthController, AuthenticatedRequest } from './auth.controller';
 import { AuthService } from './auth.service';
+import { PasswordResetConfirmRequestDto } from './dtos/password-reset-confirm-request.dto';
+import { PasswordResetRequestDto } from './dtos/password-reset-request.dto';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 import { AccessToken } from './types/AccessToken';
 
@@ -41,6 +43,8 @@ describe('AuthController', () => {
           useValue: {
             login: vi.fn(),
             register: vi.fn(),
+            requestPasswordReset: vi.fn(),
+            confirmPasswordReset: vi.fn(),
           },
         },
       ],
@@ -106,6 +110,42 @@ describe('AuthController', () => {
 
       const result = await controller.register(mockRegisterDto);
 
+      expect(result).toEqual(mockAccessToken);
+    });
+  });
+
+  describe('requestPasswordReset', () => {
+    it('passes the email through and returns the generic message', async () => {
+      const body: PasswordResetRequestDto = { email: 'ash@pallet.town' };
+      const response = {
+        message:
+          'If an account exists for that address, a reset link has been sent',
+      };
+      authService.requestPasswordReset.mockResolvedValue(response);
+
+      const result = await controller.requestPasswordReset(body);
+
+      expect(authService.requestPasswordReset).toHaveBeenCalledWith(
+        'ash@pallet.town',
+      );
+      expect(result).toEqual(response);
+    });
+  });
+
+  describe('confirmPasswordReset', () => {
+    it('unpacks token and password, and returns the access token', async () => {
+      const body: PasswordResetConfirmRequestDto = {
+        token: 'reset-token-123',
+        password: 'Pikachu123!',
+      };
+      authService.confirmPasswordReset.mockResolvedValue(mockAccessToken);
+
+      const result = await controller.confirmPasswordReset(body);
+
+      expect(authService.confirmPasswordReset).toHaveBeenCalledWith(
+        'reset-token-123',
+        'Pikachu123!',
+      );
       expect(result).toEqual(mockAccessToken);
     });
   });
