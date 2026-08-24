@@ -30,6 +30,10 @@ describe('AuthController', () => {
     access_token: 'jwt-token-123',
   };
 
+  const mockRegisterResponse = {
+    message: 'Check your email for a link to verify your account',
+  };
+
   const mockRequest = {
     user: mockUser,
   };
@@ -45,6 +49,8 @@ describe('AuthController', () => {
             register: vi.fn(),
             requestPasswordReset: vi.fn(),
             confirmPasswordReset: vi.fn(),
+            confirmEmailVerification: vi.fn(),
+            resendEmailVerification: vi.fn(),
           },
         },
       ],
@@ -88,29 +94,30 @@ describe('AuthController', () => {
 
   describe('register', () => {
     it('should call authService.register with register body', async () => {
-      authService.register.mockResolvedValue(mockAccessToken);
+      authService.register.mockResolvedValue(mockRegisterResponse);
 
       const result = await controller.register(mockRegisterDto);
 
       expect(authService.register).toHaveBeenCalledWith(mockRegisterDto);
-      expect(result).toEqual(mockAccessToken);
+      // No access_token: registration no longer authenticates.
+      expect(result).toEqual(mockRegisterResponse);
     });
 
     it('should return the result from authService.register', async () => {
-      const customToken: AccessToken = { access_token: 'new-user-token' };
-      authService.register.mockResolvedValue(customToken);
+      const custom = { message: 'a different message' };
+      authService.register.mockResolvedValue(custom);
 
       const result = await controller.register(mockRegisterDto);
 
-      expect(result).toEqual(customToken);
+      expect(result).toEqual(custom);
     });
 
     it('should handle async/await properly', async () => {
-      authService.register.mockResolvedValue(mockAccessToken);
+      authService.register.mockResolvedValue(mockRegisterResponse);
 
       const result = await controller.register(mockRegisterDto);
 
-      expect(result).toEqual(mockAccessToken);
+      expect(result).toEqual(mockRegisterResponse);
     });
   });
 
@@ -147,6 +154,40 @@ describe('AuthController', () => {
         'Pikachu123!',
       );
       expect(result).toEqual(mockAccessToken);
+    });
+  });
+
+  describe('confirmEmailVerification', () => {
+    it('unpacks the token and returns the access token', async () => {
+      authService.confirmEmailVerification.mockResolvedValue(mockAccessToken);
+
+      const result = await controller.confirmEmailVerification({
+        token: 'verify-token-123',
+      });
+
+      expect(authService.confirmEmailVerification).toHaveBeenCalledWith(
+        'verify-token-123',
+      );
+      expect(result).toEqual(mockAccessToken);
+    });
+  });
+
+  describe('resendEmailVerification', () => {
+    it('unpacks the email and returns the generic message', async () => {
+      const response = {
+        message:
+          'If an unverified account exists for that address, a new link has been sent',
+      };
+      authService.resendEmailVerification.mockResolvedValue(response);
+
+      const result = await controller.resendEmailVerification({
+        email: 'ash@pallet.town',
+      });
+
+      expect(authService.resendEmailVerification).toHaveBeenCalledWith(
+        'ash@pallet.town',
+      );
+      expect(result).toEqual(response);
     });
   });
 });

@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import {
   getAuthDialog,
   openRegisterForm,
-  expectLoggedIn,
+  openSignInModal,
 } from "../helpers/auth";
 
 const VALID_EMAIL = "test@test.com";
@@ -27,7 +27,7 @@ test.describe("User Registration", () => {
     await expect(dialog.getByRole("button", { name: "Sign in" })).toBeVisible();
   });
 
-  test("should successfully register with valid credentials", async ({
+  test("should show a verification notice after registering", async ({
     page,
   }) => {
     await openRegisterForm(page);
@@ -40,8 +40,38 @@ test.describe("User Registration", () => {
     await dialog.getByPlaceholder("Confirm your password").fill("P@ssw0rd123");
     await dialog.getByRole("button", { name: "Create Account" }).click();
 
-    await expectLoggedIn(page);
-    await expect(page.getByRole("dialog")).not.toBeVisible();
+    // Registration no longer authenticates: the account cannot sign in until
+    // the emailed link is used, so the dialog stays open with the notice.
+    await expect(
+      dialog.getByText("Check your email for a link to verify your account")
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Account menu" })
+    ).not.toBeVisible();
+  });
+
+  test("should refuse sign in for an unverified account", async ({ page }) => {
+    await openRegisterForm(page);
+
+    const dialog = getAuthDialog(page);
+    const uniqueEmail = `test${Date.now()}@example.com`;
+
+    await dialog.getByLabel("Email").fill(uniqueEmail);
+    await dialog.getByPlaceholder("Enter your password").fill("P@ssw0rd123");
+    await dialog.getByPlaceholder("Confirm your password").fill("P@ssw0rd123");
+    await dialog.getByRole("button", { name: "Create Account" }).click();
+
+    await page.reload();
+    await openSignInModal(page);
+
+    const signIn = getAuthDialog(page);
+    await signIn.getByLabel("Email").fill(uniqueEmail);
+    await signIn.getByPlaceholder("Enter your password").fill("P@ssw0rd123");
+    await signIn.getByRole("button", { name: "Sign In" }).click();
+
+    await expect(
+      signIn.getByText("Invalid credentials. Please try again.")
+    ).toBeVisible();
   });
 
   test("should show error with existing email", async ({ page }) => {

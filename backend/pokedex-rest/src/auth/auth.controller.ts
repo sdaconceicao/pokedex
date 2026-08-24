@@ -19,6 +19,12 @@ import { FastifyRequest } from 'fastify';
 import { UserEntity } from '../users/users.entity';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import {
+  EmailVerificationConfirmRequestDto,
+  EmailVerificationConfirmResponseDTO,
+} from './dtos/email-verification-confirm.dto';
+import { EmailVerificationRequestDto } from './dtos/email-verification-request.dto';
+import { EmailVerificationResponseDTO } from './dtos/email-verification-response.dto';
 import { LoginRequestDto } from './dtos/login-request.dto';
 import { LoginResponseDTO } from './dtos/login-response.dto';
 import { PasswordResetConfirmRequestDto } from './dtos/password-reset-confirm-request.dto';
@@ -93,5 +99,35 @@ export class AuthController {
     @Body(PasswordResetValidationPipe) body: PasswordResetConfirmRequestDto,
   ): Promise<PasswordResetConfirmResponseDTO> {
     return this.authService.confirmPasswordReset(body.token, body.password);
+  }
+
+  @Post('verify-email')
+  @ApiOperation({ summary: 'Verify an account using an emailed link' })
+  @ApiBody({ type: EmailVerificationConfirmRequestDto })
+  @ApiCreatedResponse({
+    description: 'Account verified and authenticated',
+    type: EmailVerificationConfirmResponseDTO,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid, expired, or already-used verification link',
+  })
+  async confirmEmailVerification(
+    @Body() body: EmailVerificationConfirmRequestDto,
+  ): Promise<EmailVerificationConfirmResponseDTO> {
+    return this.authService.confirmEmailVerification(body.token);
+  }
+
+  @Post('verify-email/resend')
+  @ApiOperation({ summary: 'Request a fresh verification link by email' })
+  @ApiBody({ type: EmailVerificationRequestDto })
+  @ApiCreatedResponse({
+    description:
+      'Always succeeds with an identical message, whether or not the address is registered or already verified',
+    type: EmailVerificationResponseDTO,
+  })
+  async resendEmailVerification(
+    @Body() body: EmailVerificationRequestDto,
+  ): Promise<EmailVerificationResponseDTO> {
+    return this.authService.resendEmailVerification(body.email);
   }
 }

@@ -3,12 +3,16 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
+import { buildEmailVerificationMessage } from '../mail/templates/email-verification.template';
 import { buildPasswordResetMessage } from '../mail/templates/password-reset.template';
 import { UserEntity } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
+import { EmailVerificationResponseDTO } from './dtos/email-verification-response.dto';
 import { PasswordResetResponseDTO } from './dtos/password-reset-response.dto';
 import { RegisterRequestDto } from './dtos/register-request.dto';
+import { RegisterResponseDTO } from './dtos/register-response.dto';
 import { AccessToken } from './types/AccessToken';
+import { EmailVerificationTokenPayload } from './types/EmailVerificationTokenPayload';
 import { PasswordResetTokenPayload } from './types/PasswordResetTokenPayload';
 
 // Single constant, returned for every address. Never branch this.
@@ -17,6 +21,17 @@ const PASSWORD_RESET_REQUESTED_MESSAGE =
 
 // Expired, tampered, unknown user, and already-spent all collapse to this.
 const INVALID_RESET_TOKEN_MESSAGE = 'Invalid or expired reset token';
+
+const VERIFICATION_SENT_MESSAGE =
+  'Check your email for a link to verify your account';
+
+// Expired, tampered, unknown user, and already-used all collapse to this.
+const INVALID_VERIFICATION_TOKEN_MESSAGE =
+  'Invalid or expired verification link';
+
+// Single constant, returned for every address. Never branch this.
+const VERIFICATION_RESENT_MESSAGE =
+  'If an unverified account exists for that address, a new link has been sent';
 
 @Injectable()
 export class AuthService {
@@ -96,6 +111,9 @@ export class AuthService {
 
     const updated = await this.usersService.update(user.id, {
       password: await bcrypt.hash(password, 10),
+      // Completing a reset means they read an email at this address, which is
+      // exactly what verification proves — so don't strand them unverified.
+      emailVerified: true,
     });
     if (!updated) {
       throw new BadRequestException(INVALID_RESET_TOKEN_MESSAGE);
@@ -103,6 +121,87 @@ export class AuthService {
 
     return this.login(updated);
   }
+
+  async resendEmailVerification(
+    email: string,
+  ): Promise<EmailVerificationResponseDTO> {
+    const user = await this.usersService.findOneByEmail(email);
+
+    // Sends only for an unverified account, but the reply never varies — it
+    // must not reveal existence or verification state.
+    if (user && !user.emailVerified) {
+      await this.sendVerificationEmail(user);
+    }
+
+    return { message: VERIFICATION_RESENT_MESSAGE };
+  }
+
+  async confirmEmailVerification(token: string): Promise<AccessToken> {
+    // decode() is untrusted — it only tells us whose record to build the
+    // verification key from. Nothing is acted on before verifyAsync.
+    const userId = this.jwtService.decode<EmailVerificationTokenPayload | null>(
+      token,
+    )?.userId;
+    const user = userId ? await this.usersService.findOneById(userId) : null;
+    if (!user) {
+      throw new BadRequestException(INVALID_VERIFICATION_TOKEN_MESSAGE);
+    }
+
+    try {
+      await this.jwtService.verifyAsync(token, {
+        secret: this.verificationTokenSecret(user),
+      });
+    } catch {
+      // Also covers a second click on the same link: the key embedded the old
+      // emailVerified value, so a used link no longer verifies. The user sees
+      // "invalid" rather than "already verified" — the cost of no token table.
+      throw new BadRequestException(INVALID_VERIFICATION_TOKEN_MESSAGE);
+    }
+
+    const updated = await this.usersService.update(user.id, {
+      emailVerified: true,
+    });
+    if (!updated) {
+      throw new BadRequestException(INVALID_VERIFICATION_TOKEN_MESSAGE);
+    }
+
+    return this.login(updated);
+  }
+
+  /**
+   * Signing key for verification tokens: the app secret plus the address being
+   * verified and its current state. Verifying flips emailVerified, and changing
+   * the address changes the key — so a used or stale link stops verifying.
+   */
+  private verificationTokenSecret(user: UserEntity): string {
+    const secret = this.configService.getOrThrow<string>('JWT_SECRET');
+    return `${secret}${user.email}${String(user.emailVerified)}`;
+  }
+
+  private async sendVerificationEmail(user: UserEntity): Promise<void> {
+    const expirySeconds = parseInt(
+      this.configService.get<string>(
+        'EMAIL_VERIFICATION_TOKEN_VALIDITY_DURATION_IN_SEC',
+      ) ?? '86400',
+      10,
+    );
+    const payload: EmailVerificationTokenPayload = { userId: user.id };
+    const token = await this.jwtService.signAsync(payload, {
+      secret: this.verificationTokenSecret(user),
+      expiresIn: expirySeconds,
+    });
+    const baseUrl = this.configService.getOrThrow<string>('FRONTEND_BASE_URL');
+    const verifyUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(token)}`;
+
+    await this.mailService.send(
+      buildEmailVerificationMessage(
+        user.email,
+        verifyUrl,
+        Math.round(expirySeconds / 3600),
+      ),
+    );
+  }
+
   async validateUser(email: string, password: string): Promise<UserEntity> {
     const user: UserEntity | null =
       await this.usersService.findOneByEmail(email);
@@ -113,13 +212,18 @@ export class AuthService {
     if (!isMatch) {
       throw new BadRequestException('Password does not match');
     }
+    // Checked only after the password matches: otherwise a wrong password on
+    // an unverified account would still confirm the address is registered.
+    if (!user.emailVerified) {
+      throw new BadRequestException('Email address not verified');
+    }
     return user;
   }
   async login(user: UserEntity): Promise<AccessToken> {
     const payload = { email: user.email, userId: user.id };
     return { access_token: await this.jwtService.signAsync(payload) };
   }
-  async register(user: RegisterRequestDto): Promise<AccessToken> {
+  async register(user: RegisterRequestDto): Promise<RegisterResponseDTO> {
     const existingUser = await this.usersService.findOneByEmail(user.email);
     if (existingUser) {
       Logger.error(`Email already exists for user: ${user.email}`);
@@ -136,6 +240,7 @@ export class AuthService {
     };
 
     const createdUser = await this.usersService.create(newUser);
-    return this.login(createdUser);
+    await this.sendVerificationEmail(createdUser);
+    return { message: VERIFICATION_SENT_MESSAGE };
   }
 }
