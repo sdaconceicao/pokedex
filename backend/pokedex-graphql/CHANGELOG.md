@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.5.0](https://github.com/sdaconceicao/pokependium/compare/pokedex-graphql-v0.4.0...pokedex-graphql-v0.5.0) (2026-08-26)
+
+
+### Features
+
+* Add Filter query ([#115](https://github.com/sdaconceicao/pokependium/issues/115)) ([41970c1](https://github.com/sdaconceicao/pokependium/commit/41970c1c5e0155bfc0be7fef0512f7c3c9caf0e9))
+* Add Pokémon descriptions to GraphQL API and frontend ([#139](https://github.com/sdaconceicao/pokependium/issues/139)) ([7873b81](https://github.com/sdaconceicao/pokependium/commit/7873b8176c354aa5956ea846d4615f35ec51bed5))
+* Add pokemonForms query and related types ([#118](https://github.com/sdaconceicao/pokependium/issues/118)) ([9fddc6d](https://github.com/sdaconceicao/pokependium/commit/9fddc6d3fc11c8554acede6f89b0f4f32d797a5a))
+* Added Evolution chains ([#78](https://github.com/sdaconceicao/pokependium/issues/78)) ([16ec167](https://github.com/sdaconceicao/pokependium/commit/16ec1678ea36a0b6ce8c9a94f5da6c7aafa05eee))
+* Added save pokemon to group ([#131](https://github.com/sdaconceicao/pokependium/issues/131)) ([c73a5d6](https://github.com/sdaconceicao/pokependium/commit/c73a5d6619d5d8235d896ba7b89841a712992488))
+* Added Type Matchups ([#136](https://github.com/sdaconceicao/pokependium/issues/136)) ([c7d8924](https://github.com/sdaconceicao/pokependium/commit/c7d8924b793cda5fa4bb62b898942e786f8d57e6))
+* Lago integration ([#116](https://github.com/sdaconceicao/pokependium/issues/116)) ([f809b8c](https://github.com/sdaconceicao/pokependium/commit/f809b8c4444ba706e51ef51342daa76acf2a1967))
+* Multifaceted search filters with ordering ([#117](https://github.com/sdaconceicao/pokependium/issues/117)) ([ac8f8b4](https://github.com/sdaconceicao/pokependium/commit/ac8f8b4b256d0eaa6b9665c5dd10217cd2d0d279))
+* Pokedex hero page ([#127](https://github.com/sdaconceicao/pokependium/issues/127)) ([c3a70da](https://github.com/sdaconceicao/pokependium/commit/c3a70da794de9aeff69a2ad7aeba06d024dd4fb5))
+* Region page ([#108](https://github.com/sdaconceicao/pokependium/issues/108)) ([de4a825](https://github.com/sdaconceicao/pokependium/commit/de4a8254c050986bff4947ccfe10bf1596e78d8a))
+* Rest Auth Backend ([#12](https://github.com/sdaconceicao/pokependium/issues/12)) ([b185257](https://github.com/sdaconceicao/pokependium/commit/b185257af7c090a3e9598d471100e23d46ea242d))
+* Type page ([#114](https://github.com/sdaconceicao/pokependium/issues/114)) ([4d63b8c](https://github.com/sdaconceicao/pokependium/commit/4d63b8c55aa310ba5fa3ae87a9112a0a89ac15be))
+* Vercel setup for graphql ([#69](https://github.com/sdaconceicao/pokependium/issues/69)) ([0b94042](https://github.com/sdaconceicao/pokependium/commit/0b94042359f85186b6cf6e0d38af1ea3820a3b91))
+
+
+### Bug Fixes
+
+* Exclude empty categories from navbar ([#20](https://github.com/sdaconceicao/pokependium/issues/20)) ([36548ec](https://github.com/sdaconceicao/pokependium/commit/36548ec4c146c16efa2a323bc7fc7edd949cbedb))
+* Fixing vercel build for pokdex-rest ([#66](https://github.com/sdaconceicao/pokependium/issues/66)) ([108aff7](https://github.com/sdaconceicao/pokependium/commit/108aff7e0a99595cfb88c1b64c115550bee912c8))
+
 ## [0.4.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-graphql-v0.3.0...pokedex-graphql-v0.4.0) (2026-08-17)
 
 
