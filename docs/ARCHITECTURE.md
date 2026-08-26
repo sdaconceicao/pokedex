@@ -91,7 +91,10 @@ It owns the only persistent datastore in the system.
   run on deploy (preview runs them via Vercel build) and on `main` pushes via
   the `db-migrate.yml` workflow.
 - **CORS**: configurable via `ALLOWED_ORIGINS` (supports `*` wildcards for
-  Vercel preview URLs).
+  Vercel preview URLs). The same allow-list decides which origins an emailed
+  link may point at: reset/verification links are built from the request's
+  `Origin` when it matches, so preview deployments link back to themselves,
+  falling back to `FRONTEND_BASE_URL` otherwise.
 - **Tooling**: Biome, Vitest. Bruno collections under `bruno/` for manual API
   testing.
 
@@ -141,8 +144,9 @@ All three packages deploy to Vercel (`vercel.json` in `frontend` and
 
 Environment variables wire the pieces together:
 `NEXT_PUBLIC_GRAPHQL_URL` (frontend → GraphQL), `NEXT_PUBLIC_AUTH_API_URL`
-(frontend → REST), `ALLOWED_ORIGINS` (both APIs' CORS), `USE_MOCK_API`
-(GraphQL mock mode).
+(frontend → REST), `ALLOWED_ORIGINS` (both APIs' CORS, plus the REST API's
+emailed-link allow-list), `FRONTEND_BASE_URL` (REST API's fallback origin for
+emailed links; required at boot), `USE_MOCK_API` (GraphQL mock mode).
 
 ## Conventions agents must respect
 

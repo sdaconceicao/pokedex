@@ -246,3 +246,18 @@ html.dark-mode {
   --button-gradient: rgb(255 255 255 / 0.2);
   --button-shadow: var(--button-border);
 }
+
+/* lago anchors its toast region bottom-right; this app wants top-right.
+   Unlayered, so it beats @layer lago.* regardless of specificity. */
+.react-aria-ToastRegion {
+  /* Below the header, or a toast sits on top of the account menu and
+     swallows its clicks. 60px mirrors --header-height in AppShell.module.css,
+     which is scoped to .container and so not visible here; the var() picks it
+     up automatically if that ever goes global. */
+  top: calc(var(--header-height, 60px) + var(--spacing-4));
+  bottom: auto;
+  flex-direction: column;
+  /* Above Modal (600) and the AppShell header (500) — a toast can be raised
+     as the modal closes, so it has to clear both. */
+  z-index: 700;
+}

@@ -1,5 +1,11 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { expectLoggedIn, getAuthDialog, openRegisterForm } from "./auth";
+import {
+  dismissToasts,
+  getAuthDialog,
+  markEmailVerified,
+  openRegisterForm,
+  signIn,
+} from "./auth";
 
 const PASSWORD = "P@ssw0rd123";
 
@@ -23,8 +29,14 @@ export async function registerFreshUser(
   await dialog.getByPlaceholder("Confirm your password").fill(PASSWORD);
   await dialog.getByRole("button", { name: "Create Account" }).click();
 
-  await expectLoggedIn(page);
+  // Registration no longer authenticates; the modal closes with a toast.
   await expect(page.getByRole("dialog")).not.toBeVisible();
+  await dismissToasts(page);
+
+  // Clear the verification gate the way the emailed link would, then use the
+  // real sign-in path.
+  await markEmailVerified(email);
+  await signIn(page, email, PASSWORD);
 
   return { email, password: PASSWORD };
 }

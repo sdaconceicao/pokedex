@@ -23,7 +23,6 @@ export default function RegisterForm({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitError, setSubmitError] = useState<string>("");
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -60,7 +59,6 @@ export default function RegisterForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    setSubmitError("");
 
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
@@ -68,21 +66,12 @@ export default function RegisterForm({
       return;
     }
 
-    try {
-      await onSubmit({
-        email: formData.email.trim(),
-        password: formData.password,
-      });
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        (error.message.includes("already exists") || error.message.includes("Email"))
-      ) {
-        setSubmitError("An account with this email already exists.");
-      } else {
-        setSubmitError("Registration failed. Please try again.");
-      }
-    }
+    // Outcome handling lives in AuthModalProvider, which closes the modal
+    // and raises a toast; this form only validates and submits.
+    await onSubmit({
+      email: formData.email.trim(),
+      password: formData.password,
+    });
   };
 
   return (
@@ -90,8 +79,6 @@ export default function RegisterForm({
     // popups out of the way so `validateForm` above stays the single source of
     // truth for errors, same as the hand-rolled form before it.
     <Form onSubmit={handleSubmit} validationBehavior="aria">
-      {submitError && <div className={styles.submitError}>{submitError}</div>}
-
       <TextField
         type="email"
         label="Email"

@@ -19,4 +19,7 @@ export class UserEntity {
 
   @Column({ type: 'varchar', length: 255 })
   lastName: string;
+
+  @Column({ type: 'boolean', default: false })
+  emailVerified: boolean;
 }

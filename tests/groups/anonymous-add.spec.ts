@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { expectLoggedIn, getAuthDialog, logout, openSignInModal } from "../helpers/auth";
+import {
+  expectLoggedIn,
+  getAuthDialog,
+  getToast,
+  logout,
+  openSignInModal,
+} from "../helpers/auth";
 import {
   cardGroupButton,
   cardName,
@@ -10,9 +16,11 @@ import {
 } from "../helpers/groups";
 
 const PASSWORD = "P@ssw0rd123";
+const SUBMITTED_NOTICE =
+  "Check your email — we have sent you a message with next steps";
 
 test.describe("Adding to a group while signed out", () => {
-  test("opens sign-up instead of the popover, then resumes the same add after registering", async ({
+  test("opens sign-up instead of the popover, and does not resume the add after registering", async ({
     page,
   }) => {
     await page.goto("/forms/mega");
@@ -37,8 +45,12 @@ test.describe("Adding to a group while signed out", () => {
     await dialog.getByPlaceholder("Confirm your password").fill(PASSWORD);
     await dialog.getByRole("button", { name: "Create Account" }).click();
 
-    await expect(page.getByRole("dialog")).toHaveCount(1);
-    await expect(groupPopover(page, name)).toBeVisible();
+    // Registration no longer signs the user in, so the modal closes with a
+    // verification notice and AddToGroupProvider drops the pending add. The
+    // user has to verify, sign in, and start the add again.
+    await expect(getToast(page).getByText(SUBMITTED_NOTICE)).toBeVisible();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(groupPopover(page, name)).toHaveCount(0);
   });
 
   test("does not resume the popover after the auth dialog is dismissed without signing in", async ({

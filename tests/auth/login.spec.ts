@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import {
   getAuthDialog,
+  getToast,
   openSignInModal,
   expectLoggedIn,
   logout,
@@ -51,9 +52,9 @@ test.describe("User Login", () => {
     await dialog.getByPlaceholder("Enter your password").fill("wrongpassword");
     await dialog.getByRole("button", { name: "Sign In" }).click();
 
-    await expect(dialog).toContainText(
-      "Invalid credentials. Please try again."
-    );
+    // Failure toasts now; the modal stays open so the user can retry.
+    await expect(getToast(page).getByText("Could not sign in")).toBeVisible();
+    await expect(dialog).toBeVisible();
   });
 
   test("should validate required fields", async ({ page }) => {
