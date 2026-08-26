@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.0](https://github.com/sdaconceicao/pokependium/compare/pokedex-graphql-v0.4.0...pokedex-graphql-v0.5.0) (2026-08-26)
+
+
+### Features
+
+* Add Pokémon descriptions to GraphQL API and frontend ([#139](https://github.com/sdaconceicao/pokependium/issues/139)) ([dc68eba](https://github.com/sdaconceicao/pokependium/commit/dc68eba000f3cad23174e936dcb5ac4239324412))
+* Added save pokemon to group ([#131](https://github.com/sdaconceicao/pokependium/issues/131)) ([8694f81](https://github.com/sdaconceicao/pokependium/commit/8694f8167a2f18aba364fb0020a128a14de7c47e))
+* Added Type Matchups ([#136](https://github.com/sdaconceicao/pokependium/issues/136)) ([7bdf40d](https://github.com/sdaconceicao/pokependium/commit/7bdf40dd06b6752622c38efac1a6723bd9c95efd))
+* Pokedex hero page ([#127](https://github.com/sdaconceicao/pokependium/issues/127)) ([1f7fcd4](https://github.com/sdaconceicao/pokependium/commit/1f7fcd455e684ed511f2bd2c5594499f30a12533))
+
 ## [0.4.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-graphql-v0.3.0...pokedex-graphql-v0.4.0) (2026-08-17)
 
 
