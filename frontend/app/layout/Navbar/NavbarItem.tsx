@@ -27,9 +27,10 @@ export interface NavItem {
 
 interface NavbarItemProps {
   item: NavItem;
+  onNavigate?: () => void;
 }
 
-export default function NavbarItem({ item }: NavbarItemProps) {
+export default function NavbarItem({ item, onNavigate }: NavbarItemProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -39,14 +40,14 @@ export default function NavbarItem({ item }: NavbarItemProps) {
   const isActive = item.activeWhenPathnameIn
     ? item.activeWhenPathnameIn.includes(pathname)
     : item.activeWhenPathnameEquals
-      ? pathname === item.activeWhenPathnameEquals
-      : item.activeWhenSearchParamIncludes
-        ? pathname === item.href.split("?")[0] &&
-          paramIncludes(
-            searchParams.get(item.activeWhenSearchParamIncludes.key),
-            item.activeWhenSearchParamIncludes.value,
-          )
-        : false;
+    ? pathname === item.activeWhenPathnameEquals
+    : item.activeWhenSearchParamIncludes
+    ? pathname === item.href.split("?")[0] &&
+      paramIncludes(
+        searchParams.get(item.activeWhenSearchParamIncludes.key),
+        item.activeWhenSearchParamIncludes.value
+      )
+    : false;
 
   return (
     // lago's Link supplies the interaction/state contract (hover, focus-visible
@@ -59,11 +60,15 @@ export default function NavbarItem({ item }: NavbarItemProps) {
       href={item.href}
       aria-current={isActive ? "page" : undefined}
       className={styles.navItem}
+      onPress={onNavigate}
       render={(props) => (
         // lago types `render`'s props as anchor-or-span, because Link drops to
         // a <span> when it has no href. This one always has one, so the anchor
         // branch is the only reachable case and the narrowing is sound.
-        <NextLink {...(props as ComponentPropsWithoutRef<"a">)} href={item.href}>
+        <NextLink
+          {...(props as ComponentPropsWithoutRef<"a">)}
+          href={item.href}
+        >
           {item.label} {item.icon}
         </NextLink>
       )}
