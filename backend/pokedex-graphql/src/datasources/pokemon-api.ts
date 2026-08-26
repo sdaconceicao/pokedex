@@ -5,7 +5,9 @@ import type {
   AbilityLite,
   EvolutionChain,
   EvolutionNode,
+  PokedexDetail,
   Pokemon,
+  PokemonDescription,
   PokemonForm,
   PokemonPokedex,
   PokemonRegion,
@@ -14,11 +16,13 @@ import type {
   TypeDetail,
 } from "../types.js";
 import { sortByNumber } from "../utils/filter.js";
+import { convertPokedexToPokedexDetail, getDisplayName } from "../utils/pokedex.js";
 import {
   convertAbilityLiteToAbility,
   convertPokemonEntityToPokemon,
   getEvolutionDetail,
   getIdFromUrl,
+  getSpeciesDescriptions,
   isForm,
   isSpecies,
   toPokemonIndex,
@@ -83,7 +87,6 @@ export class PokemonAPI extends RESTDataSource {
     return { species, forms };
   }
 
-  // Check if index is loaded
   isIndexLoaded(): boolean {
     return PokemonAPI.indexes !== null;
   }
@@ -117,9 +120,6 @@ export class PokemonAPI extends RESTDataSource {
     return this.get<PokemonSpecies>(`pokemon-species/${id}`);
   }
 
-  // Build a single evolution node (id, name, image + how it evolves), then
-  // recurse into its branches. Uses getPokemon so node images reuse the same
-  // sprite/fallback logic as the rest of the app.
   private async buildEvolutionNode(link: ChainLink): Promise<EvolutionNode> {
     const speciesId = getIdFromUrl(link.species.url);
     const [pokemon, evolvesTo] = await Promise.all([
@@ -129,10 +129,6 @@ export class PokemonAPI extends RESTDataSource {
 
     return {
       id: pokemon.id,
-      // The species' name, not the default form's: a chain is a chain of
-      // species, and the two differ wherever the base form carries a suffix —
-      // a stage reading "Aegislash Shield" would name a form the chain has no
-      // other member of.
       name: link.species.name,
       image: pokemon.image,
       ...getEvolutionDetail(link.evolution_details),
@@ -148,6 +144,12 @@ export class PokemonAPI extends RESTDataSource {
       id: chainResponse.id.toString(),
       chain: await this.buildEvolutionNode(chainResponse.chain),
     };
+  }
+
+  async getDescriptionsForSpecies(speciesId: string): Promise<PokemonDescription[]> {
+    const species = await this.getPokemonSpecies(speciesId);
+
+    return getSpeciesDescriptions(species);
   }
 
   async getFormsForSpecies(speciesId: string): Promise<PokemonForm[]> {
@@ -191,13 +193,22 @@ export class PokemonAPI extends RESTDataSource {
     return entries.filter((pokemon) => pokemon.name.toLowerCase().includes(lowerQuery));
   }
 
-  // Every name match, unpaginated, so it can be composed with other facets.
   searchPokemonIndex(query: string): PokemonIndex[] {
     return PokemonAPI.matchName(this.getPokemonIndex(), query);
   }
 
   searchFormsIndex(query: string): PokemonIndex[] {
     return PokemonAPI.matchName(this.getFormsIndex(), query);
+  }
+
+  getPokedex(name: string): Promise<PokedexDetail> {
+    logger.info(`Fetching pokedex: ${name}`);
+    return this.get<Pokedex>(`pokedex/${name}`)
+      .then(convertPokedexToPokedexDetail)
+      .catch((error) => {
+        logger.error(`Error fetching pokedex ${name}:`, error);
+        throw error;
+      });
   }
 
   getPokemonByPokedex(pokedex: string): Promise<PokemonIndex[]> {
@@ -297,17 +308,19 @@ export class PokemonAPI extends RESTDataSource {
       const pokedexesWithCounts = await Promise.all(
         data.results.map(async (entry: NamedAPIResource) => {
           try {
-            const count = await this.getPokemonByPokedex(entry.name).then(
-              (pokemon) => pokemon.length,
-            );
+            const pokedex = await this.get<Pokedex>(`pokedex/${entry.name}`);
             return {
               name: entry.name,
-              count,
+              displayName: getDisplayName(pokedex.names, entry.name),
+              region: pokedex.region?.name ?? null,
+              count: pokedex.pokemon_entries.length,
             };
           } catch (error) {
             logger.error(`Error getting count for pokedex ${entry.name}:`, error);
             return {
               name: entry.name,
+              displayName: entry.name,
+              region: null,
               count: 0,
             };
           }

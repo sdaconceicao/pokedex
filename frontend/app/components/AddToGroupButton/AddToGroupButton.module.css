@@ -1,0 +1,6 @@
+/* The overlay has to survive a narrow window: the control's 21rem plus the
+   dialog's own padding overflows a 320px viewport, so cap the whole popover
+   against the viewport and let the control inside shrink to fit. */
+.popover {
+  max-width: calc(100vw - 1rem);
+}

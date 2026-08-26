@@ -1,9 +1,10 @@
 import { useMemo } from "react";
+import { DisclosureGroup } from "react-aria-components";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
 import SearchFilters from "./components/SearchFilters";
 import styles from "./Navbar.module.css";
 import {
-  getPokedexItems,
+  getPokedexGroups,
   getRegionItems,
   getSpecialItems,
   getTypeItems,
@@ -16,35 +17,67 @@ import NavbarSection from "./NavbarSection";
 
 interface NavbarProps {
   navigationData: NavigationData;
+  openSection: NavSectionKey | null;
+  currentSection: NavSectionKey | null;
+  onOpenSectionChange: (key: NavSectionKey | null) => void;
 }
 
-export default function Navbar({ navigationData }: NavbarProps) {
+export default function Navbar({
+  navigationData,
+  openSection,
+  currentSection,
+  onOpenSectionChange,
+}: NavbarProps) {
   const { types, pokedexes, regions } = navigationData;
 
   const typeItems = useMemo(() => getTypeItems(types), [types]);
   const specialItems = useMemo(() => getSpecialItems(), []);
   const regionItems = useMemo(() => getRegionItems(regions), [regions]);
-  const pokedexItems = useMemo(() => getPokedexItems(pokedexes), [pokedexes]);
+  const pokedexGroups = useMemo(() => getPokedexGroups(pokedexes), [pokedexes]);
 
-  const itemsByKey: Record<NavSectionKey, NavItem[]> = {
+  const itemsByKey: Record<Exclude<NavSectionKey, "pokedexes">, NavItem[]> = {
     types: typeItems,
     special: specialItems,
     regions: regionItems,
-    pokedexes: pokedexItems,
   };
 
   return (
     <nav className={styles.navbar}>
-      {/* Search first: it combines facets, so it is the more capable of the
-          two, and Browse below is the one-facet shortcut to the same results. */}
       <NavbarGroup title="Search">
         <SearchFilters types={types} regions={regions} pokedexes={pokedexes} />
       </NavbarGroup>
 
       <NavbarGroup title="Browse">
-        {NAV_SECTIONS.map(({ key, title, icon }) => (
-          <NavbarSection key={key} title={title} icon={icon} items={itemsByKey[key]} />
-        ))}
+        <DisclosureGroup
+          expandedKeys={openSection ? [openSection] : []}
+          onExpandedChange={(keys) => {
+            const key = Array.from(keys)[0];
+            onOpenSectionChange((key as NavSectionKey | undefined) ?? null);
+          }}
+        >
+          {NAV_SECTIONS.map(({ key, title, icon, columns }) =>
+            key === "pokedexes" ? (
+              <NavbarSection
+                key={key}
+                id={key}
+                title={title}
+                icon={icon}
+                isCurrent={key === currentSection}
+                groups={pokedexGroups}
+              />
+            ) : (
+              <NavbarSection
+                key={key}
+                id={key}
+                title={title}
+                icon={icon}
+                isCurrent={key === currentSection}
+                columns={columns}
+                items={itemsByKey[key]}
+              />
+            ),
+          )}
+        </DisclosureGroup>
       </NavbarGroup>
     </nav>
   );

@@ -2,13 +2,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
+  EmailVerificationConfirmResponse,
   LoginCredentials,
   LoginResponse,
+  PasswordResetConfirmCredentials,
+  PasswordResetConfirmResponse,
+  PasswordResetResponse,
   RegisterCredentials,
   RegisterResponse,
 } from "@/types/auth";
 
-// Custom hooks for authentication
 export function useAuth() {
   const queryClient = useQueryClient();
 
@@ -17,7 +20,6 @@ export function useAuth() {
     setHasMounted(true);
   }, []);
 
-  // Query for current token
   const {
     data: token,
     isLoading: isTokenLoading,
@@ -25,10 +27,9 @@ export function useAuth() {
   } = useQuery({
     queryKey: ["auth", "token"],
     queryFn: getStoredToken,
-    staleTime: Infinity, // Token doesn't change unless explicitly updated
+    staleTime: Infinity,
   });
 
-  // Query for current user (depends on token)
   const {
     data: user,
     isLoading: isUserLoading,
@@ -36,38 +37,57 @@ export function useAuth() {
   } = useQuery({
     queryKey: ["auth", "user", token],
     queryFn: () => authApi.getCurrentUser(token!),
-    enabled: !!token, // Only run when token exists
+    enabled: !!token,
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
-  // Login mutation
   const loginMutation = useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: authApi.login,
     onSuccess: (data: LoginResponse) => {
       setStoredToken(data.access_token);
-      // Update token in cache, which will trigger user query
       queryClient.setQueryData(["auth", "token"], data.access_token);
     },
   });
 
-  // Register mutation
   const registerMutation = useMutation<RegisterResponse, Error, RegisterCredentials>({
     mutationFn: authApi.register,
-    onSuccess: (data: RegisterResponse) => {
-      setStoredToken(data.access_token);
-      // Update token in cache, which will trigger user query
-      queryClient.setQueryData(["auth", "token"], data.access_token);
-    },
   });
 
-  // Logout mutation
   const logoutMutation = useMutation<void, Error, void>({
     mutationFn: authApi.logout,
     onSuccess: () => {
-      // Clear token and user data from cache
       queryClient.setQueryData(["auth", "token"], null);
       queryClient.removeQueries({ queryKey: ["auth", "user"] });
+      queryClient.removeQueries({ queryKey: ["groups"] });
+    },
+  });
+
+  const requestPasswordResetMutation = useMutation<PasswordResetResponse, Error, string>({
+    mutationFn: authApi.requestPasswordReset,
+  });
+
+  const confirmPasswordResetMutation = useMutation<
+    PasswordResetConfirmResponse,
+    Error,
+    PasswordResetConfirmCredentials
+  >({
+    mutationFn: authApi.confirmPasswordReset,
+    onSuccess: (data: PasswordResetConfirmResponse) => {
+      setStoredToken(data.access_token);
+      queryClient.setQueryData(["auth", "token"], data.access_token);
+    },
+  });
+
+  const confirmEmailVerificationMutation = useMutation<
+    EmailVerificationConfirmResponse,
+    Error,
+    string
+  >({
+    mutationFn: authApi.confirmEmailVerification,
+    onSuccess: (data: EmailVerificationConfirmResponse) => {
+      setStoredToken(data.access_token);
+      queryClient.setQueryData(["auth", "token"], data.access_token);
     },
   });
 
@@ -85,10 +105,15 @@ export function useAuth() {
     isLoginLoading: loginMutation.isPending,
     isRegisterLoading: registerMutation.isPending,
     isLogoutLoading: logoutMutation.isPending,
+    requestPasswordResetAsync: requestPasswordResetMutation.mutateAsync,
+    isRequestPasswordResetLoading: requestPasswordResetMutation.isPending,
+    confirmPasswordResetAsync: confirmPasswordResetMutation.mutateAsync,
+    isConfirmPasswordResetLoading: confirmPasswordResetMutation.isPending,
+    confirmEmailVerificationAsync: confirmEmailVerificationMutation.mutateAsync,
+    isConfirmEmailVerificationLoading: confirmEmailVerificationMutation.isPending,
   };
 }
 
-// Hook for checking if user is authenticated
 export function useIsAuthenticated() {
   const { user, isLoading } = useAuth();
   return { isAuthenticated: !!user, isLoading };

@@ -84,6 +84,34 @@
      the shimmer *over* the surface rather than replacing it, so two passes of
      0.18 composite to ~0.33, which is the card's 0.32 highlight. */
   --skeleton-wash: rgb(255 255 255 / 0.18);
+
+  /* The matchup scale, green where a matchup falls the Pokemon's way and black
+     where nothing gets through at all. Global because the type page's wheel and
+     the detail page's matchup columns have to agree: the same 2x must read the
+     same colour whichever page you met it on. Solid-ish rather than translucent
+     because the wheel sits on the hero's tinted gradient and has to carry over
+     it. */
+  --matchup-good: rgba(76, 196, 90, 0.95);
+  --matchup-neutral: rgba(255, 255, 255, 0.22);
+  --matchup-bad: rgba(240, 78, 70, 0.95);
+  --matchup-none: rgba(10, 10, 12, 0.92);
+
+  /* Deeper, fully opaque versions of the three, for surfaces that carry text on
+     them. The tints above are for fills that don't: the wheel puts only icons on
+     its rings and keeps its wording in a readout alongside, so it can afford
+     translucent mid-tones over the hero gradient. A pill with a type name on it
+     can't — and the mid-tone red is the worst case, too dark for black text and
+     too light for white (4.66:1 and 3.38:1 respectively). Going darker lets one
+     ink serve all three.
+
+     Solid rather than alpha so each ratio is a single number that no surface
+     underneath can move. Measured against white: green 5.44:1, red 5.62:1,
+     black 19.78:1 — all clear WCAG AA at pill text sizes. Re-measure if any of
+     them changes. */
+  --matchup-good-solid: #0f7a38;
+  --matchup-bad-solid: #c62828;
+  --matchup-none-solid: #0a0a0c;
+  --matchup-ink: #ffffff;
 }
 
 :root.dark-mode {
@@ -217,4 +245,19 @@ html.dark-mode {
   --button-highlight: rgb(255 255 255 / 0.4);
   --button-gradient: rgb(255 255 255 / 0.2);
   --button-shadow: var(--button-border);
+}
+
+/* lago anchors its toast region bottom-right; this app wants top-right.
+   Unlayered, so it beats @layer lago.* regardless of specificity. */
+.react-aria-ToastRegion {
+  /* Below the header, or a toast sits on top of the account menu and
+     swallows its clicks. 60px mirrors --header-height in AppShell.module.css,
+     which is scoped to .container and so not visible here; the var() picks it
+     up automatically if that ever goes global. */
+  top: calc(var(--header-height, 60px) + var(--spacing-4));
+  bottom: auto;
+  flex-direction: column;
+  /* Above Modal (600) and the AppShell header (500) — a toast can be raised
+     as the modal closes, so it has to clear both. */
+  z-index: 700;
 }

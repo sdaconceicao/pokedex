@@ -1,0 +1,77 @@
+/* Two columns of matchups. The tints come from the global --matchup-* scale, so
+   a 2x here is the same colour as a 2x on the type page's wheel. */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+/* The same card the abilities wear, accent bar included, so the two sections
+   read as siblings. No hover lift though: an ability card is a discrete thing
+   you look at, while these columns aren't interactive, and the lift would
+   promise a click that isn't there. */
+.column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+  overflow: hidden;
+}
+
+.column::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--type-accent, var(--tint));
+}
+
+/* Matches .abilityName, with the rule .abilityDetails puts above its body —
+   the column's own gap supplies the space beneath it. */
+.columnTitle {
+  margin: 0;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-color);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--type-accent, var(--foreground));
+  margin: 0;
+}
+
+.groupIcon {
+  display: inline-flex;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* ── Responsive ──────────────────────────────────────
+   Two columns leave each row too narrow for its chips once the viewport reaches
+   tablet width, the same problem the stats grid has, so they stack the same way
+   and at the same breakpoint. */
+@media (max-width: 768px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}

@@ -8,23 +8,23 @@ import styles from "./AuthButtons.module.css";
 interface LoginFormProps {
   onSubmit: (email: string, password: string) => void | Promise<void>;
   onSwitchToRegister: () => void;
+  onForgotPassword: () => void;
   isLoading?: boolean;
 }
 
 export default function LoginForm({
   onSubmit,
   onSwitchToRegister,
+  onForgotPassword,
   isLoading = false,
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [submitError, setSubmitError] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    setSubmitError("");
 
     const newErrors: { email?: string; password?: string } = {};
 
@@ -43,11 +43,9 @@ export default function LoginForm({
       return;
     }
 
-    try {
-      await onSubmit(email, password);
-    } catch {
-      setSubmitError("Invalid credentials. Please try again.");
-    }
+    // AuthModalProvider owns the outcome: it closes the modal on success and
+    // raises a toast either way, so nothing rejects back into this form.
+    await onSubmit(email, password);
   };
 
   const handleEmailChange = (value: string) => {
@@ -65,8 +63,6 @@ export default function LoginForm({
     // popups out of the way so the manual checks above stay the single source of
     // truth for errors, same as the hand-rolled form before it.
     <Form onSubmit={handleSubmit} validationBehavior="aria">
-      {submitError && <div className={styles.submitError}>{submitError}</div>}
-
       <TextField
         type="email"
         label="Email"
@@ -97,6 +93,17 @@ export default function LoginForm({
           {isLoading ? "Signing in…" : "Sign In"}
         </Button>
       </div>
+
+      <p className={styles.switchPrompt}>
+        <button
+          type="button"
+          className={styles.switchLink}
+          onClick={onForgotPassword}
+          disabled={isLoading}
+        >
+          Forgot your password?
+        </button>
+      </p>
 
       <p className={styles.switchPrompt}>
         Don&apos;t have an account?{" "}

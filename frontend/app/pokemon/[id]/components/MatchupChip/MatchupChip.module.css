@@ -1,0 +1,32 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem 0.125rem 0.25rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--matchup-ink);
+  background: var(--chip-tint);
+}
+
+.chipIcon {
+  display: inline-flex;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* One variable per tint rather than three background rules, so the chip keeps a
+   single declaration of each. All three take the same white ink — that is what
+   the deeper -solid fills buy. */
+.good {
+  --chip-tint: var(--matchup-good-solid);
+}
+
+.bad {
+  --chip-tint: var(--matchup-bad-solid);
+}
+
+.none {
+  --chip-tint: var(--matchup-none-solid);
+}

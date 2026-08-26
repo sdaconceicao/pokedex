@@ -15,20 +15,25 @@ jobs:
 
     steps:
       - name: Restore Build
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: restore-build
         with:
           path: ./*
           key: ${{ inputs.cached-build-id }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24.x"
 
       - name: Run linting - frontend
-        run: pnpm --filter pokedex-frontend run lint
+        run: pnpm --filter ./frontend run lint
 
       - name: Run type checking - frontend
-        run: pnpm --filter pokedex-frontend run tsc
+        run: pnpm --filter ./frontend run tsc
 
       - name: Run tests with coverage - frontend
-        run: pnpm --filter pokedex-frontend run test:coverage
+        run: pnpm --filter ./frontend run test:coverage

@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.4.0](https://github.com/sdaconceicao/pokependium/compare/pokedex-rest-v0.3.0...pokedex-rest-v0.4.0) (2026-08-26)
+
+
+### Features
+
+* Added save pokemon to group ([#131](https://github.com/sdaconceicao/pokependium/issues/131)) ([c73a5d6](https://github.com/sdaconceicao/pokependium/commit/c73a5d6619d5d8235d896ba7b89841a712992488))
+* Lago integration ([#116](https://github.com/sdaconceicao/pokependium/issues/116)) ([f809b8c](https://github.com/sdaconceicao/pokependium/commit/f809b8c4444ba706e51ef51342daa76acf2a1967))
+* Login/Register/Logout workflows ([#13](https://github.com/sdaconceicao/pokependium/issues/13)) ([480e748](https://github.com/sdaconceicao/pokependium/commit/480e748c30bd42d7b37d8821a0fb0ce008def5b8))
+* Password Reset and Email Verify ([#142](https://github.com/sdaconceicao/pokependium/issues/142)) ([1e724fd](https://github.com/sdaconceicao/pokependium/commit/1e724fdba869fdbad732a8bc453e5050fac85311))
+* Pokedex hero page ([#127](https://github.com/sdaconceicao/pokependium/issues/127)) ([c3a70da](https://github.com/sdaconceicao/pokependium/commit/c3a70da794de9aeff69a2ad7aeba06d024dd4fb5))
+* Region page ([#108](https://github.com/sdaconceicao/pokependium/issues/108)) ([de4a825](https://github.com/sdaconceicao/pokependium/commit/de4a8254c050986bff4947ccfe10bf1596e78d8a))
+* Rest Auth Backend ([#12](https://github.com/sdaconceicao/pokependium/issues/12)) ([b185257](https://github.com/sdaconceicao/pokependium/commit/b185257af7c090a3e9598d471100e23d46ea242d))
+* Type page ([#114](https://github.com/sdaconceicao/pokependium/issues/114)) ([4d63b8c](https://github.com/sdaconceicao/pokependium/commit/4d63b8c55aa310ba5fa3ae87a9112a0a89ac15be))
+* Updated ux / branding ([#56](https://github.com/sdaconceicao/pokependium/issues/56)) ([06f1b67](https://github.com/sdaconceicao/pokependium/commit/06f1b679279130e8726698bbbf8470f2d18229fd))
+
+
+### Bug Fixes
+
+* Exclude empty categories from navbar ([#20](https://github.com/sdaconceicao/pokependium/issues/20)) ([36548ec](https://github.com/sdaconceicao/pokependium/commit/36548ec4c146c16efa2a323bc7fc7edd949cbedb))
+* Fix missing optional peer dep pg in rest api ([#98](https://github.com/sdaconceicao/pokependium/issues/98)) ([971c3cb](https://github.com/sdaconceicao/pokependium/commit/971c3cbbdea7c16534068de20f5a6b0b5eda0055))
+* Fixing vercel build for pokdex-rest ([#66](https://github.com/sdaconceicao/pokependium/issues/66)) ([108aff7](https://github.com/sdaconceicao/pokependium/commit/108aff7e0a99595cfb88c1b64c115550bee912c8))
+
 ## [0.3.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.2.1...pokedex-rest-v0.3.0) (2026-08-17)
 
 

@@ -3,12 +3,13 @@
 import { Button, Toolbar } from "@code-x/lago";
 import { ChevronLeft, ChevronRight, Menu01, SearchLg, XClose } from "@untitled-ui/icons-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import AuthButtons from "@/components/AuthButtons";
 import Logo from "@/components/Logo";
 import Pokeball from "@/components/Pokeball";
 import { SearchBar } from "@/components/Search";
-import Navbar, { NAV_SECTIONS } from "@/layout/Navbar";
+import Navbar, { getOpenSectionKey, NAV_SECTIONS, type NavSectionKey } from "@/layout/Navbar";
 import type { NavigationData } from "@/providers/NavigationDataProvider";
 import styles from "./AppShell.module.css";
 
@@ -27,6 +28,16 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  const routeSection = getOpenSectionKey(usePathname());
+  const [openSection, setOpenSection] = useState<NavSectionKey | null>(routeSection);
+  const [lastRouteSection, setLastRouteSection] = useState(routeSection);
+
+  // Sync open section when the route crosses into another Browse section.
+  if (routeSection !== lastRouteSection) {
+    setLastRouteSection(routeSection);
+    setOpenSection(routeSection);
+  }
 
   // Track the viewport so the toggle knows which of the two it drives
   useEffect(() => {
@@ -95,7 +106,12 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
         <div className={styles.sidebarBody}>
           <div className={styles.sidebarNav}>
             <Suspense fallback={null}>
-              <Navbar navigationData={navigationData} />
+              <Navbar
+                navigationData={navigationData}
+                openSection={openSection}
+                currentSection={routeSection}
+                onOpenSectionChange={setOpenSection}
+              />
             </Suspense>
           </div>
 
@@ -127,7 +143,11 @@ export default function AppShell({ children, navigationData }: AppShellProps) {
                 key={key}
                 variant="quiet"
                 className={styles.railButton}
-                onPress={() => setCollapsed(false)}
+                onPress={() => {
+                  setOpenSection(key);
+                  setCollapsed(false);
+                }}
+                aria-current={key === routeSection ? "true" : undefined}
                 aria-label={`Expand sidebar to browse ${title}`}
               >
                 {/* The hover tooltip hangs off the span rather than the Button:

@@ -3,7 +3,7 @@ import { encodeSort } from "./sort";
 
 /** The browse pages that list Pokemon under a slug — and open one over that
  *  list from a nested route. */
-export type BrowseSection = "region" | "type" | "forms";
+export type BrowseSection = "region" | "type" | "pokedex" | "forms";
 
 /**
  * Builds any URL in a browse section: the section's own page, or a Pokemon

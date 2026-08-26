@@ -10,7 +10,10 @@ import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 import databaseConfig from './config/database.config';
+import { validateEnv } from './config/env.validation';
+import mailConfig from './config/mail.config';
 import { postgresDriver } from './config/postgres-driver';
+import { GroupsModule } from './groups/groups.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -18,7 +21,8 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-      load: [databaseConfig],
+      load: [databaseConfig, mailConfig],
+      validate: validateEnv,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -50,6 +54,7 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     UsersModule,
+    GroupsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -4,16 +4,9 @@ import { logger } from "./logger.js";
 import { type PokemonFilter, PokemonSort, type Resolvers } from "./types.js";
 import { intersect, sortResults, union } from "./utils/filter.js";
 import { getPaginatedResults } from "./utils/pagination.js";
+import { getLatestDescription } from "./utils/pokemon.js";
+import { buildPokemonMatchups } from "./utils/type.js";
 
-/**
- * Reduce a filter to one candidate list per facet. Every facet is dispatched
- * before any is awaited, so the slow one (regions, which fans out over each of
- * its pokedexes) overlaps the rest instead of following them.
- *
- * Facets are OR internally and the caller ANDs them together. `dualType` is the
- * sole exception: its two type lists are intersected, and that pair is then
- * OR'd back into the type facet alongside the plain `types` list.
- */
 const resolveFacets = (
   { dataSources }: DataSourceContext,
   { query, types, dualType, pokedexes, regions }: PokemonFilter,
@@ -100,6 +93,17 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    pokedex: async (_, { name }, { dataSources }) => {
+      logger.info(`Resolving pokedex query for name: ${name}`);
+      try {
+        const result = await dataSources.pokemonAPI.getPokedex(name);
+        logger.info(`Pokedex ${name} resolved successfully`);
+        return result;
+      } catch (error) {
+        logger.error(`Error resolving pokedex ${name}:`, error);
+        throw error;
+      }
+    },
     types: async (_, __, { dataSources }) => {
       logger.info("Resolving types query");
       try {
@@ -136,16 +140,34 @@ export const resolvers: Resolvers = {
         throw error;
       }
     },
+    pokemonByIds: async (_, { ids }, { dataSources }) => {
+      logger.info(`Resolving pokemonByIds query for ${ids.length} ids`);
+
+      const results = await Promise.all(
+        ids.map((id) =>
+          dataSources.pokemonAPI.getPokemon(id).catch((error) => {
+            logger.error(`Error resolving pokemon ${id}:`, error);
+            return null;
+          }),
+        ),
+      );
+
+      const pokemon = results.filter((result) => result !== null);
+      logger.info(`pokemonByIds resolved ${pokemon.length} of ${ids.length} Pokemon`);
+      return pokemon;
+    },
     pokemonSearch: async (
       _,
       { query, limit = 20, offset = 0, sort = PokemonSort.IdAsc },
       { dataSources },
     ) => {
       logger.info(`Resolving pokemonSearch query: "${query}" with limit: ${limit}`);
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       try {
         const results = sortResults(dataSources.pokemonAPI.searchPokemonIndex(query), sort);
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         const pokemon = await Promise.all(
           limitedResults.map(({ id }) => dataSources.pokemonAPI.getPokemon(id)),
@@ -153,7 +175,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonSearch resolved ${pokemon.length} Pokemon`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -167,6 +189,8 @@ export const resolvers: Resolvers = {
       { dataSources },
     ) => {
       logger.info(`Resolving pokemonForms query: "${query ?? ""}" with limit: ${limit}`);
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       try {
         const { pokemonAPI } = dataSources;
         const results = sortResults(
@@ -174,7 +198,7 @@ export const resolvers: Resolvers = {
           sort,
         );
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         const pokemon = await Promise.all(
           limitedResults.map(({ id }) => pokemonAPI.getPokemon(id)),
@@ -182,7 +206,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonForms resolved ${pokemon.length} of ${total} forms`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -196,15 +220,17 @@ export const resolvers: Resolvers = {
       { dataSources },
     ) => {
       logger.info(`Resolving pokemonByType query: type=${type}, limit=${limit}, offset=${offset}`);
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       if (!type) {
         logger.info("No type specified, returning empty result");
-        return { total: 0, offset, pokemon: [] };
+        return { total: 0, offset: resolvedOffset, pokemon: [] };
       }
 
       try {
         const results = sortResults(await dataSources.pokemonAPI.getPokemonByType(type), sort);
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         logger.info(`Fetching ${limitedResults.length} Pokemon details for type ${type}`);
 
@@ -224,7 +250,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonByType resolved ${pokemon.length} Pokemon for type ${type}`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -240,9 +266,11 @@ export const resolvers: Resolvers = {
       logger.info(
         `Resolving pokemonByPokedex query: pokedex=${pokedex}, limit=${limit}, offset=${offset}`,
       );
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       if (!pokedex) {
         logger.info("No pokedex specified, returning empty result");
-        return { total: 0, offset, pokemon: [] };
+        return { total: 0, offset: resolvedOffset, pokemon: [] };
       }
 
       try {
@@ -251,7 +279,7 @@ export const resolvers: Resolvers = {
           sort,
         );
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         logger.info(`Fetching ${limitedResults.length} Pokemon details for pokedex ${pokedex}`);
 
@@ -271,7 +299,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonByPokedex resolved ${pokemon.length} Pokemon for pokedex ${pokedex}`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -288,15 +316,17 @@ export const resolvers: Resolvers = {
       logger.info(
         `Resolving pokemonByRegion query: region=${region}, limit=${limit}, offset=${offset}`,
       );
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
       if (!region) {
         logger.info("No region specified, returning empty result");
-        return { total: 0, offset, pokemon: [] };
+        return { total: 0, offset: resolvedOffset, pokemon: [] };
       }
 
       try {
         const results = sortResults(await dataSources.pokemonAPI.getPokemonByRegion(region), sort);
         const total = results.length;
-        const limitedResults = getPaginatedResults(results, limit, offset);
+        const limitedResults = getPaginatedResults(results, resolvedLimit, resolvedOffset);
 
         logger.info(`Fetching ${limitedResults.length} Pokemon details for region ${region}`);
 
@@ -316,7 +346,7 @@ export const resolvers: Resolvers = {
         logger.info(`pokemonByRegion resolved ${pokemon.length} Pokemon for region ${region}`);
         return {
           total,
-          offset,
+          offset: resolvedOffset,
           pokemon,
         };
       } catch (error) {
@@ -333,6 +363,8 @@ export const resolvers: Resolvers = {
       logger.info(
         `Resolving pokemonFilter query: ${JSON.stringify(filter)}, limit=${limit}, offset=${offset}`,
       );
+      const resolvedLimit = limit ?? 20;
+      const resolvedOffset = offset ?? 0;
 
       try {
         const facets = await Promise.all(resolveFacets(context, filter));
@@ -346,7 +378,7 @@ export const resolvers: Resolvers = {
         );
 
         const total = matches.length;
-        const page = getPaginatedResults(matches, limit, offset);
+        const page = getPaginatedResults(matches, resolvedLimit, resolvedOffset);
 
         logger.info(`pokemonFilter matched ${total} Pokemon, hydrating ${page.length}`);
 
@@ -356,7 +388,7 @@ export const resolvers: Resolvers = {
           page.map(({ id }) => context.dataSources.pokemonAPI.getPokemon(id)),
         );
 
-        return { total, offset, pokemon };
+        return { total, offset: resolvedOffset, pokemon };
       } catch (error) {
         logger.error("Error resolving pokemonFilter:", error);
         throw error;
@@ -374,6 +406,25 @@ export const resolvers: Resolvers = {
       } catch (error) {
         logger.error("Error resolving abilities:", error);
         throw error;
+      }
+    },
+    description: async ({ id, speciesId }, _, { dataSources }) => {
+      logger.info(`Resolving description for Pokemon ${id} (species ${speciesId})`);
+      try {
+        const descriptions = await dataSources.pokemonAPI.getDescriptionsForSpecies(speciesId);
+        return getLatestDescription(descriptions);
+      } catch (error) {
+        logger.error(`Error resolving description for Pokemon ${id}:`, error);
+        return null;
+      }
+    },
+    descriptions: async ({ id, speciesId }, _, { dataSources }) => {
+      logger.info(`Resolving descriptions for Pokemon ${id} (species ${speciesId})`);
+      try {
+        return await dataSources.pokemonAPI.getDescriptionsForSpecies(speciesId);
+      } catch (error) {
+        logger.error(`Error resolving descriptions for Pokemon ${id}:`, error);
+        return null;
       }
     },
     evolution: async ({ id, speciesId }, _, { dataSources }) => {
@@ -395,6 +446,20 @@ export const resolvers: Resolvers = {
         return await dataSources.pokemonAPI.getFormsForSpecies(speciesId);
       } catch (error) {
         logger.error(`Error resolving forms for Pokemon ${id}:`, error);
+        return null;
+      }
+    },
+    matchups: async ({ id, type }, _, { dataSources }) => {
+      logger.info(`Resolving matchups for Pokemon ${id} (${type.join("/")})`);
+      try {
+        // Both types are dispatched before either is awaited; the shared HTTP
+        // cache means the second is usually free anyway.
+        const types = await Promise.all(type.map((name) => dataSources.pokemonAPI.getType(name)));
+        return buildPokemonMatchups(types);
+      } catch (error) {
+        // Supplementary, like evolution: a type fetch that fails should cost the
+        // section, not the whole Pokemon.
+        logger.error(`Error resolving matchups for Pokemon ${id}:`, error);
         return null;
       }
     },

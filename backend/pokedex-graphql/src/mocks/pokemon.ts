@@ -404,12 +404,46 @@ export const pokemonEntity: {
   ],
 };
 
+const version = (name: string) => ({
+  name,
+  url: `https://pokeapi.co/api/v2/version/${name}/`,
+});
+
+const english = { name: "en", url: "https://pokeapi.co/api/v2/language/9/" };
+
 export const pokemonSpecies: PokemonSpecies = {
   id: 1,
   name: "bulbasaur",
   evolution_chain: {
     url: "https://pokeapi.co/api/v2/evolution-chain/1/",
   },
+  flavor_text_entries: [
+    {
+      flavor_text: "A strange seed was\nplanted on its\nback at birth.",
+      language: english,
+      version: version("red"),
+    },
+    {
+      flavor_text: "It can go for days\nwithout eating a\nsingle morsel.",
+      language: english,
+      version: version("blue"),
+    },
+    {
+      flavor_text: "Une graine étrange\nlui a été plantée\ndans le dos.",
+      language: { name: "fr", url: "https://pokeapi.co/api/v2/language/5/" },
+      version: version("red"),
+    },
+    {
+      flavor_text: "It can go for days\nwithout eating a\nsingle morsel.",
+      language: english,
+      version: version("leafgreen"),
+    },
+    {
+      flavor_text: "While it is young,\nit uses the nutri\u00ad\nents in its seed.",
+      language: english,
+      version: version("shield"),
+    },
+  ],
   varieties: [
     {
       is_default: true,
@@ -686,16 +720,8 @@ export const typeResponse: {
         url: "https://pokeapi.co/api/v2/type/12/",
       },
       {
-        name: "fighting",
-        url: "https://pokeapi.co/api/v2/type/2/",
-      },
-      {
-        name: "bug",
-        url: "https://pokeapi.co/api/v2/type/7/",
-      },
-      {
-        name: "steel",
-        url: "https://pokeapi.co/api/v2/type/9/",
+        name: "ground",
+        url: "https://pokeapi.co/api/v2/type/5/",
       },
     ],
     double_damage_from: [
@@ -714,6 +740,10 @@ export const typeResponse: {
       {
         name: "flying",
         url: "https://pokeapi.co/api/v2/type/3/",
+      },
+      {
+        name: "bug",
+        url: "https://pokeapi.co/api/v2/type/7/",
       },
     ],
   },
@@ -777,9 +807,64 @@ export const typeResponse: {
   },
 };
 
+/**
+ * Poison, so a dual-type Pokemon can be served both of its real halves.
+ * Bulbasaur is grass/poison: handed one type twice, a matchup product squares
+ * every multiplier — a quarter where a half belongs — and reads as plausible
+ * while being wrong.
+ */
+export const poisonTypeResponse: typeof typeResponse = {
+  ...typeResponse,
+  id: 4,
+  name: "poison",
+  // Overridden alongside the relations so this fixture never answers "Grass"
+  names: [
+    {
+      name: "Poison",
+      language: {
+        name: "en",
+        url: "https://pokeapi.co/api/v2/language/9/",
+      },
+    },
+  ],
+  damage_relations: {
+    no_damage_to: [{ name: "steel", url: "https://pokeapi.co/api/v2/type/9/" }],
+    half_damage_to: [
+      { name: "poison", url: "https://pokeapi.co/api/v2/type/4/" },
+      { name: "ground", url: "https://pokeapi.co/api/v2/type/5/" },
+      { name: "rock", url: "https://pokeapi.co/api/v2/type/6/" },
+      { name: "ghost", url: "https://pokeapi.co/api/v2/type/8/" },
+    ],
+    double_damage_to: [
+      { name: "grass", url: "https://pokeapi.co/api/v2/type/12/" },
+      { name: "fairy", url: "https://pokeapi.co/api/v2/type/18/" },
+    ],
+    no_damage_from: [],
+    half_damage_from: [
+      { name: "fighting", url: "https://pokeapi.co/api/v2/type/2/" },
+      { name: "poison", url: "https://pokeapi.co/api/v2/type/4/" },
+      { name: "bug", url: "https://pokeapi.co/api/v2/type/7/" },
+      { name: "grass", url: "https://pokeapi.co/api/v2/type/12/" },
+      { name: "fairy", url: "https://pokeapi.co/api/v2/type/18/" },
+    ],
+    double_damage_from: [
+      { name: "ground", url: "https://pokeapi.co/api/v2/type/5/" },
+      { name: "psychic", url: "https://pokeapi.co/api/v2/type/14/" },
+    ],
+  },
+};
+
+/** Keyed the way `pokedexesBySlug` is, so the type handler can answer with the
+ *  type it was actually asked for. */
+export const typesBySlug: Record<string, typeof typeResponse> = {
+  grass: typeResponse,
+  poison: poisonTypeResponse,
+};
+
 export const pokedex = {
   id: 2,
   name: "kanto",
+  is_main_series: true,
   descriptions: [
     {
       description: "Red and Blue version Pokémon",
@@ -862,6 +947,110 @@ export const region = {
   ],
 };
 
+/**
+ * The dexes beyond `kanto`, so the mock list is not four copies of one dex.
+ *
+ * `national` covers a dex the API ties to no region and gives no version
+ * groups; the Johto pair covers a place with two revisions, which is what the
+ * nav collapses and the page offers a switcher for.
+ */
+export const pokedexNational = {
+  id: 1,
+  name: "national",
+  is_main_series: true,
+  descriptions: [
+    {
+      description: "Entire National dex",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  names: [
+    { name: "National", language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" } },
+  ],
+  pokemon_entries: [
+    {
+      entry_number: 1,
+      pokemon_species: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    },
+    {
+      entry_number: 2,
+      pokemon_species: { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon-species/2/" },
+    },
+    {
+      entry_number: 3,
+      pokemon_species: { name: "venusaur", url: "https://pokeapi.co/api/v2/pokemon-species/3/" },
+    },
+  ],
+  region: null,
+  version_groups: [],
+};
+
+export const pokedexOriginalJohto = {
+  id: 3,
+  name: "original-johto",
+  is_main_series: true,
+  descriptions: [
+    {
+      description: "Gold/Silver/Crystal Johto dex",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  names: [
+    {
+      name: "Original Johto",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  pokemon_entries: [
+    {
+      entry_number: 1,
+      pokemon_species: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    },
+  ],
+  region: { name: "johto", url: "https://pokeapi.co/api/v2/region/2/" },
+  version_groups: [{ name: "gold-silver", url: "https://pokeapi.co/api/v2/version-group/3/" }],
+};
+
+export const pokedexUpdatedJohto = {
+  id: 7,
+  name: "updated-johto",
+  is_main_series: true,
+  descriptions: [
+    {
+      description: "HeartGold/SoulSilver Johto dex",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  names: [
+    {
+      name: "Updated Johto",
+      language: { name: "en", url: "https://pokeapi.co/api/v2/language/9/" },
+    },
+  ],
+  pokemon_entries: [
+    {
+      entry_number: 1,
+      pokemon_species: { name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon-species/1/" },
+    },
+    {
+      entry_number: 2,
+      pokemon_species: { name: "ivysaur", url: "https://pokeapi.co/api/v2/pokemon-species/2/" },
+    },
+  ],
+  region: { name: "johto", url: "https://pokeapi.co/api/v2/region/2/" },
+  version_groups: [
+    { name: "heartgold-soulsilver", url: "https://pokeapi.co/api/v2/version-group/10/" },
+  ],
+};
+
+/** Every mocked dex by slug, for the `pokedex/{name}` handler. */
+export const pokedexesBySlug: Record<string, typeof pokedex | typeof pokedexNational> = {
+  kanto: pokedex,
+  national: pokedexNational,
+  "original-johto": pokedexOriginalJohto,
+  "updated-johto": pokedexUpdatedJohto,
+};
+
 export const pokedexListResponse: {
   count: number;
   next: string | null;
@@ -882,6 +1071,14 @@ export const pokedexListResponse: {
     {
       name: "kanto",
       url: "https://pokeapi.co/api/v2/pokedex/2/",
+    },
+    {
+      name: "original-johto",
+      url: "https://pokeapi.co/api/v2/pokedex/3/",
+    },
+    {
+      name: "updated-johto",
+      url: "https://pokeapi.co/api/v2/pokedex/7/",
     },
   ],
 };

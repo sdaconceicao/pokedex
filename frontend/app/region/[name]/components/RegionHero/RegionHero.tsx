@@ -3,6 +3,7 @@
 import { Heading } from "@code-x/lago";
 import { useCallback } from "react";
 import CountPill from "@/components/CountPill";
+import FactRow from "@/components/FactRow";
 import HeroToolbar from "@/components/HeroToolbar";
 import SortToggle from "@/components/SortToggle";
 import StatTile from "@/components/StatTile";
@@ -10,7 +11,6 @@ import { useScrolledPast, useSortParam } from "@/hooks";
 import { buildBrowseUrl } from "@/lib/browseUrls";
 import { formatGeneration } from "@/lib/string";
 import type { PokemonSort, RegionDetail } from "@/types";
-import RegionFacts from "../RegionFacts/RegionFacts";
 import styles from "./RegionHero.module.css";
 
 interface RegionHeroProps {
@@ -76,8 +76,8 @@ export const RegionHero = ({ region }: RegionHeroProps) => {
         </div>
 
         <div className={styles.heroFooter}>
-          <RegionFacts label="Pokedexes" items={region.pokedexes} />
-          <RegionFacts label="Games" items={region.versionGroups} />
+          <FactRow label="Pokedexes" items={region.pokedexes} />
+          <FactRow label="Games" items={region.versionGroups} />
         </div>
       </section>
     </>

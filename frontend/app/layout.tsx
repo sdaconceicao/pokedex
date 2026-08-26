@@ -1,14 +1,15 @@
+import { ToastArea } from "@code-x/lago";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ApolloWrapper from "@/layout/ApolloWrapper";
 import AppShell from "@/layout/AppShellLayout";
+import AddToGroupProvider from "./providers/AddToGroupProvider";
 import AuthModalProvider from "./providers/AuthModalProvider";
 import LagoProvider from "./providers/LagoProvider";
 import NavigationDataProvider from "./providers/NavigationDataProvider";
 import QueryProvider from "./providers/QueryProvider";
-// reset.css writes into the `reset` layer lago declares, so it sits below the
-// design system wherever it is imported. globals.css and typePalette.css are
-// unlayered and so cascade last, which is what makes the theme overrides win.
+
 import "./reset.css";
 import "@code-x/lago/styles";
 import "./globals.css";
@@ -29,14 +30,6 @@ export const metadata: Metadata = {
   description: "A Pokémon database with GraphQL API",
 };
 
-/* `ThemeProvider` can only add the `dark-mode` class once React has hydrated,
- * which is at least one paint too late — the first frame renders with the light
- * tokens and flashes white. This runs synchronously while the parser is still
- * ahead of any painted content, so the class is on `<html>` before the first
- * pixel. It has to mirror the provider's own defaults exactly: storage key
- * `ui-theme`, class `dark-mode`, and an absent key meaning "follow the OS"
- * (the provider *removes* the key for the system theme rather than storing it).
- * `<html>` then differs from what the server sent, hence `suppressHydrationWarning`. */
 const themeScript = `(function(){try{var t=localStorage.getItem("ui-theme");document.documentElement.classList.toggle("dark-mode",t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches))}catch(e){}})()`;
 
 export default async function RootLayout({
@@ -47,12 +40,6 @@ export default async function RootLayout({
   const navigationData = await NavigationDataProvider();
 
   return (
-    /* The font classes belong on <html>, not <body>: they are what declare
-     * `--font-geist-sans`, and globals.css builds `--font-family` out of it on
-     * `:root`. A custom property is substituted against the element it is
-     * declared on, so with the classes down on <body> that `var()` had nothing
-     * to resolve against — `--font-family` went invalid, `body { font-family }`
-     * fell back to the initial value, and the whole app rendered in Times. */
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable}`}
@@ -65,11 +52,15 @@ export default async function RootLayout({
           <QueryProvider>
             <ApolloWrapper>
               <AuthModalProvider>
-                <AppShell navigationData={navigationData}>{children}</AppShell>
+                <AddToGroupProvider>
+                  <AppShell navigationData={navigationData}>{children}</AppShell>
+                </AddToGroupProvider>
               </AuthModalProvider>
             </ApolloWrapper>
           </QueryProvider>
         </LagoProvider>
+        <ToastArea />
+        {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
   );

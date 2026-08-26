@@ -27,6 +27,15 @@ export type AbilityLite = {
 };
 
 /**
+ * One defensive reading. `multiplier` is 0, 0.25, 0.5, 2 or 4 — never 1, which is
+ * omitted from `defending` entirely.
+ */
+export type DefensiveMatchup = {
+  multiplier: Scalars['Float']['output'];
+  type: Scalars['String']['output'];
+};
+
+/**
  * A pair of types that must BOTH be present. Requires two types by construction,
  * and matching ignores slot order — `fire` + `flying` and `flying` + `fire` select
  * the same Pokemon.
@@ -51,18 +60,47 @@ export type EvolutionNode = {
   trigger?: Maybe<Scalars['String']['output']>;
 };
 
+/**
+ * One dex as PokeAPI ships it: the list a set of games shipped with, which is why a
+ * dex belongs to version groups rather than to a generation.
+ */
+export type PokedexDetail = {
+  /** The English blurb, when PokeAPI has one for this dex. */
+  description?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  /** False for the spin-off dexes (Conquest, Let's Go's own listings, and so on). */
+  isMainSeries: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  pokemonCount: Scalars['Int']['output'];
+  /**
+   * The region this dex covers, as a slug. Null for the national dex and the
+   * spin-off dexes, which aren't tied to one.
+   */
+  region?: Maybe<Scalars['String']['output']>;
+  versionGroups: Array<Scalars['String']['output']>;
+};
+
 export type Pokemon = {
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
+  description?: Maybe<Scalars['String']['output']>;
+  descriptions?: Maybe<Array<PokemonDescription>>;
   evolution?: Maybe<EvolutionChain>;
   forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
+  matchups?: Maybe<PokemonMatchups>;
   name: Scalars['String']['output'];
   speciesId: Scalars['ID']['output'];
   speciesName: Scalars['String']['output'];
   stats: Stats;
   type: Array<Scalars['String']['output']>;
+};
+
+export type PokemonDescription = {
+  text: Scalars['String']['output'];
+  versions: Array<Scalars['String']['output']>;
 };
 
 /**
@@ -101,9 +139,30 @@ export type PokemonList = {
   total: Scalars['Int']['output'];
 };
 
+/** How a Pokemon fares in battle, given its one or two types. */
+export type PokemonMatchups = {
+  /**
+   * Deliberately not combined, each type attacks on its own, so a dual type gets two independent
+   * readings and a 2x from one type is not multiplied by a 2x from the other.
+   */
+  attacking: Array<TypeOffense>;
+  /**
+   * Types that come out at exactly 1x are omitted,
+   * so an absent type is neutral rather than unknown.
+   */
+  defending: Array<DefensiveMatchup>;
+};
+
 export type PokemonPokedex = {
   count: Scalars['Int']['output'];
+  /** The same name the dex's own page shows, so a nav label and its page agree. */
+  displayName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  /**
+   * The region this dex covers, for grouping the list. Null for the dexes that
+   * belong to no single region.
+   */
+  region?: Maybe<Scalars['String']['output']>;
 };
 
 export type PokemonRegion = {
@@ -128,8 +187,10 @@ export type PokemonType = {
 
 export type Query = {
   ability?: Maybe<Ability>;
+  pokedex?: Maybe<PokedexDetail>;
   pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
+  pokemonByIds: Array<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
@@ -148,8 +209,18 @@ export type QueryAbilityArgs = {
 };
 
 
+export type QueryPokedexArgs = {
+  name: Scalars['String']['input'];
+};
+
+
 export type QueryPokemonArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokemonByIdsArgs = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
 
@@ -253,4 +324,15 @@ export type TypeDetail = {
   pokemonCount: Scalars['Int']['output'];
   /** The type's own icon, newest generation first. */
   sprite?: Maybe<Scalars['String']['output']>;
+};
+
+/**
+ * What one of the Pokemon's types deals to the eighteen. Types absent from all
+ * three lists take normal damage.
+ */
+export type TypeOffense = {
+  noEffect: Array<Scalars['String']['output']>;
+  notVeryEffective: Array<Scalars['String']['output']>;
+  superEffective: Array<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
 };

@@ -1,8 +1,8 @@
 {
   "name": "pokedex-graphql",
   "private": true,
-  "description": "The API for the Pokedex project",
-  "version": "0.4.0",
+  "description": "The API for the Pokependium project",
+  "version": "0.5.0",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
@@ -44,9 +44,8 @@
     "msw": "^2.15.0",
     "nodemon": "^3.0.0",
     "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
     "tsx": "^4.23.1",
-    "typescript": "^5.0.0",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   }
 }

@@ -32,6 +32,16 @@ export type AbilityLite = {
 };
 
 /**
+ * One defensive reading. `multiplier` is 0, 0.25, 0.5, 2 or 4 — never 1, which is
+ * omitted from `defending` entirely.
+ */
+export type DefensiveMatchup = {
+  __typename?: 'DefensiveMatchup';
+  multiplier: Scalars['Float']['output'];
+  type: Scalars['String']['output'];
+};
+
+/**
  * A pair of types that must BOTH be present. Requires two types by construction,
  * and matching ignores slot order — `fire` + `flying` and `flying` + `fire` select
  * the same Pokemon.
@@ -58,19 +68,50 @@ export type EvolutionNode = {
   trigger?: Maybe<Scalars['String']['output']>;
 };
 
+/**
+ * One dex as PokeAPI ships it: the list a set of games shipped with, which is why a
+ * dex belongs to version groups rather than to a generation.
+ */
+export type PokedexDetail = {
+  __typename?: 'PokedexDetail';
+  /** The English blurb, when PokeAPI has one for this dex. */
+  description?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  /** False for the spin-off dexes (Conquest, Let's Go's own listings, and so on). */
+  isMainSeries: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  pokemonCount: Scalars['Int']['output'];
+  /**
+   * The region this dex covers, as a slug. Null for the national dex and the
+   * spin-off dexes, which aren't tied to one.
+   */
+  region?: Maybe<Scalars['String']['output']>;
+  versionGroups: Array<Scalars['String']['output']>;
+};
+
 export type Pokemon = {
   __typename?: 'Pokemon';
   abilities?: Maybe<Array<Ability>>;
   abilitiesLite: Array<AbilityLite>;
+  description?: Maybe<Scalars['String']['output']>;
+  descriptions?: Maybe<Array<PokemonDescription>>;
   evolution?: Maybe<EvolutionChain>;
   forms?: Maybe<Array<PokemonForm>>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
+  matchups?: Maybe<PokemonMatchups>;
   name: Scalars['String']['output'];
   speciesId: Scalars['ID']['output'];
   speciesName: Scalars['String']['output'];
   stats: Stats;
   type: Array<Scalars['String']['output']>;
+};
+
+export type PokemonDescription = {
+  __typename?: 'PokemonDescription';
+  text: Scalars['String']['output'];
+  versions: Array<Scalars['String']['output']>;
 };
 
 /**
@@ -111,10 +152,32 @@ export type PokemonList = {
   total: Scalars['Int']['output'];
 };
 
+/** How a Pokemon fares in battle, given its one or two types. */
+export type PokemonMatchups = {
+  __typename?: 'PokemonMatchups';
+  /**
+   * Deliberately not combined, each type attacks on its own, so a dual type gets two independent
+   * readings and a 2x from one type is not multiplied by a 2x from the other.
+   */
+  attacking: Array<TypeOffense>;
+  /**
+   * Types that come out at exactly 1x are omitted,
+   * so an absent type is neutral rather than unknown.
+   */
+  defending: Array<DefensiveMatchup>;
+};
+
 export type PokemonPokedex = {
   __typename?: 'PokemonPokedex';
   count: Scalars['Int']['output'];
+  /** The same name the dex's own page shows, so a nav label and its page agree. */
+  displayName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  /**
+   * The region this dex covers, for grouping the list. Null for the dexes that
+   * belong to no single region.
+   */
+  region?: Maybe<Scalars['String']['output']>;
 };
 
 export type PokemonRegion = {
@@ -143,8 +206,10 @@ export type PokemonType = {
 export type Query = {
   __typename?: 'Query';
   ability?: Maybe<Ability>;
+  pokedex?: Maybe<PokedexDetail>;
   pokedexes: Array<PokemonPokedex>;
   pokemon?: Maybe<Pokemon>;
+  pokemonByIds: Array<Pokemon>;
   pokemonByPokedex?: Maybe<PokemonList>;
   pokemonByRegion?: Maybe<PokemonList>;
   pokemonByType?: Maybe<PokemonList>;
@@ -163,8 +228,18 @@ export type QueryAbilityArgs = {
 };
 
 
+export type QueryPokedexArgs = {
+  name: Scalars['String']['input'];
+};
+
+
 export type QueryPokemonArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokemonByIdsArgs = {
+  ids: Array<Scalars['ID']['input']>;
 };
 
 
@@ -274,6 +349,18 @@ export type TypeDetail = {
   sprite?: Maybe<Scalars['String']['output']>;
 };
 
+/**
+ * What one of the Pokemon's types deals to the eighteen. Types absent from all
+ * three lists take normal damage.
+ */
+export type TypeOffense = {
+  __typename?: 'TypeOffense';
+  noEffect: Array<Scalars['String']['output']>;
+  notVeryEffective: Array<Scalars['String']['output']>;
+  superEffective: Array<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -350,15 +437,20 @@ export type ResolversTypes = {
   Ability: ResolverTypeWrapper<Ability>;
   AbilityLite: ResolverTypeWrapper<AbilityLite>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  DefensiveMatchup: ResolverTypeWrapper<DefensiveMatchup>;
   DualTypeFilter: DualTypeFilter;
   EvolutionChain: ResolverTypeWrapper<EvolutionChain>;
   EvolutionNode: ResolverTypeWrapper<EvolutionNode>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  PokedexDetail: ResolverTypeWrapper<PokedexDetail>;
   Pokemon: ResolverTypeWrapper<Pokemon>;
+  PokemonDescription: ResolverTypeWrapper<PokemonDescription>;
   PokemonFilter: PokemonFilter;
   PokemonForm: ResolverTypeWrapper<PokemonForm>;
   PokemonList: ResolverTypeWrapper<PokemonList>;
+  PokemonMatchups: ResolverTypeWrapper<PokemonMatchups>;
   PokemonPokedex: ResolverTypeWrapper<PokemonPokedex>;
   PokemonRegion: ResolverTypeWrapper<PokemonRegion>;
   PokemonSort: PokemonSort;
@@ -369,6 +461,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   TypeDamageRelations: ResolverTypeWrapper<TypeDamageRelations>;
   TypeDetail: ResolverTypeWrapper<TypeDetail>;
+  TypeOffense: ResolverTypeWrapper<TypeOffense>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -376,15 +469,20 @@ export type ResolversParentTypes = {
   Ability: Ability;
   AbilityLite: AbilityLite;
   Boolean: Scalars['Boolean']['output'];
+  DefensiveMatchup: DefensiveMatchup;
   DualTypeFilter: DualTypeFilter;
   EvolutionChain: EvolutionChain;
   EvolutionNode: EvolutionNode;
+  Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  PokedexDetail: PokedexDetail;
   Pokemon: Pokemon;
+  PokemonDescription: PokemonDescription;
   PokemonFilter: PokemonFilter;
   PokemonForm: PokemonForm;
   PokemonList: PokemonList;
+  PokemonMatchups: PokemonMatchups;
   PokemonPokedex: PokemonPokedex;
   PokemonRegion: PokemonRegion;
   PokemonType: PokemonType;
@@ -394,6 +492,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']['output'];
   TypeDamageRelations: TypeDamageRelations;
   TypeDetail: TypeDetail;
+  TypeOffense: TypeOffense;
 };
 
 export type AbilityResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Ability'] = ResolversParentTypes['Ability']> = {
@@ -413,6 +512,11 @@ export type AbilityLiteResolvers<ContextType = DataSourceContext, ParentType ext
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
+export type DefensiveMatchupResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['DefensiveMatchup'] = ResolversParentTypes['DefensiveMatchup']> = {
+  multiplier?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type EvolutionChainResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['EvolutionChain'] = ResolversParentTypes['EvolutionChain']> = {
   chain?: Resolver<ResolversTypes['EvolutionNode'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -428,18 +532,37 @@ export type EvolutionNodeResolvers<ContextType = DataSourceContext, ParentType e
   trigger?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
+export type PokedexDetailResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokedexDetail'] = ResolversParentTypes['PokedexDetail']> = {
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isMainSeries?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pokemonCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  region?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  versionGroups?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+};
+
 export type PokemonResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
   abilities?: Resolver<Maybe<Array<ResolversTypes['Ability']>>, ParentType, ContextType>;
   abilitiesLite?: Resolver<Array<ResolversTypes['AbilityLite']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  descriptions?: Resolver<Maybe<Array<ResolversTypes['PokemonDescription']>>, ParentType, ContextType>;
   evolution?: Resolver<Maybe<ResolversTypes['EvolutionChain']>, ParentType, ContextType>;
   forms?: Resolver<Maybe<Array<ResolversTypes['PokemonForm']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  matchups?: Resolver<Maybe<ResolversTypes['PokemonMatchups']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   speciesId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   speciesName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stats?: Resolver<ResolversTypes['Stats'], ParentType, ContextType>;
   type?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+};
+
+export type PokemonDescriptionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonDescription'] = ResolversParentTypes['PokemonDescription']> = {
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  versions?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
 export type PokemonFormResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonForm'] = ResolversParentTypes['PokemonForm']> = {
@@ -455,9 +578,16 @@ export type PokemonListResolvers<ContextType = DataSourceContext, ParentType ext
   total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
+export type PokemonMatchupsResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonMatchups'] = ResolversParentTypes['PokemonMatchups']> = {
+  attacking?: Resolver<Array<ResolversTypes['TypeOffense']>, ParentType, ContextType>;
+  defending?: Resolver<Array<ResolversTypes['DefensiveMatchup']>, ParentType, ContextType>;
+};
+
 export type PokemonPokedexResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonPokedex'] = ResolversParentTypes['PokemonPokedex']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  region?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
 export type PokemonRegionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['PokemonRegion'] = ResolversParentTypes['PokemonRegion']> = {
@@ -472,8 +602,10 @@ export type PokemonTypeResolvers<ContextType = DataSourceContext, ParentType ext
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   ability?: Resolver<Maybe<ResolversTypes['Ability']>, ParentType, ContextType, RequireFields<QueryAbilityArgs, 'id'>>;
+  pokedex?: Resolver<Maybe<ResolversTypes['PokedexDetail']>, ParentType, ContextType, RequireFields<QueryPokedexArgs, 'name'>>;
   pokedexes?: Resolver<Array<ResolversTypes['PokemonPokedex']>, ParentType, ContextType>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
+  pokemonByIds?: Resolver<Array<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonByIdsArgs, 'ids'>>;
   pokemonByPokedex?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByPokedexArgs, 'sort'>>;
   pokemonByRegion?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByRegionArgs, 'sort'>>;
   pokemonByType?: Resolver<Maybe<ResolversTypes['PokemonList']>, ParentType, ContextType, RequireFields<QueryPokemonByTypeArgs, 'sort'>>;
@@ -526,14 +658,25 @@ export type TypeDetailResolvers<ContextType = DataSourceContext, ParentType exte
   sprite?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
+export type TypeOffenseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['TypeOffense'] = ResolversParentTypes['TypeOffense']> = {
+  noEffect?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  notVeryEffective?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  superEffective?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = DataSourceContext> = {
   Ability?: AbilityResolvers<ContextType>;
   AbilityLite?: AbilityLiteResolvers<ContextType>;
+  DefensiveMatchup?: DefensiveMatchupResolvers<ContextType>;
   EvolutionChain?: EvolutionChainResolvers<ContextType>;
   EvolutionNode?: EvolutionNodeResolvers<ContextType>;
+  PokedexDetail?: PokedexDetailResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
+  PokemonDescription?: PokemonDescriptionResolvers<ContextType>;
   PokemonForm?: PokemonFormResolvers<ContextType>;
   PokemonList?: PokemonListResolvers<ContextType>;
+  PokemonMatchups?: PokemonMatchupsResolvers<ContextType>;
   PokemonPokedex?: PokemonPokedexResolvers<ContextType>;
   PokemonRegion?: PokemonRegionResolvers<ContextType>;
   PokemonType?: PokemonTypeResolvers<ContextType>;
@@ -542,5 +685,6 @@ export type Resolvers<ContextType = DataSourceContext> = {
   Stats?: StatsResolvers<ContextType>;
   TypeDamageRelations?: TypeDamageRelationsResolvers<ContextType>;
   TypeDetail?: TypeDetailResolvers<ContextType>;
+  TypeOffense?: TypeOffenseResolvers<ContextType>;
 };
 

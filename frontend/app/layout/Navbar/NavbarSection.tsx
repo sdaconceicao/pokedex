@@ -4,37 +4,42 @@ import type { ReactNode } from "react";
 import styles from "./Navbar.module.css";
 import NavbarItem, { type NavItem } from "./NavbarItem";
 
-interface NavbarSectionProps {
+export interface NavGroup {
   title: string;
   items: NavItem[];
+}
+
+interface NavbarSectionProps {
+  /** Identifies the section to the DisclosureGroup that owns which one is open */
+  id: string;
+  title: string;
+  items?: NavItem[];
+  /** Sub-headed bands of items, for a section too long to read flat. Given
+   *  instead of `items`, not alongside it. */
+  groups?: NavGroup[];
   icon?: ReactNode;
-  defaultOpen?: boolean;
+  /** Options per row — see `NavSection.columns` for why it is per section */
+  columns?: 2;
+  isCurrent?: boolean;
 }
 
 export default function NavbarSection({
+  id,
   title,
   items,
+  groups,
   icon,
-  defaultOpen = true,
+  columns,
+  isCurrent,
 }: NavbarSectionProps) {
+  const sectionId = title.toLowerCase().replace(/\s+/g, "-");
   return (
-    // lago's Disclosure owns the expanded state itself (uncontrolled here via
-    // `defaultExpanded`, since nothing outside this section needs to know
-    // whether it's open) and stamps `data-expanded` on its own root, so the
-    // chevron rotation in Navbar.module.css is a plain attribute selector
-    // instead of the old `open ? styles.chevronOpen : ""` ternary. It also
-    // gets the collapse/expand animation for free (`--disclosure-panel-height`
-    // in lago's CSS) in place of the previous instant mount/unmount.
-    //
-    // The header keeps its own bespoke markup — a leading icon, the title,
-    // then a chevron flush right — via a plain Button dropped onto the
-    // `trigger` slot Disclosure exposes through context (aria-expanded,
-    // aria-controls and the toggle handler all arrive that way, no props
-    // needed here), rather than lago's canned DisclosureHeader: that renders
-    // its chevron *before* the label with no leading-icon slot, a different
-    // layout than this sidebar uses.
-    <Disclosure defaultExpanded={defaultOpen} className={styles.section}>
-      <Button slot="trigger" className={styles.sectionHeader}>
+    <Disclosure id={id} className={styles.section}>
+      <Button
+        slot="trigger"
+        className={styles.sectionHeader}
+        aria-current={isCurrent ? "true" : undefined}
+      >
         <span className={styles.sectionHeaderLeft}>
           {icon && (
             <span className={styles.sectionIcon} aria-hidden="true">
@@ -46,13 +51,37 @@ export default function NavbarSection({
         <ChevronDown className={styles.chevron} aria-hidden="true" />
       </Button>
       <DisclosurePanel>
-        <ul className={styles.list}>
-          {items.map((item) => (
-            <li key={item.href} className={styles.listItem}>
-              <NavbarItem item={item} />
-            </li>
-          ))}
-        </ul>
+        {/* A sub-heading per band rather than another Disclosure, for the same
+            reason NavbarGroup isn't one: a second chevron inside this one would
+            give the same content two competing toggles. */}
+        {groups
+          ? groups.map((group) => {
+              const groupId = `navbar-${sectionId}-${group.title.toLowerCase().replace(/\s+/g, "-")}`;
+
+              return (
+                <div key={group.title} className={styles.subGroup}>
+                  <h3 id={groupId} className={styles.subGroupTitle}>
+                    {group.title}
+                  </h3>
+                  <ul className={styles.list} data-columns={columns} aria-labelledby={groupId}>
+                    {group.items.map((item) => (
+                      <li key={item.href} className={styles.listItem}>
+                        <NavbarItem item={item} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })
+          : items && (
+              <ul className={styles.list} data-columns={columns}>
+                {items.map((item) => (
+                  <li key={item.href} className={styles.listItem}>
+                    <NavbarItem item={item} />
+                  </li>
+                ))}
+              </ul>
+            )}
       </DisclosurePanel>
     </Disclosure>
   );

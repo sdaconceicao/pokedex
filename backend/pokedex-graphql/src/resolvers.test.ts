@@ -3,7 +3,7 @@ import { createSchema, createYoga } from "graphql-yoga";
 import { HttpResponse, http } from "msw";
 import { createContext, type DataSourceContext } from "./context.js";
 import { PokemonAPI } from "./datasources/pokemon-api.js";
-import { pokemonEntity } from "./mocks/pokemon.js";
+import { pokemonEntity, pokemonFormEntity } from "./mocks/pokemon.js";
 import { server } from "./mocks/server.js";
 import { resolvers } from "./resolvers.js";
 import { typeDefs } from "./schema.generated.js";
@@ -74,6 +74,58 @@ describe("pokemonForms", () => {
   });
 });
 
+describe("pokedex", () => {
+  const query = `{
+    pokedex(name: "kanto") {
+      id
+      name
+      displayName
+      description
+      region
+      pokemonCount
+      versionGroups
+      isMainSeries
+    }
+  }`;
+
+  it("resolves the dex profile from the single upstream fetch", async () => {
+    const data = await run(query);
+
+    expect(data.pokedex).toEqual({
+      id: "2",
+      name: "kanto",
+      displayName: "Kanto",
+      description: "Red and Blue version Pok\u00e9mon",
+      region: "kanto",
+      pokemonCount: 2,
+      versionGroups: ["red-blue"],
+      isMainSeries: true,
+    });
+  });
+
+  it("counts the dex's own entries rather than the whole species index", async () => {
+    const data = await run(query);
+    const list = await run(`{ pokemonByPokedex(pokedex: "kanto") { total } }`);
+
+    expect((data.pokedex as { pokemonCount: number }).pokemonCount).toBe(
+      (list.pokemonByPokedex as { total: number }).total,
+    );
+  });
+});
+
+describe("pokedexes", () => {
+  it("lists each dex under its own name and region, not one dex repeated", async () => {
+    const data = await run(`{ pokedexes { name displayName region count } }`);
+
+    expect(data.pokedexes).toEqual([
+      { name: "kanto", displayName: "Kanto", region: "kanto", count: 2 },
+      { name: "national", displayName: "National", region: null, count: 3 },
+      { name: "original-johto", displayName: "Original Johto", region: "johto", count: 1 },
+      { name: "updated-johto", displayName: "Updated Johto", region: "johto", count: 2 },
+    ]);
+  });
+});
+
 describe("pokemonFilter", () => {
   it("browses the species index, not the pokemon list, when the filter is empty", async () => {
     const data = await run(`{ pokemonFilter(filter: {}) { total } }`);
@@ -85,6 +137,25 @@ describe("pokemonFilter", () => {
     const data = await run(`{ pokemonFilter(filter: { query: "gmax" }) { total } }`);
 
     expect(data.pokemonFilter).toMatchObject({ total: 0 });
+  });
+});
+
+describe("pokemonByIds", () => {
+  it("resolves several ids in order, omitting one whose fetch rejects", async () => {
+    server.use(
+      http.get("https://pokeapi.co/api/v2/pokemon/:id", ({ params }) => {
+        if (params.id === "9999") return new HttpResponse(null, { status: 500 });
+        if (params.id === "10186") return HttpResponse.json(pokemonFormEntity);
+        return HttpResponse.json(pokemonEntity);
+      }),
+    );
+
+    const data = await run(`{ pokemonByIds(ids: ["1", "9999", "10186"]) { id name } }`);
+
+    expect(data.pokemonByIds).toEqual([
+      { id: "1", name: "bulbasaur" },
+      { id: "10186", name: "bulbasaur-gmax" },
+    ]);
   });
 });
 

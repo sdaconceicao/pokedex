@@ -29,6 +29,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 0.75rem 1.5rem;
   background: rgba(0, 0, 0, 0.16);
@@ -41,7 +42,7 @@
   align-items: center;
   gap: 2rem;
   padding: 1.5rem 3rem;
-  max-height: 310px;
+  min-height: 310px;
   overflow: hidden;
 }
 
@@ -52,9 +53,29 @@
   gap: 0.75rem;
 }
 
+.heroMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  /* The toolbar wraps this cluster onto its own line once the type names get
+     long enough on a narrow viewport. space-between would park it at the start
+     of that line; auto keeps the number's hard-right anchor either way. */
+  margin-left: auto;
+  gap: 0.75rem;
+}
+
 .typesContainer {
   display: flex;
   gap: 0.5rem;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 52ch;
 }
 
 .heroImage {

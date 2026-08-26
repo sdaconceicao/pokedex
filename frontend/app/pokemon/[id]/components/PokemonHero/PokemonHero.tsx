@@ -52,7 +52,14 @@ export const PokemonHero = ({ pokemon, className, flush }: PokemonHeroProps) => 
       <section ref={ref} className={clsx(styles.hero, flush && styles.flush, className)}>
         <div className={styles.heroToolbar}>
           <BackButton>Back</BackButton>
-          <span className={styles.pokemonNumber}>{getDexNumber(pokemon.speciesId)}</span>
+          <div className={styles.heroMeta}>
+            <div className={styles.typesContainer}>
+              {pokemon.type.map((type: string) => (
+                <PokemonTypePill key={type} type={type} className={styles.heroPill} />
+              ))}
+            </div>
+            <span className={styles.pokemonNumber}>{getDexNumber(pokemon.speciesId)}</span>
+          </div>
         </div>
 
         <div className={styles.heroBody}>
@@ -66,11 +73,7 @@ export const PokemonHero = ({ pokemon, className, flush }: PokemonHeroProps) => 
               speciesId={pokemon.speciesId}
               speciesName={speciesName}
             />
-            <div className={styles.typesContainer}>
-              {pokemon.type.map((type: string) => (
-                <PokemonTypePill key={type} type={type} className={styles.heroPill} />
-              ))}
-            </div>
+            {pokemon.description && <p className={styles.description}>{pokemon.description}</p>}
           </div>
 
           <div className={styles.heroImage}>

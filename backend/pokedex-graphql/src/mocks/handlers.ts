@@ -6,6 +6,7 @@ import {
   evolutionChain,
   pikachuGmaxEntity,
   pokedex,
+  pokedexesBySlug,
   pokedexListResponse,
   pokemonAbility,
   pokemonEntity,
@@ -17,6 +18,7 @@ import {
   regionListResponse,
   typeListResponse,
   typeResponse,
+  typesBySlug,
 } from "./pokemon.js";
 
 const pokemonById: Record<string, unknown> = {
@@ -70,16 +72,21 @@ export const handlers = [
     return HttpResponse.json(pokemonAbility);
   }),
 
-  // Type endpoint - used by getPokemonByType()
-  http.get("https://pokeapi.co/api/v2/type/:type", () => {
-    // Return mock data for any type
-    return HttpResponse.json(typeResponse);
+  // Type endpoint - used by getPokemonByType() and getType()
+  http.get("https://pokeapi.co/api/v2/type/:type", ({ params }) => {
+    // Answer with the type that was asked for, so a dual-type Pokemon gets each
+    // of its types' own relations rather than one type's repeated; anything
+    // unmocked falls back to grass.
+    const slug = String(params.type);
+    return HttpResponse.json(typesBySlug[slug] ?? typeResponse);
   }),
 
-  // Pokedex endpoint - used by getPokemonByPokedex()
-  http.get("https://pokeapi.co/api/v2/pokedex/:pokedex", () => {
-    // Return mock data for any pokedex
-    return HttpResponse.json(pokedex);
+  // Pokedex endpoint - used by getPokemonByPokedex(), getPokedex() and getPokedexes()
+  http.get("https://pokeapi.co/api/v2/pokedex/:pokedex", ({ params }) => {
+    // Answer with the dex that was asked for, so a list of them isn't the same
+    // dex repeated; anything unmocked falls back to kanto.
+    const slug = String(params.pokedex);
+    return HttpResponse.json(pokedexesBySlug[slug] ?? pokedex);
   }),
 
   // Region endpoint - used by getPokemonByRegion()
