@@ -14,7 +14,7 @@ export const UPDATES: Update[] = [
     label: "Aug 26, 2026",
     tags: ["New"],
     title: "Save pokemon to your own groups",
-    body: "We've added the ability to save Pokémon to your own groups. You can create groups of Pokémon.",
+    body: "We've added the ability to save Pokémon to your own created groups. We've also added type matchups to each Pokémon's page.",
   },
   {
     date: "2026-08-18",
