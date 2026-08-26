@@ -1,8 +1,24 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { renderToString } from "react-dom/server";
-import { useIsAuthenticated } from "./useAuth";
+import { authApi, getStoredToken } from "@/lib/auth";
+import { useAuth, useIsAuthenticated } from "./useAuth";
+
+vi.mock("@/lib/auth", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/auth")>();
+  return {
+    ...actual,
+    authApi: {
+      login: vi.fn(),
+      register: vi.fn(),
+      confirmPasswordReset: vi.fn(),
+      confirmEmailVerification: vi.fn(),
+      getCurrentUser: vi.fn(),
+      logout: actual.authApi.logout,
+    },
+  };
+});
 
 const TOKEN = "test-token";
 const USER = { id: "1", email: "test@test.com", username: "test" };
@@ -46,5 +62,97 @@ describe("useAuth hydration safety", () => {
     render(wrap(<Probe />, warmClient()));
 
     expect(screen.getByText("signed-in")).toBeInTheDocument();
+  });
+});
+
+describe("useAuth mutations", () => {
+  const setup = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: ({ children }) => wrap(children, queryClient),
+    });
+    return { result, queryClient };
+  };
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  it("stores the token and seeds the cache on login", async () => {
+    vi.mocked(authApi.login).mockResolvedValue({ access_token: "at-1" });
+    const { result, queryClient } = setup();
+
+    await act(async () => {
+      await result.current.loginAsync({ email: "a@b.c", password: "p" });
+    });
+
+    expect(getStoredToken()).toBe("at-1");
+    expect(queryClient.getQueryData(["auth", "token"])).toBe("at-1");
+  });
+
+  it("does NOT store a token on register", async () => {
+    vi.mocked(authApi.register).mockResolvedValue({ message: "check email" });
+    const { result, queryClient } = setup();
+
+    await act(async () => {
+      await result.current.registerAsync({ email: "a@b.c", password: "p" });
+    });
+
+    // Registration no longer authenticates. Storing a token here would let an
+    // unverified account straight in and defeat the verification gate.
+    expect(getStoredToken()).toBeNull();
+    // The query resolves to null — "no token" — rather than staying unset.
+    expect(queryClient.getQueryData(["auth", "token"])).toBeNull();
+  });
+
+  it("stores the token returned by password reset confirmation", async () => {
+    vi.mocked(authApi.confirmPasswordReset).mockResolvedValue({
+      access_token: "at-2",
+    });
+    const { result } = setup();
+
+    await act(async () => {
+      await result.current.confirmPasswordResetAsync({
+        token: "t",
+        password: "p",
+      });
+    });
+
+    expect(getStoredToken()).toBe("at-2");
+  });
+
+  it("stores the token returned by email verification", async () => {
+    vi.mocked(authApi.confirmEmailVerification).mockResolvedValue({
+      access_token: "at-3",
+    });
+    const { result } = setup();
+
+    await act(async () => {
+      await result.current.confirmEmailVerificationAsync("v-1");
+    });
+
+    expect(getStoredToken()).toBe("at-3");
+  });
+
+  it("clears the token and drops cached groups on logout", async () => {
+    vi.mocked(authApi.login).mockResolvedValue({ access_token: "at-4" });
+    const { result, queryClient } = setup();
+
+    await act(async () => {
+      await result.current.loginAsync({ email: "a@b.c", password: "p" });
+    });
+    queryClient.setQueryData(["groups"], ["stale"]);
+
+    await act(async () => {
+      result.current.logout();
+    });
+
+    await waitFor(() => expect(getStoredToken()).toBeNull());
+    // Groups are per-user; leaving them cached would leak one user's data
+    // into the next session in the same tab.
+    expect(queryClient.getQueryData(["groups"])).toBeUndefined();
   });
 });

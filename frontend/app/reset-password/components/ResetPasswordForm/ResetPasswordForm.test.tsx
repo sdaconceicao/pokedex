@@ -2,7 +2,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { notify } from "@/lib/toast";
 import ResetPasswordForm from "./ResetPasswordForm";
+
+vi.mock("@/lib/toast", () => ({ notify: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
@@ -85,9 +88,12 @@ describe("ResetPasswordForm", () => {
     });
     // replace, not push — the token must not survive in history.
     expect(replace).toHaveBeenCalledWith("/");
+    expect(notify).toHaveBeenCalledWith(
+      expect.objectContaining({ title: "Password updated", variant: "success" }),
+    );
   });
 
-  it("surfaces the API error and stays put", async () => {
+  it("toasts the API error and stays put", async () => {
     const { replace, user } = setup({
       confirmPasswordResetAsync: vi
         .fn()
@@ -98,7 +104,14 @@ describe("ResetPasswordForm", () => {
     await user.type(screen.getByLabelText("Confirm new password"), VALID_PASSWORD);
     await submit(user);
 
-    expect(await screen.findByText("Invalid or expired reset token")).toBeInTheDocument();
+    await vi.waitFor(() =>
+      expect(notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Invalid or expired reset token",
+          variant: "error",
+        }),
+      ),
+    );
     expect(replace).not.toHaveBeenCalled();
   });
 });

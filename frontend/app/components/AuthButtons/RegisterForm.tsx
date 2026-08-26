@@ -6,7 +6,7 @@ import { validateEmail, validatePassword } from "@/lib/validation";
 import styles from "./AuthButtons.module.css";
 
 interface RegisterFormProps {
-  onSubmit: (data: { email: string; password: string }) => Promise<{ message: string }>;
+  onSubmit: (data: { email: string; password: string }) => Promise<void>;
   onSwitchToLogin: () => void;
   isLoading?: boolean;
 }
@@ -23,8 +23,6 @@ export default function RegisterForm({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitError, setSubmitError] = useState<string>("");
-  const [sentMessage, setSentMessage] = useState<string>("");
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -61,7 +59,6 @@ export default function RegisterForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    setSubmitError("");
 
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
@@ -69,44 +66,19 @@ export default function RegisterForm({
       return;
     }
 
-    try {
-      const result = await onSubmit({
-        email: formData.email.trim(),
-        password: formData.password,
-      });
-      setSentMessage(result.message);
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        (error.message.includes("already exists") || error.message.includes("Email"))
-      ) {
-        setSubmitError("An account with this email already exists.");
-      } else {
-        setSubmitError("Registration failed. Please try again.");
-      }
-    }
+    // Outcome handling lives in AuthModalProvider, which closes the modal
+    // and raises a toast; this form only validates and submits.
+    await onSubmit({
+      email: formData.email.trim(),
+      password: formData.password,
+    });
   };
-
-  if (sentMessage) {
-    return (
-      <div>
-        <p className={styles.sentMessage}>{sentMessage}</p>
-        <p className={styles.switchPrompt}>
-          <button type="button" className={styles.switchLink} onClick={onSwitchToLogin}>
-            Back to sign in
-          </button>
-        </p>
-      </div>
-    );
-  }
 
   return (
     // `validationBehavior="aria"` keeps the browser's native constraint-validation
     // popups out of the way so `validateForm` above stays the single source of
     // truth for errors, same as the hand-rolled form before it.
     <Form onSubmit={handleSubmit} validationBehavior="aria">
-      {submitError && <div className={styles.submitError}>{submitError}</div>}
-
       <TextField
         type="email"
         label="Email"

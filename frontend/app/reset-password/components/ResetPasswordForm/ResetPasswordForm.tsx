@@ -6,6 +6,7 @@ import type React from "react";
 import { useState } from "react";
 import styles from "@/components/AuthButtons/AuthButtons.module.css";
 import { useAuth } from "@/hooks/useAuth";
+import { notify } from "@/lib/toast";
 import { validatePassword } from "@/lib/validation";
 
 export default function ResetPasswordForm() {
@@ -17,7 +18,6 @@ export default function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitError, setSubmitError] = useState("");
 
   const handleInputChange = (field: "password" | "confirmPassword", value: string) => {
     if (field === "password") setPassword(value);
@@ -28,7 +28,6 @@ export default function ResetPasswordForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    setSubmitError("");
 
     const newErrors: Record<string, string> = {};
 
@@ -54,11 +53,19 @@ export default function ResetPasswordForm() {
 
     try {
       await confirmPasswordResetAsync({ token, password });
+      notify({
+        title: "Password updated",
+        description: "You are now signed in.",
+        variant: "success",
+      });
       // replace(), not push() — drops the token from history so it can't be
       // recovered with the back button or leaked in a referrer.
       router.replace("/");
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Password reset failed");
+      notify({
+        title: error instanceof Error ? error.message : "Password reset failed",
+        variant: "error",
+      });
     }
   };
 
@@ -72,8 +79,6 @@ export default function ResetPasswordForm() {
 
   return (
     <Form onSubmit={handleSubmit} validationBehavior="aria">
-      {submitError && <div className={styles.submitError}>{submitError}</div>}
-
       <Password
         label="New password"
         isRequired

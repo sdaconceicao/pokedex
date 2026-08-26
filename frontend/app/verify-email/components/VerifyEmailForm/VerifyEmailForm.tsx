@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "@/components/AuthButtons/AuthButtons.module.css";
 import { useAuth } from "@/hooks/useAuth";
+import { notify } from "@/lib/toast";
 
 export default function VerifyEmailForm() {
   const router = useRouter();
@@ -22,10 +23,17 @@ export default function VerifyEmailForm() {
 
     confirmEmailVerificationAsync(token)
       .then(() => {
+        notify({
+          title: "Email verified",
+          description: "You are now signed in.",
+          variant: "success",
+        });
         router.replace("/");
       })
       .catch((caught: unknown) => {
-        setError(caught instanceof Error ? caught.message : "Verification failed");
+        const message = caught instanceof Error ? caught.message : "Verification failed";
+        setError(message);
+        notify({ title: message, variant: "error" });
       });
   }, [token, confirmEmailVerificationAsync, router]);
 

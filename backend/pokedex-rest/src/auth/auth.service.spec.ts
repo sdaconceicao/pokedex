@@ -34,6 +34,10 @@ describe('AuthService', () => {
     emailVerified: true,
   };
 
+  const SUBMITTED = {
+    message: 'Check your email — we have sent you a message with next steps',
+  };
+
   const mockRegisterDto: RegisterRequestDto = {
     email: 'john@example.com',
     password: 'password123',
@@ -236,22 +240,27 @@ describe('AuthService', () => {
         }),
       );
       // No token: the account cannot sign in yet.
-      expect(result).toEqual({
-        message: 'Check your email for a link to verify your account',
-      });
+      expect(result).toEqual(SUBMITTED);
     });
 
-    it('should throw BadRequestException when email already exists', async () => {
+    it('mails an already-registered notice and replies identically', async () => {
       usersService.findOneByEmail.mockResolvedValue(mockUser);
 
-      await expect(service.register(mockRegisterDto)).rejects.toThrow(
-        new BadRequestException('email already exists'),
-      );
+      const result = await service.register(mockRegisterDto);
 
-      expect(usersService.findOneByEmail).toHaveBeenCalledWith(
-        mockRegisterDto.email,
+      expect(mailService.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: mockUser.email,
+          subject: 'You already have a Pokédex account',
+        }),
       );
+      // The notice must not carry a reset token: the request came from an
+      // unauthenticated stranger.
+      const sent = mailService.send.mock.calls[0][0];
+      expect(sent.html).not.toContain('reset-password?token=');
       expect(usersService.create).not.toHaveBeenCalled();
+      expect(bcrypt.hash).not.toHaveBeenCalled();
+      expect(result).toEqual(SUBMITTED);
     });
   });
 
@@ -494,18 +503,23 @@ describe('AuthService', () => {
       expect(usersService.create).not.toHaveBeenCalled();
       expect(usersService.update).not.toHaveBeenCalled();
       expect(bcrypt.hash).not.toHaveBeenCalled();
-      expect(result).toEqual({
-        message: 'Check your email for a link to verify your account',
-      });
+      expect(result).toEqual(SUBMITTED);
     });
 
-    it('still rejects an address that is already verified', async () => {
-      usersService.findOneByEmail.mockResolvedValue(mockUser);
+    it('replies the same for unverified, verified, and unknown addresses', async () => {
+      usersService.findOneByEmail.mockResolvedValue(unverified);
+      const unverifiedReply = await service.register(mockRegisterDto);
 
-      await expect(service.register(mockRegisterDto)).rejects.toThrow(
-        new BadRequestException('email already exists'),
-      );
-      expect(mailService.send).not.toHaveBeenCalled();
+      usersService.findOneByEmail.mockResolvedValue(mockUser);
+      const verifiedReply = await service.register(mockRegisterDto);
+
+      usersService.findOneByEmail.mockResolvedValue(null);
+      usersService.create.mockResolvedValue(mockUser);
+      const newReply = await service.register(mockRegisterDto);
+
+      // Three different emails, one indistinguishable response.
+      expect(unverifiedReply).toEqual(verifiedReply);
+      expect(verifiedReply).toEqual(newReply);
     });
   });
 });

@@ -32,6 +32,7 @@ import { PasswordResetResponseDTO } from './dtos/password-reset-response.dto';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 import { RegisterResponseDTO } from './dtos/register-response.dto';
 import { PasswordResetValidationPipe } from './validation/password-reset-validation.pipe';
+import { RegisterValidationPipe } from './validation/register-validation.pipe';
 
 export interface AuthenticatedRequest extends FastifyRequest {
   user: UserEntity;
@@ -59,13 +60,16 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'Register a new account' })
   @ApiCreatedResponse({
-    description: 'Account created and authenticated',
+    description:
+      'Always succeeds with an identical message, whether or not the address is already registered — the difference is conveyed only in the email sent',
     type: RegisterResponseDTO,
   })
-  @ApiBadRequestResponse({ description: 'Email already exists' })
+  @ApiBadRequestResponse({
+    description: 'Invalid email format or password that fails the policy',
+  })
   async register(
-    @Body() registerBody: RegisterRequestDto,
-  ): Promise<RegisterResponseDTO | BadRequestException> {
+    @Body(RegisterValidationPipe) registerBody: RegisterRequestDto,
+  ): Promise<RegisterResponseDTO> {
     return await this.authService.register(registerBody);
   }
 

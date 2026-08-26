@@ -1,11 +1,14 @@
 import { test, expect } from "@playwright/test";
 import {
   getAuthDialog,
+  getToast,
   openRegisterForm,
   openSignInModal,
 } from "../helpers/auth";
 
 const VALID_EMAIL = "test@test.com";
+const SUBMITTED_NOTICE =
+  "Check your email — we have sent you a message with next steps";
 
 test.describe("User Registration", () => {
   test.beforeEach(async ({ page }) => {
@@ -42,9 +45,9 @@ test.describe("User Registration", () => {
 
     // Registration no longer authenticates: the account cannot sign in until
     // the emailed link is used, so the dialog stays open with the notice.
-    await expect(
-      dialog.getByText("Check your email for a link to verify your account")
-    ).toBeVisible();
+    await expect(getToast(page).getByText(SUBMITTED_NOTICE)).toBeVisible();
+    // Success closes the modal; the notice lives in the toast instead.
+    await expect(page.getByRole("dialog")).not.toBeVisible();
     await expect(
       page.getByRole("button", { name: "Account menu" })
     ).not.toBeVisible();
@@ -69,12 +72,12 @@ test.describe("User Registration", () => {
     await signIn.getByPlaceholder("Enter your password").fill("P@ssw0rd123");
     await signIn.getByRole("button", { name: "Sign In" }).click();
 
-    await expect(
-      signIn.getByText("Invalid credentials. Please try again.")
-    ).toBeVisible();
+    await expect(getToast(page).getByText("Could not sign in")).toBeVisible();
   });
 
-  test("should show error with existing email", async ({ page }) => {
+  test("shows the identical notice for an already-registered email", async ({
+    page,
+  }) => {
     await openRegisterForm(page);
 
     const dialog = getAuthDialog(page);
@@ -83,9 +86,12 @@ test.describe("User Registration", () => {
     await dialog.getByPlaceholder("Confirm your password").fill("P@ssw0rd123");
     await dialog.getByRole("button", { name: "Create Account" }).click();
 
-    await expect(
-      dialog.getByText("An account with this email already exists.")
-    ).toBeVisible();
+    // VALID_EMAIL is the seeded, verified fixture. The reply must be
+    // indistinguishable from a brand-new address — the difference goes only
+    // to the inbox.
+    // Indistinguishable from a brand-new address — same toast, same close.
+    await expect(getToast(page).getByText(SUBMITTED_NOTICE)).toBeVisible();
+    await expect(page.getByRole("dialog")).not.toBeVisible();
   });
 
   test("should validate password confirmation", async ({ page }) => {

@@ -1,10 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { notify } from "@/lib/toast";
 import AuthModalProvider, { useAuthModal } from "./AuthModalProvider";
+
+vi.mock("@/lib/toast", () => ({ notify: vi.fn() }));
 
 const mockAuth = {
   loginAsync: vi.fn(),
   registerAsync: vi.fn().mockResolvedValue({
-    message: "Check your email for a link to verify your account",
+    message: "Check your email — we have sent you a message with next steps",
   }),
   requestPasswordResetAsync: vi.fn().mockResolvedValue({ message: "sent" }),
   isLoginLoading: false,
@@ -49,6 +52,8 @@ function Consumer() {
 }
 
 describe("AuthModalProvider", () => {
+  afterEach(() => vi.clearAllMocks());
+
   it("renders children and no modal by default", () => {
     render(
       <AuthModalProvider>
@@ -101,7 +106,7 @@ describe("AuthModalProvider", () => {
     expect(screen.getByRole("heading", { name: "Sign In" })).toBeInTheDocument();
   });
 
-  it("keeps the modal open on the notice after registering", async () => {
+  it("closes the modal and toasts the server's message after registering", async () => {
     render(
       <AuthModalProvider>
         <Consumer />
@@ -120,11 +125,70 @@ describe("AuthModalProvider", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
 
-    // Registration no longer signs the user in, so closing here would hide
-    // the only instruction they have.
-    expect(
-      await screen.findByText("Check your email for a link to verify your account"),
-    ).toBeInTheDocument();
+    await vi.waitFor(() =>
+      expect(notify).toHaveBeenCalledWith({
+        // The API's wording verbatim, identical for new, unverified and
+        // already-registered addresses.
+        title: "Check your email — we have sent you a message with next steps",
+        variant: "success",
+      }),
+    );
+    expect(screen.queryByRole("heading", { name: "Create Account" })).not.toBeInTheDocument();
+  });
+
+  it("toasts an error and keeps the modal open when registering fails", async () => {
+    mockAuth.registerAsync.mockRejectedValueOnce(new Error("boom"));
+    render(
+      <AuthModalProvider>
+        <Consumer />
+      </AuthModalProvider>,
+    );
+
+    fireEvent.click(screen.getByText("trigger sign up"));
+    fireEvent.change(screen.getByLabelText("Email"), {
+      target: { value: "ash@pallet.town" },
+    });
+    fireEvent.change(screen.getByLabelText("Password"), {
+      target: { value: "Pikachu123!" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirm Password"), {
+      target: { value: "Pikachu123!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Create Account" }));
+
+    await vi.waitFor(() =>
+      expect(notify).toHaveBeenCalledWith(expect.objectContaining({ variant: "error" })),
+    );
+    // Still open, so the user can correct and retry.
+    expect(screen.getByRole("heading", { name: "Create Account" })).toBeInTheDocument();
+  });
+
+  it("toasts a generic error when signing in fails", async () => {
+    mockAuth.loginAsync.mockRejectedValueOnce(new Error("nope"));
+    render(
+      <AuthModalProvider>
+        <Consumer />
+      </AuthModalProvider>,
+    );
+
+    fireEvent.click(screen.getByText("trigger sign in"));
+    fireEvent.change(screen.getByLabelText("Email"), {
+      target: { value: "ash@pallet.town" },
+    });
+    fireEvent.change(screen.getByLabelText("Password"), {
+      target: { value: "Pikachu123!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Sign In" }));
+
+    await vi.waitFor(() =>
+      expect(notify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          // Must not distinguish "unverified" from "wrong password".
+          title: "Could not sign in",
+          variant: "error",
+        }),
+      ),
+    );
   });
 
   it("throws when useAuthModal is used outside the provider", () => {

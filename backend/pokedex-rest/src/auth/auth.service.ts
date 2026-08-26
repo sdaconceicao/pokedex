@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
+import { buildAlreadyRegisteredMessage } from '../mail/templates/already-registered.template';
 import { buildEmailVerificationMessage } from '../mail/templates/email-verification.template';
 import { buildPasswordResetMessage } from '../mail/templates/password-reset.template';
 import { UserEntity } from '../users/users.entity';
@@ -21,8 +22,11 @@ const PASSWORD_RESET_REQUESTED_MESSAGE =
 // Expired, tampered, unknown user, and already-spent all collapse to this.
 const INVALID_RESET_TOKEN_MESSAGE = 'Invalid or expired reset token';
 
-const VERIFICATION_SENT_MESSAGE =
-  'Check your email for a link to verify your account';
+// Returned for every registration attempt — new, unverified, or already
+// registered. Never branch this: the reply is the only thing an attacker can
+// see, so all three must be byte-identical.
+const REGISTRATION_SUBMITTED_MESSAGE =
+  'Check your email — we have sent you a message with next steps';
 
 // Expired, tampered, unknown user, and already-used all collapse to this.
 const INVALID_VERIFICATION_TOKEN_MESSAGE =
@@ -206,18 +210,22 @@ export class AuthService {
   }
   async register(user: RegisterRequestDto): Promise<RegisterResponseDTO> {
     const existingUser = await this.usersService.findOneByEmail(user.email);
+
     if (existingUser) {
-      if (!existingUser.emailVerified) {
-        // Re-registering an unverified address resends the link instead of
-        // erroring — the only recovery path for a lost verification email.
-        // The submitted password is deliberately ignored: honouring it would
-        // let anyone who guesses an unverified address overwrite the real
-        // owner's password before they verify.
+      if (existingUser.emailVerified) {
+        // Says "you already have an account" in the email, where only the
+        // address owner can read it — never in the HTTP response.
+        await this.mailService.send(
+          buildAlreadyRegisteredMessage(existingUser.email),
+        );
+      } else {
+        // Unverified: resend the link so they can finish signing up.
         await this.sendVerificationEmail(existingUser);
-        return { message: VERIFICATION_SENT_MESSAGE };
       }
-      Logger.error(`Email already exists for user: ${user.email}`);
-      throw new BadRequestException('email already exists');
+
+      // Either way the submitted password is ignored: honouring it would let
+      // anyone who guesses an address overwrite the real owner's password.
+      return { message: REGISTRATION_SUBMITTED_MESSAGE };
     }
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
@@ -231,6 +239,6 @@ export class AuthService {
 
     const createdUser = await this.usersService.create(newUser);
     await this.sendVerificationEmail(createdUser);
-    return { message: VERIFICATION_SENT_MESSAGE };
+    return { message: REGISTRATION_SUBMITTED_MESSAGE };
   }
 }
