@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0](https://github.com/sdaconceicao/pokependium/compare/pokedex-rest-v0.3.0...pokedex-rest-v0.4.0) (2026-08-26)
+
+
+### Features
+
+* Added save pokemon to group ([#131](https://github.com/sdaconceicao/pokependium/issues/131)) ([8694f81](https://github.com/sdaconceicao/pokependium/commit/8694f8167a2f18aba364fb0020a128a14de7c47e))
+* Password Reset and Email Verify ([#142](https://github.com/sdaconceicao/pokependium/issues/142)) ([46fe8fe](https://github.com/sdaconceicao/pokependium/commit/46fe8fe1f4a67782cb152799f76b8e66c4ee3a44))
+* Pokedex hero page ([#127](https://github.com/sdaconceicao/pokependium/issues/127)) ([1f7fcd4](https://github.com/sdaconceicao/pokependium/commit/1f7fcd455e684ed511f2bd2c5594499f30a12533))
+
 ## [0.3.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-rest-v0.2.1...pokedex-rest-v0.3.0) (2026-08-17)
 
 
