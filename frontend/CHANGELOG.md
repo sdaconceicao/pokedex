@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.0](https://github.com/sdaconceicao/pokependium/compare/pokedex-frontend-v0.5.0...pokedex-frontend-v0.6.0) (2026-08-26)
+
+
+### Features
+
+* Add Pokémon descriptions to GraphQL API and frontend ([#139](https://github.com/sdaconceicao/pokependium/issues/139)) ([dc68eba](https://github.com/sdaconceicao/pokependium/commit/dc68eba000f3cad23174e936dcb5ac4239324412))
+* Added save pokemon to group ([#131](https://github.com/sdaconceicao/pokependium/issues/131)) ([8694f81](https://github.com/sdaconceicao/pokependium/commit/8694f8167a2f18aba364fb0020a128a14de7c47e))
+* Added Type Matchups ([#136](https://github.com/sdaconceicao/pokependium/issues/136)) ([7bdf40d](https://github.com/sdaconceicao/pokependium/commit/7bdf40dd06b6752622c38efac1a6723bd9c95efd))
+* Password Reset and Email Verify ([#142](https://github.com/sdaconceicao/pokependium/issues/142)) ([46fe8fe](https://github.com/sdaconceicao/pokependium/commit/46fe8fe1f4a67782cb152799f76b8e66c4ee3a44))
+* Pokedex hero page ([#127](https://github.com/sdaconceicao/pokependium/issues/127)) ([1f7fcd4](https://github.com/sdaconceicao/pokependium/commit/1f7fcd455e684ed511f2bd2c5594499f30a12533))
+* Updated acct menu ([#133](https://github.com/sdaconceicao/pokependium/issues/133)) ([4b0c986](https://github.com/sdaconceicao/pokependium/commit/4b0c9868e9bdbde541ef0a223342e93e93a9e902))
+
 ## [0.5.0](https://github.com/sdaconceicao/pokedex/compare/pokedex-frontend-v0.4.0...pokedex-frontend-v0.5.0) (2026-08-17)
 
 
