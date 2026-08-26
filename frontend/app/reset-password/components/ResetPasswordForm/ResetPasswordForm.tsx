@@ -13,13 +13,17 @@ export default function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
-  const { confirmPasswordResetAsync, isConfirmPasswordResetLoading } = useAuth();
+  const { confirmPasswordResetAsync, isConfirmPasswordResetLoading } =
+    useAuth();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleInputChange = (field: "password" | "confirmPassword", value: string) => {
+  const handleInputChange = (
+    field: "password" | "confirmPassword",
+    value: string
+  ) => {
     if (field === "password") setPassword(value);
     else setConfirmPassword(value);
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -58,8 +62,6 @@ export default function ResetPasswordForm() {
         description: "You are now signed in.",
         variant: "success",
       });
-      // replace(), not push() — drops the token from history so it can't be
-      // recovered with the back button or leaked in a referrer.
       router.replace("/");
     } catch (error) {
       notify({
@@ -72,7 +74,8 @@ export default function ResetPasswordForm() {
   if (!token) {
     return (
       <p className={styles.submitError}>
-        This reset link is missing its token. Request a new link from the sign-in screen.
+        This reset link is missing its token. Request a new link from the
+        sign-in screen.
       </p>
     );
   }
@@ -104,7 +107,11 @@ export default function ResetPasswordForm() {
       />
 
       <div className={styles.formActions}>
-        <Button type="submit" variant="primary" isDisabled={isConfirmPasswordResetLoading}>
+        <Button
+          type="submit"
+          variant="primary"
+          isDisabled={isConfirmPasswordResetLoading}
+        >
           {isConfirmPasswordResetLoading ? "Saving…" : "Set new password"}
         </Button>
       </div>
