@@ -21,5 +21,22 @@ export interface LoginResponse {
 }
 
 export interface RegisterResponse {
+  message: string;
+}
+
+export interface PasswordResetConfirmCredentials {
+  token: string;
+  password: string;
+}
+
+export interface PasswordResetResponse {
+  message: string;
+}
+
+export interface PasswordResetConfirmResponse {
+  access_token: string;
+}
+
+export interface EmailVerificationConfirmResponse {
   access_token: string;
 }

@@ -1,6 +1,10 @@
 import type {
+  EmailVerificationConfirmResponse,
   LoginCredentials,
   LoginResponse,
+  PasswordResetConfirmCredentials,
+  PasswordResetConfirmResponse,
+  PasswordResetResponse,
   RegisterCredentials,
   RegisterResponse,
   User,
@@ -49,6 +53,53 @@ export const authApi = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || "Registration failed");
+    }
+
+    return response.json();
+  },
+
+  async requestPasswordReset(email: string): Promise<PasswordResetResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/password-reset`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Password reset request failed");
+    }
+
+    return response.json();
+  },
+
+  async confirmPasswordReset(
+    credentials: PasswordResetConfirmCredentials,
+  ): Promise<PasswordResetConfirmResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/password-reset/confirm`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Password reset failed");
+    }
+
+    return response.json();
+  },
+
+  async confirmEmailVerification(token: string): Promise<EmailVerificationConfirmResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Verification failed");
     }
 
     return response.json();

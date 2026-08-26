@@ -20,10 +20,20 @@ export default class UserSeeder implements Seeder {
         firstName: 'Test',
         lastName: 'User',
         username: 'testuser',
+        // Verified so the e2e login fixture works; real accounts start false.
+        emailVerified: true,
       });
       console.log('Test user created successfully');
     } else {
-      console.log('Test user already exists');
+      // The fixture predates emailVerified on any existing database, so
+      // ensure it rather than only inserting it — tests/auth/login.spec.ts
+      // signs in as this user and verification is now enforced.
+      if (!existingUser.emailVerified) {
+        await repository.update(existingUser.id, { emailVerified: true });
+        console.log('Test user marked email-verified');
+      } else {
+        console.log('Test user already exists');
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+import { ToastArea } from "@code-x/lago";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -58,6 +59,7 @@ export default async function RootLayout({
             </ApolloWrapper>
           </QueryProvider>
         </LagoProvider>
+        <ToastArea />
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>

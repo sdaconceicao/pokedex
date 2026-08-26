@@ -2,8 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
+  EmailVerificationConfirmResponse,
   LoginCredentials,
   LoginResponse,
+  PasswordResetConfirmCredentials,
+  PasswordResetConfirmResponse,
+  PasswordResetResponse,
   RegisterCredentials,
   RegisterResponse,
 } from "@/types/auth";
@@ -48,10 +52,6 @@ export function useAuth() {
 
   const registerMutation = useMutation<RegisterResponse, Error, RegisterCredentials>({
     mutationFn: authApi.register,
-    onSuccess: (data: RegisterResponse) => {
-      setStoredToken(data.access_token);
-      queryClient.setQueryData(["auth", "token"], data.access_token);
-    },
   });
 
   const logoutMutation = useMutation<void, Error, void>({
@@ -60,6 +60,34 @@ export function useAuth() {
       queryClient.setQueryData(["auth", "token"], null);
       queryClient.removeQueries({ queryKey: ["auth", "user"] });
       queryClient.removeQueries({ queryKey: ["groups"] });
+    },
+  });
+
+  const requestPasswordResetMutation = useMutation<PasswordResetResponse, Error, string>({
+    mutationFn: authApi.requestPasswordReset,
+  });
+
+  const confirmPasswordResetMutation = useMutation<
+    PasswordResetConfirmResponse,
+    Error,
+    PasswordResetConfirmCredentials
+  >({
+    mutationFn: authApi.confirmPasswordReset,
+    onSuccess: (data: PasswordResetConfirmResponse) => {
+      setStoredToken(data.access_token);
+      queryClient.setQueryData(["auth", "token"], data.access_token);
+    },
+  });
+
+  const confirmEmailVerificationMutation = useMutation<
+    EmailVerificationConfirmResponse,
+    Error,
+    string
+  >({
+    mutationFn: authApi.confirmEmailVerification,
+    onSuccess: (data: EmailVerificationConfirmResponse) => {
+      setStoredToken(data.access_token);
+      queryClient.setQueryData(["auth", "token"], data.access_token);
     },
   });
 
@@ -77,6 +105,12 @@ export function useAuth() {
     isLoginLoading: loginMutation.isPending,
     isRegisterLoading: registerMutation.isPending,
     isLogoutLoading: logoutMutation.isPending,
+    requestPasswordResetAsync: requestPasswordResetMutation.mutateAsync,
+    isRequestPasswordResetLoading: requestPasswordResetMutation.isPending,
+    confirmPasswordResetAsync: confirmPasswordResetMutation.mutateAsync,
+    isConfirmPasswordResetLoading: confirmPasswordResetMutation.isPending,
+    confirmEmailVerificationAsync: confirmEmailVerificationMutation.mutateAsync,
+    isConfirmEmailVerificationLoading: confirmEmailVerificationMutation.isPending,
   };
 }
 

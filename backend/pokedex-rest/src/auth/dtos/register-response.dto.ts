@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AccessToken } from '../types/AccessToken';
 
-export class RegisterResponseDTO implements AccessToken {
-  @ApiProperty({ description: 'JWT access token' })
-  access_token: string;
+export class RegisterResponseDTO {
+  @ApiProperty({
+    example: 'Check your email for a link to verify your account',
+    description:
+      'Registration does not authenticate: the account cannot sign in until the emailed link is used',
+  })
+  message: string;
 }
