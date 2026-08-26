@@ -15,7 +15,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { FastifyRequest } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 import { UserEntity } from '../users/users.entity';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
@@ -69,8 +69,11 @@ export class AuthController {
   })
   async register(
     @Body(RegisterValidationPipe) registerBody: RegisterRequestDto,
+    @Request() req: FastifyRequest,
   ): Promise<RegisterResponseDTO> {
-    return await this.authService.register(registerBody);
+    // Origin identifies which frontend deployment to link back to; the service
+    // matches it against ALLOWED_ORIGINS before trusting it.
+    return await this.authService.register(registerBody, req.headers.origin);
   }
 
   @Post('password-reset')
@@ -83,8 +86,14 @@ export class AuthController {
   })
   async requestPasswordReset(
     @Body() body: PasswordResetRequestDto,
+    @Request() req: FastifyRequest,
   ): Promise<PasswordResetResponseDTO> {
-    return this.authService.requestPasswordReset(body.email);
+    // Origin identifies which frontend deployment to link back to; the service
+    // matches it against ALLOWED_ORIGINS before trusting it.
+    return this.authService.requestPasswordReset(
+      body.email,
+      req.headers.origin,
+    );
   }
 
   @Post('password-reset/confirm')

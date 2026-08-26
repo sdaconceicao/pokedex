@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { FastifyRequest } from 'fastify';
 import type { Mocked } from 'vitest';
 import { UserEntity } from '../users/users.entity';
 import { AuthController, AuthenticatedRequest } from './auth.controller';
@@ -37,6 +38,11 @@ describe('AuthController', () => {
   const mockRequest = {
     user: mockUser,
   };
+
+  const PREVIEW_ORIGIN = 'https://pokedex-frontend-abc123-code-x.vercel.app';
+
+  const requestFrom = (origin?: string) =>
+    ({ headers: { origin } }) as FastifyRequest;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -95,18 +101,37 @@ describe('AuthController', () => {
     it('should call authService.register with register body', async () => {
       authService.register.mockResolvedValue(mockRegisterResponse);
 
-      const result = await controller.register(mockRegisterDto);
+      const result = await controller.register(
+        mockRegisterDto,
+        requestFrom(PREVIEW_ORIGIN),
+      );
 
-      expect(authService.register).toHaveBeenCalledWith(mockRegisterDto);
+      // Origin travels with the body so the verification link can point back
+      // at the deployment the request came from.
+      expect(authService.register).toHaveBeenCalledWith(
+        mockRegisterDto,
+        PREVIEW_ORIGIN,
+      );
       // No access_token: registration no longer authenticates.
       expect(result).toEqual(mockRegisterResponse);
+    });
+
+    it('passes undefined when the caller sends no Origin', async () => {
+      authService.register.mockResolvedValue(mockRegisterResponse);
+
+      await controller.register(mockRegisterDto, requestFrom());
+
+      expect(authService.register).toHaveBeenCalledWith(
+        mockRegisterDto,
+        undefined,
+      );
     });
 
     it('should return the result from authService.register', async () => {
       const custom = { message: 'a different message' };
       authService.register.mockResolvedValue(custom);
 
-      const result = await controller.register(mockRegisterDto);
+      const result = await controller.register(mockRegisterDto, requestFrom());
 
       expect(result).toEqual(custom);
     });
@@ -114,7 +139,7 @@ describe('AuthController', () => {
     it('should handle async/await properly', async () => {
       authService.register.mockResolvedValue(mockRegisterResponse);
 
-      const result = await controller.register(mockRegisterDto);
+      const result = await controller.register(mockRegisterDto, requestFrom());
 
       expect(result).toEqual(mockRegisterResponse);
     });
@@ -129,12 +154,30 @@ describe('AuthController', () => {
       };
       authService.requestPasswordReset.mockResolvedValue(response);
 
-      const result = await controller.requestPasswordReset(body);
+      const result = await controller.requestPasswordReset(
+        body,
+        requestFrom(PREVIEW_ORIGIN),
+      );
 
       expect(authService.requestPasswordReset).toHaveBeenCalledWith(
         'ash@pallet.town',
+        PREVIEW_ORIGIN,
       );
       expect(result).toEqual(response);
+    });
+
+    it('passes undefined when the caller sends no Origin', async () => {
+      authService.requestPasswordReset.mockResolvedValue({ message: 'sent' });
+
+      await controller.requestPasswordReset(
+        { email: 'ash@pallet.town' },
+        requestFrom(),
+      );
+
+      expect(authService.requestPasswordReset).toHaveBeenCalledWith(
+        'ash@pallet.town',
+        undefined,
+      );
     });
   });
 

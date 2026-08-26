@@ -10,6 +10,7 @@ import { WinstonModule } from 'nest-winston';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { runSeeders, SeederOptions } from 'typeorm-extension';
 import { AppModule } from './app.module';
+import { parseAllowedOrigins } from './config/allowed-origins';
 import { createWinstonLogger } from './config/logging.config';
 import { postgresDriver } from './config/postgres-driver';
 import { GroupPokemonEntity } from './groups/group-pokemon.entity';
@@ -35,30 +36,10 @@ async function bootstrap() {
     },
   );
 
-  // Enable CORS with configurable origins. Entries may contain '*' wildcards
-  // (e.g. https://pokedex-frontend-*.vercel.app for Vercel preview
-  // deployments); a wildcard matches a single hostname label and cannot
-  // cross a '.', so it can't be widened to unrelated domains.
-  const toOriginMatcher = (origin: string): string | RegExp =>
-    origin.includes('*')
-      ? new RegExp(
-          `^${origin
-            .split('*')
-            .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-            .join('[a-zA-Z0-9-]+')}$`,
-        )
-      : origin;
-
-  const allowedOrigins = (
-    process.env.ALLOWED_ORIGINS
-      ? process.env.ALLOWED_ORIGINS.split(',')
-          .map((origin) => origin.trim())
-          .filter((origin) => origin.length > 0)
-      : ['http://localhost:3010']
-  ).map(toOriginMatcher);
-
+  // The same allow-list gates CORS and the origins emailed links may point at
+  // (see AuthService.resolveFrontendBaseUrl).
   app.enableCors({
-    origin: allowedOrigins,
+    origin: parseAllowedOrigins(process.env.ALLOWED_ORIGINS),
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

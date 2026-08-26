@@ -2,6 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import {
+  isAllowedOrigin,
+  parseAllowedOrigins,
+} from '../config/allowed-origins';
 import { MailService } from '../mail/mail.service';
 import { buildAlreadyRegisteredMessage } from '../mail/templates/already-registered.template';
 import { buildEmailVerificationMessage } from '../mail/templates/email-verification.template';
@@ -50,7 +54,29 @@ export class AuthService {
     return `${this.configService.getOrThrow<string>('JWT_SECRET')}${user.password}`;
   }
 
-  async requestPasswordReset(email: string): Promise<PasswordResetResponseDTO> {
+  /**
+   * Origin to build emailed links from. Preview deployments get a fresh
+   * frontend URL every deploy, so no single configured value can serve them —
+   * the caller's own origin can, but only once it has been matched against
+   * ALLOWED_ORIGINS. Trusting the header unchecked would let anyone mail a
+   * stranger a genuine reset link pointing at a host they control, which hands
+   * over the token. FRONTEND_BASE_URL stays the answer for production's stable
+   * domain and for callers that send no Origin at all.
+   */
+  private resolveFrontendBaseUrl(requestOrigin?: string): string {
+    const allowedOrigins = parseAllowedOrigins(
+      this.configService.get<string>('ALLOWED_ORIGINS'),
+    );
+
+    return isAllowedOrigin(requestOrigin, allowedOrigins)
+      ? requestOrigin
+      : this.configService.getOrThrow<string>('FRONTEND_BASE_URL');
+  }
+
+  async requestPasswordReset(
+    email: string,
+    requestOrigin?: string,
+  ): Promise<PasswordResetResponseDTO> {
     const user = await this.usersService.findOneByEmail(email);
 
     if (user) {
@@ -65,8 +91,7 @@ export class AuthService {
         secret: this.resetTokenSecret(user),
         expiresIn: expirySeconds,
       });
-      const baseUrl =
-        this.configService.getOrThrow<string>('FRONTEND_BASE_URL');
+      const baseUrl = this.resolveFrontendBaseUrl(requestOrigin);
       const resetUrl = `${baseUrl}/reset-password?token=${encodeURIComponent(token)}`;
 
       // send() never throws and logs its own failures, so a mail outage
@@ -163,7 +188,10 @@ export class AuthService {
     return `${secret}${user.email}${String(user.emailVerified)}`;
   }
 
-  private async sendVerificationEmail(user: UserEntity): Promise<void> {
+  private async sendVerificationEmail(
+    user: UserEntity,
+    requestOrigin?: string,
+  ): Promise<void> {
     const expirySeconds = parseInt(
       this.configService.get<string>(
         'EMAIL_VERIFICATION_TOKEN_VALIDITY_DURATION_IN_SEC',
@@ -175,7 +203,7 @@ export class AuthService {
       secret: this.verificationTokenSecret(user),
       expiresIn: expirySeconds,
     });
-    const baseUrl = this.configService.getOrThrow<string>('FRONTEND_BASE_URL');
+    const baseUrl = this.resolveFrontendBaseUrl(requestOrigin);
     const verifyUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(token)}`;
 
     await this.mailService.send(
@@ -208,7 +236,10 @@ export class AuthService {
     const payload = { email: user.email, userId: user.id };
     return { access_token: await this.jwtService.signAsync(payload) };
   }
-  async register(user: RegisterRequestDto): Promise<RegisterResponseDTO> {
+  async register(
+    user: RegisterRequestDto,
+    requestOrigin?: string,
+  ): Promise<RegisterResponseDTO> {
     const existingUser = await this.usersService.findOneByEmail(user.email);
 
     if (existingUser) {
@@ -220,7 +251,7 @@ export class AuthService {
         );
       } else {
         // Unverified: resend the link so they can finish signing up.
-        await this.sendVerificationEmail(existingUser);
+        await this.sendVerificationEmail(existingUser, requestOrigin);
       }
 
       // Either way the submitted password is ignored: honouring it would let
@@ -238,7 +269,7 @@ export class AuthService {
     };
 
     const createdUser = await this.usersService.create(newUser);
-    await this.sendVerificationEmail(createdUser);
+    await this.sendVerificationEmail(createdUser, requestOrigin);
     return { message: REGISTRATION_SUBMITTED_MESSAGE };
   }
 }

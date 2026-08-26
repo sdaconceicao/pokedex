@@ -43,6 +43,11 @@ describe('AuthService', () => {
     password: 'password123',
   };
 
+  const ALLOWED_ORIGINS =
+    'http://localhost:3010,https://pokedex-frontend-*.vercel.app';
+  const PREVIEW_ORIGIN =
+    'https://pokedex-frontend-git-feat-password-reset-code-x.vercel.app';
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -90,6 +95,16 @@ describe('AuthService', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
+
+  /**
+   * ALLOWED_ORIGINS is read through the same get() as the token TTLs, so the
+   * mock has to answer per key rather than returning one value for all of them.
+   */
+  const mockConfigGet = (ttl: string | undefined) =>
+    configService.get.mockImplementation(
+      (key: string) =>
+        (key === 'ALLOWED_ORIGINS' ? ALLOWED_ORIGINS : ttl) as never,
+    );
 
   describe('validateUser', () => {
     it('should be defined', () => {
@@ -207,7 +222,7 @@ describe('AuthService', () => {
             FRONTEND_BASE_URL: 'http://localhost:3010',
           })[key] as never,
       );
-      configService.get.mockReturnValue('86400' as never);
+      mockConfigGet('86400');
 
       const result = await service.register(mockRegisterDto);
 
@@ -278,11 +293,11 @@ describe('AuthService', () => {
             FRONTEND_BASE_URL: 'http://localhost:3010',
           })[key] as never,
       );
-      configService.get.mockReturnValue('900' as never);
+      mockConfigGet('900');
     });
 
     it('falls back to a 15 minute expiry when the TTL is unset', async () => {
-      configService.get.mockReturnValue(undefined as never);
+      mockConfigGet(undefined);
       usersService.findOneByEmail.mockResolvedValue(mockUser);
       jwtService.signAsync.mockResolvedValue('reset-token-123');
       mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
@@ -316,6 +331,60 @@ describe('AuthService', () => {
         }),
       );
       expect(result).toEqual(GENERIC_MESSAGE);
+    });
+
+    it('builds the link from an allow-listed preview origin', async () => {
+      usersService.findOneByEmail.mockResolvedValue(mockUser);
+      jwtService.signAsync.mockResolvedValue('reset-token-123');
+      mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
+
+      // Preview deployments have no stable URL, so the configured
+      // FRONTEND_BASE_URL would send the user to the wrong deployment.
+      await service.requestPasswordReset(mockUser.email, PREVIEW_ORIGIN);
+
+      expect(mailService.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          html: expect.stringContaining(
+            `${PREVIEW_ORIGIN}/reset-password?token=reset-token-123`,
+          ),
+        }),
+      );
+    });
+
+    it('needs no FRONTEND_BASE_URL once the origin is allow-listed', async () => {
+      configService.getOrThrow.mockImplementation((key: string) => {
+        if (key === 'FRONTEND_BASE_URL') {
+          throw new Error('FRONTEND_BASE_URL is unset');
+        }
+        return 'test-secret' as never;
+      });
+      usersService.findOneByEmail.mockResolvedValue(mockUser);
+      jwtService.signAsync.mockResolvedValue('reset-token-123');
+      mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
+
+      await expect(
+        service.requestPasswordReset(mockUser.email, PREVIEW_ORIGIN),
+      ).resolves.toEqual(GENERIC_MESSAGE);
+    });
+
+    it('ignores an origin that is not allow-listed', async () => {
+      usersService.findOneByEmail.mockResolvedValue(mockUser);
+      jwtService.signAsync.mockResolvedValue('reset-token-123');
+      mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
+
+      await service.requestPasswordReset(
+        mockUser.email,
+        'https://pokedex-frontend-evil.attacker.example',
+      );
+
+      // An unchecked Origin would mail the address owner a genuine reset link
+      // pointing at a host the attacker controls.
+      const sent = mailService.send.mock.calls[0][0];
+      expect(sent.html).toContain(
+        'http://localhost:3010/reset-password?token=reset-token-123',
+      );
+      expect(sent.html).not.toContain('attacker.example');
+      expect(sent.text).not.toContain('attacker.example');
     });
 
     it('returns the same message and sends nothing for an unknown address', async () => {
@@ -480,7 +549,7 @@ describe('AuthService', () => {
             FRONTEND_BASE_URL: 'http://localhost:3010',
           })[key] as never,
       );
-      configService.get.mockReturnValue('86400' as never);
+      mockConfigGet('86400');
     });
 
     it('resends the link instead of erroring, leaving the password alone', async () => {
@@ -504,6 +573,36 @@ describe('AuthService', () => {
       expect(usersService.update).not.toHaveBeenCalled();
       expect(bcrypt.hash).not.toHaveBeenCalled();
       expect(result).toEqual(SUBMITTED);
+    });
+
+    it('builds the verification link from an allow-listed preview origin', async () => {
+      usersService.findOneByEmail.mockResolvedValue(unverified);
+      jwtService.signAsync.mockResolvedValue('verify-token-789');
+      mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
+
+      await service.register(mockRegisterDto, PREVIEW_ORIGIN);
+
+      expect(mailService.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          html: expect.stringContaining(
+            `${PREVIEW_ORIGIN}/verify-email?token=verify-token-789`,
+          ),
+        }),
+      );
+    });
+
+    it('ignores an origin that is not allow-listed', async () => {
+      usersService.findOneByEmail.mockResolvedValue(unverified);
+      jwtService.signAsync.mockResolvedValue('verify-token-789');
+      mailService.send.mockResolvedValue({ ok: true, id: 'resend-1' });
+
+      await service.register(mockRegisterDto, 'https://attacker.example');
+
+      const sent = mailService.send.mock.calls[0][0];
+      expect(sent.html).toContain(
+        'http://localhost:3010/verify-email?token=verify-token-789',
+      );
+      expect(sent.html).not.toContain('attacker.example');
     });
 
     it('replies the same for unverified, verified, and unknown addresses', async () => {
