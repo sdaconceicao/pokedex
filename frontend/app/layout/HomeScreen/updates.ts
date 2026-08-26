@@ -10,6 +10,13 @@ export interface Update {
 
 export const UPDATES: Update[] = [
   {
+    date: "2026-08-26",
+    label: "Aug 26, 2026",
+    tags: ["New"],
+    title: "Save pokemon to your own groups",
+    body: "We've added the ability to save Pokémon to your own groups. You can create groups of Pokémon.",
+  },
+  {
     date: "2026-08-18",
     label: "Aug 18, 2026",
     tags: ["New"],
