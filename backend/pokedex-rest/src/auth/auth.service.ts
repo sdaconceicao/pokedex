@@ -158,6 +158,11 @@ export class AuthService {
       // Completing a reset means they read an email at this address, which is
       // exactly what verification proves — so don't strand them unverified.
       emailVerified: true,
+      // Reset is the escape hatch from a login lockout, which anyone who knows
+      // the address can trigger. Leaving these set would mean the recovery path
+      // did not actually recover the account.
+      failedPasswordAttempts: 0,
+      passwordLockedUntil: null,
     });
     if (!updated) {
       throw new BadRequestException(INVALID_RESET_TOKEN_MESSAGE);
@@ -214,10 +219,7 @@ export class AuthService {
       throw new BadRequestException(INVALID_CREDENTIALS_MESSAGE);
     }
 
-    if (
-      user.passwordLockedUntil &&
-      user.passwordLockedUntil.getTime() > Date.now()
-    ) {
+    if (this.isPasswordLocked(user)) {
       throw new HttpException(
         PASSWORD_LOCKED_MESSAGE,
         HttpStatus.TOO_MANY_REQUESTS,
@@ -245,6 +247,14 @@ export class AuthService {
     }
 
     return { message: PASSWORD_CHANGED_MESSAGE };
+  }
+
+  /** Whether an armed lockout window is still open. */
+  private isPasswordLocked(user: UserEntity): boolean {
+    return (
+      !!user.passwordLockedUntil &&
+      user.passwordLockedUntil.getTime() > Date.now()
+    );
   }
 
   /**
@@ -307,10 +317,33 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
+
+    // Login is unauthenticated, so this lockout is DoS-able by anyone who knows
+    // the address — five wrong guesses blocks the real owner for the window.
+    // Accepted deliberately: password reset clears it (see confirmPasswordReset),
+    // which is the escape hatch that makes the trade tolerable.
+    if (this.isPasswordLocked(user)) {
+      throw new HttpException(
+        PASSWORD_LOCKED_MESSAGE,
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
     const isMatch: boolean = bcrypt.compareSync(password, user.password);
     if (!isMatch) {
+      await this.recordFailedPasswordAttempt(user);
       throw new BadRequestException('Password does not match');
     }
+
+    // Written only when there is something to clear: login is the hot path, and
+    // an unconditional UPDATE on every sign-in would be a needless write.
+    if (user.failedPasswordAttempts > 0 || user.passwordLockedUntil) {
+      await this.usersService.update(user.id, {
+        failedPasswordAttempts: 0,
+        passwordLockedUntil: null,
+      });
+    }
+
     // Checked only after the password matches: otherwise a wrong password on
     // an unverified account would still confirm the address is registered.
     if (!user.emailVerified) {

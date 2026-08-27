@@ -113,6 +113,95 @@ describe('AuthService', () => {
       expect(service).toBeDefined();
     });
 
+    describe('lockout', () => {
+      const NOW = new Date('2026-08-27T12:00:00.000Z');
+
+      beforeEach(() => {
+        vi.useFakeTimers();
+        vi.setSystemTime(NOW);
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it('refuses a locked account without checking the password', async () => {
+        usersService.findOneByEmail.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 5,
+          passwordLockedUntil: new Date(NOW.getTime() + 60_000),
+        });
+
+        await expect(
+          service.validateUser(mockUser.email, 'password123'),
+        ).rejects.toMatchObject({
+          status: HttpStatus.TOO_MANY_REQUESTS,
+        });
+
+        expect(bcrypt.compareSync).not.toHaveBeenCalled();
+        expect(usersService.update).not.toHaveBeenCalled();
+      });
+
+      it('counts a wrong password on the login path too', async () => {
+        usersService.findOneByEmail.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 2,
+        });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(false);
+
+        await expect(
+          service.validateUser(mockUser.email, 'wrong'),
+        ).rejects.toThrow(new BadRequestException('Password does not match'));
+
+        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
+          failedPasswordAttempts: 3,
+          passwordLockedUntil: null,
+        });
+      });
+
+      it('clears an accumulated streak on a successful login', async () => {
+        usersService.findOneByEmail.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 3,
+        });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(true);
+
+        await service.validateUser(mockUser.email, 'password123');
+
+        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
+          failedPasswordAttempts: 0,
+          passwordLockedUntil: null,
+        });
+      });
+
+      // Login is the hot path: a clean account must not pay for a write on
+      // every single sign-in.
+      it('writes nothing when a successful login had no streak to clear', async () => {
+        usersService.findOneByEmail.mockResolvedValue(mockUser);
+        vi.mocked(bcrypt.compareSync).mockReturnValue(true);
+
+        await service.validateUser(mockUser.email, 'password123');
+
+        expect(usersService.update).not.toHaveBeenCalled();
+      });
+
+      it('lets a login through once the window has passed', async () => {
+        usersService.findOneByEmail.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 5,
+          passwordLockedUntil: new Date(NOW.getTime() - 1),
+        });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(true);
+
+        const result = await service.validateUser(
+          mockUser.email,
+          'password123',
+        );
+
+        expect(result.email).toBe(mockUser.email);
+      });
+    });
+
     it('should validate user successfully with correct credentials', async () => {
       const email = 'test@example.com';
       const password = 'password123';
@@ -443,6 +532,9 @@ describe('AuthService', () => {
         password: 'newHash',
         // Reset doubles as verification — see confirmPasswordReset.
         emailVerified: true,
+        // ...and as the escape hatch from a login lockout.
+        failedPasswordAttempts: 0,
+        passwordLockedUntil: null,
       });
       expect(result).toEqual({ access_token: 'access-token-123' });
     });
