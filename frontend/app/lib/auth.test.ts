@@ -1,4 +1,4 @@
-import { authApi, getStoredToken, setStoredToken } from "./auth";
+import { authApi, getStoredToken, requireStoredToken, setStoredToken } from "./auth";
 
 const okJson = (body: unknown) => new Response(JSON.stringify(body), { status: 200 });
 
@@ -109,5 +109,17 @@ describe("authApi", () => {
     await authApi.logout();
 
     expect(getStoredToken()).toBeNull();
+  });
+});
+
+describe("requireStoredToken", () => {
+  it("returns the stored token", () => {
+    setStoredToken("at-6");
+
+    expect(requireStoredToken()).toBe("at-6");
+  });
+
+  it("throws when no token is stored", () => {
+    expect(() => requireStoredToken()).toThrow("No token provided");
   });
 });

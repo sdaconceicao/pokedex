@@ -22,7 +22,8 @@
     "test:coverage": "vitest run --coverage",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "lint:check": "biome ci .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "format": "biome format --write .",
     "tsc": "tsc --noEmit"
   },
