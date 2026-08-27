@@ -84,7 +84,7 @@ export default function Navbar({
                 columns={columns}
                 items={itemsByKey[key]}
               />
-            )
+            ),
           )}
         </DisclosureGroup>
       </NavbarGroup>

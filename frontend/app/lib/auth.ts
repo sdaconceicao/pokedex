@@ -17,6 +17,12 @@ export const getStoredToken = (): string | null => {
   return localStorage.getItem("access_token");
 };
 
+export const requireStoredToken = (): string => {
+  const token = getStoredToken();
+  if (!token) throw new Error("No token provided");
+  return token;
+};
+
 export const setStoredToken = (token: string): void => {
   if (typeof window === "undefined") return;
   localStorage.setItem("access_token", token);

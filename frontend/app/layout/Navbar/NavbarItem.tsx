@@ -40,14 +40,14 @@ export default function NavbarItem({ item, onNavigate }: NavbarItemProps) {
   const isActive = item.activeWhenPathnameIn
     ? item.activeWhenPathnameIn.includes(pathname)
     : item.activeWhenPathnameEquals
-    ? pathname === item.activeWhenPathnameEquals
-    : item.activeWhenSearchParamIncludes
-    ? pathname === item.href.split("?")[0] &&
-      paramIncludes(
-        searchParams.get(item.activeWhenSearchParamIncludes.key),
-        item.activeWhenSearchParamIncludes.value
-      )
-    : false;
+      ? pathname === item.activeWhenPathnameEquals
+      : item.activeWhenSearchParamIncludes
+        ? pathname === item.href.split("?")[0] &&
+          paramIncludes(
+            searchParams.get(item.activeWhenSearchParamIncludes.key),
+            item.activeWhenSearchParamIncludes.value,
+          )
+        : false;
 
   return (
     // lago's Link supplies the interaction/state contract (hover, focus-visible
@@ -65,10 +65,7 @@ export default function NavbarItem({ item, onNavigate }: NavbarItemProps) {
         // lago types `render`'s props as anchor-or-span, because Link drops to
         // a <span> when it has no href. This one always has one, so the anchor
         // branch is the only reachable case and the narrowing is sound.
-        <NextLink
-          {...(props as ComponentPropsWithoutRef<"a">)}
-          href={item.href}
-        >
+        <NextLink {...(props as ComponentPropsWithoutRef<"a">)} href={item.href}>
           {item.label} {item.icon}
         </NextLink>
       )}

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
 import type {
@@ -36,8 +36,7 @@ export function useAuth() {
     error: userError,
   } = useQuery({
     queryKey: ["auth", "user", token],
-    queryFn: () => authApi.getCurrentUser(token!),
-    enabled: !!token,
+    queryFn: token ? () => authApi.getCurrentUser(token) : skipToken,
     retry: false,
     staleTime: 5 * 60 * 1000,
   });

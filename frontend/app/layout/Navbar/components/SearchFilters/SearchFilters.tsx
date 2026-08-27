@@ -75,8 +75,7 @@ export default function SearchFilters({
     // button, and the field's onSubmit calls the same handler.
     <search className={styles.filters} aria-label="Filter Pokemon">
       <p className={styles.hint}>
-        More choices in one field widen the results; filling in more fields
-        narrows them.
+        More choices in one field widen the results; filling in more fields narrows them.
       </p>
 
       {/* `defaultItems`, not `items`, on every field below: react-aria reads a
@@ -92,9 +91,7 @@ export default function SearchFilters({
         value={draft.types}
         onChange={setTypes}
       >
-        {(option) => (
-          <MultiSelectItem id={option.id}>{option.label}</MultiSelectItem>
-        )}
+        {(option) => <MultiSelectItem id={option.id}>{option.label}</MultiSelectItem>}
       </MultiSelect>
 
       <Select<FacetOption>
@@ -117,9 +114,7 @@ export default function SearchFilters({
         value={draft.regions}
         onChange={setRegions}
       >
-        {(option) => (
-          <MultiSelectItem id={option.id}>{option.label}</MultiSelectItem>
-        )}
+        {(option) => <MultiSelectItem id={option.id}>{option.label}</MultiSelectItem>}
       </MultiSelect>
 
       <MultiSelect<FacetOption>
@@ -130,9 +125,7 @@ export default function SearchFilters({
         value={draft.pokedexes}
         onChange={setPokedexes}
       >
-        {(option) => (
-          <MultiSelectItem id={option.id}>{option.label}</MultiSelectItem>
-        )}
+        {(option) => <MultiSelectItem id={option.id}>{option.label}</MultiSelectItem>}
       </MultiSelect>
 
       {/* The suggestions are a shortcut, not a requirement — picking one just

@@ -67,11 +67,7 @@ export default function NavbarSection({
                   <h3 id={groupId} className={styles.subGroupTitle}>
                     {group.title}
                   </h3>
-                  <ul
-                    className={styles.list}
-                    data-columns={columns}
-                    aria-labelledby={groupId}
-                  >
+                  <ul className={styles.list} data-columns={columns} aria-labelledby={groupId}>
                     {group.items.map((item) => (
                       <li key={item.href} className={styles.listItem}>
                         <NavbarItem item={item} onNavigate={onNavigate} />

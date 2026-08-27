@@ -11,6 +11,8 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
     "test": "vitest run",
