@@ -1,4 +1,6 @@
 import type {
+  ChangePasswordCredentials,
+  ChangePasswordResponse,
   EmailVerificationConfirmResponse,
   LoginCredentials,
   LoginResponse,
@@ -91,6 +93,27 @@ export const authApi = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || "Password reset failed");
+    }
+
+    return response.json();
+  },
+
+  async changePassword(
+    token: string,
+    credentials: ChangePasswordCredentials,
+  ): Promise<ChangePasswordResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Password change failed");
     }
 
     return response.json();

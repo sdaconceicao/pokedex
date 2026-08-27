@@ -1,0 +1,84 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.intro {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.875rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.row:first-child {
+  border-top: none;
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.value {
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+/* The masked value and its edit affordance share one line. Scoped to this row
+   rather than added to `.value`, which the email, username and name rows use. */
+.passwordValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.mask {
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+
+/* lago's Link is a text link — underlined, on --link-color. Neither reads well
+   on a bare glyph, and this stylesheet is unlayered so it outranks lago's own
+   rules (see the note in globals.css). The icon set ships at 24px; 16px sits
+   level with the row's 0.95rem text. */
+.editLink {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.editLink svg {
+  width: 16px;
+  height: 16px;
+}
+
+.editLink:hover {
+  color: var(--tint);
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}

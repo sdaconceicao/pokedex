@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -12,6 +17,7 @@ import { buildEmailVerificationMessage } from '../mail/templates/email-verificat
 import { buildPasswordResetMessage } from '../mail/templates/password-reset.template';
 import { UserEntity } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
+import { ChangePasswordResponseDTO } from './dtos/change-password-response.dto';
 import { PasswordResetResponseDTO } from './dtos/password-reset-response.dto';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 import { RegisterResponseDTO } from './dtos/register-response.dto';
@@ -35,6 +41,20 @@ const REGISTRATION_SUBMITTED_MESSAGE =
 // Expired, tampered, unknown user, and already-used all collapse to this.
 const INVALID_VERIFICATION_TOKEN_MESSAGE =
   'Invalid or expired verification link';
+
+const PASSWORD_CHANGED_MESSAGE = 'Password updated';
+
+// A signed-in caller whose record has vanished, or an update that affected no
+// rows. Neither is actionable by the user, so both collapse to one message.
+const INVALID_CREDENTIALS_MESSAGE = 'Unable to change password';
+
+// Five wrong guesses buys a 15-minute lockout. Sized against the threat this
+// exists for: an attacker holding a stolen access token brute-forcing the
+// current password to lock the real owner out of their account.
+const MAX_FAILED_PASSWORD_ATTEMPTS = 5;
+const PASSWORD_LOCKOUT_MS = 15 * 60 * 1000;
+
+const PASSWORD_LOCKED_MESSAGE = 'Too many incorrect attempts. Try again later';
 
 @Injectable()
 export class AuthService {
@@ -176,6 +196,72 @@ export class AuthService {
     }
 
     return this.login(updated);
+  }
+
+  /**
+   * Changing the password rotates the hash, so every outstanding *reset* token
+   * for this user stops verifying (see `resetTokenSecret`). Access tokens are
+   * not affected — they are signed against JWT_SECRET alone, so sessions on
+   * other devices stay valid until they expire.
+   */
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<ChangePasswordResponseDTO> {
+    const user = await this.usersService.findOneById(userId);
+    if (!user) {
+      throw new BadRequestException(INVALID_CREDENTIALS_MESSAGE);
+    }
+
+    if (
+      user.passwordLockedUntil &&
+      user.passwordLockedUntil.getTime() > Date.now()
+    ) {
+      throw new HttpException(
+        PASSWORD_LOCKED_MESSAGE,
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    // Compared here rather than through validateUser: that throws for a wrong
+    // password *and* for an unverified address, and counting the second as a
+    // password guess would be wrong. Telling them apart would mean matching on
+    // error messages. The emailVerified check is no loss either — a caller
+    // holding a token for this account is verified by definition.
+    if (!bcrypt.compareSync(currentPassword, user.password)) {
+      await this.recordFailedPasswordAttempt(user);
+      throw new BadRequestException('Password does not match');
+    }
+
+    const updated = await this.usersService.update(user.id, {
+      password: await bcrypt.hash(newPassword, 10),
+      // A correct password clears the streak, lockout included.
+      failedPasswordAttempts: 0,
+      passwordLockedUntil: null,
+    });
+    if (!updated) {
+      throw new BadRequestException(INVALID_CREDENTIALS_MESSAGE);
+    }
+
+    return { message: PASSWORD_CHANGED_MESSAGE };
+  }
+
+  /**
+   * Counts one wrong guess and arms the lockout window on reaching the
+   * threshold. The counter lives on the user row because that is the only store
+   * every serverless instance shares.
+   */
+  private async recordFailedPasswordAttempt(user: UserEntity): Promise<void> {
+    const attempts = (user.failedPasswordAttempts ?? 0) + 1;
+
+    await this.usersService.update(user.id, {
+      failedPasswordAttempts: attempts,
+      passwordLockedUntil:
+        attempts >= MAX_FAILED_PASSWORD_ATTEMPTS
+          ? new Date(Date.now() + PASSWORD_LOCKOUT_MS)
+          : null,
+    });
   }
 
   /**

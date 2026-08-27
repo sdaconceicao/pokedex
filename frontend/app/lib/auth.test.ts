@@ -102,6 +102,54 @@ describe("authApi", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it("posts both passwords to the change-password endpoint with the bearer token", async () => {
+    vi.mocked(fetch).mockResolvedValue(okJson({ message: "Password updated" }));
+
+    const result = await authApi.changePassword("at-6", {
+      currentPassword: "OldPikachu123!",
+      password: "NewPikachu123!",
+    });
+
+    const [url, init] = vi.mocked(fetch).mock.calls[0];
+    expect(url).toMatch(/\/auth\/change-password$/);
+    expect(init?.method).toBe("POST");
+    expect(init?.headers).toEqual({
+      "Content-Type": "application/json",
+      Authorization: "Bearer at-6",
+    });
+    expect(JSON.parse(init?.body as string)).toEqual({
+      currentPassword: "OldPikachu123!",
+      password: "NewPikachu123!",
+    });
+    expect(result).toEqual({ message: "Password updated" });
+  });
+
+  it("throws the API's message when the current password is wrong", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ message: "Password does not match" }), {
+        status: 400,
+      }),
+    );
+
+    await expect(
+      authApi.changePassword("at-6", {
+        currentPassword: "wrong",
+        password: "NewPikachu123!",
+      }),
+    ).rejects.toThrow("Password does not match");
+  });
+
+  it("falls back to a default message when the change-password error body is not JSON", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response("gateway timeout", { status: 504 }));
+
+    await expect(
+      authApi.changePassword("at-6", {
+        currentPassword: "OldPikachu123!",
+        password: "NewPikachu123!",
+      }),
+    ).rejects.toThrow("Password change failed");
+  });
+
   it("clears the stored token on logout", async () => {
     setStoredToken("at-5");
     expect(getStoredToken()).toBe("at-5");

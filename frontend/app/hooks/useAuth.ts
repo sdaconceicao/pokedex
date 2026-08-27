@@ -1,7 +1,9 @@
 import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { authApi, getStoredToken, setStoredToken } from "@/lib/auth";
+import { authApi, getStoredToken, requireStoredToken, setStoredToken } from "@/lib/auth";
 import type {
+  ChangePasswordCredentials,
+  ChangePasswordResponse,
   EmailVerificationConfirmResponse,
   LoginCredentials,
   LoginResponse,
@@ -90,6 +92,17 @@ export function useAuth() {
     },
   });
 
+  // No onSuccess: the caller's existing access token stays valid (it is signed
+  // against JWT_SECRET alone, not the password hash), and nothing in the cached
+  // user payload changes — so there is no token to store and nothing to refetch.
+  const changePasswordMutation = useMutation<
+    ChangePasswordResponse,
+    Error,
+    ChangePasswordCredentials
+  >({
+    mutationFn: (credentials) => authApi.changePassword(requireStoredToken(), credentials),
+  });
+
   return {
     user: hasMounted ? user : undefined,
     isLoading: isTokenLoading || isUserLoading,
@@ -110,6 +123,8 @@ export function useAuth() {
     isConfirmPasswordResetLoading: confirmPasswordResetMutation.isPending,
     confirmEmailVerificationAsync: confirmEmailVerificationMutation.mutateAsync,
     isConfirmEmailVerificationLoading: confirmEmailVerificationMutation.isPending,
+    changePasswordAsync: changePasswordMutation.mutateAsync,
+    isChangePasswordLoading: changePasswordMutation.isPending,
   };
 }
 

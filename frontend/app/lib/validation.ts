@@ -55,3 +55,34 @@ export function validateEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
+
+export interface NewPasswordErrors {
+  password?: string;
+  confirmPassword?: string;
+}
+
+/**
+ * Shared by the reset-password and change-password forms: both ask for a new
+ * password twice and report problems per field. Only the first policy error is
+ * surfaced, matching what the forms displayed before this was extracted.
+ */
+export function validateNewPassword(password: string, confirmPassword: string): NewPasswordErrors {
+  const errors: NewPasswordErrors = {};
+
+  if (!password) {
+    errors.password = "Password is required";
+  } else {
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      errors.password = passwordValidation.errors[0];
+    }
+  }
+
+  if (!confirmPassword) {
+    errors.confirmPassword = "Please confirm your password";
+  } else if (password !== confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
+  }
+
+  return errors;
+}

@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -32,6 +32,8 @@ describe('AuthService', () => {
     firstName: '',
     lastName: '',
     emailVerified: true,
+    failedPasswordAttempts: 0,
+    passwordLockedUntil: null,
   };
 
   const SUBMITTED = {
@@ -619,6 +621,174 @@ describe('AuthService', () => {
       // Three different emails, one indistinguishable response.
       expect(unverifiedReply).toEqual(verifiedReply);
       expect(verifiedReply).toEqual(newReply);
+    });
+  });
+
+  describe('changePassword', () => {
+    const UNABLE = new BadRequestException('Unable to change password');
+
+    it('verifies the current password, then rotates the hash', async () => {
+      usersService.findOneById.mockResolvedValue(mockUser);
+      usersService.findOneByEmail.mockResolvedValue(mockUser);
+      vi.mocked(bcrypt.compareSync).mockReturnValue(true as never);
+      vi.mocked(bcrypt.hash).mockResolvedValue('newHash' as never);
+      usersService.update.mockResolvedValue({
+        ...mockUser,
+        password: 'newHash',
+      });
+
+      const result = await service.changePassword(
+        mockUser.id,
+        'OldPikachu123!',
+        'NewPikachu123!',
+      );
+
+      expect(bcrypt.compareSync).toHaveBeenCalledWith(
+        'OldPikachu123!',
+        mockUser.password,
+      );
+      // Unlike a reset, changing a password proves nothing about the address,
+      // so emailVerified is deliberately absent from this update.
+      expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
+        password: 'newHash',
+        // A correct password clears any accumulated streak.
+        failedPasswordAttempts: 0,
+        passwordLockedUntil: null,
+      });
+      expect(result).toEqual({ message: 'Password updated' });
+    });
+
+    it('rejects a token naming a user who no longer exists', async () => {
+      usersService.findOneById.mockResolvedValue(null);
+
+      await expect(
+        service.changePassword('ghost-123', 'OldPikachu123!', 'NewPikachu123!'),
+      ).rejects.toThrow(UNABLE);
+      expect(usersService.update).not.toHaveBeenCalled();
+    });
+
+    it('rejects a wrong current password and counts the attempt', async () => {
+      usersService.findOneById.mockResolvedValue(mockUser);
+      vi.mocked(bcrypt.compareSync).mockReturnValue(false as never);
+
+      await expect(
+        service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
+      ).rejects.toThrow(new BadRequestException('Password does not match'));
+
+      // The only write is the counter — the password itself is untouched.
+      expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
+        failedPasswordAttempts: 1,
+        passwordLockedUntil: null,
+      });
+      expect(bcrypt.hash).not.toHaveBeenCalled();
+    });
+
+    it('rejects when the password write reports no row updated', async () => {
+      usersService.findOneById.mockResolvedValue(mockUser);
+      usersService.findOneByEmail.mockResolvedValue(mockUser);
+      vi.mocked(bcrypt.compareSync).mockReturnValue(true as never);
+      vi.mocked(bcrypt.hash).mockResolvedValue('newHash' as never);
+      usersService.update.mockResolvedValue(null);
+
+      await expect(
+        service.changePassword(mockUser.id, 'OldPikachu123!', 'NewPikachu123!'),
+      ).rejects.toThrow(UNABLE);
+    });
+
+    describe('lockout', () => {
+      const NOW = new Date('2026-08-27T12:00:00.000Z');
+
+      beforeEach(() => {
+        vi.useFakeTimers();
+        vi.setSystemTime(NOW);
+      });
+
+      afterEach(() => {
+        vi.useRealTimers();
+      });
+
+      it('arms a 15-minute window on the fifth consecutive wrong guess', async () => {
+        usersService.findOneById.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 4,
+        });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(false as never);
+
+        await expect(
+          service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
+        ).rejects.toThrow(BadRequestException);
+
+        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
+          failedPasswordAttempts: 5,
+          passwordLockedUntil: new Date(NOW.getTime() + 15 * 60 * 1000),
+        });
+      });
+
+      it('leaves the window unarmed below the threshold', async () => {
+        usersService.findOneById.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 3,
+        });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(false as never);
+
+        await expect(
+          service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
+        ).rejects.toThrow(BadRequestException);
+
+        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
+          failedPasswordAttempts: 4,
+          passwordLockedUntil: null,
+        });
+      });
+
+      // 429, not 400: the caller should be able to tell "wait" from "wrong".
+      it('refuses while locked, without checking the password at all', async () => {
+        usersService.findOneById.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 5,
+          passwordLockedUntil: new Date(NOW.getTime() + 60_000),
+        });
+
+        await expect(
+          service.changePassword(
+            mockUser.id,
+            'OldPikachu123!',
+            'NewPikachu123!',
+          ),
+        ).rejects.toMatchObject({
+          status: HttpStatus.TOO_MANY_REQUESTS,
+          message: 'Too many incorrect attempts. Try again later',
+        });
+
+        // No bcrypt work and no writes while the window is open — otherwise the
+        // lockout would still be an oracle, just a slower one.
+        expect(bcrypt.compareSync).not.toHaveBeenCalled();
+        expect(usersService.update).not.toHaveBeenCalled();
+      });
+
+      it('lets the correct password through once the window has passed', async () => {
+        usersService.findOneById.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 5,
+          passwordLockedUntil: new Date(NOW.getTime() - 1),
+        });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(true as never);
+        vi.mocked(bcrypt.hash).mockResolvedValue('newHash' as never);
+        usersService.update.mockResolvedValue(mockUser);
+
+        const result = await service.changePassword(
+          mockUser.id,
+          'OldPikachu123!',
+          'NewPikachu123!',
+        );
+
+        expect(result).toEqual({ message: 'Password updated' });
+        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
+          password: 'newHash',
+          failedPasswordAttempts: 0,
+          passwordLockedUntil: null,
+        });
+      });
     });
   });
 });

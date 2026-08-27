@@ -1,0 +1,17 @@
+/* The narrow, centred layout shared by the single-purpose auth screens —
+   reset-password, verify-email, and the account password change. Inner padding
+   belongs to ContentPanel; this owns only width, centring, and stacking. */
+.container {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.heading {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  text-align: center;
+}

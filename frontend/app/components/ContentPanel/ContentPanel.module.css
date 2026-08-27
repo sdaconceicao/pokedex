@@ -1,0 +1,25 @@
+/* The home screen's content surface, minus its fixed-light fill. Geometry
+   matches HomeScreen's `.home` so the two read as one family, but the
+   background follows the theme — lago form controls (Password, TextField,
+   Button) flip in dark mode, and painting them on a hardcoded #ffffff
+   breaks their contrast. */
+.panel {
+  width: 100%;
+  background: var(--surface-elevated);
+  color: var(--foreground);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.5rem;
+  /* Deliberately tighter than home's `clamp(1.5rem, 4vw, 4rem)`: `vw` can't
+     see that a page has capped this panel's width, so home's upper bound
+     eats a narrow card. Set `--content-panel-padding` on an ancestor (or the
+     page's own class) to opt into more. */
+  padding: var(--content-panel-padding, clamp(1.5rem, 3vw, 2.5rem));
+  box-shadow: 0 12px 48px rgba(28, 31, 38, 0.08);
+}
+
+/* Matches home's mobile corner softening */
+@media (max-width: 640px) {
+  .panel {
+    border-radius: 1rem;
+  }
+}

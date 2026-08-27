@@ -40,3 +40,12 @@ export interface PasswordResetConfirmResponse {
 export interface EmailVerificationConfirmResponse {
   access_token: string;
 }
+
+export interface ChangePasswordCredentials {
+  currentPassword: string;
+  password: string;
+}
+
+export interface ChangePasswordResponse {
+  message: string;
+}
