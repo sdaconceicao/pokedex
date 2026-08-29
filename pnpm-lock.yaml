@@ -21,7 +21,7 @@ overrides:
   lodash: ^4.18.0
   shell-quote: ^1.8.5
 
-packageExtensionsChecksum: sha256-p9jzJmFLT56n3pFKNcUzs1Y8beG2/ilX4d6H8sc8hag=
+packageExtensionsChecksum: sha256-W94QfCvEQ0tguOuQ4qi58tTnibv/jDr65t4oGVIurwc=
 
 importers:
 
@@ -5943,6 +5943,7 @@ snapshots:
       '@fastify/busboy': 3.2.0
       '@fastify/deepmerge': 3.2.1
       '@fastify/error': 4.2.0
+      fastify: 5.10.0
       fastify-plugin: 6.0.0
       secure-json-parse: 4.1.0
 
