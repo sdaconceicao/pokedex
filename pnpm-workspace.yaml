@@ -27,6 +27,11 @@ packageExtensions:
   "@untitled-ui/icons-react@*":
     dependencies:
       "@babel/runtime": "^7.29.7"
+  # @fastify/multipart types import `fastify` without declaring it. Linking it
+  # here keeps Nest and the plugin on the same FastifyInstance identity.
+  "@fastify/multipart@*":
+    dependencies:
+      fastify: "5.10.0"
 
 # Security overrides, all sourced from `pnpm audit`. Keys are version-scoped
 # where two majors coexist in the tree: minimatch@3 needs the 1.x line while

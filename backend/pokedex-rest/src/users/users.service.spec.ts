@@ -38,6 +38,7 @@ describe('UsersService', () => {
             findOne: vi.fn(),
             update: vi.fn(),
             delete: vi.fn(),
+            createQueryBuilder: vi.fn(),
           },
         },
       ],
@@ -196,6 +197,54 @@ describe('UsersService', () => {
         updateData,
       );
       expect(result).toBeNull();
+    });
+  });
+
+  describe('recordFailedPasswordAttempt', () => {
+    const NOW = new Date('2026-08-27T12:00:00.000Z');
+    const LOCKOUT_MS = 15 * 60 * 1000;
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+      vi.setSystemTime(NOW);
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('increments atomically and resets an expired lock to a fresh streak', async () => {
+      const qb = {
+        update: vi.fn(),
+        set: vi.fn(),
+        setParameter: vi.fn(),
+        where: vi.fn(),
+        execute: vi.fn(),
+      };
+      qb.update.mockReturnValue(qb);
+      qb.set.mockReturnValue(qb);
+      qb.setParameter.mockReturnValue(qb);
+      qb.where.mockReturnValue(qb);
+      qb.execute.mockResolvedValue({ affected: 1 });
+      repository.createQueryBuilder.mockReturnValue(qb as never);
+
+      await service.recordFailedPasswordAttempt('user-123', 5, LOCKOUT_MS);
+
+      expect(repository.createQueryBuilder).toHaveBeenCalled();
+      expect(qb.update).toHaveBeenCalledWith(UserEntity);
+      expect(qb.set).toHaveBeenCalledWith({
+        failedPasswordAttempts: expect.any(Function),
+        passwordLockedUntil: expect.any(Function),
+      });
+      expect(qb.setParameter).toHaveBeenCalledWith('maxAttempts', 5);
+      expect(qb.setParameter).toHaveBeenCalledWith(
+        'lockedUntil',
+        new Date(NOW.getTime() + LOCKOUT_MS),
+      );
+      expect(qb.where).toHaveBeenCalledWith('id = :userId', {
+        userId: 'user-123',
+      });
+      expect(qb.execute).toHaveBeenCalled();
     });
   });
 
