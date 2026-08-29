@@ -241,7 +241,9 @@ describe('UsersService', () => {
         'lockedUntil',
         new Date(NOW.getTime() + LOCKOUT_MS),
       );
-      expect(qb.where).toHaveBeenCalledWith('id = :userId', { userId: 'user-123' });
+      expect(qb.where).toHaveBeenCalledWith('id = :userId', {
+        userId: 'user-123',
+      });
       expect(qb.execute).toHaveBeenCalled();
     });
   });
