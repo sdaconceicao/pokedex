@@ -6,6 +6,7 @@ import type {
   SpeciesFlavorTextEntry,
 } from "../datasources/pokemon-api.types";
 import type { AbilityLite } from "../types";
+import { decimetersToFeet, hectogramsToPounds } from "./conversion";
 import {
   convertAbilityLiteToAbility,
   convertPokemonEntityToPokemon,
@@ -43,7 +44,7 @@ describe("getPokemonAbilitiesLite", () => {
           slot: 3,
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonAbilitiesLite(mockPokemon);
 
@@ -69,7 +70,7 @@ describe("getPokemonAbilitiesLite", () => {
       id: 1,
       name: "bulbasaur",
       abilities: [],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonAbilitiesLite(mockPokemon);
 
@@ -91,7 +92,7 @@ describe("getPokemonAbilitiesLite", () => {
           slot: 1,
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonAbilitiesLite(mockPokemon);
 
@@ -112,7 +113,7 @@ describe("getPokemonAbilitiesLite", () => {
           slot: 1,
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonAbilitiesLite(mockPokemon);
 
@@ -152,7 +153,7 @@ describe("getPokemonDefaultImageUrl", () => {
           },
         },
       },
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
@@ -192,7 +193,7 @@ describe("getPokemonDefaultImageUrl", () => {
           },
         },
       },
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
@@ -232,7 +233,7 @@ describe("getPokemonDefaultImageUrl", () => {
           },
         },
       },
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
@@ -271,7 +272,7 @@ describe("getPokemonDefaultImageUrl", () => {
           },
         },
       },
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
@@ -308,7 +309,7 @@ describe("getPokemonDefaultImageUrl", () => {
           },
         },
       },
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
@@ -343,7 +344,7 @@ describe("getPokemonDefaultImageUrl", () => {
           },
         },
       },
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonDefaultImageUrl(mockPokemon);
 
@@ -366,7 +367,7 @@ describe("getPokemonTypes", () => {
           type: { name: "poison", url: "https://pokeapi.co/api/v2/type/4/" },
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonTypes(mockPokemon);
 
@@ -383,7 +384,7 @@ describe("getPokemonTypes", () => {
           type: { name: "electric", url: "https://pokeapi.co/api/v2/type/13/" },
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonTypes(mockPokemon);
 
@@ -395,7 +396,7 @@ describe("getPokemonTypes", () => {
       id: 1,
       name: "bulbasaur",
       types: [],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonTypes(mockPokemon);
 
@@ -416,7 +417,7 @@ describe("getPokemonTypes", () => {
           type: { name: "grass", url: "https://pokeapi.co/api/v2/type/12/" },
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonTypes(mockPokemon);
 
@@ -467,7 +468,7 @@ describe("getPokemonStats", () => {
           stat: { name: "speed", url: "https://pokeapi.co/api/v2/stat/6/" },
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonStats(mockPokemon);
 
@@ -493,7 +494,7 @@ describe("getPokemonStats", () => {
         },
         // Missing other stats
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonStats(mockPokemon);
 
@@ -512,7 +513,7 @@ describe("getPokemonStats", () => {
       id: 1,
       name: "bulbasaur",
       stats: [],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonStats(mockPokemon);
 
@@ -550,7 +551,7 @@ describe("getPokemonStats", () => {
           stat: { name: "attack", url: "https://pokeapi.co/api/v2/stat/2/" },
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonStats(mockPokemon);
 
@@ -583,7 +584,7 @@ describe("getPokemonStats", () => {
           },
         },
       ],
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = getPokemonStats(mockPokemon);
 
@@ -698,7 +699,9 @@ describe("convertPokemonEntityToPokemon", () => {
           },
         },
       },
-    } as PokemonEntity;
+      height: 7,
+      weight: 69,
+    } as unknown as PokemonEntity;
 
     const result = convertPokemonEntityToPokemon(mockPokemonEntity);
 
@@ -709,6 +712,8 @@ describe("convertPokemonEntityToPokemon", () => {
       name: "bulbasaur",
       type: ["grass", "poison"],
       image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+      height: decimetersToFeet(7),
+      weight: hectogramsToPounds(69),
       stats: {
         hp: 45,
         attack: 49,
@@ -771,7 +776,9 @@ describe("convertPokemonEntityToPokemon", () => {
           },
         },
       },
-    } as PokemonEntity;
+      height: 0,
+      weight: 0,
+    } as unknown as PokemonEntity;
 
     const result = convertPokemonEntityToPokemon(mockPokemonEntity);
 
@@ -782,6 +789,8 @@ describe("convertPokemonEntityToPokemon", () => {
       name: "test-pokemon",
       type: [],
       image: "https://dummyimage.com/96x96/f0f0f0/666666.png&text=test-pokemon",
+      height: 0,
+      weight: 0,
       stats: {
         hp: 0,
         attack: 0,
@@ -829,7 +838,7 @@ describe("convertPokemonEntityToPokemon", () => {
           },
         },
       },
-    } as PokemonEntity;
+    } as unknown as PokemonEntity;
 
     const result = convertPokemonEntityToPokemon(mockPokemonEntity);
 
@@ -895,7 +904,7 @@ describe("convertAbilityLiteToAbility", () => {
       },
       is_main_series: true,
       pokemon: [],
-    } as PokemonAbility;
+    } as unknown as PokemonAbility;
 
     const mockAbilityLite: AbilityLite = {
       id: "65",
@@ -952,7 +961,7 @@ describe("convertAbilityLiteToAbility", () => {
       },
       is_main_series: true,
       pokemon: [],
-    } as PokemonAbility;
+    } as unknown as PokemonAbility;
 
     const mockAbilityLite: AbilityLite = {
       id: "66",
@@ -1009,7 +1018,7 @@ describe("convertAbilityLiteToAbility", () => {
       },
       is_main_series: true,
       pokemon: [],
-    } as PokemonAbility;
+    } as unknown as PokemonAbility;
 
     const mockAbilityLite: AbilityLite = {
       id: "67",
@@ -1044,7 +1053,7 @@ describe("convertAbilityLiteToAbility", () => {
       },
       is_main_series: true,
       pokemon: [],
-    } as PokemonAbility;
+    } as unknown as PokemonAbility;
 
     const mockAbilityLite: AbilityLite = {
       id: "68",
@@ -1126,7 +1135,7 @@ describe("convertAbilityLiteToAbility", () => {
       },
       is_main_series: true,
       pokemon: [],
-    } as PokemonAbility;
+    } as unknown as PokemonAbility;
 
     const mockAbilityLite: AbilityLite = {
       id: "69",
@@ -1160,7 +1169,7 @@ describe("convertAbilityLiteToAbility", () => {
       },
       is_main_series: true,
       pokemon: [],
-    } as PokemonAbility;
+    } as unknown as PokemonAbility;
 
     const mockAbilityLite: AbilityLite = {
       id: "999",
@@ -1188,7 +1197,7 @@ describe("convertAbilityLiteToAbility", () => {
       },
       is_main_series: true,
       pokemon: [],
-    } as PokemonAbility;
+    } as unknown as PokemonAbility;
 
     const mockAbilityLite: AbilityLite = {
       id: "70",
