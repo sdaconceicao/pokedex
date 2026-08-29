@@ -92,9 +92,7 @@ export function useAuth() {
     },
   });
 
-  // No onSuccess: the caller's existing access token stays valid (it is signed
-  // against JWT_SECRET alone, not the password hash), and nothing in the cached
-  // user payload changes — so there is no token to store and nothing to refetch.
+  // No onSuccess: the access token is independent of the password hash.
   const changePasswordMutation = useMutation<
     ChangePasswordResponse,
     Error,

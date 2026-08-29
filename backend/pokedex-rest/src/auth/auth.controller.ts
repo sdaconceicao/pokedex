@@ -138,8 +138,6 @@ export class AuthController {
     return this.authService.confirmEmailVerification(body.token);
   }
 
-  // The only guarded route on this controller — `@Public(false)` overrides the
-  // class-level `@Public()`, which JwtGuard resolves handler-first.
   @Public(false)
   @Post('change-password')
   @ApiBearerAuth()

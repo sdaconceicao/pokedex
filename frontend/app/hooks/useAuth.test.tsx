@@ -160,8 +160,6 @@ describe("useAuth mutations", () => {
       currentPassword: "OldPikachu123!",
       password: "NewPikachu123!",
     });
-    // Unlike a reset, the existing token stays valid, so the session is
-    // deliberately untouched — no new token, no cache eviction.
     expect(getStoredToken()).toBe("at-5");
     expect(queryClient.getQueryData(["auth", "token"])).toBe("at-5");
   });

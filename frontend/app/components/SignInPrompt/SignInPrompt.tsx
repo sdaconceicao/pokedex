@@ -5,7 +5,6 @@ import { useAuthModal } from "@/providers/AuthModalProvider";
 import styles from "./SignInPrompt.module.css";
 
 interface SignInPromptProps {
-  /** Why the viewer needs to sign in, in their terms. */
   message: string;
 }
 

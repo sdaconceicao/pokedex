@@ -8,12 +8,6 @@ import AccountAvatar from "./AccountAvatar";
 vi.mock("@/hooks/useAvatar", () => ({ useAvatar: vi.fn() }));
 vi.mock("@/lib/toast", () => ({ notify: vi.fn() }));
 
-/**
- * lago's FileUploader is a real drop zone with its own tests in that package.
- * Here it is replaced by a stub that surfaces its callbacks as buttons and
- * renders the item state as text, so these tests exercise this component's
- * lifecycle wiring rather than lago's rendering.
- */
 const PICKED: FileUploadItem = {
   id: "picked-1",
   file: new File([new Uint8Array([1, 2, 3])], "pikachu.png", { type: "image/png" }),
@@ -21,6 +15,7 @@ const PICKED: FileUploadItem = {
   status: "idle",
 };
 
+// Stub FileUploader so these tests cover wiring, not lago's drop zone.
 vi.mock("@code-x/lago", () => ({
   FileUploader: ({
     value,
@@ -102,9 +97,6 @@ describe("AccountAvatar", () => {
     expect(screen.getByTestId("item-name")).toHaveTextContent("avatar.png");
   });
 
-  // A warm-cache navigation (landing on another page first, then coming here)
-  // mounts this component before the avatar query has produced a value, so the
-  // effect must still hydrate when the value arrives.
   it("hydrates when the avatar arrives after the first render", async () => {
     setAvatar({ avatarSrc: undefined });
     const { rerender } = render(<AccountAvatar />);
@@ -132,8 +124,6 @@ describe("AccountAvatar", () => {
   });
 
   it("threads upload progress into the item while the request is open", async () => {
-    // The upload is held open so the mid-flight percentage is observable —
-    // otherwise the item is already "complete:100" by the time we assert.
     let release: (value: { message: string }) => void = () => {};
     const uploadAvatarAsync = vi.fn(
       ({ onProgress }: { onProgress?: (percent: number) => void }) => {
@@ -211,8 +201,6 @@ describe("AccountAvatar", () => {
 
     expect(removeAvatarAsync).toHaveBeenCalledTimes(1);
 
-    // The uploader is derived from the query now, so clearing depends on the
-    // refetch reporting no avatar — which is what useAvatar's invalidate does.
     setAvatar({ avatarSrc: undefined, removeAvatarAsync });
     rerender(<AccountAvatar />);
 

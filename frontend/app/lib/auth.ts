@@ -165,16 +165,12 @@ export const authApi = {
     const body = new FormData();
     body.append("file", file);
 
-    // The only XMLHttpRequest in this file. `fetch` cannot report request-body
-    // progress, and lago's uploader renders a *determinate* bar — given a status
-    // of "uploading" with no percentage it sits frozen at 0%. So the choice is
-    // real progress or none at all.
+    // XHR rather than fetch: request-body progress for a determinate bar.
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `${API_BASE_URL}/users/avatar`);
       xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-      // No Content-Type header, same reason as any FormData request: only the
-      // browser knows the multipart boundary it generated.
+      // Let the browser set the multipart boundary.
 
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {

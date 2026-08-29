@@ -174,8 +174,6 @@ describe('AuthService', () => {
         });
       });
 
-      // Login is the hot path: a clean account must not pay for a write on
-      // every single sign-in.
       it('writes nothing when a successful login had no streak to clear', async () => {
         usersService.findOneByEmail.mockResolvedValue(mockUser);
         vi.mocked(bcrypt.compareSync).mockReturnValue(true);
@@ -530,9 +528,7 @@ describe('AuthService', () => {
       });
       expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
         password: 'newHash',
-        // Reset doubles as verification — see confirmPasswordReset.
         emailVerified: true,
-        // ...and as the escape hatch from a login lockout.
         failedPasswordAttempts: 0,
         passwordLockedUntil: null,
       });
@@ -739,11 +735,9 @@ describe('AuthService', () => {
         'OldPikachu123!',
         mockUser.password,
       );
-      // Unlike a reset, changing a password proves nothing about the address,
-      // so emailVerified is deliberately absent from this update.
+      // Unlike a reset, this does not set emailVerified.
       expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
         password: 'newHash',
-        // A correct password clears any accumulated streak.
         failedPasswordAttempts: 0,
         passwordLockedUntil: null,
       });
@@ -767,7 +761,6 @@ describe('AuthService', () => {
         service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
       ).rejects.toThrow(new BadRequestException('Password does not match'));
 
-      // The only write is the counter — the password itself is untouched.
       expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
         failedPasswordAttempts: 1,
         passwordLockedUntil: null,
@@ -833,7 +826,6 @@ describe('AuthService', () => {
         });
       });
 
-      // 429, not 400: the caller should be able to tell "wait" from "wrong".
       it('refuses while locked, without checking the password at all', async () => {
         usersService.findOneById.mockResolvedValue({
           ...mockUser,
@@ -852,8 +844,6 @@ describe('AuthService', () => {
           message: 'Too many incorrect attempts. Try again later',
         });
 
-        // No bcrypt work and no writes while the window is open — otherwise the
-        // lockout would still be an oracle, just a slower one.
         expect(bcrypt.compareSync).not.toHaveBeenCalled();
         expect(usersService.update).not.toHaveBeenCalled();
       });

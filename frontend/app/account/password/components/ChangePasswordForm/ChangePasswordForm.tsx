@@ -61,9 +61,7 @@ export default function ChangePasswordForm() {
     }
   };
 
-  // `useAuth` reports `user: undefined` until it has mounted, so the loading
-  // check has to come first — otherwise every signed-in visitor sees the
-  // sign-in prompt flash before the form.
+  // Loading first: useAuth reports user undefined until mount, which would flash SignInPrompt.
   if (isLoading) return null;
   if (!user) {
     return <SignInPrompt message="Sign in to change your password." />;

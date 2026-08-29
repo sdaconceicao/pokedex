@@ -40,7 +40,6 @@ describe('AvatarsService', () => {
   });
 
   describe('upsert', () => {
-    // `userId` is the primary key, so one save covers both insert and replace.
     it('saves the row keyed by userId', async () => {
       repository.save.mockResolvedValue(mockAvatar as never);
 
@@ -97,8 +96,6 @@ describe('AvatarsService', () => {
       expect(await service.remove(USER_ID)).toBe(false);
     });
 
-    // The driver omits `affected` for some statements; absent must not read as
-    // a successful delete.
     it('reports false when the driver omits an affected count', async () => {
       repository.delete.mockResolvedValue({} as DeleteResult);
 

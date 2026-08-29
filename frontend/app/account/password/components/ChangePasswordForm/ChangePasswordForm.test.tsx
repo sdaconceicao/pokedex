@@ -66,8 +66,6 @@ const submit = (ui: ReturnType<typeof userEvent.setup>) =>
 describe("ChangePasswordForm", () => {
   afterEach(() => vi.clearAllMocks());
 
-  // useAuth reports no user until it has mounted, so the loading branch is what
-  // stops a signed-in visitor seeing the sign-in prompt flash first.
   it("renders nothing while auth is still resolving", () => {
     setup({ signedOut: true, isLoading: true });
 
@@ -135,7 +133,6 @@ describe("ChangePasswordForm", () => {
     await ui.type(screen.getByLabelText("Confirm new password"), NEW_PASSWORD);
     await submit(ui);
 
-    // The confirmation field is a client-side concern only — the API takes two.
     expect(changePasswordAsync).toHaveBeenCalledWith({
       currentPassword: CURRENT_PASSWORD,
       password: NEW_PASSWORD,
@@ -154,8 +151,6 @@ describe("ChangePasswordForm", () => {
     expect(push).toHaveBeenCalledWith("/account");
   });
 
-  // Both actions are held while the request is open, so you cannot navigate away
-  // and be shown a stale /account before the outcome is known.
   it("disables both actions while saving", () => {
     setup({ isChangePasswordLoading: true });
 
@@ -163,7 +158,7 @@ describe("ChangePasswordForm", () => {
     expect(screen.getByRole("button", { name: "Saving…" })).toHaveAttribute("data-disabled");
   });
 
-  // Guards the `type="button"`: inside lago's Form an untyped button submits.
+  // Untyped buttons inside lago's Form submit; Cancel must stay type="button".
   it("does not submit the form when cancelling", async () => {
     const { changePasswordAsync, ui } = setup();
 
@@ -185,7 +180,6 @@ describe("ChangePasswordForm", () => {
     await ui.type(screen.getByLabelText("Confirm new password"), NEW_PASSWORD);
     await submit(ui);
 
-    // The title is fixed and the API's reason goes in the description.
     await vi.waitFor(() =>
       expect(notify).toHaveBeenCalledWith(
         expect.objectContaining({

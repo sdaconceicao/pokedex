@@ -20,8 +20,7 @@ export class ChangePasswordValidationPipe implements PipeTransform {
       }
     }
 
-    // Cheap here because both values are in hand as plaintext — the reset flow
-    // has no way to make this check. Stops a change that would do nothing.
+    // Both values are plaintext here; a no-op change is rejected before hashing.
     if (value.currentPassword && value.password === value.currentPassword) {
       errors.push('New password must be different from the current password');
     }
@@ -30,9 +29,7 @@ export class ChangePasswordValidationPipe implements PipeTransform {
       throw new BadRequestException({ message: 'Validation failed', errors });
     }
 
-    // Passwords are returned untouched — unlike the reset pipe's token, trimming
-    // would silently alter a credential the user chose, and login compares the
-    // raw input.
+    // Don't trim — login compares the raw input.
     return {
       currentPassword: value.currentPassword,
       password: value.password,

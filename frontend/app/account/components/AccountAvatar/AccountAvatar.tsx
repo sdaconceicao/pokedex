@@ -9,7 +9,6 @@ import styles from "./AccountAvatar.module.css";
 import { AVATAR_ACCEPT, AVATAR_MAX_BYTES, dataUriToUploadItem } from "./AccountAvatar.utils";
 
 interface AccountAvatarProps {
-  /** Grid placement supplied by the page. */
   className?: string;
 }
 
@@ -21,14 +20,8 @@ export default function AccountAvatar({ className }: AccountAvatarProps) {
   const [rejection, setRejection] = useState("");
   const isBusy = isUploadLoading || isRemoveLoading;
 
-  // Two sources, resolved by precedence rather than by copying one into the
-  // other: a locally picked file wins while it is uploading, complete or failed,
-  // and otherwise the stored avatar is derived straight from the query.
-  //
-  // Derived in render on purpose. This previously copied the stored avatar into
-  // state from an effect, which meant a value arriving on a later render could
-  // be missed entirely — the image then stayed blank until a remount. A derived
-  // value has no such window.
+  // Local pick wins while in-flight; otherwise derive from the query in render
+  // (an effect that copied into state missed values arriving on a later render).
   const storedItem = useMemo(
     () => (avatarSrc ? dataUriToUploadItem(avatarSrc) : null),
     [avatarSrc],
@@ -80,8 +73,7 @@ export default function AccountAvatar({ className }: AccountAvatarProps) {
   const handleRemove = useCallback(async () => {
     try {
       await removeAvatarAsync();
-      // The query refetches to `null` as well, so clearing the local item leaves
-      // an empty uploader rather than falling back to the stored image.
+      // Query also refetches to null; clear local so we don't flash the old image.
       setLocalItem(null);
       notify({
         title: "Avatar removed",
@@ -113,7 +105,6 @@ export default function AccountAvatar({ className }: AccountAvatarProps) {
         hint={hasImage ? undefined : "Upload your profile picture"}
         accept={AVATAR_ACCEPT}
         maxSize={AVATAR_MAX_BYTES}
-        // Explicit because the prop defaults to true — an account has one avatar.
         allowsMultiple={false}
         value={items}
         onChange={handleChange}

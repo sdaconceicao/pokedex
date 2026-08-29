@@ -97,8 +97,7 @@ export class UsersController {
     try {
       data = await part.toBuffer();
     } catch {
-      // @fastify/multipart aborts the stream once it passes limits.fileSize, so
-      // an oversized file never lands in memory in full.
+      // multipart aborts the stream once limits.fileSize is exceeded.
       throw new PayloadTooLargeException(
         `Avatar must be ${AVATAR_MAX_BYTES / 1024} KiB or smaller`,
       );
@@ -108,8 +107,7 @@ export class UsersController {
       throw new BadRequestException('Avatar file is empty or too large');
     }
 
-    // Derived from the bytes, never from `part.mimetype`, which the client
-    // controls and could use to smuggle an SVG past the allow-list.
+    // Bytes, not part.mimetype — the client controls that header.
     const mimeType = resolveAvatarMimeType(data);
     if (!mimeType) {
       throw new BadRequestException(
@@ -152,8 +150,6 @@ export class UsersController {
     @Req() req: AuthenticatedRequest,
   ): Promise<AvatarMessageResponseDto> {
     await this.avatarsService.remove(req.user.userId);
-    // Deliberately identical whether a row existed: the end state is the same,
-    // and the client only cares that there is now no avatar.
     return { message: 'Avatar removed' };
   }
 }

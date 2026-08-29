@@ -27,12 +27,8 @@ packageExtensions:
   "@untitled-ui/icons-react@*":
     dependencies:
       "@babel/runtime": "^7.29.7"
-  # @fastify/multipart types import from 'fastify' but do not declare it as a
-  # dependency or peer. Under pnpm, TypeScript then walks up to whatever
-  # `fastify` sits in the workspace root, which can be a different copy than
-  # @nestjs/platform-fastify's (distinct FastifyInstance types, and `req.file()`
-  # never appears on the request). Linking fastify into the plugin's virtual
-  # store keeps both on the same identity.
+  # @fastify/multipart types import `fastify` without declaring it. Linking it
+  # here keeps Nest and the plugin on the same FastifyInstance identity.
   "@fastify/multipart@*":
     dependencies:
       fastify: "5.10.0"

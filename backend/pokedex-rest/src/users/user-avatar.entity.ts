@@ -8,9 +8,7 @@ import {
 
 @Entity('user_avatars', { schema: 'users' })
 export class UserAvatarEntity {
-  // The FK is the PK — see the migration. No relation decorator, matching
-  // GroupEntity, which also carries `userId` as a plain column with the
-  // constraint enforced in SQL.
+  // PK is the FK; no relation decorator, matching GroupEntity.
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
 

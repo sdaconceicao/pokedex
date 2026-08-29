@@ -47,10 +47,8 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  // Avatar upload is the only multipart route. The ceiling is enforced here, at
-  // the transport layer, so an oversized body is cut off mid-stream rather than
-  // buffered first — `limits.fileSize` is the real gate, and the DB CHECK backs
-  // it up. `fields: 0` because the file is the entire payload.
+  // Size cap at the transport layer so an oversized body is cut off mid-stream.
+  // `fields: 0` because the file is the entire payload.
   await app.register(multipart, {
     limits: { fileSize: AVATAR_MAX_BYTES, files: 1, fields: 0 },
   });

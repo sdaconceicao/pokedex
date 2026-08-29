@@ -207,12 +207,6 @@ describe("requireStoredToken", () => {
   });
 });
 
-/**
- * `uploadAvatar` is the one method built on XMLHttpRequest rather than fetch —
- * it needs request-body progress, which fetch cannot report. So it gets its own
- * harness: a fake whose `send()` synchronously fires the progress and load
- * events the real object would.
- */
 describe("authApi.uploadAvatar", () => {
   interface FakeXhrOptions {
     status?: number;
@@ -291,9 +285,6 @@ describe("authApi.uploadAvatar", () => {
     expect(result).toEqual({ message: "Avatar updated" });
   });
 
-  // The reason this method exists in this shape: setting Content-Type by hand
-  // omits the multipart boundary the browser generated, and Fastify then cannot
-  // parse the body at all.
   it("never sets Content-Type itself", async () => {
     installFakeXhr();
 

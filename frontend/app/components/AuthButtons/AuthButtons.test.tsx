@@ -26,8 +26,6 @@ function warmClient(avatar: string | null = null) {
   });
   queryClient.setQueryData(["auth", "token"], TOKEN);
   queryClient.setQueryData(["auth", "user", TOKEN], USER);
-  // Seeded so useAvatar never reaches the network from a unit test. `null` is
-  // the ordinary case: an account with no picture falls back to initials.
   queryClient.setQueryData(["auth", "avatar", TOKEN], { image: avatar });
   return queryClient;
 }

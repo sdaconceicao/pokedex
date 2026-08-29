@@ -4,9 +4,7 @@ export class CreateUserAvatarsTable_1787863400000
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // One row per user at most, so `userId` is the primary key rather than a
-    // surrogate `id` plus a unique index — unlike `groups`, which is 1:many.
-    // Being the PK also gives the FK its index for free.
+    // One row per user: userId is the PK (and the FK index).
     await queryRunner.query(`
       CREATE TABLE "users"."user_avatars" (
         "userId" uuid NOT NULL,
@@ -17,13 +15,9 @@ export class CreateUserAvatarsTable_1787863400000
         CONSTRAINT "PK_user_avatars_userId" PRIMARY KEY ("userId"),
         CONSTRAINT "FK_user_avatars_userId" FOREIGN KEY ("userId")
           REFERENCES "users"."users"("id") ON DELETE CASCADE,
-        -- The 500 KiB ceiling, enforced where it cannot be bypassed. Measured on
-        -- the stored bytes, which is the file size — not the base64 the request
-        -- carried, which is ~33% larger.
+        -- 500 KiB on stored bytes, not the ~33% larger base64 request body.
         CONSTRAINT "CK_user_avatars_size" CHECK (octet_length("data") BETWEEN 1 AND 512000),
-        -- Raster formats only. An SVG avatar served back from the API origin
-        -- would be stored XSS, so the exclusion lives in the schema rather than
-        -- only in a validation pipe.
+        -- Raster only: an SVG served from this origin would be stored XSS.
         CONSTRAINT "CK_user_avatars_mime" CHECK (
           "mimeType" IN ('image/png', 'image/jpeg', 'image/webp')
         )

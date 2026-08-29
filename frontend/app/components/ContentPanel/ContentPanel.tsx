@@ -4,7 +4,6 @@ import styles from "./ContentPanel.module.css";
 
 interface ContentPanelProps {
   children: ReactNode;
-  /** Page-owned layout: width, inner spacing, and `--content-panel-padding`. */
   className?: string;
 }
 

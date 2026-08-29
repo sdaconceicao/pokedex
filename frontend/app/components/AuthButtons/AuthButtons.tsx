@@ -8,8 +8,6 @@ import UserAvatar from "../Avatar/UserAvatar";
 
 export default function AuthButtons() {
   const { user, logout, isLogoutLoading } = useAuth();
-  // Runs app-wide, since the header shows the avatar on every page. One cached
-  // request per session; the profile fetch stays small either way.
   const { avatarSrc } = useAvatar();
   const { openSignIn } = useAuthModal();
 

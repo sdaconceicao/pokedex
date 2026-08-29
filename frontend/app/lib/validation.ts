@@ -61,11 +61,7 @@ export interface NewPasswordErrors {
   confirmPassword?: string;
 }
 
-/**
- * Shared by the reset-password and change-password forms: both ask for a new
- * password twice and report problems per field. Only the first policy error is
- * surfaced, matching what the forms displayed before this was extracted.
- */
+/** First policy error only, matching the reset and change-password forms. */
 export function validateNewPassword(password: string, confirmPassword: string): NewPasswordErrors {
   const errors: NewPasswordErrors = {};
 

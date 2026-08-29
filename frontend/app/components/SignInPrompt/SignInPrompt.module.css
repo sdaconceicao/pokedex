@@ -1,5 +1,4 @@
-/* Lifted from AccountProfile so the two pages that gate on sign-in share one
-   treatment. GroupSettings still carries its own near-identical copy. */
+/* Shared by the sign-in-gated account pages. */
 .prompt {
   display: flex;
   flex-direction: column;

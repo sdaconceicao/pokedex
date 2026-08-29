@@ -49,8 +49,6 @@ describe("useAvatar", () => {
     expect(authApi.getAvatar).toHaveBeenCalledWith(TOKEN);
   });
 
-  // The API says null for "no avatar"; lago's Avatar needs undefined to fall
-  // back to initials, so the hook converts rather than the consumers.
   it("turns a null image into undefined", async () => {
     vi.mocked(authApi.getAvatar).mockResolvedValue({ image: null });
     const { result } = setup();
@@ -87,13 +85,9 @@ describe("useAvatar", () => {
     });
 
     expect(authApi.uploadAvatar).toHaveBeenCalledWith(TOKEN, file, undefined);
-    // Invalidated rather than written optimistically, so the server stays the
-    // single source of truth for the stored bytes.
     await waitFor(() => expect(result.current.avatarSrc).toBe(DATA_URI));
   });
 
-  // The percentage lands in AccountAvatar's item list, so the hook only has to
-  // hand the callback through to the request.
   it("passes an onProgress callback through to the request", async () => {
     vi.mocked(authApi.getAvatar).mockResolvedValue({ image: null });
     vi.mocked(authApi.uploadAvatar).mockResolvedValue({ message: "Avatar updated" });

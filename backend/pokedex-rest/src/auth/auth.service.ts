@@ -44,13 +44,10 @@ const INVALID_VERIFICATION_TOKEN_MESSAGE =
 
 const PASSWORD_CHANGED_MESSAGE = 'Password updated';
 
-// A signed-in caller whose record has vanished, or an update that affected no
-// rows. Neither is actionable by the user, so both collapse to one message.
+// Vanished record or a no-op update — neither is actionable.
 const INVALID_CREDENTIALS_MESSAGE = 'Unable to change password';
 
-// Five wrong guesses buys a 15-minute lockout. Sized against the threat this
-// exists for: an attacker holding a stolen access token brute-forcing the
-// current password to lock the real owner out of their account.
+// Five failures lock for 15 minutes (stolen-token brute-force of the current password).
 const MAX_FAILED_PASSWORD_ATTEMPTS = 5;
 const PASSWORD_LOCKOUT_MS = 15 * 60 * 1000;
 
@@ -158,9 +155,7 @@ export class AuthService {
       // Completing a reset means they read an email at this address, which is
       // exactly what verification proves — so don't strand them unverified.
       emailVerified: true,
-      // Reset is the escape hatch from a login lockout, which anyone who knows
-      // the address can trigger. Leaving these set would mean the recovery path
-      // did not actually recover the account.
+      // Reset also clears a login lockout, otherwise recovery would not recover the account.
       failedPasswordAttempts: 0,
       passwordLockedUntil: null,
     });
@@ -204,10 +199,8 @@ export class AuthService {
   }
 
   /**
-   * Changing the password rotates the hash, so every outstanding *reset* token
-   * for this user stops verifying (see `resetTokenSecret`). Access tokens are
-   * not affected — they are signed against JWT_SECRET alone, so sessions on
-   * other devices stay valid until they expire.
+   * Rotates the hash, which invalidates outstanding reset tokens (`resetTokenSecret`).
+   * Access tokens are signed against JWT_SECRET alone, so other sessions stay valid.
    */
   async changePassword(
     userId: string,
@@ -226,11 +219,8 @@ export class AuthService {
       );
     }
 
-    // Compared here rather than through validateUser: that throws for a wrong
-    // password *and* for an unverified address, and counting the second as a
-    // password guess would be wrong. Telling them apart would mean matching on
-    // error messages. The emailVerified check is no loss either — a caller
-    // holding a token for this account is verified by definition.
+    // Not validateUser: that also throws for an unverified address, which must
+    // not count as a password guess.
     if (!bcrypt.compareSync(currentPassword, user.password)) {
       await this.recordFailedPasswordAttempt(user);
       throw new BadRequestException('Password does not match');
@@ -238,7 +228,6 @@ export class AuthService {
 
     const updated = await this.usersService.update(user.id, {
       password: await bcrypt.hash(newPassword, 10),
-      // A correct password clears the streak, lockout included.
       failedPasswordAttempts: 0,
       passwordLockedUntil: null,
     });
@@ -249,7 +238,6 @@ export class AuthService {
     return { message: PASSWORD_CHANGED_MESSAGE };
   }
 
-  /** Whether an armed lockout window is still open. */
   private isPasswordLocked(user: UserEntity): boolean {
     return (
       !!user.passwordLockedUntil &&
@@ -257,11 +245,6 @@ export class AuthService {
     );
   }
 
-  /**
-   * Counts one wrong guess and arms the lockout window on reaching the
-   * threshold. The counter lives on the user row because that is the only store
-   * every serverless instance shares.
-   */
   private async recordFailedPasswordAttempt(user: UserEntity): Promise<void> {
     const attempts = (user.failedPasswordAttempts ?? 0) + 1;
 
@@ -318,10 +301,7 @@ export class AuthService {
       throw new BadRequestException('User not found');
     }
 
-    // Login is unauthenticated, so this lockout is DoS-able by anyone who knows
-    // the address — five wrong guesses blocks the real owner for the window.
-    // Accepted deliberately: password reset clears it (see confirmPasswordReset),
-    // which is the escape hatch that makes the trade tolerable.
+    // Unauthenticated, so this lockout is DoS-able; password reset is the escape hatch.
     if (this.isPasswordLocked(user)) {
       throw new HttpException(
         PASSWORD_LOCKED_MESSAGE,
@@ -335,8 +315,7 @@ export class AuthService {
       throw new BadRequestException('Password does not match');
     }
 
-    // Written only when there is something to clear: login is the hot path, and
-    // an unconditional UPDATE on every sign-in would be a needless write.
+    // Skip the write when there is nothing to clear — login is the hot path.
     if (user.failedPasswordAttempts > 0 || user.passwordLockedUntil) {
       await this.usersService.update(user.id, {
         failedPasswordAttempts: 0,

@@ -76,7 +76,6 @@ describe('UsersController', () => {
         iat: 1,
         exp: 2,
       });
-      // The password is never part of the response.
       expect(result).not.toHaveProperty('password');
     });
 
@@ -105,7 +104,6 @@ describe('UsersController', () => {
       expect(result).toEqual({ message: 'Avatar updated' });
     });
 
-    // The declared mimetype is client-controlled, so the bytes decide.
     it('ignores the declared mimetype and trusts the bytes', async () => {
       const req = request(() =>
         Promise.resolve({
@@ -189,8 +187,6 @@ describe('UsersController', () => {
       );
     });
 
-    // Null rather than 404: having no avatar is normal, not an error the client
-    // should have to handle as a failed request.
     it('returns null when the account has no avatar', async () => {
       avatarsService.findOneByUserId.mockResolvedValue(null);
 

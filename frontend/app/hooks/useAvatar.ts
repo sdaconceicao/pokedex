@@ -2,17 +2,11 @@ import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/reac
 import { authApi, getStoredToken, requireStoredToken } from "@/lib/auth";
 import type { AvatarMessageResponse, UploadAvatarVariables } from "@/types/auth";
 
-/**
- * The avatar is fetched on its own query key rather than as part of the profile:
- * `GET /users` stays a handful of short strings, and the image — up to 500 KiB
- * as a data URI — is only pulled by the screens that show one.
- */
+/** Avatar is its own query so GET /users stays small. */
 export function useAvatar() {
   const queryClient = useQueryClient();
 
-  // Same key as useAuth's token query, so react-query dedupes rather than
-  // re-reading localStorage. Calling useAuth() here would drag in its eight
-  // mutations for the sake of one string.
+  // Same token query key as useAuth so react-query dedupes.
   const { data: token } = useQuery({
     queryKey: ["auth", "token"],
     queryFn: getStoredToken,
@@ -40,8 +34,7 @@ export function useAvatar() {
   });
 
   return {
-    // The API says `null` for "no avatar"; lago's Avatar wants `undefined` to
-    // fall back to initials. Converted here so no consumer handles both.
+    // API null → lago undefined (initials fallback).
     avatarSrc: data?.image ?? undefined,
     isLoading,
     error,

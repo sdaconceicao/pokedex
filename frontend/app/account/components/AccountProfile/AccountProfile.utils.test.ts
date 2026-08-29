@@ -22,8 +22,6 @@ describe("resolveAccountProfileState", () => {
     expect(resolveAccountProfileState(false, undefined, null)).toBe("signedOut");
   });
 
-  // Documents the deliberate ordering: a failed `GET /users` leaves `user`
-  // undefined, so it reads as signed out rather than as an error.
   it("prefers signed out over an error when there is no user", () => {
     expect(resolveAccountProfileState(false, undefined, new Error("boom"))).toBe("signedOut");
   });

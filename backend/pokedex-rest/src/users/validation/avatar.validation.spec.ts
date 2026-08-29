@@ -30,7 +30,6 @@ describe('resolveAvatarMimeType', () => {
     expect(resolveAvatarMimeType(WEBP)).toBe('image/webp');
   });
 
-  // The whole point of checking bytes rather than the declared mimetype.
   it('rejects an SVG, whatever the upload claims to be', () => {
     const svg = Buffer.from(
       '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>',
