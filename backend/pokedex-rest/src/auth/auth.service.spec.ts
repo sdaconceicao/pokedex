@@ -61,6 +61,7 @@ describe('AuthService', () => {
             create: vi.fn(),
             findOneById: vi.fn(),
             update: vi.fn(),
+            recordFailedPasswordAttempt: vi.fn(),
           },
         },
         {
@@ -153,10 +154,31 @@ describe('AuthService', () => {
           service.validateUser(mockUser.email, 'wrong'),
         ).rejects.toThrow(new BadRequestException('Password does not match'));
 
-        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
-          failedPasswordAttempts: 3,
-          passwordLockedUntil: null,
+        expect(usersService.recordFailedPasswordAttempt).toHaveBeenCalledWith(
+          mockUser.id,
+          5,
+          15 * 60 * 1000,
+        );
+      });
+
+      it('starts a fresh streak after the lock window expires on a wrong password', async () => {
+        usersService.findOneByEmail.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 5,
+          passwordLockedUntil: new Date(NOW.getTime() - 1),
         });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(false);
+
+        await expect(
+          service.validateUser(mockUser.email, 'wrong'),
+        ).rejects.toThrow(new BadRequestException('Password does not match'));
+
+        expect(usersService.recordFailedPasswordAttempt).toHaveBeenCalledWith(
+          mockUser.id,
+          5,
+          15 * 60 * 1000,
+        );
+        expect(usersService.update).not.toHaveBeenCalled();
       });
 
       it('clears an accumulated streak on a successful login', async () => {
@@ -761,10 +783,11 @@ describe('AuthService', () => {
         service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
       ).rejects.toThrow(new BadRequestException('Password does not match'));
 
-      expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
-        failedPasswordAttempts: 1,
-        passwordLockedUntil: null,
-      });
+      expect(usersService.recordFailedPasswordAttempt).toHaveBeenCalledWith(
+        mockUser.id,
+        5,
+        15 * 60 * 1000,
+      );
       expect(bcrypt.hash).not.toHaveBeenCalled();
     });
 
@@ -803,10 +826,11 @@ describe('AuthService', () => {
           service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
         ).rejects.toThrow(BadRequestException);
 
-        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
-          failedPasswordAttempts: 5,
-          passwordLockedUntil: new Date(NOW.getTime() + 15 * 60 * 1000),
-        });
+        expect(usersService.recordFailedPasswordAttempt).toHaveBeenCalledWith(
+          mockUser.id,
+          5,
+          15 * 60 * 1000,
+        );
       });
 
       it('leaves the window unarmed below the threshold', async () => {
@@ -820,10 +844,11 @@ describe('AuthService', () => {
           service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
         ).rejects.toThrow(BadRequestException);
 
-        expect(usersService.update).toHaveBeenCalledWith(mockUser.id, {
-          failedPasswordAttempts: 4,
-          passwordLockedUntil: null,
-        });
+        expect(usersService.recordFailedPasswordAttempt).toHaveBeenCalledWith(
+          mockUser.id,
+          5,
+          15 * 60 * 1000,
+        );
       });
 
       it('refuses while locked, without checking the password at all', async () => {
@@ -845,6 +870,26 @@ describe('AuthService', () => {
         });
 
         expect(bcrypt.compareSync).not.toHaveBeenCalled();
+        expect(usersService.update).not.toHaveBeenCalled();
+      });
+
+      it('starts a fresh streak after the lock window expires on a wrong password', async () => {
+        usersService.findOneById.mockResolvedValue({
+          ...mockUser,
+          failedPasswordAttempts: 5,
+          passwordLockedUntil: new Date(NOW.getTime() - 1),
+        });
+        vi.mocked(bcrypt.compareSync).mockReturnValue(false as never);
+
+        await expect(
+          service.changePassword(mockUser.id, 'wrong', 'NewPikachu123!'),
+        ).rejects.toThrow(BadRequestException);
+
+        expect(usersService.recordFailedPasswordAttempt).toHaveBeenCalledWith(
+          mockUser.id,
+          5,
+          15 * 60 * 1000,
+        );
         expect(usersService.update).not.toHaveBeenCalled();
       });
 

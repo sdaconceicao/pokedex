@@ -246,15 +246,11 @@ export class AuthService {
   }
 
   private async recordFailedPasswordAttempt(user: UserEntity): Promise<void> {
-    const attempts = (user.failedPasswordAttempts ?? 0) + 1;
-
-    await this.usersService.update(user.id, {
-      failedPasswordAttempts: attempts,
-      passwordLockedUntil:
-        attempts >= MAX_FAILED_PASSWORD_ATTEMPTS
-          ? new Date(Date.now() + PASSWORD_LOCKOUT_MS)
-          : null,
-    });
+    await this.usersService.recordFailedPasswordAttempt(
+      user.id,
+      MAX_FAILED_PASSWORD_ATTEMPTS,
+      PASSWORD_LOCKOUT_MS,
+    );
   }
 
   /**
