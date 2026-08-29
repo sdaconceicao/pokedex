@@ -4,11 +4,11 @@ import { Button, Form, Password } from "@code-x/lago";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
-import styles from "@/components/AuthButtons/AuthButtons.module.css";
 import SignInPrompt from "@/components/SignInPrompt";
 import { useAuth } from "@/hooks/useAuth";
 import { notify } from "@/lib/toast";
 import { validateNewPassword } from "@/lib/validation";
+import styles from "./ChangePasswordForm.module.css";
 
 type Field = "currentPassword" | "password" | "confirmPassword";
 
@@ -54,7 +54,8 @@ export default function ChangePasswordForm() {
       router.replace("/account");
     } catch (error) {
       notify({
-        title: error instanceof Error ? error.message : "Password change failed",
+        title: "Password change failed",
+        description: error instanceof Error ? error.message : "Please try again.",
         variant: "error",
       });
     }
@@ -106,9 +107,17 @@ export default function ChangePasswordForm() {
         isDisabled={isChangePasswordLoading}
       />
 
-      <div className={styles.formActions}>
+      <div className={styles.actions}>
         <Button type="submit" variant="primary" isDisabled={isChangePasswordLoading}>
           {isChangePasswordLoading ? "Saving…" : "Change password"}
+        </Button>
+        <Button
+          type="button"
+          variant="quiet"
+          onPress={() => router.push("/account")}
+          isDisabled={isChangePasswordLoading}
+        >
+          Cancel
         </Button>
       </div>
     </Form>

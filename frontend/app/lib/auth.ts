@@ -1,4 +1,6 @@
 import type {
+  AvatarMessageResponse,
+  AvatarResponse,
   ChangePasswordCredentials,
   ChangePasswordResponse,
   EmailVerificationConfirmResponse,
@@ -33,6 +35,15 @@ export const setStoredToken = (token: string): void => {
 const removeStoredToken = (): void => {
   if (typeof window === "undefined") return;
   localStorage.removeItem("access_token");
+};
+
+/** XMLHttpRequest has no `.json()`, and an error body may not be JSON at all. */
+const parseJsonOrEmpty = (text: string): Record<string, string> => {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
 };
 
 export const authApi = {
@@ -129,6 +140,70 @@ export const authApi = {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || "Verification failed");
+    }
+
+    return response.json();
+  },
+
+  async getAvatar(token: string): Promise<AvatarResponse> {
+    const response = await fetch(`${API_BASE_URL}/users/avatar`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch avatar");
+    }
+
+    return response.json();
+  },
+
+  async uploadAvatar(
+    token: string,
+    file: File,
+    onProgress?: (percent: number) => void,
+  ): Promise<AvatarMessageResponse> {
+    const body = new FormData();
+    body.append("file", file);
+
+    // The only XMLHttpRequest in this file. `fetch` cannot report request-body
+    // progress, and lago's uploader renders a *determinate* bar — given a status
+    // of "uploading" with no percentage it sits frozen at 0%. So the choice is
+    // real progress or none at all.
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${API_BASE_URL}/users/avatar`);
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+      // No Content-Type header, same reason as any FormData request: only the
+      // browser knows the multipart boundary it generated.
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          onProgress?.(Math.round((event.loaded / event.total) * 100));
+        }
+      };
+
+      xhr.onload = () => {
+        const payload = parseJsonOrEmpty(xhr.responseText);
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(payload as unknown as AvatarMessageResponse);
+          return;
+        }
+        reject(new Error(payload.message || "Avatar upload failed"));
+      };
+
+      xhr.onerror = () => reject(new Error("Avatar upload failed"));
+      xhr.send(body);
+    });
+  },
+
+  async deleteAvatar(token: string): Promise<AvatarMessageResponse> {
+    const response = await fetch(`${API_BASE_URL}/users/avatar`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to remove avatar");
     }
 
     return response.json();

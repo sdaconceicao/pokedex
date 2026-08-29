@@ -150,6 +150,41 @@ describe("authApi", () => {
     ).rejects.toThrow("Password change failed");
   });
 
+  it("sends the bearer token when fetching the avatar", async () => {
+    vi.mocked(fetch).mockResolvedValue(okJson({ image: "data:image/png;base64,AAA" }));
+
+    const result = await authApi.getAvatar("at-7");
+
+    const [url, init] = vi.mocked(fetch).mock.calls[0];
+    expect(url).toMatch(/\/users\/avatar$/);
+    expect(init?.headers).toEqual({ Authorization: "Bearer at-7" });
+    expect(result).toEqual({ image: "data:image/png;base64,AAA" });
+  });
+
+  it("throws when the avatar fetch fails", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response("nope", { status: 500 }));
+
+    await expect(authApi.getAvatar("at-7")).rejects.toThrow("Failed to fetch avatar");
+  });
+
+  it("deletes the avatar with the bearer token", async () => {
+    vi.mocked(fetch).mockResolvedValue(okJson({ message: "Avatar removed" }));
+
+    const result = await authApi.deleteAvatar("at-7");
+
+    const [url, init] = vi.mocked(fetch).mock.calls[0];
+    expect(url).toMatch(/\/users\/avatar$/);
+    expect(init?.method).toBe("DELETE");
+    expect(init?.headers).toEqual({ Authorization: "Bearer at-7" });
+    expect(result).toEqual({ message: "Avatar removed" });
+  });
+
+  it("throws when removing the avatar fails", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response("nope", { status: 500 }));
+
+    await expect(authApi.deleteAvatar("at-7")).rejects.toThrow("Failed to remove avatar");
+  });
+
   it("clears the stored token on logout", async () => {
     setStoredToken("at-5");
     expect(getStoredToken()).toBe("at-5");
@@ -169,5 +204,143 @@ describe("requireStoredToken", () => {
 
   it("throws when no token is stored", () => {
     expect(() => requireStoredToken()).toThrow("No token provided");
+  });
+});
+
+/**
+ * `uploadAvatar` is the one method built on XMLHttpRequest rather than fetch —
+ * it needs request-body progress, which fetch cannot report. So it gets its own
+ * harness: a fake whose `send()` synchronously fires the progress and load
+ * events the real object would.
+ */
+describe("authApi.uploadAvatar", () => {
+  interface FakeXhrOptions {
+    status?: number;
+    responseText?: string;
+    lengthComputable?: boolean;
+    failWithNetworkError?: boolean;
+  }
+
+  const captured: {
+    method?: string;
+    url?: string;
+    headers: Record<string, string>;
+    body?: unknown;
+  } = { headers: {} };
+
+  const installFakeXhr = ({
+    status = 200,
+    responseText = JSON.stringify({ message: "Avatar updated" }),
+    lengthComputable = true,
+    failWithNetworkError = false,
+  }: FakeXhrOptions = {}) => {
+    captured.method = undefined;
+    captured.url = undefined;
+    captured.headers = {};
+    captured.body = undefined;
+
+    class FakeXhr {
+      status = status;
+      responseText = responseText;
+      upload: { onprogress?: (event: ProgressEvent) => void } = {};
+      onload?: () => void;
+      onerror?: () => void;
+
+      open(method: string, url: string) {
+        captured.method = method;
+        captured.url = url;
+      }
+
+      setRequestHeader(name: string, value: string) {
+        captured.headers[name] = value;
+      }
+
+      send(body: unknown) {
+        captured.body = body;
+        this.upload.onprogress?.({
+          lengthComputable,
+          loaded: 50,
+          total: 200,
+        } as ProgressEvent);
+
+        if (failWithNetworkError) {
+          this.onerror?.();
+          return;
+        }
+        this.onload?.();
+      }
+    }
+
+    vi.stubGlobal("XMLHttpRequest", FakeXhr);
+  };
+
+  const file = new File([new Uint8Array([1, 2, 3])], "pikachu.png", {
+    type: "image/png",
+  });
+
+  it("posts the file as FormData with the bearer token", async () => {
+    installFakeXhr();
+
+    const result = await authApi.uploadAvatar("at-8", file);
+
+    expect(captured.method).toBe("POST");
+    expect(captured.url).toMatch(/\/users\/avatar$/);
+    expect(captured.headers.Authorization).toBe("Bearer at-8");
+    expect(captured.body).toBeInstanceOf(FormData);
+    expect((captured.body as FormData).get("file")).toBe(file);
+    expect(result).toEqual({ message: "Avatar updated" });
+  });
+
+  // The reason this method exists in this shape: setting Content-Type by hand
+  // omits the multipart boundary the browser generated, and Fastify then cannot
+  // parse the body at all.
+  it("never sets Content-Type itself", async () => {
+    installFakeXhr();
+
+    await authApi.uploadAvatar("at-8", file);
+
+    expect(captured.headers).not.toHaveProperty("Content-Type");
+    expect(Object.keys(captured.headers)).toEqual(["Authorization"]);
+  });
+
+  it("reports progress as a whole percentage", async () => {
+    installFakeXhr({ lengthComputable: true });
+    const onProgress = vi.fn();
+
+    await authApi.uploadAvatar("at-8", file, onProgress);
+
+    expect(onProgress).toHaveBeenCalledWith(25);
+  });
+
+  it("stays silent when the length is not computable", async () => {
+    installFakeXhr({ lengthComputable: false });
+    const onProgress = vi.fn();
+
+    await authApi.uploadAvatar("at-8", file, onProgress);
+
+    expect(onProgress).not.toHaveBeenCalled();
+  });
+
+  it("rejects with the API's message on a 4xx", async () => {
+    installFakeXhr({
+      status: 413,
+      responseText: JSON.stringify({ message: "Avatar must be 500 KiB or smaller" }),
+    });
+
+    await expect(authApi.uploadAvatar("at-8", file)).rejects.toThrow(
+      "Avatar must be 500 KiB or smaller",
+    );
+  });
+
+  it("falls back to a default message when the error body is not JSON", async () => {
+    installFakeXhr({ status: 502, responseText: "<html>bad gateway</html>" });
+
+    await expect(authApi.uploadAvatar("at-8", file)).rejects.toThrow("Avatar upload failed");
+  });
+
+  it("rejects when the request fails at the network level", async () => {
+    installFakeXhr({ failWithNetworkError: true });
+
+    await expect(authApi.uploadAvatar("at-8", file)).rejects.toThrow("Avatar upload failed");
   });
 });

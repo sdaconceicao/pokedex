@@ -20,12 +20,15 @@ const USER = { id: "1", email: "test@test.com", username: "test" };
  * the time React gets around to hydrating the deferred boundary the user is
  * already in the cache.
  */
-function warmClient() {
+function warmClient(avatar: string | null = null) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
   queryClient.setQueryData(["auth", "token"], TOKEN);
   queryClient.setQueryData(["auth", "user", TOKEN], USER);
+  // Seeded so useAvatar never reaches the network from a unit test. `null` is
+  // the ordinary case: an account with no picture falls back to initials.
+  queryClient.setQueryData(["auth", "avatar", TOKEN], { image: avatar });
   return queryClient;
 }
 
@@ -59,5 +62,20 @@ describe("AuthButtons", () => {
     );
 
     expect(screen.getByRole("button", { name: "Sign In" })).toBeInTheDocument();
+  });
+
+  it("shows the stored avatar in the header once there is one", () => {
+    const dataUri = "data:image/png;base64,iVBORw0KGgo=";
+
+    render(wrap(<AuthButtons />, warmClient(dataUri)));
+
+    expect(screen.getByRole("img", { name: USER.email })).toHaveAttribute("src", dataUri);
+  });
+
+  it("falls back to initials when the account has no avatar", () => {
+    render(wrap(<AuthButtons />, warmClient()));
+
+    const fallback = screen.getByRole("img", { name: USER.email });
+    expect(fallback).not.toHaveAttribute("src");
   });
 });

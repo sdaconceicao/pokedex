@@ -49,3 +49,16 @@ export interface ChangePasswordCredentials {
 export interface ChangePasswordResponse {
   message: string;
 }
+
+export interface AvatarResponse {
+  image: string | null;
+}
+
+export interface AvatarMessageResponse {
+  message: string;
+}
+
+export interface UploadAvatarVariables {
+  file: File;
+  onProgress?: (percent: number) => void;
+}

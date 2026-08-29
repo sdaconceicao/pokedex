@@ -1,7 +1,34 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+  row-gap: var(--spacing-4);
+  align-items: start;
+  /* Queried below instead of the viewport: AppShell's sidebar is 17rem docked
+     and 4.5rem collapsed, so the same viewport width yields very different
+     panel widths and no media query can be right in both states. */
+  container-type: inline-size;
+  container-name: account;
+}
+
+/* Heading, intro, and the loading/signed-out/error branches all run the full
+   width — only the avatar and the details list share a row. `1 / -1` is safe
+   here because the columns *are* an explicit grid, unlike the rows. */
+.container > :not(.avatar, .list) {
+  grid-column: 1 / -1;
+}
+
+/* Placed explicitly rather than auto-flowed: the ready branch's source order
+   puts the details list before the avatar, so auto-placement would seat them
+   the wrong way round. */
+.avatar {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.list {
+  grid-column: 2;
+  grid-row: 3;
 }
 
 .intro {
@@ -18,7 +45,10 @@
 
 .row {
   display: grid;
-  grid-template-columns: 10rem 1fr;
+  /* Shrinks before the value does. "USERNAME" is the longest label at ~70px,
+     so 5rem is the floor. A fixed 10rem starved the value column and broke a
+     long email one character per line. */
+  grid-template-columns: minmax(5rem, 8rem) minmax(0, 1fr);
   gap: 1rem;
   align-items: baseline;
   padding: 0.875rem 0;
@@ -76,9 +106,48 @@
   color: var(--tint);
 }
 
-@media (max-width: 640px) {
+/* Stays a container query — this one genuinely is about available room, and it
+   is what makes two columns viable at 769px, where the details column has only
+   ~200px to work with. */
+@container account (max-width: 26rem) {
   .row {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+}
+
+/* A media query, not a container query: AppShell undocks the sidebar at 768px,
+   which makes the panel *wider* below that width than just above it (~42rem at
+   767px vs ~23rem at 769px). Container width is therefore not monotonic with
+   viewport width, and no container threshold can stack mobile while keeping two
+   columns on a narrow desktop. Matches AppShell's own breakpoint.
+   Placed explicitly, because the ready branch's source order puts the details
+   list before the avatar. */
+@media (max-width: 767px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .heading,
+  .intro,
+  .list {
+    grid-column: 1;
+  }
+
+  .heading {
+    grid-row: 1;
+  }
+
+  .intro {
+    grid-row: 2;
+  }
+
+  .avatar {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .list {
+    grid-row: 4;
   }
 }

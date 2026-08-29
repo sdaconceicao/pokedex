@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Stated on the child as well as the grid's `align-items: start`, so the
+     column hugs its content regardless of what the parent sets. */
+  align-self: start;
+  justify-content: flex-start;
+  gap: var(--spacing-3);
+  text-align: center;
+}
+
+/* lago's round circle is calc(var(--spacing) * 32) ≈ 8rem, so this is just
+   enough to hold it plus the hint. Sized for the circle rather than the hint —
+   a wider cap let the hint text set the width of the whole grid track and
+   squeezed the details column. lago already sets `align-items: center` for the
+   round variant, so that is not restated. */
+.uploader {
+  width: 100%;
+  max-width: 8.5rem;
+  text-align: center;
+}
+
+.hint {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+/* lago derives the drop zone's accessible name from `label` — both its
+   aria-label and aria-labelledby come from that prop — so dropping the prop
+   would leave the file input unnamed. Hidden visually instead, using the same
+   technique as TypeWheel's .segmentsLegend. */
+.uploader :global(.react-aria-Label) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

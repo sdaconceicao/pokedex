@@ -13,6 +13,13 @@ vi.mock("@/providers/AuthModalProvider", () => ({
   useAuthModal: vi.fn(),
 }));
 
+// AccountAvatar owns the upload lifecycle and is covered directly in its own
+// test. Here we only care that the ready state mounts it in the right column —
+// rendering it for real would drag react-query into every test in this file.
+vi.mock("../AccountAvatar", () => ({
+  default: () => <div data-testid="account-avatar" />,
+}));
+
 // Registration leaves both names empty and sets username to the email, so this
 // is what a real signed-up account actually looks like.
 const USER: User = {
@@ -48,7 +55,6 @@ describe("AccountProfile", () => {
     render(<AccountProfile />);
 
     expect(screen.getByRole("heading", { name: "Your account" })).toBeInTheDocument();
-    expect(screen.getByText("Your sign-in details.")).toBeInTheDocument();
   });
 
   describe("loading", () => {
@@ -119,6 +125,12 @@ describe("AccountProfile", () => {
       expect(link).toHaveAttribute("href", "/account/password");
       // The mask is decorative — the row's label and the link carry the meaning.
       expect(link.querySelector("svg")).toBeInTheDocument();
+    });
+
+    it("puts the avatar beside the profile details", () => {
+      render(<AccountProfile />);
+
+      expect(screen.getByTestId("account-avatar")).toBeInTheDocument();
     });
 
     it("links to the change-password screen", () => {

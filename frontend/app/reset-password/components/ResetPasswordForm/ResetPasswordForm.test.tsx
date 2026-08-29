@@ -104,10 +104,12 @@ describe("ResetPasswordForm", () => {
     await user.type(screen.getByLabelText("Confirm new password"), VALID_PASSWORD);
     await submit(user);
 
+    // The title is fixed and the API's reason goes in the description.
     await vi.waitFor(() =>
       expect(notify).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: "Invalid or expired reset token",
+          title: "Password reset failed",
+          description: "Invalid or expired reset token",
           variant: "error",
         }),
       ),

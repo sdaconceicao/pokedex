@@ -38,13 +38,14 @@ export default function ResetPasswordForm() {
       await confirmPasswordResetAsync({ token, password });
       notify({
         title: "Password updated",
-        description: "You are now signed in.",
+        description: "Your password has been updated.",
         variant: "success",
       });
       router.replace("/");
     } catch (error) {
       notify({
-        title: error instanceof Error ? error.message : "Password reset failed",
+        title: "Password reset failed",
+        description: error instanceof Error ? error.message : "Please try again.",
         variant: "error",
       });
     }

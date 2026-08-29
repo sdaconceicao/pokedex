@@ -36,9 +36,14 @@ function setup({
   signedOut = false,
   isLoading = false,
   changePasswordAsync = vi.fn().mockResolvedValue({ message: "Password updated" }),
+  isChangePasswordLoading = false,
 } = {}) {
   const replace = vi.fn();
-  vi.mocked(useRouter).mockReturnValue({ replace } as unknown as ReturnType<typeof useRouter>);
+  const push = vi.fn();
+  vi.mocked(useRouter).mockReturnValue({
+    replace,
+    push,
+  } as unknown as ReturnType<typeof useRouter>);
   vi.mocked(useAuthModal).mockReturnValue({
     openSignIn: vi.fn(),
     openSignUp: vi.fn(),
@@ -48,11 +53,11 @@ function setup({
     user: signedOut ? undefined : USER,
     isLoading,
     changePasswordAsync,
-    isChangePasswordLoading: false,
+    isChangePasswordLoading,
   } as unknown as ReturnType<typeof useAuth>);
 
   render(<ChangePasswordForm />);
-  return { replace, changePasswordAsync, ui: userEvent.setup() };
+  return { replace, push, changePasswordAsync, ui: userEvent.setup() };
 }
 
 const submit = (ui: ReturnType<typeof userEvent.setup>) =>
@@ -141,6 +146,35 @@ describe("ChangePasswordForm", () => {
     );
   });
 
+  it("offers a cancel that returns to the account page", async () => {
+    const { push, ui } = setup();
+
+    await ui.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(push).toHaveBeenCalledWith("/account");
+  });
+
+  // Both actions are held while the request is open, so you cannot navigate away
+  // and be shown a stale /account before the outcome is known.
+  it("disables both actions while saving", () => {
+    setup({ isChangePasswordLoading: true });
+
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveAttribute("data-disabled");
+    expect(screen.getByRole("button", { name: "Saving…" })).toHaveAttribute("data-disabled");
+  });
+
+  // Guards the `type="button"`: inside lago's Form an untyped button submits.
+  it("does not submit the form when cancelling", async () => {
+    const { changePasswordAsync, ui } = setup();
+
+    await ui.type(screen.getByLabelText("Current password"), CURRENT_PASSWORD);
+    await ui.type(screen.getByLabelText("New password"), NEW_PASSWORD);
+    await ui.type(screen.getByLabelText("Confirm new password"), NEW_PASSWORD);
+    await ui.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(changePasswordAsync).not.toHaveBeenCalled();
+  });
+
   it("toasts the API error and stays put", async () => {
     const { replace, ui } = setup({
       changePasswordAsync: vi.fn().mockRejectedValue(new Error("Password does not match")),
@@ -151,10 +185,12 @@ describe("ChangePasswordForm", () => {
     await ui.type(screen.getByLabelText("Confirm new password"), NEW_PASSWORD);
     await submit(ui);
 
+    // The title is fixed and the API's reason goes in the description.
     await vi.waitFor(() =>
       expect(notify).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: "Password does not match",
+          title: "Password change failed",
+          description: "Password does not match",
           variant: "error",
         }),
       ),
