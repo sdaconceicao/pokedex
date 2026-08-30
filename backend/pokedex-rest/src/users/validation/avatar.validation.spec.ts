@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import {
   AVATAR_MAX_BYTES,
   isAvatarWithinSizeLimit,

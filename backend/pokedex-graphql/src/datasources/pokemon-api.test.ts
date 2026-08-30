@@ -1,7 +1,6 @@
-import { describe, expect, it } from "vitest";
-
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
 import { HttpResponse, http } from "msw";
+import { describe, expect, it } from "vitest";
 import { server } from "../mocks/server";
 import { PokemonAPI } from "./pokemon-api";
 

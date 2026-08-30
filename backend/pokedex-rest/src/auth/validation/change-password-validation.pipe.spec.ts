@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ChangePasswordValidationPipe } from './change-password-validation.pipe';
 
 describe('ChangePasswordValidationPipe', () => {

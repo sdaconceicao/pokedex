@@ -1,6 +1,6 @@
 import { BadRequestException, PayloadTooLargeException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import type { Mocked } from 'vitest';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 import { AvatarsService } from './avatars.service';
 import { UsersController } from './users.controller';
 import { UserEntity } from './users.entity';
@@ -18,6 +18,8 @@ const mockUser: UserEntity = {
   firstName: '',
   lastName: '',
   emailVerified: true,
+  failedPasswordAttempts: 0,
+  passwordLockedUntil: null,
 };
 
 const PNG = Buffer.concat([

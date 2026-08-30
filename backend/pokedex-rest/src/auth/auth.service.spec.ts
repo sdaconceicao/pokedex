@@ -2,7 +2,15 @@ import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import type { Mocked } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mocked,
+  vi,
+} from 'vitest';
 import { MailService } from '../mail/mail.service';
 import { UserEntity } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
