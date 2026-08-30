@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
 import { HttpResponse, http } from "msw";
 import { server } from "../mocks/server";

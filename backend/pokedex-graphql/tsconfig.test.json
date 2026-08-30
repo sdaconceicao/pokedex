@@ -6,6 +6,6 @@
     "noEmit": true,
     "types": ["node", "vitest"]
   },
-  "include": ["src/vitest-env.d.ts", "src/**/*.test.ts", "src/vitest.setup.ts"],
-  "exclude": ["dist", "node_modules"]
+  "include": ["src/vitest-env.d.ts", "src/test/**/*.ts", "src/**/*.test.ts", "src/vitest.setup.ts"],
+  "exclude": ["dist", "node_modules", ".tsbuild"]
 }

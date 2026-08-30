@@ -26,6 +26,7 @@
     "codegen.ts",
     "**/*.test.ts",
     "**/vitest.setup.ts",
-    "src/vitest-env.d.ts"
+    "src/vitest-env.d.ts",
+    "src/test/**"
   ]
 }
