@@ -1,7 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import type { Mocked } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mocked,
+  vi,
+} from 'vitest';
 import { UserEntity } from './users.entity';
 import { UsersService } from './users.service';
 
@@ -16,6 +24,9 @@ describe('UsersService', () => {
     password: 'hashedPassword123',
     firstName: 'Test',
     lastName: 'User',
+    emailVerified: false,
+    failedPasswordAttempts: 0,
+    passwordLockedUntil: null,
   };
 
   const mockUserData = {

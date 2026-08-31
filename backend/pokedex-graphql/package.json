@@ -11,7 +11,7 @@
     "node": ">=18.0"
   },
   "scripts": {
-    "compile": "node scripts/embed-schema.mjs && tsc",
+    "compile": "node scripts/embed-schema.mjs && tsc -p tsconfig.build.json",
     "start": "pn compile && nodemon ./dist/index.js",
     "start:dev": "node scripts/embed-schema.mjs && concurrently \"tsx watch ./src/index.ts\" \"pn  generate\"",
     "start:dev:mock": "node scripts/embed-schema.mjs && USE_MOCK_API=true tsx watch ./src/index.ts",
@@ -25,7 +25,7 @@
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "format": "biome format --write .",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
     "@apollo/datasource-rest": "^6.4.1",
