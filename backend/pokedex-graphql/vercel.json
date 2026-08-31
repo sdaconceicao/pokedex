@@ -1,5 +1,5 @@
 {
-  "installCommand": "npm i -g pnpm@12.1.0 && export PATH=\"$(npm prefix -g)/bin:$PATH\" && cd ../.. && pnpm install --frozen-lockfile",
+  "installCommand": "npm i -g --allow-scripts=pnpm pnpm@12.1.0 && export PATH=\"$(npm prefix -g)/bin:$PATH\" && cd ../.. && pnpm install --frozen-lockfile --filter pokedex-graphql...",
   "buildCommand": "export PATH=\"$(npm prefix -g)/bin:$PATH\" && pnpm run generate:schema",
   "rewrites": [{ "source": "/graphql", "destination": "/api/graphql" }]
 }

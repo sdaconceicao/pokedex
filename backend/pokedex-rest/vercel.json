@@ -1,4 +1,4 @@
 {
-  "installCommand": "npm i -g pnpm@12.1.0 && export PATH=\"$(npm prefix -g)/bin:$PATH\" && cd ../.. && pnpm install --frozen-lockfile",
+  "installCommand": "npm i -g --allow-scripts=pnpm pnpm@12.1.0 && export PATH=\"$(npm prefix -g)/bin:$PATH\" && cd ../.. && pnpm install --frozen-lockfile --filter pokedex-rest...",
   "buildCommand": "export PATH=\"$(npm prefix -g)/bin:$PATH\" && pnpm build && if [ \"$VERCEL_ENV\" = \"preview\" ]; then node dist/run-migrations.js; fi"
 }

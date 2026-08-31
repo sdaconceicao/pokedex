@@ -1,5 +1,5 @@
 {
-  "installCommand": "npm i -g pnpm@12.1.0 && export PATH=\"$(npm prefix -g)/bin:$PATH\" && cd .. && pnpm install --frozen-lockfile",
+  "installCommand": "npm i -g --allow-scripts=pnpm pnpm@12.1.0 && export PATH=\"$(npm prefix -g)/bin:$PATH\" && cd .. && pnpm install --frozen-lockfile --filter pokependium-frontend...",
   "buildCommand": "export PATH=\"$(npm prefix -g)/bin:$PATH\" && pnpm build",
   "relatedProjects": ["prj_t7vRFq5Tl6oUhClpc3LNN7vguwRG", "prj_mbk4ZCw647BGvGB7lzUBSXuWhtbj"]
 }
