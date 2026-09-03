@@ -1,4 +1,3 @@
-import '@fastify/multipart';
 import {
   BadRequestException,
   Controller,
